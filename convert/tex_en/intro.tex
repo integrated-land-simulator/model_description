@@ -1,0 +1,975 @@
+\hypertarget{introduction.}{%
+\section{Introduction.}\label{introduction.}}
+
+Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO)
+is a land-surface process parameterization that has been developed to
+introduce the global climate model CCSR/NIES AGCM and other models.
+MATSIRO is mainly designed to be used for long-term climate calculations
+for integration from one month to several hundred years, coupled with
+atmospheric models with grid scales of several 10 km or more. In the
+development of the system, we paid attention to the fact that the
+processes to be taken into account in the water-energy cycle of the
+atmospheric land system are represented as adequately as possible and
+are modeled as concisely as possible so that the results can be easily
+interpreted. The development of MATSIRO was based on the CCSR/NIES
+AGCM5.4g land surface sub-model, combined with the vegetation canopy
+parameterization by Watanabe (1994), and at the same time improved the
+processes of snow accumulation and runoff. Subsequently, the AGCM was
+modified to correspond to the current AGCM5.6 through the modification
+of the AGCM structure, including the use of a flux coupler and
+parallelization. As for the physiological processes of the vegetation,
+the Farquhar-type photosynthesis scheme, which was initially used as a
+Jarvis-type function for stomatal resistance, has been transferred from
+the SiB2 code to the Farquhar-type photosynthesis scheme, which is now
+used as a quasi-standard scheme due to recent advances in
+climate-ecosystem interaction research.
+
+\hypertarget{composition-of-matsiro}{%
+\section{Composition of MATSIRO}\label{composition-of-matsiro}}
+
+\hypertarget{matsiro-overall}{%
+\subsection{MATSIRO Overall}\label{matsiro-overall}}
+
+\hypertarget{overall-structure.}{%
+\subsubsection{Overall Structure.}\label{overall-structure.}}
+
+MATSIRO consists of ,
+
+\begin{itemize}
+\item
+  Flux Calculation Unit (LNDFLX)
+\item
+  Land Surface Integrator (LNDSTP)
+\end{itemize}
+
+This is similar to the standard land process routine of AGCM5.6. This is
+the same as the standard land process routine of AGCM5.6.
+
+The flux calculator is called in the time step of the atmospheric model
+as part of the physical process of the atmospheric model. In contrast,
+the land surface integrator is called from the coupled model main
+routine as the land surface model equivalent to the atmospheric and
+oceanic models. The time step is set independently from the atmospheric
+model.
+
+The data exchange between the fluxing section and the land surface
+integrating section is carried out through the flux coupler. The flux
+calculation section treats snow-covered and snow-free surfaces
+separately and obtains surface fluxes for each of them. The fluxes are
+weighted and averaged according to the ratio of the snow-covered and
+snow-free surfaces, and the fluxes are passed through the flux coupler
+to the land surface integrating unit. At the same time, the temporal
+averaging operation is also carried out.
+
+Programmatically, the driver program (matdrv.F) contains an entry for
+the flux calculation part, LNDFLX, and an entry for the land surface
+integration part, LNDSTP, from which the subroutines of the necessary
+processes are called. LNDFLX and LNDSTP share the internal variables of
+MATSIRO.
+
+\hypertarget{internal-variables-of-matsiro}{%
+\subsubsection{Internal variables of
+MATSIRO}\label{internal-variables-of-matsiro}}
+
+MATSIRO has the following internal variables.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header3\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(T_{s(l)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((l=1,2)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+surface temperature\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(T_{c(l)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((l=1,2)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Canopy temperature\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(T_{g(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((k=1,\ldots,K_g)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Soil temperature\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\$w\_\{(k)\} \$\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((k=1,\ldots,K_g)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+soil moisture content\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}m\(^3\)/m\(^3\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(w_{i(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((k=1,\ldots,K_g)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Frozen soil moisture content\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}m\(^3\)/m\(^3\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(w_c\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Water content in the canopy\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.00\}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+amount of snowfall\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\kosmos[kg/m$^2$]\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(T_{Sn(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((k=1,\ldots,K_{Sn})\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+snow temperature\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(\alpha_{Sn(b)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((b=1,2,3)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+snow albedo\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs in the state of affairs of others
+{[}\(-\){]}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+where \(l=1,2\) are snow-free and snow-covered areas, respectively,
+\(k\) is the vertical layer number of soil and snow cover (top layer is
+1 and increases downward), \(K_g\) is the number of soil layers,
+\(K_{Sn}\) is the number of snow-covered layers, \(b=1,2,3\) are It
+represents the visible, near-infrared and infrared wavelengths.
+
+In standard practice, there are five layers of soil, with the
+thicknesses of each layer being 5cm, 20cm, 75cm, 1m, and 2m from the
+top. The definition points of soil temperature, soil moisture and frozen
+soil moisture are the same.
+
+The number of layers of the snowpack is variable, and the number of
+layers increases as the snowpack increases. The standard number of
+layers is three at most.
+
+The surface temperature and the canopy temperature are so-called skin
+temperature, which have no heat capacity, but are formally predictive
+variables (the current calculation method uses the stability evaluated
+in the previous step, and therefore depends on the value of the previous
+step. If we evaluate the stability and so on with the updated value and
+repeat the calculation until the convergence is achieved, then we have a
+complete diagnostic variable that does not depend on the value of the
+previous step.) The other variables are all forecast variables that
+require the values of the previous step.
+
+The surface temperature and the canopy temperature are updated in the
+flux calculation section. The other variables (the original forecast
+variables) are all updated in the land surface integration part.
+
+\hypertarget{flux-calculation-section}{%
+\subsection{Flux calculation section}\label{flux-calculation-section}}
+
+\hypertarget{structure-of-the-flux-calculation-section}{%
+\subsubsection{Structure of the flux calculation
+section}\label{structure-of-the-flux-calculation-section}}
+
+The flux calculation section proceeds as follows.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  receive input variables from the coupler.
+\item
+  diagnose the snow area ratio of the subgrid.
+\end{enumerate}
+
+For the snow-free area (\(l=1\)) and the snow-covered area (\(l=2\)),
+subroutines are called to calculate the fluxes and to update the surface
+and canopy temperatures. Concretely, the following subroutines are
+called in sequence.
+
+\begin{verbatim}
+ MATLAI vegetation shape parameter (LAI, vegetation height)
+
+ 2. calculation of MATRAD radiation parameters (albedo, vegetation permeability, etc.)
+
+ MATBLK calculation of turbulent parameters (bulk coefficient) (momentum and heat)
+
+ 4. MATRST calculation of stomatal resistance, bare ground evaporation resistance, etc.
+
+ 5. MATBLQ calculation of turbulent parameters (bulk coefficient) (water vapor)
+
+ 6. calculation of MATFLX surface flux
+
+ 7. calculation of MATGHC ground heat transfer
+
+ 8. MATSHB Deciphering the energy balance of the ground surface and canopy
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  pass output variables to the coupler.
+\end{enumerate}
+
+Register and add history output variables. 5.
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  to (e) are classified into boundary value submodels and the programs
+  are summarized in matbnd.
+\end{enumerate}
+
+(f)-(h) are classified as surface submodels, and the programs are
+summarized in matsfc.
+
+The photosynthesis scheme MATPHT is called from (d). The photosynthesis
+scheme is summarized in matpht.
+
+\hypertarget{the-input-variables-in-the-flux-calculation-section.}{%
+\subsubsection{The input variables in the flux calculation
+section.}\label{the-input-variables-in-the-flux-calculation-section.}}
+
+The following variables are entered into the flux calculation section.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header3\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(u_a\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Atmospheric 1st layer east-west wind\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "m/score\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(v_a\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+First layer of atmospheric north-south wind\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "m/score\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(T_a\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Atmospheric 1st layer temperature\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(q_a\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Specific humidity in the first layer of the atmosphere\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/kg\textbackslash{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(P_a\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Atmospheric 1st layer pressure\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs of the city of Los Angeles{[}Pahren{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(P_s\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+surface pressure\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs of the city of Los Angeles{[}Pahren{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(R^{\downarrow}_{(d,b)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((d=1,2;b=1,2,3)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Surface downward radiation flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\W/m\(^2\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(\cos\zeta\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+cosine of the solar zenith angle\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs of the company in the first place is in the form
+of the following.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+where \(d=1,2\) represent the direct line and scattering, respectively,
+and \(b=1,2,3\) represent the visible, near-infrared, and infrared
+spectral bands, respectively.
+
+\hypertarget{output-variables-in-the-flux-calculation-section}{%
+\subsubsection{Output variables in the flux calculation
+section}\label{output-variables-in-the-flux-calculation-section}}
+
+The following variables are output from the flux calculation section.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+Header0 & Header1 & Header2 & Header3\tabularnewline
+\midrule
+\endhead
+\(\tau_x\) & & surface-to-west wind stress &
+\N/m\(^2\){]}\tabularnewline
+\(\tau_y\) & & surface-to-south wind stress &
+\N/m\$\^{}2\$45{]}\tabularnewline
+\(H\) & & surface sensible heat flux &
+The\textbackslash{}\brahammer\bra\_Penny.com{[}W/m\(^2\){]}\tabularnewline
+\(E\) & & Surface Water Vapor Flux & {[}kg/m\(^2\)/s{]}\tabularnewline
+\(R^{\uparrow}_S\) & & Upward Bound Shortwave Radiation Flux
+&\tabularnewline
+\(R^{\uparrow}_L\) & & Upward Bound Longwave Radiation Flux
+&\tabularnewline
+\(\alpha_{s(b)}\) & \((b=1,2,3)\) & surface albedo & \The state of
+affairs of the world{[}\(-\){]}\tabularnewline
+\(T_{sR}\) & & surface radiation temperature &
+\K.L.A.{[}K.R.I.E.D.{]}\tabularnewline
+\(F_{g(1/2)}\) & & Surface Heat Transfer Flux &\tabularnewline
+\(F_{Sn(1/2)}\) & & Heat Transfer Flux for Snow Surface &
+The\textbackslash{}\brax.com{[}W/m\(^2\){]}\tabularnewline
+\(Et_{(i,j)}\) & \((i=1,2;j=1,2,3)\) & Evapotranspiration components &
+{[}kg/m\(^2\)/s\braham{]}\tabularnewline
+\(\Delta F_{conv}\) & & surface energy convergence &\tabularnewline
+\(F_{root(k)}\) & \((k=1,\ldots,K_g)\) & Root sucking flux &
+{[}kg/m\(^2\)/s{]}\tabularnewline
+\(LAI\) & & leaf area index & {[}m\(^2\)/m\(^2\){]}\tabularnewline
+\(A_{Snc}\) & & Canopy freezing area ratio &
+\Holy shit\ldots{[}\(-\){]}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Here, \(i=1,2\) in evapotranspiration represent liquid and solid,
+respectively, and \(j=1,2,3\) represent bare ground (forest floor)
+evaporation, evaporation and evaporation of water on the canopy,
+respectively. The other subscripts are the same as those in the previous
+section.
+
+\hypertarget{land-surface-integral-part}{%
+\subsection{Land surface integral
+part}\label{land-surface-integral-part}}
+
+\hypertarget{composition-of-the-land-surface-integrator}{%
+\subsubsection{Composition of the Land Surface
+Integrator}\label{composition-of-the-land-surface-integrator}}
+
+The land surface integration section proceeds as follows.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  receive input variables from the coupler.
+\end{enumerate}
+
+The subroutines of each process are called and the land surface forecast
+variables are updated. Specifically, the following subroutines are
+called in sequence.
+
+\begin{verbatim}
+ 1. calculation of the water balance of the MATCNW canopy
+\end{verbatim}
+
+Calculation of MATSNW snowpack, snow temperature and snow albedo
+
+\begin{verbatim}
+ 3. calculation of MATROF runoff
+
+ MATGND Calculation of soil temperature, soil moisture, and frozen ground
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  pass output variables to the coupler.
+\end{enumerate}
+
+Register and add history output variables. 4.
+
+Each subroutine called from the main part of the land surface integrator
+consists of a submodel. The programs of each sub-model are organized in
+a single file. In concrete terms, each subroutine is described as
+follows
+
+\begin{itemize}
+\item
+  MATCNW (matcnw.F) Canopy water balance sub-model
+\item
+  MATSNW (matsnw.F) snow sub-model
+\item
+  MATROF (matrof.F) Spillover sub-model
+\item
+  MATGND (matgnd.F) Soil sub-model
+\end{itemize}
+
+The submodels are basically executed in this order, but if necessary,
+subroutines may be called among the submodels in order to refer to the
+values of the parameters managed by other submodels. Subroutines within
+the above submodels may also be called by the fluxing part for the same
+purpose.
+
+\hypertarget{input-variables-in-the-land-surface-integration-section}{%
+\subsubsection{Input variables in the land surface integration
+section}\label{input-variables-in-the-land-surface-integration-section}}
+
+The following variables are entered into the land surface integrator.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header3\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(Pr_{c}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Convective rainfall flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(Pr_{l}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Layered Rainfall Flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(P_{Snc}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Convective snowfall flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(P_{Snl}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Layered Snowfall Flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(F_{g(1/2)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Surface Heat Transfer Flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "W/m\(^2\)\textbackslash{}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(F_{Sn(1/2)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Heat Transfer Flux for Snow Surface\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\W/m\$\^{}2\$8{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(Et_{(i,j)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((i=1,2;j=1,2,3)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Evapotranspiration components\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(\Delta F_{conv}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+surface energy convergence\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(F_{root(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\((k=1,\ldots,K_g)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Root sucking flux\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+{[}kg/m\(^2\)/s\textbackslash{}\blade\}{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(LAI\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+leaf area index\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs of the state {[}m\(^2\)/m\(^2\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(A_{Snc}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Canopy freezing area ratio\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs in the state of affairs of the company
+{[}\$-\$0101{]}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{output-variables-of-the-land-surface-integration-section}{%
+\subsubsection{Output variables of the land surface integration
+section}\label{output-variables-of-the-land-surface-integration-section}}
+
+The land surface integrator outputs the following variables.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+Header0 & Header1 & Header2 & Header3\tabularnewline
+\midrule
+\endhead
+\(Ro\) & & runoff & {[}kg/m\(^2\)/s\textbackslash blind\}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The runoff is used as an input variable for the river network model.
+
+\hypertarget{external-parameters.}{%
+\subsection{External Parameters.}\label{external-parameters.}}
+
+There are two types of external parameters for executing MATSIRO: one is
+the parameter values of each grid by the horizontal distribution (map),
+and the other is the parameter values for each land cover type or soil
+type by the table. Land cover type and soil type are one of the
+parameters given by the map, and each parameter given by the table is
+assigned to each grid. Namely,
+
+\begin{eqnarray}
+ \phi(i,j)
+\end{eqnarray} \textbackslash.066\} or .066.066.
+
+where \((i,j)\) are indices of the horizontal position of the grid,
+\(I_L\) is the land use type, and \(I_S\) is the soil type. where
+\((i,j)\) are the indexes of the horizontal position of the grid,
+\(I_L\) is the land use type, and \(I_S\) is the soil type.
+
+\hypertarget{external-parameters-given-by-the-map}{%
+\subsubsection{External parameters given by the
+map}\label{external-parameters-given-by-the-map}}
+
+The types of external parameters given by the map are as follows.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+\begin{minipage}[b]{0.17\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedright
+Header3\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedright
+Header4\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(I_L\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+Land cover type\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+constant\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(I_S\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+Soil Type\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+constant\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(LAI_0\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+Leaf Area Index (LAI)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+every month\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+{[}m\(^2\)/m\(^2\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(\alpha_{0(b)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\((b=1,2,3)\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+Ground surface (forest floor) albedo\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+constant\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(\tan\beta_{s}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+Tangent of the mean surface slope\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+constant\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\raggedright
+\(\sigma_z\)\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+elevation standard deviation\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+constant\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright
+\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.00\}.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{external-parameters-given-by-the-table-for-each-land-cover-type}{%
+\subsubsection{External parameters given by the table for each land
+cover
+type}\label{external-parameters-given-by-the-table-for-each-land-cover-type}}
+
+The external parameters given by the table for each land cover type are
+as follows
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header3\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(h_0\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+vegetation height\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.00\}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(h_{B0}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Height of the bottom of the canopy\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.00\}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(r_{f(b)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(b\)=1,2)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Reflectivity of individual leaves\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(t_{f(b)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(b\)=1,2)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Transmittance of individual leaves\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(f_{root(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Percentage of root presence\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(c_d\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Momentum exchange coefficient between the individual leaves and the
+atmosphere\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(c_h\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Heat Exchange Coefficient between individual leaves and the
+atmosphere\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(f_V\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+vegetation coverage\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(V_{\max}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Rubisco Reaction Capacity\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "m/score\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(m\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(A_n\)-\(g_s\) Slope of the relationship\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(b\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(A_n\)-\(g_s\) relationship intercepts\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "m/score\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(\epsilon_3\), \(\epsilon_4\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Photosynthetic efficiency per photon\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\centric[m/s/mol\end{eqnarray} |
+| $\theta_{ce}$ |  | Coupling factor between     $w_c$ and $w_e$ | \\\.com |
+| $\theta_{ps}$ |  | Coupling factor between     $w_p$ and $w_s$ | \\\.com |
+| $f_d$ |  | respiratory coefficient | \\\.com |
+| $s_2$ |  | Critical temperature of high temperature suppression | \K.L.A.[K.R.I.E.D.]\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(s_4\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Critical temperature of cryogenic suppression\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\K.L.A.{[}K.R.I.E.D.{]}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{external-parameters-given-by-the-table-for-each-soil-type}{%
+\subsubsection{External parameters given by the table for each soil
+type}\label{external-parameters-given-by-the-table-for-each-soil-type}}
+
+The external parameters given by the table for each land cover are as
+follows.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header0\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header1\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header2\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Header3\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(c_{g(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Specific Heat of Soil\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The ``\brahammer''{[}J/m\$\^{}3\$147{]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(k_{g(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Thermal Conductivity of Soil\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs in the event of a race is incompatible with the
+state of the art.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(w_{sat(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Soil Porosity\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The state of affairs of the company {[}m\(^3\)/m\(^3\){]}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(K_{s(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Saturated Permeability of Soil\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\The "m/score\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(\psi_{s(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Soil Saturation Moisture Potential\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.25\textbackslash0.00\}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+\(b_{(k)}\)\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+(\(k=1,\ldots,K_g\))\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Index of Soil Moisture Potential Curve\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+\textbackslash.com\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}

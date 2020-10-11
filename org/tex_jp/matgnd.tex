@@ -1,0 +1,294 @@
+\section{土壌サブモデル MATGND}
+
+土壌温度, 土壌水分および凍土の計算を行う.
+
+\subsection{土壌中の熱伝導の計算}
+
+\subsubsection{土壌中の熱伝導方程式}
+
+土壌中の熱伝導による土壌温度の予報方程式は以下のようである.
+\begin{equation}
+C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
+\qquad (k=1,\ldots,K_{g})
+\label{gnd_diff}
+\end{equation}
+$C_{g(k)}$ は土壌の熱容量であり, 以下で定義される.
+\begin{equation}
+ C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
+\end{equation}
+$c_{g(k)}$ は土壌の比熱であり, 土壌タイプごとのパラメータとして与える.
+$c_{pw}$ は水の比熱, $w_{(k)}$ は土壌水分量(体積含水率)である.
+$\Delta z_{g(k)}$ は, 土壌第$k$層の厚さである.
+このように, 土壌の熱容量に土壌水分の熱容量を含めると, 土壌水分移動に伴う
+熱輸送を考慮しない限りエネルギーが保存しない.
+現在, MATGND では土壌水分移動に伴う熱輸送は考慮されていないので, その導
+入を検討している.
+もっとも, 大気中の水蒸気や降水などの熱容量が考慮されない限り, 何らかの意
+味ではエネルギーの保存が破れていることに注意されたい.
+
+熱伝導フラックス$F_{g}$は以下で与えられる.
+\begin{equation}
+ F_{g(k+1/2)} =
+\left\{
+\begin{array}{ll}
+F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
+& (k=0)\\
+\displaystyle{
+k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
+}
+& (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+& (k=K_{g})
+\end{array}
+\right.
+\label{gnd_dflux}
+\end{equation}
+ここで, $k_{g(k+1/2)}$ は土壌の熱伝導率であり, 以下のように与える.
+\begin{equation}
+ k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
+\end{equation}
+$k_{g0(k+1/2)}$ は土壌水分が $0$ のときの熱伝導率, $f_{kg}=6$,
+$w_{kg}=0.25$ は定数である.
+
+$\Delta z_{g(k+1/2)}$ は, 第$k$層と第$k+1$層の土壌温度定義点の間の厚さで
+ある ($k=0$ については, 第１層温度定義点と土壌上端, $k=K_g$ については,
+最下層温度定義点と土壌下端の間の厚さ).
+
+(\ref{gnd_dflux})において,
+土壌上端の境界条件 $F_{g(1/2)}$は, 地表面エネルギーバランスを解いた際に
+求めた値に, 積雪下端におけるエネルギー収束(積雪下端における熱伝導フラッ
+クスを含む)およびキャノピー上水分の相変化によるエネルギー補正項の無雪面
+への割り当て分を加えたものを与えている. フラックスは上向き正に取るため,
+収束量を加える場合には負号が付く.
+土壌下端の境界条件 $F_{g(K_g+1/2)}$ はゼロフラックスとする.
+
+\subsubsection{熱伝導方程式の求解}
+
+これらの式を, 第１層から最下層までの土壌温度に関して陰解法を用いて解く.
+すなわち, $k=1,\ldots,K_g-1$について, 熱伝導フラックスを
+\begin{equation}
+  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}
+\end{equation}
+\begin{equation}
+  F_{g(k+1/2)}^{\tau} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
+\end{equation}
+\begin{equation}
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
+- \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\end{equation}
+\begin{equation}
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\end{equation}
+と置いて, (\ref{gnd_diff})を
+\begin{eqnarray}
+C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
+&=& F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^* \nonumber \\
+&=& {F}_{g(k+1/2)}^{\tau}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)} \nonumber \\
+&-& F_{g(k-1/2)}^{\tau}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k-1)}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k)}
+\end{eqnarray}
+のように扱い, $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$ についての
+$K_{g}$ 本の連立方程式として LU 分解法により解く.
+この際, 土壌上端及び下端のフラックスは境界条件として固定して解くことに注
+意されたい.
+\begin{equation}
+ T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
+\end{equation}
+により土壌温度を部分的に更新する.
+これに, 後に述べる土壌水分の相変化による補正を経て, 土壌温度が完全に更新
+される.
+
+\subsection{土壌水分移動の計算}
+
+\subsubsection{土壌水分移動の方程式}
+
+土壌水分移動の方程式(Richards の式)は以下で与えられる.
+\begin{equation}
+\rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
+\frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
+\qquad (k=1,\ldots,K_{g})
+\label{wat_diff}
+\end{equation}
+
+土壌水分フラックス$F_{w}$は以下で与えられる.
+\begin{equation}
+ F_{w(k+1/2)} =
+\left\{
+\begin{array}{ll}
+Pr^{***} - Et_{(1,1)}
+& (k=0)\\
+\displaystyle{
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
+}
+& (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+& (k=K_{g})
+\end{array}
+\right.
+\label{wat_dflux}
+\end{equation}
+ここで, $K_{(k+1/2)}$ は土壌の透水係数であり, Clapp and Hornberger
+(1978) を参考に以下のように与える.
+\begin{equation}
+ K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
+\end{equation}
+$K_{s(k+1/2)}$ は飽和透水係数, $b_{(k)}$ は水分ポテンシャル曲線の指数で,
+土壌タイプごとの外部パラメータとして与える.
+$W_{(k)}$は凍結土壌水分を除いて考えた飽和度で, 以下で与えられる.
+\begin{equation}
+ W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
+\end{equation}
+$w_{sat(k)}$ は土壌の空隙率で, これも土壌タイプごとのパラメータとして与
+える. $f_i$ は凍土の存在により土壌水分の移動が抑制されることを表すパラメー
+タで, 現在のところ以下のように与えているが, さらに検討を要する.
+\begin{equation}
+ f_i = \left(1- W_{i(k)}\right)
+       \left(1- W_{i(k+1)}\right)
+\end{equation}
+$W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})$ である.
+
+$\psi$ は土壌水分ポテンシャルで, Clapp and Hornberger により以下のように
+与えられる.
+\begin{eqnarray}
+ \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
+\end{eqnarray}
+$\psi_{s(k)}$ は土壌タイプごとの外部パラメータとして与える.
+
+(\ref{wat_diff})において, $S_{w(k)}$ はソース項であり, 根による吸い上げ
+と流出を考慮して, 以下で与えられる.
+\begin{equation}
+ S_{w(k)} = - F_{root(k)} - Ro_{(k)}
+\end{equation}
+
+(\ref{wat_dflux})において,
+土壌上端の境界条件 $F_{w(1/2)}$は, 流出過程を経た水分フラックス
+$P^{***}$ と土壌からの蒸発フラックス $Et_{(1,1)}$ の差である.
+これとは別に, 昇華フラックスの分は, 土壌水分移動の計算に先立って, 第１層
+の凍結土壌水分から差し引く.
+\begin{eqnarray}
+ w_{i(k)}^{\tau} &=& w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
+ w_{(k)}^{\tau} &=& w_{(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})
+\end{eqnarray}
+
+\subsubsection{土壌水分移動方程式の求解}
+
+これらの式を, 第１層から最下層までの土壌水分に関して陰解法を用いて解く.
+すなわち, $k=1,\ldots,K_g-1$について, 土壌水分フラックスを
+\begin{equation}
+  F_{w(k+1/2)}^{\tau+1} = F_{w(k+1/2)}^{\tau}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}
+\end{equation}
+\begin{equation}
+  F_{w(k+1/2)}^{\tau} =
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)}^{\tau} - \psi_{(k)}^{\tau}}{\Delta z_{g(k+1/2)}} - 1 \right)
+\end{equation}
+\begin{equation}
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}} =
+- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k)}}{w_{sat(k)}-w_{i(k)}}W_{(k)}^{-b(k)-1}
+\right]
+\end{equation}
+\begin{equation}
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}} =
+ \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k+1)}}{w_{sat(k+1)}-w_{i(k+1)}}W_{(k+1)}^{-b(k)-1}
+\right]
+\end{equation}
+と置いて, (\ref{wat_diff})を
+\begin{eqnarray}
+\rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
+&=& F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)} \nonumber \\
+&=& {F}_{w(k+1/2)}^{\tau}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)} \nonumber \\
+&-& F_{w(k-1/2)}^{\tau}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k-1)}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}
+\end{eqnarray}
+のように扱い, $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$ についての
+$K_{g}$ 本の連立方程式として LU 分解法により解く.
+この際, 土壌上端及び下端のフラックスは境界条件として固定して解くことに注
+意されたい.
+\begin{equation}
+ w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
+\end{equation}
+により土壌水分量を更新する.
+
+この計算の結果, 土壌水分量が過飽和になる部分が生じた場合, 鉛直方向に調節
+を行い, 過飽和を除去する.
+過飽和分を流出と見なさないのは, この過飽和が, 土壌水分の鉛直移動を飽和の
+情報を持たずに解いたことによって生じた人工的なものだからである.
+まず, 土壌第２層から下に向かって, 過飽和分の土壌水分量を一つ下の層へ与え
+る.
+次に, 土壌最下層から上へ向かって, 過飽和分の土壌水分量を一つ上の層へ与え
+る.
+この操作により, 土壌水分が十分に大きい場合, 土壌最下層付近に飽和層が形成
+され, (\ref{roff_table})の地下水面が定義できる.
+
+\subsection{土壌水分の相変化}
+
+土壌中の熱伝導を計算した結果, 液体水分の存在する層の温度が $T_{melt} =
+0^{\circ}$C を下回った場合, もしくは固体水分の存在する層の温度が
+$T_{melt}$を上回った場合には土壌水分の相変化を計算する.
+すなわち, 第$k$層目の土壌水分の凍結量(調整分)を $\Delta w_{i(k)}$ とすると,
+
+$T_{g(k)}^*<T_{melt}$ かつ $w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}>0$ のとき
+(凍結)
+\begin{equation}
+\Delta w_{i(k)} = \min\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}
+\right)
+\end{equation}
+
+$T_{g(k)}^*>T_{melt}$ かつ $w_{i(k)}^{\tau}>0$ のとき(融解)
+\begin{equation}
+\Delta w_{i(k)} = \max\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+-w_{i(k)}^{\tau}
+\right)
+\end{equation}
+
+土壌凍結水分量と土壌温度を以下のように更新する.
+\begin{eqnarray}
+w_{i(k)}^{\tau+1} &=& w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
+T_{g(k)}^{\tau+1} &=& T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
+\end{eqnarray}
+
+\subsubsection{氷床過程}
+
+土地被覆タイプが氷床である場合, 土壌温度が $T_{melt}$ を越えたら
+$T_{melt}$ に戻す.
+\begin{eqnarray}
+ T_{g(k)}^{\tau+1} = \min( T_{g(k)}^*, \ T_{melt} )
+\end{eqnarray}
+このとき, 氷床量の変化率 $F_{ice}$を以下のように診断する.
+\begin{eqnarray}
+ F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
+\end{eqnarray}

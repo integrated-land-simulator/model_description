@@ -1,0 +1,43 @@
+{
+    "imath": {
+        "TERM00013": {
+            "count": 2,
+            "text": "$\\alpha_{0(3)}$"
+        },
+        "TERM00032": {
+            "count": 2,
+            "text": "$b=1, 2$"
+        },
+        "TERM00096": {
+            "count": 0,
+            "text": "C$_3$"
+        },
+        "TERM00193": {
+            "count": 2,
+            "text": "$c_a$"
+        },
+        "TERM00194": {
+            "count": 2,
+            "text": "$c_i$"
+        },
+        "TERM00240": {
+            "count": 2,
+            "text": "$A_{Sn}$"
+        },
+        "TERM00289": {
+            "count": 2,
+            "text": "$^{\\circ}$"
+        },
+        "TERM00291": {
+            "count": 2,
+            "text": "$^{\\circ}$"
+        }
+    },
+    "emath": {
+        "EQ=00079.": {
+            "count": 0,
+            "text": "$$\n h = A_{Sn} h + ( 1 - A_{Sn} ) h_0\n$$\n"
+        }
+    },
+    "tabular": {}
+}

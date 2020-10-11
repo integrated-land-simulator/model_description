@@ -1,0 +1,18 @@
+{
+    "imath": {
+        "TERM00026": {
+            "count": 2,
+            "text": "$\\beta_s$"
+        },
+        "TERM00038": {
+            "count": 2,
+            "text": "$A_{sat} \\geq 0$"
+        },
+        "TERM00039": {
+            "count": 2,
+            "text": "$\\overline{z} > 1/f$"
+        }
+    },
+    "emath": {},
+    "tabular": {}
+}

@@ -1,0 +1,195 @@
+
+\section{キャノピー水収支サブモデル MATCNW}
+
+キャノピー上水分の水収支の計算を行う.
+
+\subsection{キャノピー上水分の相の診断}
+
+キャノピー上水分は液体(遮断した降水, 結露, または固体水分がが融けたもの)
+と固体(遮断した雪, 着氷, または液体水分が凍ったもの)を別に考え, その混在
+を許す.
+予報変数は, 液体と固体を合わせた水分量 $w_c$ のみであり, キャノピー温度
+$T_c$ が $T_{melt} = 0^{\circ}$C よりも高いか低いかにより, それぞれ液体
+か固体と診断する. 液体と固体が混在し得るのは, 積雪域と無雪域の $T_c$ を
+別に計算しているからである.
+すなわち, キャノピー上水分の凍結面積率$A_{Snc}$を以下のように定義し(実際
+にはカプラーによって空間平均された結果, 以下のようになる),
+\begin{equation}
+ A_{Snc} = \left\{
+\begin{array}{ll}
+ 0 & (T_{c(1)} \geq T_{melt}, \ T_{c(2)} \geq T_{melt} \mbox{のとき})\\
+ (1-A_{Sn}) & (T_{c(1)} < T_{melt}, \ T_{c(2)} \geq T_{melt} \mbox{のとき})\\
+ A_{Sn} & (T_{c(1)} \geq T_{melt}, \ T_{c(2)} < T_{melt} \mbox{のとき})\\
+ 1 & (T_{c(1)} < T_{melt}, \ T_{c(2)} < T_{melt} \mbox{のとき})
+\end{array}
+\right.
+\end{equation}
+\begin{eqnarray}
+ w_{cl} &=& w_c ( 1 - A_{Snc}) \\
+ w_{ci} &=& w_c A_{Snc}
+\end{eqnarray}
+のようにする. $w_{cl}$, $w_{ci}$ はそれぞれキャノピー上の液体と固体の水分
+である.
+
+$A_{Snc}$ は, フラックス計算部で更新された値 $A_{Snc}^{\tau+1}$がカプラー
+から与えられるが, 前のステップの値$A_{Snc}^{\tau}$ を MATCNW の中で記憶
+しておく. $\tau$ は時間ステップを表す.
+これは, 計算開始時には $T_c$ と $Sn$ の初期値から求められるので, 新たな
+予報変数にはならない.
+
+\subsection{キャノピー上水分の予報}
+
+キャノピー上水分の予報方程式は, 液体と固体のそれぞれについて, 以下で与え
+られる.
+\begin{eqnarray}
+ \rho_w \frac{w_{cl}^{\tau+1} - w_{cl}^{\tau}}{\Delta t_L}
+  &=& P_{Il} - E_l - D_l + M_c \\
+ \rho_w \frac{w_{ci}^{\tau+1} - w_{ci}^{\tau}}{\Delta t_L}
+  &=& P_{Ii} - E_i - D_i - M_c
+\end{eqnarray}
+$P_{Il}$, $P_{Ii}$ は, それぞれ液体と固体の降水遮断量,
+$E_l$, $E_i$ は蒸発(昇華)量,
+$D_l$, $D_i$ は滴下量,
+$M_c$ は融解量である.
+ここで, 更新前の値 $w_{cl}^{\tau}$, $w_{ci}^{\tau}$ は, 更新前の
+$A_{Snc}^{\tau}$ を用いて, 以下により定義されることに注意されたい.
+\begin{eqnarray}
+ w_{cl}^{\tau} &=& w_c^{\tau} ( 1 - A_{Snc}^{\tau}) \\
+ w_{ci}^{\tau} &=& w_c^{\tau} A_{Snc}^{\tau}
+\end{eqnarray}
+
+\subsubsection{キャノピー上水分の蒸発(昇華)}
+
+まず, 蒸発(昇華)量を差し引いて, キャノピー上水分量を部分的に更新する.
+蒸発(昇華)量は, フラックス計算部において求まっている.
+\begin{eqnarray}
+ w_{cl}^* &=& w_{cl}^{\tau} - E_l \Delta t_L / \rho_w \\
+ w_{ci}^* &=& w_{ci}^{\tau} - E_i \Delta t_L / \rho_w
+\end{eqnarray}
+\begin{eqnarray}
+ E_l &=& Et_{(1,3)} \\
+ E_i &=& Et_{(2,3)}
+\end{eqnarray}
+もしもこのときに $w_{cl}$ もしくは $w_{ci}$ の一方が負になった場合, 値が
+0 に戻るまでもう一方から補填し, このとき生じたことになる融解量(凍結の場
+合は負の値)を $M_c$ に入れておく.
+
+\subsubsection{キャノピーによる降水の遮断}
+
+降水の遮断と滴下は, 対流性降水の降水域とそうでない場所を分けて考える. 対
+流性降水域の面積率 $A_c$ は一律に仮定する (標準では 0.1). 層状性降水は一
+様と仮定する.
+\begin{eqnarray}
+ P_{Il}^{c}  &=& f_{int} ( Pr_c / A_c + Pr_l ) \\
+ P_{Il}^{nc} &=& f_{int} Pr_l \\
+ P_{Ii}^{c}  &=& f_{int} ( P_{Snc} / A_c + P_{Snl} ) \\
+ P_{Ii}^{nc} &=& f_{int} P_{Snl}
+\end{eqnarray}
+
+$P_{Il}^{c}$, $P_{Ii}^{c}$ は対流性降水域の遮断量, $P_{Il}^{nc}$,
+$P_{Ii}^{nc}$ はそうでない場所の遮断量を表す.
+$f_{int}$ は遮断効率で, 簡単に
+\begin{equation}
+ f_{int} = \left\{
+\begin{array}{ll}
+ LAI & (LAI < 1 \mbox{のとき})\\
+ 1   & (LAI \geq 1 \mbox{のとき})
+\end{array}
+\right.
+\end{equation}
+で与える.
+
+遮断降水量を加えて, キャノピー上水分量をさらに部分的に更新する.
+\begin{eqnarray}
+ w_{cl}^{c*} &=& w_{cl}^*  + P_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc*}&=& w_{cl}^*  + P_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c*} &=& w_{ci}^*  + P_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc*}&=& w_{ci}^*  + P_{Ii}^{nc} \Delta t_L / \rho_w
+\end{eqnarray}
+
+\subsubsection{キャノピー上水分の滴下}
+
+滴下量は, キャノピー上水分が容量を越えることによる滴下と, 重力による自然
+滴下を考慮する.
+\begin{eqnarray}
+ D_l^c    & = & \max( w_{cl}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{cl}^{c*}) \\
+ D_l^{nc} & = & \max( w_{cl}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{cl}^{nc*}) \\
+ D_i^c    & = & \max( w_{ci}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{ci}^{c*}) \\
+ D_i^{nc} & = & \max( w_{ci}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{ci}^{nc*})
+\end{eqnarray}
+キャノピー上水分容量 $w_{c,cap}$ は, 単位葉面積あたりの水分容量
+$w_{c\max}$ と LAI から,
+\begin{eqnarray}
+ W_{c,cap} = W_{c\max} LAI
+\end{eqnarray}
+とする.
+$W_{c\max}$ は, 標準では 0.2mm であり, 液体と固体に対して同じ値を用いる.
+
+重力による自然滴下 $D_g$ は, Rutter et al.(1975) にならい,
+\begin{eqnarray}
+ D_g(w_c) = D_1 \exp(D_2 w_c)
+\end{eqnarray}
+とする. 標準では, $D_1$=1.14$\times$10$^{-11}$,
+$D_2$=3.7$\times$10$^{3}$ であり, 液体と固体に対して同じ値を用いる.
+
+滴下量を差し引いて値を更新する.
+\begin{eqnarray}
+ w_{cl}^{c**} &=& w_{cl}^{c*}  - D_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc**}&=& w_{cl}^{nc*} - D_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c**} &=& w_{ci}^{c*}  - D_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc**}&=& w_{ci}^{nc*} - D_{Ii}^{nc} \Delta t_L / \rho_w
+\end{eqnarray}
+
+\subsubsection{キャノピー上水分量の更新と融解}
+
+さらに対流性降水域とそうでない場所の平均を取れば, 更新されたキャノピー上
+水分量が得られる.
+\begin{eqnarray}
+ w_{cl}^{**} &=& A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
+ w_{ci}^{**} &=& A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
+ w_c^{\tau+1} &=& w_{cl}^{**} + w_{ci}^{**}
+\end{eqnarray}
+
+ただし, 凍結面積率 $A_{Snc}$ の更新を考慮すると,
+\begin{eqnarray}
+ w_{cl}^{\tau+1} &=& w_{c}^{\tau+1} (1-A_{Snc}^{\tau+1}) \\
+ w_{ci}^{\tau+1} &=& w_{c}^{\tau+1} A_{Snc}^{\tau+1}
+\end{eqnarray}
+であるから, 融解量 $M_c$ は以下のように診断される.
+\begin{eqnarray}
+ M_c = - \rho_w ( w_{ci}^{\tau+1} - w_{ci}^{**} ) / \Delta t_L
+\end{eqnarray}
+ただし, 蒸発の際に生じた分がある場合にはそれを加える.
+
+ここで, 融解の潜熱によりキャノピーの温度を変化させるべきであるが, キャノ
+ピーの熱容量を無視しているため, それは不可能である. それではまわりの大気
+の温度を変化させるのがよいが, 陸面積分部の計算で閉じたいと思えばそれも不
+可能である. 都合, 系のエネルギーを保存するために, 融解の潜熱は土壌(また
+は積雪)への熱フラックスとして与える.
+
+\subsection{土壌, 積雪, 流出過程へ与えられるフラックス}
+
+キャノピーによる遮断を経て積雪もしくは流出過程に与えられる水フラックス
+$F_w$は, 対流性降水域とそれ以外の場所, また液体と固体のそれぞれについて,
+\begin{eqnarray}
+ F_{wl}^{c} &=& (1-f_{int})( Pr_c / A_c + Pr_l ) + D_{l}^{c} \\
+ F_{wl}^{nc} &=&(1-f_{int}) Pr_l + D_{l}^{nc} \\
+ F_{wi}^{c} &=& (1-f_{int})( P_{Snc} / A_c + P_{Snl} ) + D_{i}^{c} \\
+ F_{wi}^{nc} &=&(1-f_{int}) P_{Snl} + D_{i}^{nc}
+\end{eqnarray}
+
+流出の計算に使うために対流性降雨と層状性降雨は分けて, 降雪に関してはその
+必要が無いので一つにまとめて与える.
+\begin{eqnarray}
+ Pr_c^* &=& Ac ( F_{wl}^{c} - F_{wl}^{nc} ) \\
+ Pr_l^* &=& F_{wl}^{nc} \\
+ P_{Sn}^* &=& A_c F_{wl}^{c} + (1-A_c) F_{wl}^{nc}
+\end{eqnarray}
+$Pr_c^*$, $Pr_l^*$, $P_{Sn}^*$ は, それぞれキャノピーによる遮断を経た対
+流性降水量, 層状性降水量, 降雪量である.
+
+また, 土壌または積雪へ与えられるエネルギーフラックス補正分は,
+\begin{equation}
+ \Delta F_{c,conv} = - l_m M_c
+\end{equation}
+である. $l_m$ は融解の潜熱である.

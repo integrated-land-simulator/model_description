@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MIROC-DOC matrof</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="github-markdown.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+
+<link rel="stylesheet" href="github.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    menuSettings: {locale: "ja"},
+    extensions: ["tex2jax.js", "MathMenu.js", "MathZoom.js"],
+    TeX: {
+      extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js"],
+      noErrors: {disabled: true},
+      noUndefined: {disabled: true}
+    },
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [["$","$"] ],
+      displayMath: [["$$","$$"]],
+      processEscapes: true
+    }
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MIROC-DOC matrof</h1>
+</header>
+<h1 id="spillover-sub-model-matrof">Spillover sub-model MATROF</h1>
+<p>Surface runoff and groundwater runoff are calculated using a simplified version of TOPMODEL (Beven and Kirkby, 1979).</p>
+<h2 id="overview-of-topmodel">Overview of TOPMODEL</h2>
+<p>In the TOPMODEL, we consider the horizontal distribution of groundwater level along the slope in the basin. It is assumed that the groundwater flow down a slope is balanced with the total recharge rate of the groundwater recharge rate at the slope above the point (quasi-stationary assumption). Then, the lower the slope is, the larger the groundwater flow should be. Based on another assumption, which will be discussed later, it is assumed that the shallow groundwater surface is necessary for the groundwater flow to be high. Thus, the distribution of shallow groundwater level is derived for the lower slopes. When the average groundwater level is shallower than a certain level, the groundwater level rises to the ground below a certain point of the slope and forms a saturated area. Thus, TOPMODEL is characterized by the fact that the concepts of mean groundwater level, saturated area, and velocity of groundwater flow, which are important for the estimation of runoff, are physically consistent with each other.</p>
+<p>In the TOPMODEL, three main assumptions are made as follows</p>
+<p>The saturated hydraulic conductivity of soil decays exponentially with depth.</p>
+<p>The slope of the groundwater surface is nearly equal to the slope slope locally.</p>
+<p>The groundwater flow down a slope corresponds to the accumulated groundwater recharge rate above the point of slope.</p>
+<p>In the following, the use of symbols follows the conventions of TOPMODEL (Sivapalan et al., 1987 ; Stieglitz et al., 1997).</p>
+<p>The assumption 1 can be written as</p>
+<p><span class="math display"><em>K</em><sub><em>s</em></sub>(<em>z</em>) = <em>K</em><sub>0</sub>exp ( − <em>f</em><em>z</em>)</span></p>
+<p><span class="math inline"><em>K</em><sub><em>s</em></sub>(<em>z</em>)</span> is the saturated hydraulic conductivity of soil at the depth <span class="math inline"><em>z</em></span>, <span class="math inline"><em>K</em><sub>0</sub></span> is the saturated hydraulic conductivity at the ground surface, and <span class="math inline"><em>f</em></span> is the attenuation coefficient.</p>
+<p>If the depth of the groundwater surface at a certain point (<span class="math inline"><em>i</em></span>) is defined as <span class="math inline"><em>z</em><sub><em>i</em></sub></span>, then the groundwater flux down slope at that point (<span class="math inline"><em>q</em><sub><em>i</em></sub></span>) is expressed as</p>
+<p><span class="math display">$$
+ q_i = \int_{z_i}^Z K_s(z) dz \cdot \tan\beta
+   = \frac{K_0}{f}  \tan\beta [\exp(-f z_i) - \exp(-f Z)]
+$$</span></p>
+<p><span class="math inline"><em>β</em></span> is the slope slope slope, using assumption 2. Although <span class="math inline"><em>Z</em></span> is the depth of the impermeable surface, the term <span class="math inline"><em>Z</em></span> is usually assumed to be deeper than that of <span class="math inline">1/<em>f</em></span>, and the term <span class="math inline">exp ( − <em>f</em><em>Z</em>)</span> is omitted. The slope directional soil water flux in the unsaturated zone above the groundwater surface is neglected because it is small.</p>
+<p>Assuming that the groundwater recharge rate is uniformly set to the <span class="math inline"><em>R</em></span>, Assumption 3 can be expressed as follows</p>
+<p><span class="math display">$$
+ a R = \frac{K_0}{f} \tan\beta \exp(-f z_i)
+$$</span></p>
+<p>Here, <span class="math inline"><em>a</em></span> is the total upstream area (per unit contour length at the point <span class="math inline"><em>i</em></span>) relative to the point <span class="math inline"><em>i</em></span>.</p>
+<p>Solving this for <span class="math inline"><em>z</em><sub><em>i</em></sub></span> yields the following.</p>
+<p><span class="math display">$$
+ z_i = -\frac{1}{f} \ln \left( \frac{faR}{K_0 \tan \beta}\right)
+$$</span></p>
+<p>The average groundwater depth in the region (<span class="math inline"><em>A</em></span>) is the depth of the groundwater table (<span class="math inline">$\overline{z}$</span>),</p>
+<p><span class="math display">$$
+   \overline{z} = \frac1{A}\int_{A} z_i dA
+  = - \Lambda - \frac1{f} \ln R
+$$</span></p>
+<p><span class="math display">$$
+ \Lambda \equiv
+  \frac1{A}\int_{A} \ln \left( \frac{fa}{K_0 \tan \beta}\right) dA
+$$</span></p>
+<p>Thus, the recharge rate (<span class="math inline"><em>R</em></span>) as a function of mean groundwater depth (<span class="math inline">$\overline{z}$</span>) is expressed as</p>
+<p><span class="math display">$$
+ R = \exp (-f \overline{z} -\Lambda)
+$$</span></p>
+<p>According to Assumption 3, this is the amount of groundwater discharged from the area (<span class="math inline"><em>A</em></span>).</p>
+<p>Substituting <span class="math inline"><em>R</em></span> into (4) gives the following relationship between <span class="math inline"><em>z</em><sub><em>i</em></sub></span> and <span class="math inline">$\overline{z}$</span>.</p>
+<p><span class="math display">$$
+ z_i = \overline{z} - \frac{1}{f} \left[
+\ln \left( \frac{fa}{K_0 \tan \beta}\right) - \Lambda
+\right]
+$$</span></p>
+<p>The region satisfying the <span class="math inline"><em>z</em><sub><em>i</em></sub> ≤ 0</span> is the surface saturation region.</p>
+<h2 id="application-of-topmodel-under-the-assumption-of-simplified-terrain">Application of TOPMODEL under the assumption of simplified terrain</h2>
+<p>When TOPMODEL is used, detailed topographical data of the target area are usually required, but here we estimate roughly the average shape of the slopes in the grid based on the data of average slope and standard deviation of the elevation of the grid (this method is currently provisional and requires further study).</p>
+<p>The topography of the grid is represented by the slope of <span class="math inline"><em>β</em><sub><em>s</em></sub></span> with a uniform slope of <span class="math inline"><em>β</em><sub><em>s</em></sub></span> and the distance from the ridge to the valley of <span class="math inline"><em>L</em><sub><em>s</em></sub></span>.</p>
+<p><span class="math inline"><em>L</em><sub><em>s</em></sub></span> is estimated using the standard deviation of elevation (<span class="math inline"><em>σ</em><sub><em>z</em></sub></span>) as follows.</p>
+<p><span class="math display">$$
+ L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
+$$</span></p>
+<p><span class="math inline">$2\sqrt{3}\sigma_z$</span> is the difference between the elevation of the ridge and the valley in the serrated terrain with the standard deviation of the elevation of the <span class="math inline"><em>σ</em><sub><em>z</em></sub></span>.</p>
+<p>Taking the <span class="math inline"><em>x</em></span> axis from the ridge to the valley on the horizontal plane. Since the total upstream area of the curve at the <span class="math inline"><em>x</em></span> is <span class="math inline"><em>x</em></span>, (4) becomes the following.</p>
+<p><span class="math display">$$
+ z(x) = - \frac{1}{f} \ln \left( \frac{fxR}{K_0 \tan \beta_s}\right)
+$$</span></p>
+<p>Based on this, the mean groundwater surface is calculated from (5) as</p>
+<p><span class="math display">$$
+ \overline{z} = \frac 1{L_s}\int_0^{L_s} z(x) dx
+ = - \frac1{f}\left[
+ \ln \left( \frac{f L_s R}{K_0 \tan\beta_s}\right) -1
+\right]
+$$</span></p>
+<p>Groundwater recharge rate is from (7)</p>
+<p><span class="math display">$$
+ R = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z})
+$$</span></p>
+<p>The relationship between groundwater level and mean groundwater level in <span class="math inline"><em>x</em></span> is from (8)</p>
+<p><span class="math display">$$
+ z(x) = \overline{z} - \frac{1}{f}\left(
+\ln \frac{x}{L_s} + 1
+\right)
+$$</span></p>
+<p>The result is Solving for <span class="math inline"><em>z</em>(<em>x</em>) ≤ 0</span> with respect to <span class="math inline"><em>x</em></span> yields the following.</p>
+<p><span class="math display"><em>x</em> ≥ <em>x</em><sub>0</sub></span></p>
+<p><span class="math display">$$
+x_0 = L_s \exp(f\overline{z}-1)
+$$</span></p>
+<p>Therefore, the area factor of the saturation region is</p>
+<p><span class="math display">$$
+ A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1)
+$$</span></p>
+<p>In the case of <span class="math inline"><em>A</em><sub><em>s</em><em>a</em><em>t</em></sub> ≥ 0</span> and <span class="math inline">$\overline{z} &gt; 1/f$</span>, the saturation region does not exist. However, for the <span class="math inline"><em>A</em><sub><em>s</em><em>a</em><em>t</em></sub> ≥ 0</span> and <span class="math inline">$\overline{z} &gt; 1/f$</span>, there is no saturation region.</p>
+<h2 id="calculation-of-flow-rate">Calculation of flow rate</h2>
+<p>Four discharge mechanisms are considered and the total amount of discharge by each mechanism is defined as the total amount of discharge from the grid.</p>
+<p><span class="math display"><em>R</em><em>o</em> = <em>R</em><em>o</em><sub><em>s</em></sub> + <em>R</em><em>o</em><sub><em>i</em></sub> + <em>R</em><em>o</em><sub><em>o</em></sub> + <em>R</em><em>o</em><sub><em>b</em></sub></span></p>
+<p><span class="math inline"><em>R</em><em>o</em><sub><em>s</em></sub></span> is a saturation excess runoff (Dunne runoff), <span class="math inline"><em>R</em><em>o</em><sub><em>i</em></sub></span> is an infiltration excess runoff (Horton runoff), <span class="math inline"><em>R</em><em>o</em><sub><em>o</em></sub></span> is an overflow of the first layer of soil, and the above is the total amount of runoff from the grid by each mechanism. Classified. <span class="math inline"><em>R</em><em>o</em><sub><em>b</em></sub></span> is a groundwater runoff .</p>
+<h3 id="estimates-of-mean-groundwater-depth.">Estimates of Mean Groundwater Depth.</h3>
+<p>Assuming that soil moisture content starts from the lowest layer of soil and that the layer that becomes unsaturated for the first time is the <span class="math inline"><em>k</em><sub><em>W</em><em>T</em></sub></span>th layer, the average depth of the groundwater table (<span class="math inline">$\overline{z}$</span>) is estimated as follows</p>
+<p><span class="math display">$$
+ \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
+$$</span></p>
+<p>This corresponds to the assumption that the moisture potential at the top of the unsaturated layer is set to <span class="math inline"><em>ψ</em><sub><em>k</em><sub><em>W</em><em>T</em></sub></sub></span>, under which the distribution of soil moisture is considered to be in equilibrium (i.e., the equilibrium condition between gravity and capillary force).</p>
+<p>If the <span class="math inline">$\overline{z} &gt; z_{g(k_{WT}+1/2)}$</span> is the lowest level, no groundwater surface is assumed to exist in the <span class="math inline"><em>k</em><sub><em>W</em><em>T</em></sub></span> region. If the <span class="math inline"><em>k</em><sub><em>W</em><em>T</em></sub></span> is not the bottom layer, the uppermost layer of the saturated groundwater layer (the uppermost layer) is assumed to be the <span class="math inline"><em>k</em><sub><em>W</em><em>T</em></sub></span> and the above equation is applied to the lower layer.</p>
+<p>In the case where the frozen ground surface exists in the middle of the soil, the depth of the groundwater surface is estimated above the frozen ground surface.</p>
+<h3 id="calculation-of-groundwater-runoff">Calculation of Groundwater Runoff</h3>
+<p>Since the groundwater discharge is equal to the recharge rate of (12) under quasi-steady assumptions, we can assume that the groundwater recharge rate is the same as that of (12),</p>
+<p><span class="math display">$$
+ Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z})
+$$</span></p>
+<p>(1). However, in the case of a frozen surface under the ground surface, see the case where the term <span class="math inline">exp ( − <em>f</em><em>Z</em>)</span> in (2) is not omitted,</p>
+<p><span class="math display">$$
+ Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
+  [ \exp(1-f \overline{z}) - \exp(1-f z_f) ]
+$$</span></p>
+<p>The depth of the frozen ground surface is defined as <span class="math inline"><em>z</em><sub><em>f</em></sub></span> is the depth of the frozen ground. In this case, the other formulas of the TOPMODEL system should be different, but we do not change them for the sake of simplicity.</p>
+<p>If there is an antifreeze layer beneath the frozen ground surface and a groundwater surface exists there, the runoff of groundwater is calculated and added in the same way.</p>
+<p>The groundwater runoff is later removed from the <span class="math inline"><em>k</em><sub><em>W</em><em>T</em></sub></span> layer.</p>
+<p><span class="math display"><em>R</em><em>o</em><sub>(<em>k</em><sub><em>W</em><em>T</em></sub>)</sub> = <em>R</em><em>o</em><sub><em>b</em></sub></span></p>
+<p><span class="math inline"><em>R</em><em>o</em><sub>(<em>k</em>)</sub></span> represents the runoff flux from the soil in the <span class="math inline"><em>k</em></span>th layer.</p>
+<h3 id="calculation-of-surface-runoff.">Calculation of Surface Runoff.</h3>
+<p>All precipitation that falls in the saturated area of the earth’s surface will runoff intact (saturation excess runoff).</p>
+<p><span class="math display"><em>R</em><em>o</em><sub><em>s</em></sub> = (<em>P</em><em>r</em><sub><em>c</em></sub><sup> * *</sup> + <em>P</em><em>r</em><sub><em>l</em></sub><sup> * *</sup>)<em>A</em><sub><em>s</em><em>a</em><em>t</em></sub></span></p>
+<p>The area fraction of saturated area <span class="math inline"><em>A</em><sub><em>s</em><em>a</em><em>t</em></sub></span> is given by (16). Here, the correlation between precipitation distribution on the subgrid and the topography is ignored.</p>
+<p>The precipitation that falls in the unsaturated area is infiltrated excess runoff (infiltration excess runoff). The soil infiltration capacity is given in terms of the saturated hydraulic conductivity of the first layer of soil for simplicity. Convective precipitation is assumed to be localized, and the area fraction of the precipitation area (<span class="math inline"><em>A</em><sub><em>c</em></sub></span>) is assumed to be uniform (the standard value is 0.1). Stratified precipitation is assumed to be uniform.</p>
+<p><span class="math display">$$
+ Ro_i^c = \max( Pr_c^{**}/A_c + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat}) \\
+ Ro_i^{nc} = \max( Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
+$$</span></p>
+<p><span class="math display"><em>R</em><em>o</em><sub><em>i</em></sub> = <em>A</em><sub><em>c</em></sub><em>R</em><em>o</em><sub><em>i</em></sub><sup><em>c</em></sup> + (1 − <em>A</em><sub><em>c</em></sub>)<em>R</em><em>o</em><sub><em>i</em></sub><sup><em>n</em><em>c</em></sup></span></p>
+<p><span class="math inline"><em>R</em><em>o</em><sub><em>i</em></sub><sup><em>c</em></sup></span> and <span class="math inline"><em>R</em><em>o</em><sub><em>i</em></sub><sup><em>n</em><em>c</em></sup></span> are <span class="math inline"><em>R</em><em>o</em><sub><em>i</em></sub></span> for convective and non-convective precipitation areas, respectively, and <span class="math inline"><em>K</em><sub><em>s</em>(1)</sub></span> is the saturated hydraulic conductivity of the first soil layer.</p>
+<p>The overflow of the first layer of soil allows for a small amount of waterlogging <span class="math inline"><em>w</em><sub><em>s</em><em>t</em><em>r</em></sub></span> (1 mm by default),</p>
+<p><span class="math display"><em>R</em><em>o</em><sub><em>o</em></sub> = max (<em>w</em><sub>(1)</sub> − <em>w</em><sub><em>s</em><em>a</em><em>t</em>(1)</sub> − <em>w</em><sub><em>s</em><em>t</em><em>r</em></sub>, 0)<em>ρ</em><sub><em>w</em></sub><em>Δ</em><em>z</em><sub><em>g</em>(1)</sub>/<em>Δ</em><em>t</em><sub><em>L</em></sub></span></p>
+<p>This amount will be subtracted from the first layer of soil later. This amount will later be subtracted from the first layer of soil, and is therefore included in the runoff from the first layer.</p>
+<p><span class="math display"><em>R</em><em>o</em><sub>(1)</sub> = <em>R</em><em>o</em><sub>(1)</sub> + <em>R</em><em>o</em><sub><em>o</em></sub></span></p>
+<h2 id="water-flux-to-the-soil">Water flux to the soil</h2>
+<p>The water fluxes fed to the soil through the runoff process are as follows.</p>
+<p><span class="math display"><em>P</em><em>r</em><sup> *  * *</sup> = <em>P</em><em>r</em><sub><em>c</em></sub><sup> * *</sup> + <em>P</em><em>r</em><sub><em>l</em></sub><sup> * *</sup> − <em>R</em><em>o</em><sub><em>s</em></sub> − <em>R</em><em>o</em><sub><em>i</em></sub></span></p>
+<p>Translated with www.DeepL.com/Translator (free version)</p>
+</body>
+</html>

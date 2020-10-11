@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MIROC-DOC intro</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="github-markdown.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+
+<link rel="stylesheet" href="github.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    menuSettings: {locale: "ja"},
+    extensions: ["tex2jax.js", "MathMenu.js", "MathZoom.js"],
+    TeX: {
+      extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js"],
+      noErrors: {disabled: true},
+      noUndefined: {disabled: true}
+    },
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [["$","$"] ],
+      displayMath: [["$$","$$"]],
+      processEscapes: true
+    }
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MIROC-DOC intro</h1>
+</header>
+<h1 id="introduction.">Introduction.</h1>
+<p>Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land-surface process parameterization that has been developed to introduce the global climate model CCSR/NIES AGCM and other models. MATSIRO is mainly designed to be used for long-term climate calculations for integration from one month to several hundred years, coupled with atmospheric models with grid scales of several 10 km or more. In the development of the system, we paid attention to the fact that the processes to be taken into account in the water-energy cycle of the atmospheric land system are represented as adequately as possible and are modeled as concisely as possible so that the results can be easily interpreted. The development of MATSIRO was based on the CCSR/NIES AGCM5.4g land surface sub-model, combined with the vegetation canopy parameterization by Watanabe (1994), and at the same time improved the processes of snow accumulation and runoff. Subsequently, the AGCM was modified to correspond to the current AGCM5.6 through the modification of the AGCM structure, including the use of a flux coupler and parallelization. As for the physiological processes of the vegetation, the Farquhar-type photosynthesis scheme, which was initially used as a Jarvis-type function for stomatal resistance, has been transferred from the SiB2 code to the Farquhar-type photosynthesis scheme, which is now used as a quasi-standard scheme due to recent advances in climate-ecosystem interaction research.</p>
+<h1 id="composition-of-matsiro">Composition of MATSIRO</h1>
+<h2 id="matsiro-overall">MATSIRO Overall</h2>
+<h3 id="overall-structure.">Overall Structure.</h3>
+<p>MATSIRO consists of ,</p>
+<ul>
+<li><p>Flux Calculation Unit (LNDFLX)</p></li>
+<li><p>Land Surface Integrator (LNDSTP)</p></li>
+</ul>
+<p>This is similar to the standard land process routine of AGCM5.6. This is the same as the standard land process routine of AGCM5.6.</p>
+<p>The flux calculator is called in the time step of the atmospheric model as part of the physical process of the atmospheric model. In contrast, the land surface integrator is called from the coupled model main routine as the land surface model equivalent to the atmospheric and oceanic models. The time step is set independently from the atmospheric model.</p>
+<p>The data exchange between the fluxing section and the land surface integrating section is carried out through the flux coupler. The flux calculation section treats snow-covered and snow-free surfaces separately and obtains surface fluxes for each of them. The fluxes are weighted and averaged according to the ratio of the snow-covered and snow-free surfaces, and the fluxes are passed through the flux coupler to the land surface integrating unit. At the same time, the temporal averaging operation is also carried out.</p>
+<p>Programmatically, the driver program (matdrv.F) contains an entry for the flux calculation part, LNDFLX, and an entry for the land surface integration part, LNDSTP, from which the subroutines of the necessary processes are called. LNDFLX and LNDSTP share the internal variables of MATSIRO.</p>
+<h3 id="internal-variables-of-matsiro">Internal variables of MATSIRO</h3>
+<p>MATSIRO has the following internal variables.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>T</em><sub><em>s</em>(<em>l</em>)</sub></span></td>
+<td><span class="math inline">(<em>l</em> = 1, 2)</span></td>
+<td>surface temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>T</em><sub><em>c</em>(<em>l</em>)</sub></span></td>
+<td><span class="math inline">(<em>l</em> = 1, 2)</span></td>
+<td>Canopy temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>T</em><sub><em>g</em>(<em>k</em>)</sub></span></td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub>)</span></td>
+<td>Soil temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td>$w_{(k)} $</td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub>)</span></td>
+<td>soil moisture content</td>
+<td>[m<span class="math inline"><sup>3</sup></span>/m<span class="math inline"><sup>3</sup></span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>w</em><sub><em>i</em>(<em>k</em>)</sub></span></td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub>)</span></td>
+<td>Frozen soil moisture content</td>
+<td>[m<span class="math inline"><sup>3</sup></span>/m<span class="math inline"><sup>3</sup></span>]</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>w</em><sub><em>c</em></sub></span></td>
+<td></td>
+<td>Water content in the canopy</td>
+<td>\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>amount of snowfall</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub></span></td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>S</em><em>n</em></sub>)</span></td>
+<td>snow temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>α</em><sub><em>S</em><em>n</em>(<em>b</em>)</sub></span></td>
+<td><span class="math inline">(<em>b</em> = 1, 2, 3)</span></td>
+<td>snow albedo</td>
+<td>state of affairs in the state of affairs of others [<span class="math inline">−</span>]</td>
+</tr>
+</tbody>
+</table>
+<p>where <span class="math inline"><em>l</em> = 1, 2</span> are snow-free and snow-covered areas, respectively, <span class="math inline"><em>k</em></span> is the vertical layer number of soil and snow cover (top layer is 1 and increases downward), <span class="math inline"><em>K</em><sub><em>g</em></sub></span> is the number of soil layers, <span class="math inline"><em>K</em><sub><em>S</em><em>n</em></sub></span> is the number of snow-covered layers, <span class="math inline"><em>b</em> = 1, 2, 3</span> are It represents the visible, near-infrared and infrared wavelengths.</p>
+<p>In standard practice, there are five layers of soil, with the thicknesses of each layer being 5cm, 20cm, 75cm, 1m, and 2m from the top. The definition points of soil temperature, soil moisture and frozen soil moisture are the same.</p>
+<p>The number of layers of the snowpack is variable, and the number of layers increases as the snowpack increases. The standard number of layers is three at most.</p>
+<p>The surface temperature and the canopy temperature are so-called skin temperature, which have no heat capacity, but are formally predictive variables (the current calculation method uses the stability evaluated in the previous step, and therefore depends on the value of the previous step. If we evaluate the stability and so on with the updated value and repeat the calculation until the convergence is achieved, then we have a complete diagnostic variable that does not depend on the value of the previous step.) The other variables are all forecast variables that require the values of the previous step.</p>
+<p>The surface temperature and the canopy temperature are updated in the flux calculation section. The other variables (the original forecast variables) are all updated in the land surface integration part.</p>
+<h2 id="flux-calculation-section">Flux calculation section</h2>
+<h3 id="structure-of-the-flux-calculation-section">Structure of the flux calculation section</h3>
+<p>The flux calculation section proceeds as follows.</p>
+<ol type="1">
+<li><p>receive input variables from the coupler.</p></li>
+<li><p>diagnose the snow area ratio of the subgrid.</p></li>
+</ol>
+<p>For the snow-free area (<span class="math inline"><em>l</em> = 1</span>) and the snow-covered area (<span class="math inline"><em>l</em> = 2</span>), subroutines are called to calculate the fluxes and to update the surface and canopy temperatures. Concretely, the following subroutines are called in sequence.</p>
+<pre><code> MATLAI vegetation shape parameter (LAI, vegetation height)
+
+ 2. calculation of MATRAD radiation parameters (albedo, vegetation permeability, etc.)
+
+ MATBLK calculation of turbulent parameters (bulk coefficient) (momentum and heat)
+
+ 4. MATRST calculation of stomatal resistance, bare ground evaporation resistance, etc.
+
+ 5. MATBLQ calculation of turbulent parameters (bulk coefficient) (water vapor)
+
+ 6. calculation of MATFLX surface flux
+
+ 7. calculation of MATGHC ground heat transfer
+
+ 8. MATSHB Deciphering the energy balance of the ground surface and canopy</code></pre>
+<ol start="4" type="1">
+<li>pass output variables to the coupler.</li>
+</ol>
+<p>Register and add history output variables. 5.</p>
+<ol type="a">
+<li>to (e) are classified into boundary value submodels and the programs are summarized in matbnd.</li>
+</ol>
+<p>(f)-(h) are classified as surface submodels, and the programs are summarized in matsfc.</p>
+<p>The photosynthesis scheme MATPHT is called from (d). The photosynthesis scheme is summarized in matpht.</p>
+<h3 id="the-input-variables-in-the-flux-calculation-section.">The input variables in the flux calculation section.</h3>
+<p>The following variables are entered into the flux calculation section.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>u</em><sub><em>a</em></sub></span></td>
+<td></td>
+<td>Atmospheric 1st layer east-west wind</td>
+<td>"m/score</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>v</em><sub><em>a</em></sub></span></td>
+<td></td>
+<td>First layer of atmospheric north-south wind</td>
+<td>"m/score</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>T</em><sub><em>a</em></sub></span></td>
+<td></td>
+<td>Atmospheric 1st layer temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>q</em><sub><em>a</em></sub></span></td>
+<td></td>
+<td>Specific humidity in the first layer of the atmosphere</td>
+<td>[kg/kg\]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>P</em><sub><em>a</em></sub></span></td>
+<td></td>
+<td>Atmospheric 1st layer pressure</td>
+<td>state of affairs of the city of Los Angeles[Pahren]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>P</em><sub><em>s</em></sub></span></td>
+<td></td>
+<td>surface pressure</td>
+<td>state of affairs of the city of Los Angeles[Pahren]</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>R</em><sub>(<em>d</em>, <em>b</em>)</sub><sup>↓</sup></span></td>
+<td><span class="math inline">(<em>d</em> = 1, 2; <em>b</em> = 1, 2, 3)</span></td>
+<td>Surface downward radiation flux</td>
+<td>/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">cos <em>ζ</em></span></td>
+<td></td>
+<td>cosine of the solar zenith angle</td>
+<td>state of affairs of the company in the first place is in the form of the following.</td>
+</tr>
+</tbody>
+</table>
+<p>where <span class="math inline"><em>d</em> = 1, 2</span> represent the direct line and scattering, respectively, and <span class="math inline"><em>b</em> = 1, 2, 3</span> represent the visible, near-infrared, and infrared spectral bands, respectively.</p>
+<h3 id="output-variables-in-the-flux-calculation-section">Output variables in the flux calculation section</h3>
+<p>The following variables are output from the flux calculation section.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>τ</em><sub><em>x</em></sub></span></td>
+<td></td>
+<td>surface-to-west wind stress</td>
+<td>/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>τ</em><sub><em>y</em></sub></span></td>
+<td></td>
+<td>surface-to-south wind stress</td>
+<td>/m$^2$45]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>H</em></span></td>
+<td></td>
+<td>surface sensible heat flux</td>
+<td>The\_Penny.com[W/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>E</em></span></td>
+<td></td>
+<td>Surface Water Vapor Flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>R</em><sub><em>S</em></sub><sup>↑</sup></span></td>
+<td></td>
+<td>Upward Bound Shortwave Radiation Flux</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>R</em><sub><em>L</em></sub><sup>↑</sup></span></td>
+<td></td>
+<td>Upward Bound Longwave Radiation Flux</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>α</em><sub><em>s</em>(<em>b</em>)</sub></span></td>
+<td><span class="math inline">(<em>b</em> = 1, 2, 3)</span></td>
+<td>surface albedo</td>
+<td>state of affairs of the world[<span class="math inline">−</span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>T</em><sub><em>s</em><em>R</em></sub></span></td>
+<td></td>
+<td>surface radiation temperature</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>F</em><sub><em>g</em>(1/2)</sub></span></td>
+<td></td>
+<td>Surface Heat Transfer Flux</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>F</em><sub><em>S</em><em>n</em>(1/2)</sub></span></td>
+<td></td>
+<td>Heat Transfer Flux for Snow Surface</td>
+<td>The\.com[W/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>E</em><em>t</em><sub>(<em>i</em>, <em>j</em>)</sub></span></td>
+<td><span class="math inline">(<em>i</em> = 1, 2; <em>j</em> = 1, 2, 3)</span></td>
+<td>Evapotranspiration components</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span></td>
+<td></td>
+<td>surface energy convergence</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>F</em><sub><em>r</em><em>o</em><em>o</em><em>t</em>(<em>k</em>)</sub></span></td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub>)</span></td>
+<td>Root sucking flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>L</em><em>A</em><em>I</em></span></td>
+<td></td>
+<td>leaf area index</td>
+<td>[m<span class="math inline"><sup>2</sup></span>/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>A</em><sub><em>S</em><em>n</em><em>c</em></sub></span></td>
+<td></td>
+<td>Canopy freezing area ratio</td>
+<td>shit…[<span class="math inline">−</span>]</td>
+</tr>
+</tbody>
+</table>
+<p>Here, <span class="math inline"><em>i</em> = 1, 2</span> in evapotranspiration represent liquid and solid, respectively, and <span class="math inline"><em>j</em> = 1, 2, 3</span> represent bare ground (forest floor) evaporation, evaporation and evaporation of water on the canopy, respectively. The other subscripts are the same as those in the previous section.</p>
+<h2 id="land-surface-integral-part">Land surface integral part</h2>
+<h3 id="composition-of-the-land-surface-integrator">Composition of the Land Surface Integrator</h3>
+<p>The land surface integration section proceeds as follows.</p>
+<ol type="1">
+<li>receive input variables from the coupler.</li>
+</ol>
+<p>The subroutines of each process are called and the land surface forecast variables are updated. Specifically, the following subroutines are called in sequence.</p>
+<pre><code> 1. calculation of the water balance of the MATCNW canopy</code></pre>
+<p>Calculation of MATSNW snowpack, snow temperature and snow albedo</p>
+<pre><code> 3. calculation of MATROF runoff
+
+ MATGND Calculation of soil temperature, soil moisture, and frozen ground</code></pre>
+<ol start="3" type="1">
+<li>pass output variables to the coupler.</li>
+</ol>
+<p>Register and add history output variables. 4.</p>
+<p>Each subroutine called from the main part of the land surface integrator consists of a submodel. The programs of each sub-model are organized in a single file. In concrete terms, each subroutine is described as follows</p>
+<ul>
+<li><p>MATCNW (matcnw.F) Canopy water balance sub-model</p></li>
+<li><p>MATSNW (matsnw.F) snow sub-model</p></li>
+<li><p>MATROF (matrof.F) Spillover sub-model</p></li>
+<li><p>MATGND (matgnd.F) Soil sub-model</p></li>
+</ul>
+<p>The submodels are basically executed in this order, but if necessary, subroutines may be called among the submodels in order to refer to the values of the parameters managed by other submodels. Subroutines within the above submodels may also be called by the fluxing part for the same purpose.</p>
+<h3 id="input-variables-in-the-land-surface-integration-section">Input variables in the land surface integration section</h3>
+<p>The following variables are entered into the land surface integrator.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>P</em><em>r</em><sub><em>c</em></sub></span></td>
+<td></td>
+<td>Convective rainfall flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>P</em><em>r</em><sub><em>l</em></sub></span></td>
+<td></td>
+<td>Layered Rainfall Flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>P</em><sub><em>S</em><em>n</em><em>c</em></sub></span></td>
+<td></td>
+<td>Convective snowfall flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>P</em><sub><em>S</em><em>n</em><em>l</em></sub></span></td>
+<td></td>
+<td>Layered Snowfall Flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>F</em><sub><em>g</em>(1/2)</sub></span></td>
+<td></td>
+<td>Surface Heat Transfer Flux</td>
+<td>"W/m<span class="math inline"><sup>2</sup></span>\</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>F</em><sub><em>S</em><em>n</em>(1/2)</sub></span></td>
+<td></td>
+<td>Heat Transfer Flux for Snow Surface</td>
+<td>/m$^2$8]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>E</em><em>t</em><sub>(<em>i</em>, <em>j</em>)</sub></span></td>
+<td><span class="math inline">(<em>i</em> = 1, 2; <em>j</em> = 1, 2, 3)</span></td>
+<td>Evapotranspiration components</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span></td>
+<td></td>
+<td>surface energy convergence</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>F</em><sub><em>r</em><em>o</em><em>o</em><em>t</em>(<em>k</em>)</sub></span></td>
+<td><span class="math inline">(<em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub>)</span></td>
+<td>Root sucking flux</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s\}]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>L</em><em>A</em><em>I</em></span></td>
+<td></td>
+<td>leaf area index</td>
+<td>state of affairs of the state [m<span class="math inline"><sup>2</sup></span>/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>A</em><sub><em>S</em><em>n</em><em>c</em></sub></span></td>
+<td></td>
+<td>Canopy freezing area ratio</td>
+<td>state of affairs in the state of affairs of the company [$-$0101]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="output-variables-of-the-land-surface-integration-section">Output variables of the land surface integration section</h3>
+<p>The land surface integrator outputs the following variables.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>R</em><em>o</em></span></td>
+<td></td>
+<td>runoff</td>
+<td>[kg/m<span class="math inline"><sup>2</sup></span>/s\blind}</td>
+</tr>
+</tbody>
+</table>
+<p>The runoff is used as an input variable for the river network model.</p>
+<h2 id="external-parameters.">External Parameters.</h2>
+<p>There are two types of external parameters for executing MATSIRO: one is the parameter values of each grid by the horizontal distribution (map), and the other is the parameter values for each land cover type or soil type by the table. Land cover type and soil type are one of the parameters given by the map, and each parameter given by the table is assigned to each grid. Namely,</p>
+<p><span class="math display"><em>ϕ</em>(<em>i</em>, <em>j</em>)</span> \.066} or .066.066.</p>
+<p>where <span class="math inline">(<em>i</em>, <em>j</em>)</span> are indices of the horizontal position of the grid, <span class="math inline"><em>I</em><sub><em>L</em></sub></span> is the land use type, and <span class="math inline"><em>I</em><sub><em>S</em></sub></span> is the soil type. where <span class="math inline">(<em>i</em>, <em>j</em>)</span> are the indexes of the horizontal position of the grid, <span class="math inline"><em>I</em><sub><em>L</em></sub></span> is the land use type, and <span class="math inline"><em>I</em><sub><em>S</em></sub></span> is the soil type.</p>
+<h3 id="external-parameters-given-by-the-map">External parameters given by the map</h3>
+<p>The types of external parameters given by the map are as follows.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+<th>Header4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>I</em><sub><em>L</em></sub></span></td>
+<td></td>
+<td>Land cover type</td>
+<td>constant</td>
+<td>\.com</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>I</em><sub><em>S</em></sub></span></td>
+<td></td>
+<td>Soil Type</td>
+<td>constant</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>L</em><em>A</em><em>I</em><sub>0</sub></span></td>
+<td></td>
+<td>Leaf Area Index (LAI)</td>
+<td>every month</td>
+<td>[m<span class="math inline"><sup>2</sup></span>/m<span class="math inline"><sup>2</sup></span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>α</em><sub>0(<em>b</em>)</sub></span></td>
+<td><span class="math inline">(<em>b</em> = 1, 2, 3)</span></td>
+<td>Ground surface (forest floor) albedo</td>
+<td>constant</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">tan <em>β</em><sub><em>s</em></sub></span></td>
+<td></td>
+<td>Tangent of the mean surface slope</td>
+<td>constant</td>
+<td>\.com</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>σ</em><sub><em>z</em></sub></span></td>
+<td></td>
+<td>elevation standard deviation</td>
+<td>constant</td>
+<td>\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="external-parameters-given-by-the-table-for-each-land-cover-type">External parameters given by the table for each land cover type</h3>
+<p>The external parameters given by the table for each land cover type are as follows</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>h</em><sub>0</sub></span></td>
+<td></td>
+<td>vegetation height</td>
+<td>\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>h</em><sub><em>B</em>0</sub></span></td>
+<td></td>
+<td>Height of the bottom of the canopy</td>
+<td>\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>r</em><sub><em>f</em>(<em>b</em>)</sub></span></td>
+<td>(<span class="math inline"><em>b</em></span>=1,2)</td>
+<td>Reflectivity of individual leaves</td>
+<td>\.com</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>t</em><sub><em>f</em>(<em>b</em>)</sub></span></td>
+<td>(<span class="math inline"><em>b</em></span>=1,2)</td>
+<td>Transmittance of individual leaves</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>f</em><sub><em>r</em><em>o</em><em>o</em><em>t</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Percentage of root presence</td>
+<td>\.com</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>c</em><sub><em>d</em></sub></span></td>
+<td></td>
+<td>Momentum exchange coefficient between the individual leaves and the atmosphere</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>c</em><sub><em>h</em></sub></span></td>
+<td></td>
+<td>Heat Exchange Coefficient between individual leaves and the atmosphere</td>
+<td>\.com</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>f</em><sub><em>V</em></sub></span></td>
+<td></td>
+<td>vegetation coverage</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>V</em><sub>max</sub></span></td>
+<td></td>
+<td>Rubisco Reaction Capacity</td>
+<td>"m/score</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>m</em></span></td>
+<td></td>
+<td><span class="math inline"><em>A</em><sub><em>n</em></sub></span>-<span class="math inline"><em>g</em><sub><em>s</em></sub></span> Slope of the relationship</td>
+<td>\.com</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>b</em></span></td>
+<td></td>
+<td><span class="math inline"><em>A</em><sub><em>n</em></sub></span>-<span class="math inline"><em>g</em><sub><em>s</em></sub></span> relationship intercepts</td>
+<td>"m/score</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>ϵ</em><sub>3</sub></span>, <span class="math inline"><em>ϵ</em><sub>4</sub></span></td>
+<td></td>
+<td>Photosynthetic efficiency per photon</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>s</em><sub>4</sub></span></td>
+<td></td>
+<td>Critical temperature of cryogenic suppression</td>
+<td>.L.A.[K.R.I.E.D.]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="external-parameters-given-by-the-table-for-each-soil-type">External parameters given by the table for each soil type</h3>
+<p>The external parameters given by the table for each land cover are as follows.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Header0</th>
+<th>Header1</th>
+<th>Header2</th>
+<th>Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline"><em>c</em><sub><em>g</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Specific Heat of Soil</td>
+<td>“”[J/m$^3$147]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>k</em><sub><em>g</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Thermal Conductivity of Soil</td>
+<td>state of affairs in the event of a race is incompatible with the state of the art.</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>w</em><sub><em>s</em><em>a</em><em>t</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Soil Porosity</td>
+<td>state of affairs of the company [m<span class="math inline"><sup>3</sup></span>/m<span class="math inline"><sup>3</sup></span>]</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>K</em><sub><em>s</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Saturated Permeability of Soil</td>
+<td>"m/score</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline"><em>ψ</em><sub><em>s</em>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Soil Saturation Moisture Potential</td>
+<td>\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+<tr class="even">
+<td><span class="math inline"><em>b</em><sub>(<em>k</em>)</sub></span></td>
+<td>(<span class="math inline"><em>k</em> = 1, …, <em>K</em><sub><em>g</em></sub></span>)</td>
+<td>Index of Soil Moisture Potential Curve</td>
+<td>\.com</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

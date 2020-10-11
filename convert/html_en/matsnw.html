@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MIROC-DOC matsnw</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="github-markdown.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+
+<link rel="stylesheet" href="github.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    menuSettings: {locale: "ja"},
+    extensions: ["tex2jax.js", "MathMenu.js", "MathZoom.js"],
+    TeX: {
+      extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js"],
+      noErrors: {disabled: true},
+      noUndefined: {disabled: true}
+    },
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [["$","$"] ],
+      displayMath: [["$$","$$"]],
+      processEscapes: true
+    }
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MIROC-DOC matsnw</h1>
+</header>
+<h1 id="snow-submodel-matsnw">Snow Submodel MATSNW</h1>
+<p>Calculate the snowpack, snow temperature and snow albedo.</p>
+<h2 id="diagnosis-of-snow-area-ratio">Diagnosis of snow area ratio</h2>
+<p>In the case of small snow cover, the sub-grid snow cover is taken into account. The area fraction of snow cover, <span class="math inline"><em>A</em><sub><em>S</em><em>n</em></sub></span>, is a unique function of the snow cover, <span class="math inline"><em>S</em><em>n</em></span>,</p>
+<p><span class="math display"><em>A</em><sub><em>S</em><em>n</em></sub> = min (<em>S</em><em>n</em>/<em>S</em><em>n</em><sub><em>c</em></sub>, 1)<sup>1/2</sup></span></p>
+<p>given in . The standard position is <span class="math inline"><em>S</em><em>n</em><sub><em>c</em></sub></span>=100[kg/m<span class="math inline"><sup>2</sup></span>].</p>
+<p>In practice, various factors, such as topography and differences in snowfall and snowmelt, are expected to affect the snow coverage ratio. For this purpose, the introduction of a sub-grid snow coverage model (SSNOWD) based on Liston (private communication) is under consideration.</p>
+<p><span class="math inline"><em>A</em><sub><em>S</em><em>n</em></sub></span> is referred to at the beginning of the flux calculation section and is used to compute an area-weighted average of the various fluxes computed there as follows</p>
+<p><span class="math display">$$
+ \overline{F} = (1-A_{Sn}) F_{(1)} + A_{Sn} F_{(2)}
+$$</span></p>
+<p>Here, <span class="math inline"><em>F</em><sub>(1)</sub></span> and <span class="math inline"><em>F</em><sub>(2)</sub></span> represent fluxes on a snow-free surface and a snow-covered surface, respectively. Actually, this operation is carried out through the flux coupler.</p>
+<h2 id="vertical-division-of-the-snowpack-layer">Vertical division of the snowpack layer</h2>
+<p>In order to represent the vertical distribution of the snow temperature, the snow is divided into multiple layers and the temperature is defined for each layer when the snow cover is large. The number of layers is variable, and the number of layers is increased as the amount of snowfall increases. The number of layers is variable, and the number of layers increases as the amount of snowfall increases.</p>
+<p>The number of layers and the mass of each layer are uniquely determined by the amount of snow cover. In this way, the mass of each layer is not a new forecast variable.</p>
+<p>The mass of each layer (<span class="math inline">$\Delta \widetilde{Sn}_{(k)} (k=1,2,3)$</span>) is determined as follows (<span class="math inline"><em>k</em> = 1</span> is the top layer).</p>
+<p><span class="math display">$$
+ \Delta \widetilde{Sn}_{(1)} = \left\{
+\begin{array}{ll}
+ \widetilde{Sn}  (\widetilde{Sn} &lt; 20) \\
+ 0.5\widetilde{Sn}  (20 \leq \widetilde{Sn} &lt; 40)\\
+ 20  (\widetilde{Sn} \geq 40)
+\end{array}
+\right. \\
+ \Delta \widetilde{Sn}_{(2)} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} &lt; 20) \\
+ \widetilde{Sn} - \Delta Sn_{(1)}  (20 \leq \widetilde{Sn} &lt; 60)\\
+ 0.5(\widetilde{Sn}-20)  (60 \leq \widetilde{Sn} &lt; 100)\\
+ 40  (\widetilde{Sn} \geq 100)
+\end{array}
+\right. \\
+ \Delta \widetilde{Sn}_{(3)} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} &lt; 60) \\
+ \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)}) (\widetilde{Sn} \geq 60)
+\end{array}
+\right. 
+$$</span></p>
+<p>Here,</p>
+<p><span class="math display">$$
+ \widetilde{Sn} =  Sn / A_{Sn}
+$$</span></p>
+<p>and while <span class="math inline"><em>S</em><em>n</em></span> represents the grid-averaged snow cover, <span class="math inline">$\widetilde{Sn}$</span> represents the snow cover in the snow region. Note that the mass of each layer (<span class="math inline">$\Delta \widetilde{Sn}_{(k)}$</span>) is also a value for the snow cover and not a grid average. The unit for each layer is kg/m<span class="math inline"><sup>2</sup></span>.</p>
+<p>It is clear from the above that the standard number of snow layers (<span class="math inline"><em>K</em><sub><em>S</em><em>n</em></sub></span>) is as follows.</p>
+<p><span class="math display">$$
+ K_{Sn} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} = 0)\\
+ 1  (0&lt; \widetilde{Sn} &lt; 20)\\
+ 2  (20 \leq \widetilde{Sn} &lt; 60)\\
+ 3  (\widetilde{Sn} \geq 60)
+\end{array}
+\right.
+$$</span></p>
+<h2 id="calculating-the-snowpack.">Calculating the snowpack.</h2>
+<p>The forecasting equation for snow cover is given by</p>
+<p><span class="math display">$$
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^* - E_{Sn} - M_{Sn} + Fr_{Sn}
+$$</span></p>
+<p><span class="math inline"><em>P</em><sub><em>S</em><em>n</em></sub><sup>*</sup></span> is snowfall flux after interception by canopy, <span class="math inline"><em>E</em><sub><em>S</em><em>n</em></sub></span> is sublimation flux, <span class="math inline"><em>M</em><sub><em>S</em><em>n</em></sub></span> is snowmelt, and <span class="math inline"><em>F</em><em>r</em><sub><em>S</em><em>n</em></sub></span> is refreezing of snowmelt water or freezing of rainfall.</p>
+<h3 id="sublimation-of-the-snowpack">Sublimation of the snowpack</h3>
+<p>First, we subtract the amount of sublimation and partially update the snowpack.</p>
+<p><span class="math display">$$
+ Sn^* = Sn^{\tau} - E_{Sn} \Delta t_L \\
+ \Delta \widetilde{Sn}_{(1)}^* = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L
+$$</span></p>
+<p>If, by chance, the sublimation is greater than the snow accumulation in the first layer, the remaining amount is subtracted from the lower layer. The same is true if the second layer is insufficient.</p>
+<h3 id="melting-snowpack.">Melting Snowpack.</h3>
+<p>Next, the heat conduction during the snow cover is calculated and the amount of snowmelt is determined. The method for calculating the heat conduction in the snowpack is described later. The temperature of the snow cover updated by heat conduction is set to <span class="math inline"><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub><sup>*</sup></span>. If the temperature of the first snow layer is higher than <span class="math inline"><em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub> = 0<sup>∘</sup></span> C, the temperature of the first snow layer is fixed at <span class="math inline"><em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub></span> and the calculation is redone. In this case, the energy convergence <span class="math inline"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span> is calculated for the first layer. This is not a grid-averaged value, but a value for the snow cover area. The amount of snowmelt in the first layer is the same as that in the first layer,</p>
+<p><span class="math display">$$
+ \widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^*/\Delta t_L ) 
+$$</span></p>
+<p>It is.</p>
+<p>If the temperature in the second and lower levels is higher than <span class="math inline"><em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub></span>, the temperature is returned to <span class="math inline"><em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub></span> and the internal energy of the temperature change is used to melt the snow. In other words,</p>
+<p><span class="math display"><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub><sup> * *</sup> = <em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub></span></p>
+<p>and added <span class="math inline"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span> as a new</p>
+<p><span class="math display">$$
+ \Delta \widetilde{F}_{conv} = ( T_{Sn(k)}^* - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^*/\Delta t_L
+$$</span></p>
+<p>The amount of snowmelt is defined in (11) and is obtained in the same way as in (11).</p>
+<p>Update the mass of each layer by subtracting the amount of snowmelt.</p>
+<p><span class="math display">$$
+ \Delta \widetilde{Sn}_{(k)}^{**} = \Delta \widetilde{Sn}_{(k)}^{*}
+ - \widetilde{M}_{Sn(k)}
+$$</span></p>
+<p>In the middle of these calculations, if all the layers are melted, the remainder of <span class="math inline"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span> is given to the layer below to raise the temperature of the layer below. That is, the temperature of the lower layer is increased,</p>
+<p><span class="math display"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup> = <em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub> − <em>l</em><sub><em>m</em></sub><em>M̃</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub></span></p>
+<p><span class="math display">$$
+ T_{Sn(k+1)}^{**} = T_{Sn(k+1)}^{*} + \Delta \widetilde{F}_{conv}^* / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^*) \Delta t_L
+$$</span></p>
+<p>Here, <span class="math inline"><em>c</em><sub><em>p</em><em>i</em></sub></span> is the specific heat of snow (ice). When all the snow cover is melted, <span class="math inline"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup></span> is given to the soil.</p>
+<p>The total snowmelt of the entire snowpack is the sum of the snowmelt in each layer (note that this is a grid average).</p>
+<p><span class="math display">$$
+ M_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{M}_{Sn(k)} A_{Sn}
+$$</span></p>
+<p>Subtracting the amount of snowmelt, the snowpack is partially updated.</p>
+<p><span class="math display"><em>S</em><em>n</em><sup> * *</sup> = <em>S</em><em>n</em><sup>*</sup> − <em>M</em><sub><em>S</em><em>n</em></sub><em>Δ</em><em>t</em><sub><em>L</em></sub></span></p>
+<h3 id="freezing-snowmelt-water-and-rainfall-in-snowpack">Freezing snowmelt water and rainfall in snowpack</h3>
+<p>The freezing of snowmelt and rainfall in the snowpack is calculated. For the snowmelt, the effect of the liquid water generated by the melting of the upper layers of snow on the refreezing of the lower layers of snow is taken into account. The amount of liquid water retained in the snowpack is not taken into account; it is assumed that all the liquid water either freezes in the snowpack or runs down the snowpack.</p>
+<p>Liquid water fluxes at the top of the snow cover in snow regions,</p>
+<p><span class="math display"><em>F̃</em><sub><em>w</em><em>S</em><em>n</em>(1)</sub> = <em>P</em><em>r</em><sub><em>c</em></sub><sup>*</sup> + <em>P</em><em>r</em><sub><em>l</em></sub><sup>*</sup> + <em>M</em><sub><em>S</em><em>n</em></sub>/<em>A</em><sub><em>S</em><em>n</em></sub></span></p>
+<p>Here, the snow melt below the second layer of the snowpack is also flushed from the top of the snowpack. (As a practical matter, melting below the second layer is unlikely to occur in this case.)</p>
+<p>The temperature of snowmelt water is considered to be 0 <span class="math inline"><sup>∘</sup></span> C, but the temperature of rainfall on the snowpack is assumed to be 0 <span class="math inline"><sup>∘</sup></span> C in terms of the toilet bowl. The latent heat of freezing water causes the temperature of the snow cover to rise, but if the temperature of a layer of snow cover rises to 0 <span class="math inline"><sup>∘</sup></span> C, water cannot freeze any higher and flows to the next layer below. In addition, there is an upper limit to the amount of water that can be frozen at a certain ratio to the mass of the snow cover at that layer. In other words, the freezing amount in a layer, <span class="math inline">$\widetilde{Fr}_{Sn(k)}$</span>, is</p>
+<p><span class="math display">$$
+ \widetilde{Fr}_{Sn(k)} = \min\left( \widetilde{F}_{wSn(k)}, \
+\frac{c_{pi}(T_{melt}-T_{Sn(k)}^{**})}{l_m}
+\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} , \
+f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \right)
+$$</span></p>
+<p>It is determined by the following formula. The <span class="math inline"><em>F̃</em><sub><em>w</em><em>S</em><em>n</em>(<em>k</em>)</sub></span> is the liquid water flux flowing from the top of the <span class="math inline"><em>k</em></span>th layer of snow cover. The standard value of the <span class="math inline"><em>f</em><sub><em>F</em><em>m</em><em>a</em><em>x</em></sub></span> is 0.1.</p>
+<p>The temperature change in the snowpack is ,</p>
+<p><span class="math display">$$
+ T_{Sn(k)}^{***} = \frac{l_m \widetilde{Fr}_{Sn(k)}\Delta t_L
+   +c_{pi}(T_{Sn(k)}^{**}\Delta \widetilde{Sn}_{(k)}^{**} + T_{melt} \widetilde{Fr}_{Sn(k)}\Delta t_L ) }
+  {c_{pi} (\Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn(k)}\Delta t_L)}
+$$</span></p>
+<p>and update the mass to</p>
+<p><span class="math display">$$
+ \Delta \widetilde{Sn}_{(k)}^{***} = \Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn(k)}\Delta t_L
+$$</span></p>
+<p>And update.</p>
+<p>The total amount of freezing in the entire snowpack is the sum of the amount of freezing in each layer (but it is a grid average).</p>
+<p><span class="math display">$$
+ Fr_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{Fr}_{Sn(k)} A_{Sn}
+$$</span></p>
+<p>Add the amount of freeze and partially update the snowpack.</p>
+<p><span class="math display"><em>S</em><em>n</em><sup> *  * *</sup> = <em>S</em><em>n</em><sup> * *</sup> + <em>F</em><em>r</em><sub><em>S</em><em>n</em></sub><em>Δ</em><em>t</em><sub><em>L</em></sub></span></p>
+<p>The liquid water that passes through the snowpack down to the bottom is given to the soil.</p>
+<h3 id="snowfall.">Snowfall.</h3>
+<p>Finally, the amount of snowfall that has been intercepted by the canopy is added to obtain the final updated snowpack.</p>
+<p><span class="math display"><em>S</em><em>n</em><sup><em>τ</em> + 1</sup> = <em>S</em><em>n</em><sup> *  * *</sup> + <em>P</em><sub><em>S</em><em>n</em></sub><sup>*</sup><em>Δ</em><em>t</em><sub><em>L</em></sub></span></p>
+<p>However, when the temperature of the first layer of soil is higher than <span class="math inline">0<sup>∘</sup></span> C, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is absorbed by the soil.</p>
+<p>When snow accumulation occurs due to a snowfall in a grid where there has been no snowfall, the snow coverage ratio (<span class="math inline"><em>A</em><sub><em>S</em><em>n</em></sub></span>) is newly diagnosed based on (1), and snow temperature (<span class="math inline"><em>T</em><sub><em>S</em><em>n</em>(1)</sub></span>) is assumed to be equal to the temperature of the first layer of soil.</p>
+<p>We also add the amount of snowfall to the mass of the first layer.</p>
+<p><span class="math display">$$
+ \Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{***} + P_{Sn}^* \Delta t_L /A_{Sn}
+$$</span></p>
+<h3 id="redividing-the-snow-layer-and-re-diagnosing-the-temperature">Redividing the snow layer and re-diagnosing the temperature</h3>
+<p>When the snow cover is updated, the area fraction is re-diagnosed by (1) and the mass of each layer is reconstructed by (3) <span class="math inline">∼</span>(5). The temperature of each layer is re-diagnosed so that the energy is conserved.</p>
+<p><span class="math display">$$
+ T_{Sn(k)}^{new} = \left(\sum_{l=1}^{K_{Sn}^{old}} f_{(l^{old}\in k^{new})} T_{Sn(l)}^{old} \Delta \widetilde{Sn}_{(l)}^{old} A_{Sn}^{old} \right)
+\Bigm/ (\Delta \widetilde{Sn}_{(k)}^{new} A_{Sn}^{new})
+$$</span></p>
+<p>Note that the variables are those subscripted with <span class="math inline"><em>o</em><em>l</em><em>d</em></span> and <span class="math inline"><em>n</em><em>e</em><em>w</em></span> are those before and after the reconstruction. <span class="math inline"><em>f</em><sub>(<em>l</em><sup><em>o</em><em>l</em><em>d</em></sup> ∈ <em>k</em><sup><em>n</em><em>e</em><em>w</em></sup>)</sub></span> is the percentage of the mass of the <span class="math inline"><em>l</em></span> layer before the reconstruction that is contained in the <span class="math inline"><em>k</em></span> layer after the reconstruction.</p>
+<h2 id="calculating-heat-transfer-during-snowfall.">Calculating heat transfer during snowfall.</h2>
+<h3 id="the-heat-transfer-equation-in-snowpack">The Heat Transfer Equation in Snowpack</h3>
+<p>The prediction equation for snowfall temperature due to heat conduction during snow cover is as follows.</p>
+<p><span class="math display">$$
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^* - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
+\qquad (k=1,\ldots,K_{Sn})
+$$</span></p>
+<p>where the heat transfer flux <span class="math inline"><em>F̃</em><sub><em>S</em><em>n</em></sub></span> is given by</p>
+<p><span class="math display">$$
+ \widetilde{F}_{Sn(k+1/2)} =
+\left\{
+\begin{array}{ll}
+( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
+ (k=0)\\
+\displaystyle{
+k_{Sn(k+1/2)} \frac{T_{Sn(k+1)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+k_{Sn(k+1/2)} \frac{T_{Sn(B)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=K_{Sn})
+\end{array}
+\right. 
+$$</span></p>
+<p><span class="math inline"><em>k</em><sub><em>S</em><em>n</em>(<em>k</em> + 1/2)</sub></span> is the thermal conductivity of the snow cover, which gives a constant value of 0.3 W/m/K in standard practice. <span class="math inline"><em>Δ</em><em>z</em><sub><em>S</em><em>n</em>(<em>k</em> + 1/2)</sub></span> is the thickness of each snow layer,</p>
+<p><span class="math display">$$
+ \Delta z_{Sn(k+1/2)} =
+\left\{
+\begin{array}{ll}
+ 0.5 \Delta \widetilde{Sn}_{(1)} / \rho_{Sn}  (k=1)\\
+ 0.5 (\Delta \widetilde{Sn}_{(k)}+\Delta \widetilde{Sn}_{(k+1)}) / \rho_{Sn}
+ (k=2,\ldots,K_{Sn}-1)\\
+ 0.5 \Delta \widetilde{Sn}_{(K_{Sn})} / \rho_{Sn}  (k=K_{Sn})
+\end{array}
+\right.
+$$</span></p>
+<p>The density of snow cover is defined by <span class="math inline"><em>ρ</em><sub><em>S</em><em>n</em></sub></span> as 300 kg/m<span class="math inline"><sup>3</sup></span>. <span class="math inline"><em>ρ</em><sub><em>S</em><em>n</em></sub></span> is the density of the snow cover, and a constant value of 300 kg/m<span class="math inline"><sup>3</sup></span> is given in the standard definition. It is assumed that the density and thermal conductivity of the snowpack will change with the passage of time (aging) due to consolidation and alteration of the snowpack, but these effects are not taken into account here.</p>
+<p>In (29), the flux $ _{Sn(1/2)}$ at the top of the snowpack is the heat transfer flux <span class="math inline"><em>F</em><sub><em>S</em><em>n</em>(1/2)</sub></span> determined at the surface energy balance, the surface energy convergence <span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span> generated by melting the surface temperature under snow melting conditions, and the phase of water content in the canopy. In the case of a change, the energy is given using the energy correction <span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em>, <em>c</em><em>o</em><em>n</em><em>v</em></sub></span>. We assume that the energy is given only for the snow covered surface (<span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub></span>) and that the energy is given uniformly for the grid (<span class="math inline"><em>Δ</em><em>F</em><sub><em>c</em>, <em>c</em><em>o</em><em>n</em><em>v</em></sub></span>). Since the sign of the fluxes is positively oriented upward, the convergence is negatively signified.</p>
+<p>In the equation of snow flux (<span class="math inline"><em>F̃</em><sub><em>S</em><em>n</em>(<em>K</em><sub><em>S</em><em>n</em></sub> + 1/2)</sub></span>), <span class="math inline"><em>T</em><sub><em>S</em><em>n</em>(<em>B</em>)</sub></span> is the temperature at the bottom of the snowpack (i.e., the boundary between the snowpack and the soil). However, the flux from the first layer of soil to the bottom of the snowpack is</p>
+<p><span class="math display">$$
+\widetilde{F}_{g(1/2)} = k_{g(1/2)} \frac{T_{g(1)}-T_{Sn(B)}}{\Delta z_{g(1/2)}}
+$$</span></p>
+<p>Therefore, we assume that there is no flux convergence at the lower end of the snowpack,</p>
+<p><span class="math display"><em>F̃</em><sub><em>S</em><em>n</em>(<em>K</em><sub><em>S</em><em>n</em></sub> + 1/2)</sub> = <em>F̃</em><sub><em>g</em>(1/2)</sub></span></p>
+<p>Substituting this into (33), we obtain the following</p>
+<p><span class="math display">$$
+\widetilde{F}_{Sn(K_{Sn}+1/2)} =
+\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+(T_{g(1)} - T_{Sn(K_{Sn})})
+$$</span></p>
+<h3 id="case-1-if-snowmelt-does-not-occur-in-the-first-layer">Case 1: If snowmelt does not occur in the first layer</h3>
+<p>The implicit method is used for the temperature of the first to lowest layer of snow cover. That is, the implicit method is used to determine the temperature from the first to the lowest layer of snow cover,</p>
+<p><span class="math display">$$
+ \widetilde{F}_{Sn(k+1/2)}^* = \widetilde{F}_{Sn(k+1/2)}^{\tau}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}}
+ \Delta T_{Sn(k)}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
+ \Delta T_{Sn(k+1)}
+$$</span></p>
+<p><span class="math display">$$
+ \widetilde{F}_{Sn(k+1/2)}^{\tau} =
+\left\{
+\begin{array}{ll}
+( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
+ (k=0)\\
+\displaystyle{
+\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}} (T_{Sn(k+1)}^{\tau} - T_{Sn(k)}^{\tau})
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+(T_{g(1)} - T_{Sn(K_{Sn})}^{\tau})
+}
+ (k=K_{Sn})
+\end{array}
+\right.
+$$</span></p>
+<p><span class="math display">$$
+ \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}} =
+\left\{
+\begin{array}{ll}
+\displaystyle{
+- \frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+- \left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+}
+ (k=K_{Sn})
+\end{array}
+\right.
+$$</span></p>
+<p><span class="math display">$$
+ \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}} =
+\left\{
+\begin{array}{ll}
+0  \ \quad \qquad \qquad \qquad \qquad (k=0) \\
+\displaystyle{
+\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
+}
+   \ \quad \qquad \qquad \qquad \qquad (k=1,\ldots,K_{Sn}-1)
+\end{array}
+\right.
+$$</span></p>
+<p>and put (28)</p>
+<p><span class="math display">$$
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{\Delta T_{Sn(k)}}{\Delta t_L}
+= \widetilde{F}_{Sn(k+1/2)}^* - \widetilde{F}_{Sn(k-1/2)}^*  \\
+= \widetilde{F}_{Sn(k+1/2)}^{\tau}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}}
+ \Delta T_{Sn(k)}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
+ \Delta T_{Sn(k+1)}  \\
+- \widetilde{F}_{Sn(k-1/2)}^{\tau}
+-\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
+ \Delta T_{Sn(k-1)}
+-\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
+ \Delta T_{Sn(k)}
+$$</span></p>
+<p>The fluxes are treated as in the following equations, and are solved by the LU decomposition method as a series of coupled equations of <span class="math inline"><em>Δ</em><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub> (<em>k</em> = 1, …, <em>K</em><sub><em>S</em><em>n</em></sub>)</span> by the <span class="math inline"><em>K</em><sub><em>S</em><em>n</em></sub></span> method. Note that the fluxes at the top of the snowpack are fixed as a boundary condition, and that the boundary condition at the bottom of the snowpack is the temperature of the first layer of soil, and that the fluxes at the bottom of the snowpack are explicitly treated as the temperature of the first layer of soil.</p>
+<p><span class="math display"><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub><sup>*</sup> = <em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub><sup><em>τ</em></sup> + <em>Δ</em><em>T</em><sub><em>S</em><em>n</em>(<em>k</em>)</sub></span></p>
+<p>Partially update the snowpack temperature by</p>
+<h3 id="case-2-when-snowmelt-occurs-in-the-first-layer">Case 2: When snowmelt occurs in the first layer</h3>
+<p>If the temperature of the first layer of snow cover melted in Case 1 is higher than the temperature of the first layer of snow cover melted in Case 1, snow melts in the first layer of snow cover. In this case, the temperature of the first snow layer is fixed at <span class="math inline">0<sup>∘</sup></span> C. In other words, the temperature of the first snow layer is fixed from the second snow layer to the first snow layer. In other words, the flux from the second snow layer to the first snow layer is</p>
+<p><span class="math display">$$
+ \widetilde{F}_{3/2}^{*} =
+\frac{k_{Sn(3/2)}}{\Delta z_{Sn(3/2)}} (T_{Sn(2)}^{\tau} - T_{melt})
++\frac{\partial \widetilde{F}_{Sn(3/2)}}{\partial T_{Sn(2)}}
+ \Delta T_{Sn(2)}
+$$</span></p>
+<p>and solve as in case 1 (when there is only one layer of snow, the snow temperature is fixed in the flux from soil to snow in the same way).</p>
+<p>The energy convergence used to melt the first layer of snow is given by</p>
+<p><span class="math display">$$
+ \Delta \widetilde{F}_{conv} = (\widetilde{F}_{3/2}^{*} - \widetilde{F}_{1/2})
+  - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn(1)}^*}{\Delta t_L}
+$$</span></p>
+<p>Even if the temperature below the second layer of snow accumulation is higher than the <span class="math inline"><em>T</em><sub><em>m</em><em>e</em><em>l</em><em>t</em></sub></span>, the snow melting is not performed again, and the snow melting is processed as a correction.</p>
+<h2 id="generating-glaciers.">Generating Glaciers.</h2>
+<p>A maximum value is set for the snowpack, and the excess snowfall is considered to be glacial runoff.</p>
+<p><span class="math display"><em>R</em><em>o</em><sub><em>g</em><em>l</em></sub> = max (<em>S</em><em>n</em> − <em>S</em><em>n</em><sub>max</sub>)/<em>Δ</em><em>t</em><sub><em>L</em></sub></span></p>
+<p><span class="math display">$$
+ Sn = Sn - Ro_{gl} \Delta t_L \\
+ \Delta \widetilde{Sn}_{(K_{Sn})} = \Delta \widetilde{Sn}_{(K_{Sn})}
+ - Ro_{gl} / A_{Sn} \Delta t_L
+$$</span></p>
+<p><span class="math inline"><em>R</em><em>o</em><sub><em>g</em><em>l</em></sub></span> is the amount of glacial runoff. This mass is subtracted from the bottom of the snowpack. <span class="math inline"><em>S</em><em>n</em><sub>max</sub></span> is given uniformly as 1000 kg/m<span class="math inline"><sup>2</sup></span> by default.</p>
+<h2 id="fluxes-fed-to-the-soil-or-runoff-process">Fluxes fed to the soil or runoff process</h2>
+<p>The heat flux to the soil through the snow accumulation process is as follows.</p>
+<p><span class="math display"><em>Δ</em><em>F</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup> = <em>A</em><sub><em>S</em><em>n</em></sub>(<em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup> − <em>F̃</em><sub><em>S</em><em>n</em><sub><em>K</em><sub><em>S</em><em>n</em></sub></sub></sub>) − <em>l</em><sub><em>m</em></sub><em>P</em><sub><em>S</em><em>n</em>, <em>m</em><em>e</em><em>l</em><em>t</em></sub><sup>*</sup></span></p>
+<p><span class="math inline"><em>Δ</em><em>F̃</em><sub><em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup></span> is the energy convergence of the remaining snowpack, <span class="math inline"><em>F̃</em><sub><em>S</em><em>n</em><sub><em>K</em><sub><em>S</em><em>n</em></sub></sub></sub></span> is the heat conduction flux in the lowest layer of the snowpack, and <span class="math inline"><em>P</em><sub><em>S</em><em>n</em>, <em>m</em><em>e</em><em>l</em><em>t</em></sub><sup>*</sup></span> is the amount of snowfall that melted immediately after reaching the ground.</p>
+<p>The energy correction term for the phase change of water on the canopy is given directly to the soil as follows.</p>
+<p><span class="math display"><em>Δ</em><em>F</em><sub><em>c</em>, <em>c</em><em>o</em><em>n</em><em>v</em></sub><sup>*</sup> = (1 − <em>A</em><sub><em>S</em><em>n</em></sub>)<em>Δ</em><em>F</em><sub><em>c</em>, <em>c</em><em>o</em><em>n</em><em>v</em></sub></span></p>
+<p>The water fluxes fed to the runoff process through the snow accumulation process are as follows.</p>
+<p><span class="math display">$$
+ Pr_c^{**} = ( 1 - A_{Sn} ) Pr_c^{*} \\
+ Pr_l^{**} = ( 1 - A_{Sn} ) Pr_l^{*} + A_{Sn} \widetilde{F}_{wSn}^*
+ + P_{Sn,melt}^*
+$$</span></p>
+<p><span class="math inline"><em>F̃</em><sub><em>w</em><em>S</em><em>n</em></sub><sup>*</sup></span> is a flux of rainfall or snowmelt water that has passed through the lowest layer of snow cover.</p>
+<h2 id="snow-albedo-calculations.">Snow albedo calculations.</h2>
+<p>The snow albedo is large in fresh snow, but decreases with time due to consolidation, deterioration and accumulation of dirt. In order to take this effect into account, snow albedo is treated as a predictor variable.</p>
+<p>The time evolution of the “age” (age) of the snow cover follows Wiscombe and Warren (1980) and follows the following equation.</p>
+<p><span class="math display">$$
+ \frac {A_{g}^{\tau +1} - A_{g}^{\tau}}{\Delta t_L}
+ = \left\{
+\exp \left[ f_{ageT} \left( \frac{1}{T_{melt}}-\frac{1}{T_{Sn(1)}}\right) \right]
+  + r_{dirt} \right\} \Bigm/ {\tau_{age}}
+$$</span></p>
+<p><span class="math inline"><em>f</em><sub><em>a</em><em>g</em><em>e</em><em>T</em></sub></span> = 5000, <span class="math inline"><em>τ</em><sub><em>a</em><em>g</em><em>e</em></sub></span> = 1 <span class="math inline">×</span> 10 <span class="math inline"><sup>6</sup></span>. <span class="math inline"><em>r</em><sub><em>d</em><em>i</em><em>r</em><em>t</em></sub></span> is a parameter for dirt adhesion, giving a value of <span class="math inline">0.01</span> on the ice sheet and <span class="math inline">0.3</span> at other locations.</p>
+<p>With this, the albedo of the snowpack is ,</p>
+<p><span class="math display">$$
+ \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{new} + \frac{A_g^{\tau+1}}{1+A_g^{\tau+1}} (\alpha_{Sn(b)}^{old} - \alpha_{Sn(b)}^{new}) \qquad (b=1,2,3)
+$$</span></p>
+<p>This can be calculated by Here, <span class="math inline"><em>A</em><sub><em>g</em></sub><sup><em>τ</em></sup></span> is calculated backward from the predictor, <span class="math inline"><em>α</em><sub><em>S</em><em>n</em>(1)</sub><sup><em>τ</em></sup></span>, using the same formula as above.</p>
+<p>When there is a snowfall, the albedo is updated to the new snow value according to the amount of snowfall.</p>
+<p><span class="math display">$$
+ \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{\tau+1}
++ \min\left( \frac{P_{Sn}^* \Delta t_L}{\Delta{Sn_c}}, 1 \right) (\alpha_{Sn(b)}^{new} - \alpha_{Sn(b)}^{\tau+1}) \qquad (b=1,2,3)
+$$</span></p>
+<p><span class="math inline"><em>Δ</em><em>S</em><em>n</em><sub><em>c</em></sub></span> is the amount of snow cover required for the albedo to return to a completely fresh snow value.</p>
+</body>
+</html>

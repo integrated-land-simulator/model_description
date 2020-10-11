@@ -1,0 +1,373 @@
+\hypertarget{soil-submodel-matgnd}{%
+\section{Soil Submodel MATGND}\label{soil-submodel-matgnd}}
+
+Calculating soil temperature, soil moisture and frozen ground.
+
+\hypertarget{calculating-heat-transfer-in-soil.}{%
+\subsection{Calculating heat transfer in
+soil.}\label{calculating-heat-transfer-in-soil.}}
+
+\hypertarget{the-heat-transfer-equation-in-soil}{%
+\subsubsection{The Heat Transfer Equation in
+Soil}\label{the-heat-transfer-equation-in-soil}}
+
+The prediction equation for soil temperature due to heat transfer in the
+soil is as follows.
+
+\begin{eqnarray}
+C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
+\qquad (k=1,\ldots,K_{g})
+\end{eqnarray}
+
+\(C_{g(k)}\) is the heat capacity of the soil and is defined by
+
+\begin{eqnarray}
+ C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
+\end{eqnarray}
+
+\(c_{g(k)}\) is the specific heat of the soil and is given as a
+parameter for each soil type. \(c_{pw}\) is the specific heat of water
+and \(w_{(k)}\) is the soil water content (volume moisture content).
+\(\Delta z_{g(k)}\) is the thickness of the \(k\) layer of soil. Thus,
+when the heat capacity of the soil is included in the heat capacity of
+the soil, the energy is not conserved unless the heat transport due to
+soil moisture transfer is taken into account. Since the heat transport
+associated with soil moisture transfer is not considered in MATGND, we
+are now discussing its introduction. However, it should be noted that
+the energy conservation is somehow broken unless the heat capacity of
+water vapor and precipitation in the atmosphere is taken into account.
+
+The heat transfer flux \(F_{g}\) is given by
+
+\begin{eqnarray}
+ F_{g(k+1/2)} =
+\left\{
+\begin{array}{ll}
+F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
+ (k=0)\\
+\displaystyle{
+k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right.
+\end{eqnarray}
+
+where \(k_{g(k+1/2)}\) is the thermal conductivity of the soil and is
+given as follows
+
+\begin{eqnarray}
+ k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
+\end{eqnarray}
+
+\(k_{g0(k+1/2)}\) is the thermal conductivity of the soil when the soil
+moisture content is \(0\), and \(f_{kg}=6\) and \(w_{kg}=0.25\) are
+constants.
+
+\(\Delta z_{g(k+1/2)}\) is the thickness between the temperature
+definition point of the first \(k\) layer and the soil temperature
+definition point of the \(k+1\) layer (for \(k=0\), it is the thickness
+between the temperature definition point of the first layer and the top
+of the soil, and for \(k=K_g\), it is the thickness between the
+temperature definition point of the lowest layer and the bottom of the
+soil).
+
+In (3), the boundary condition (\(F_{g(1/2)}\)) is obtained by adding
+the energy convergence at the bottom edge of the snowpack (including the
+heat flux at the bottom edge of the snowpack) and the assignment of the
+energy correction term to the snow-free surface due to the phase change
+of water content in the canopy. The fluxes are given. The fluxes are
+positive upward and are negative when adding the convergence amount. The
+boundary condition \(F_{g(K_g+1/2)}\) at the lower edge of the soil is
+assumed to be zero flux.
+
+\hypertarget{solving-the-heat-transfer-equation.}{%
+\subsubsection{Solving the heat transfer
+equation.}\label{solving-the-heat-transfer-equation.}}
+
+These equations are solved in terms of soil temperature from the first
+to the lowest layer using the implicit method. In other words, for
+\(k=1,\ldots,K_g-1\), the heat transfer fluxes are estimated by
+
+\begin{eqnarray}
+  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}
+\end{eqnarray}
+
+\begin{eqnarray}
+  F_{g(k+1/2)}^{\tau} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
+\end{eqnarray}
+
+\begin{eqnarray}
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
+- \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\end{eqnarray}
+
+\begin{eqnarray}
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\end{eqnarray}
+
+and then add (1) to
+
+\begin{eqnarray}
+C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
+= F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \\
+= {F}_{g(k+1/2)}^{\tau}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}  \\
+- F_{g(k-1/2)}^{\tau}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k-1)}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k)}
+\end{eqnarray}
+
+and solved by the LU decomposition method as a series of \(K_{g}\)
+equations for \(\Delta T_{g(k)}\ (k=1,\ldots,K_{g})\). Note that the
+fluxes at the top and bottom of the soil are fixed as boundary
+conditions.
+
+\begin{eqnarray}
+ T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
+\end{eqnarray}
+
+After correction for the phase change of soil moisture content, which
+will be described later, the soil temperature is completely updated.
+
+\hypertarget{calculation-of-soil-moisture-transfer}{%
+\subsection{Calculation of soil moisture
+transfer}\label{calculation-of-soil-moisture-transfer}}
+
+\hypertarget{equation-for-soil-moisture-transfer}{%
+\subsubsection{Equation for Soil Moisture
+Transfer}\label{equation-for-soil-moisture-transfer}}
+
+The equation for soil moisture transfer (Richards' equation) is given by
+
+\begin{eqnarray}
+\rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
+\frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
+\qquad (k=1,\ldots,K_{g})
+\end{eqnarray}
+
+Soil moisture flux \(F_{w}\) is given by
+
+\begin{eqnarray}
+ F_{w(k+1/2)} =
+\left\{
+\begin{array}{ll}
+Pr^{***} - Et_{(1,1)}
+ (k=0)\\
+\displaystyle{
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right.
+\end{eqnarray}
+
+where \(K_{(k+1/2)}\) is the soil permeability coefficient based on
+Clapp and Hornberger (1978) and is given as follows
+
+\begin{eqnarray}
+ K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
+\end{eqnarray}
+
+\(K_{s(k+1/2)}\) is the saturated hydraulic conductivity and \(b_{(k)}\)
+is the index of moisture potential curve as an external parameter for
+each soil type. \(W_{(k)}\) is the saturation degree excluding freezing
+soil moisture and is given by
+
+\begin{eqnarray}
+ W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
+\end{eqnarray}
+
+\(w_{sat(k)}\) is the porosity of soil, which is also given as a
+parameter for each soil type. \(f_i\) is the parameter that indicates
+the suppression of soil moisture migration due to the presence of frozen
+soil, and is currently given as follows.
+
+\begin{eqnarray}
+ f_i = \left(1- W_{i(k)}\right)
+       \left(1- W_{i(k+1)}\right)
+\end{eqnarray}
+
+This parameter is \(W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})\).
+
+\(\psi\) is the soil moisture potential given by Clapp and Hornberger as
+follows
+
+\begin{eqnarray}
+ \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
+\end{eqnarray}
+
+\(\psi_{s(k)}\) is given as an external parameter for each soil type.
+
+In (11), \(S_{w(k)}\) is the source term and, considering the absorption
+and runoff by roots, is given by
+
+\begin{eqnarray}
+ S_{w(k)} = - F_{root(k)} - Ro_{(k)}
+\end{eqnarray}
+
+In (12), the boundary condition \(F_{w(1/2)}\) is the difference between
+the water flux (\(P^{***}\)) and the evaporation flux (\(Et_{(1,1)}\))
+at the top of the soil through the runoff process. Apart from this, the
+sublimation flux is subtracted from the frozen soil moisture in the
+first layer prior to the calculation of soil moisture transfer.
+
+\begin{eqnarray}
+ w_{i(k)}^{\tau} = w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
+ w_{(k)}^{\tau} = w_{(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})
+\end{eqnarray}
+
+\hypertarget{solving-the-soil-moisture-transfer-equation}{%
+\subsubsection{Solving the soil moisture transfer
+equation}\label{solving-the-soil-moisture-transfer-equation}}
+
+These equations are solved from the first to the lowest layer using the
+implicit method. In other words, for \(k=1,\ldots,K_g-1\), the soil
+moisture fluxes are estimated by
+
+\begin{eqnarray}
+  F_{w(k+1/2)}^{\tau+1} = F_{w(k+1/2)}^{\tau}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}
+\end{eqnarray}
+
+\begin{eqnarray}
+  F_{w(k+1/2)}^{\tau} =
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)}^{\tau} - \psi_{(k)}^{\tau}}{\Delta z_{g(k+1/2)}} - 1 \right)
+\end{eqnarray}
+
+\begin{eqnarray}
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}} =
+- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k)}}{w_{sat(k)}-w_{i(k)}}W_{(k)}^{-b(k)-1}
+\right]
+\end{eqnarray}
+
+\begin{eqnarray}
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}} =
+ \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k+1)}}{w_{sat(k+1)}-w_{i(k+1)}}W_{(k+1)}^{-b(k)-1}
+\right]
+\end{eqnarray}
+
+and (11) as
+
+\begin{eqnarray}
+\rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
+= F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)}  \\
+= {F}_{w(k+1/2)}^{\tau}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}  \\
+- F_{w(k-1/2)}^{\tau}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k-1)}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}
+\end{eqnarray}
+
+The equations are treated as follows for
+\(\Delta T_{g(k)}\ (k=1,\ldots,K_{g})\), and are solved by the LU
+decomposition method as a series of \(K_{g}\) equations for
+\(\Delta T_{g(k)}\ (k=1,\ldots,K_{g})\). Note that the fluxes at the top
+and bottom of the soil are fixed as boundary conditions.
+
+\begin{eqnarray}
+ w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
+\end{eqnarray}
+
+The soil moisture content is updated using the LU decomposition method.
+
+If this calculation results in supersaturation of soil moisture, the
+supersaturation is removed by vertical adjustment. The supersaturation
+is not considered as runoff because this supersaturation is artificial
+and is caused by the solution of the vertical soil moisture transfer
+without information about the saturation. First, supersaturated soil
+moisture is applied from the second soil layer downward. Then, from the
+lowermost layer of soil to the uppermost layer, the supersaturated soil
+moisture is added to the uppermost layer. This operation results in the
+formation of a saturated layer near the bottom of the soil when soil
+moisture is sufficiently high to define the groundwater level (with a
+certain amount of water content of the ground surface in the vicinity of
+the lowest layer of soil (with a certain amount of water content of the
+ground surface in the vicinity of the lowest level of soil).
+
+\hypertarget{phase-changes-in-soil-moisture.}{%
+\subsection{Phase changes in soil
+moisture.}\label{phase-changes-in-soil-moisture.}}
+
+As a result of the heat conduction in the soil, the phase change of soil
+moisture content is calculated when the temperature of the layer with
+liquid moisture is below \(T_{melt} = 0^{\circ}\) C or when the
+temperature of the layer with solid moisture is above \(T_{melt}\).
+Assuming that the freezing rate of soil moisture in the \(k\)st layer is
+set to \(\Delta w_{i(k)}\),
+
+In case of \(T_{g(k)}^*<T_{melt}\) and
+\(w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}>0\) (frozen)
+
+\begin{eqnarray}
+\Delta w_{i(k)} = \min\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}
+\right)
+\end{eqnarray}
+
+In case of \(T_{g(k)}^*>T_{melt}\) and \(w_{i(k)}^{\tau}>0\) (melting)
+
+\begin{eqnarray}
+\Delta w_{i(k)} = \max\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+-w_{i(k)}^{\tau}
+\right)
+\end{eqnarray}
+
+Update soil freezing moisture and soil temperature as follows.
+
+\begin{eqnarray}
+w_{i(k)}^{\tau+1} = w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
+T_{g(k)}^{\tau+1} = T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
+\end{eqnarray}
+
+\hypertarget{ice-sheet-process.}{%
+\subsubsection{Ice sheet process.}\label{ice-sheet-process.}}
+
+If land cover type is ice-cover, return to \(T_{melt}\) when soil
+temperature exceeds \(T_{melt}\).
+
+\begin{eqnarray}
+ T_{g(k)}^{\tau+1} = \min( T_{g(k)}^*, \ T_{melt} )
+\end{eqnarray}
+
+The rate of change in the amount of ice cover, \(F_{ice}\), is diagnosed
+as
+
+\begin{eqnarray}
+ F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
+\end{eqnarray}
+
+Translated with www.DeepL.com/Translator (free version)

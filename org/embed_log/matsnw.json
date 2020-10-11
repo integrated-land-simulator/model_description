@@ -1,0 +1,22 @@
+{
+    "imath": {
+        "TERM00047": {
+            "count": 2,
+            "text": "$\\rho_{Sn}$"
+        },
+        "TERM00048": {
+            "count": 2,
+            "text": "m$^3$"
+        },
+        "TERM00057": {
+            "count": 0,
+            "text": "$T_{Sn(B)}$"
+        },
+        "TERM00060": {
+            "count": 0,
+            "text": "$T_{melt} = 0^{\\circ}$"
+        }
+    },
+    "emath": {},
+    "tabular": {}
+}
