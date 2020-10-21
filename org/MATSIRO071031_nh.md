@@ -1,0 +1,2041 @@
+Description of Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) Land Surface Parameterization
+
+November 10, 2001
+
+Seita Emori<sup>1</sup>
+
+Frontier Research System for Global Change
+
+<sup>1</sup> On loan from the National Institute for Environmental Studies
+
+# 1 Introduction
+
+Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land surface parameterization formulated for application　to the atmospheric general circulation model developed by the Center for Climate System Research at the University of Tokyo and the National Institute for Environmental Studies (CCSR/NIES AGCM), as well as to other global climate models. It has been designed to be primarily used for integral climate calculations such as those involving long time scales from one month to several hundred years coupled with the atmospheric model at grid resolutions of tens of kilometers or more. The main objective in its development was to represent all of the important water and energy circulation processes between land and atmosphere as fully and accurately as possible (i.e., *advanced* treatment) in such time and spatial scales, while modeling them as simply as possible (i.e., *minimal* treatment) so as to allow the results to be easily interpreted.
+
+MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by Watanabe (1994), while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with the current AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which now serves as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions in recent years, was ported from SiB2 code.
+
+# 2 Structure of MATSIRO
+
+## 2.1 Overview of MATSIRO
+
+### 2.1.1 General structure
+
+MATSIRO is divided into the following two parts:
+
+  - the flux calculation section (LNDFLX), and
+
+  - the land surface integration section (LNDSTP)
+
+These match the standard land surface process routines of AGCM5.6.
+
+The flux calculation section is called by time steps of the atmospheric model as part of its physical processes, while the land surface integration section is called from the main routine of the coupled model as a land surface model equivalent to the atmospheric and ocean models. The time steps are set independently from the atmospheric model.
+
+The exchange of data between the flux calculation section and the land surface integration section is carried out through a flux coupler. In the flux calculation section, snow-covered and snow-free portions in a grid cell are treated separately and the surface fluxes for each portion are respectively calculated. The calculated fluxes in the two portions are averaged by weighting with the fractions of the portions and transferred to the land surface integration section through the flux coupler. A time averaging operation is simultaneously performed at this juncture.
+
+In program terms, the entry of the flux calculation section LNDFLX and the entry of the land surface integration section LNDSTP are contained in the driver program (matdrv.F), and subroutines for the various processes required are respectively called from these entries. LNDFLX and LNDSTP share the same internal variables of MATSIRO.
+
+### 2.1.2 Internal variables of MATSIRO
+
+MATSIRO has the following internal variables:
+
+| Header0          | Header1               | Header2                      | Header3                                                       |
+|:-----------------|:----------------------|:-----------------------------|:--------------------------------------------------------------|
+| $T_{s(l)}$       | $(l=1,2)$             | surface temperature          | \K.L.A.[K.R.I.E.D.]                                           |
+| $T_{c(l)}$       | $(l=1,2)$             | Canopy temperature           | \K.L.A.[K.R.I.E.D.]                                           |
+|                  |                       |                              |                                                               |
+| $T_{g(k)}$       | $(k=1,\ldots,K_g)$    | Soil temperature             | \K.L.A.[K.R.I.E.D.]                                           |
+| $w_{(k)} $       | $(k=1,\ldots,K_g)$    | soil moisture content        | \[m$^3$/m$^3$]                                                |
+| $w_{i(k)}$       | $(k=1,\ldots,K_g)$    | Frozen soil moisture content | \[m$^3$/m$^3$]                                                |
+|                  |                       |                              |                                                               |
+| $w_c$            |                       | Water content in the canopy  | \\0.25\\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.                  |
+|                  |                       | amount of snowfall           | \kosmos[kg/m$^2$]                                             |
+| $T_{Sn(k)}$      | $(k=1,\ldots,K_{Sn})$ | snow temperature             | \K.L.A.[K.R.I.E.D.]                                           |
+| $\alpha_{Sn(b)}$ | $(b=1,2,3)$           | snow albedo                  | \The state of affairs in the state of affairs of others [$-$] |
+
+
+where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared , and infrared wavelengths, respectively.
+
+As a standard, the soil has five layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, and 200 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same.
+
+The number of snow layers is variable, increasing with the increase of snow water equivalent. As a standard, the maximum number is three layers.
+
+The ground surface temperature and canopy temperature are so-called skin temperatures whose heat capacity is zero; however, they take the form of prognostic variables. (The current calculation method depends on the values of the preceding step because the stability, etc. assessed by the values of the preceding step are used. If the stability, etc. were to be assessed by updated values and calculation iterated to the point of convergence, perfect diagnostic variables would be obtained that would not depend on the values of the preceding step.) The other variables are all prognostic variables that always require the values of the preceding step.
+
+The ground surface temperature and canopy temperature are updated in the flux calculation section. All of the other variables (original prognostic variables) are updated in the land surface integration section.
+
+## 2.2 Flux calculation section
+
+### 2.2.1 Structure of the flux calculation section
+
+The procedure of the flux calculation section is implemented as follows:
+
+1.  Input variables are received from the coupler.
+
+2.  The snow-covered ratio in each subgrid cell is diagnosed.
+
+3.  For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown:
+
+	(a) MATLAI: vegetation type parameter (LAI, vegetation height) set
+	(b) MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)
+	(c) MATBLK: calculation of turbulence parameters (bulk coefficients) (momentum and heat)
+	(d) MATRST: calculation of stomatal resistance, bare soil surface evaporation resistance, etc.
+	(e)MATBLQ: calculation of turbulence parameters (bulk coefficients) (vapor)
+	(f) MATFLX: calculation of surface flux
+	(g) MATGHC: calculation of soil heat conductivity
+	(h) MATSHB: solution of energy balance at ground surface and canopy
+
+
+
+4.  The output variables are transferred to the coupler.
+
+5.  History output variables are registered and added.
+
+	\(a) to (e) are classified into boundary value submodels, and the program is consolidated into matbnd.F.
+
+	\(f) to (h) are classified into surface submodels, and the program is consolidated into matsfc.F.
+	 The photosynthesis scheme MATPHT is called from (d). The photosynthesis scheme is consolidated into matpht.F.
+
+
+### 2.2.2 Input variables of the flux calculation section
+
+The following variables are input in the flux calculation section:
+
+| Header0                  | Header1           | Header2                                                | Header3                                                                                  |
+|:-------------------------|:------------------|:-------------------------------------------------------|:-----------------------------------------------------------------------------------------|
+| $u_a$                    |                   | Atmospheric 1st layer east-west wind                   | \The "m/score                                                                            |
+| $v_a$                    |                   | First layer of atmospheric north-south wind            | \The "m/score                                                                            |
+| $T_a$                    |                   | Atmospheric 1st layer temperature                      | \K.L.A.[K.R.I.E.D.]                                                                      |
+| $q_a$                    |                   | Specific humidity in the first layer of the atmosphere | [kg/kg\\]                                                                                |
+| $P_a$                    |                   | Atmospheric 1st layer pressure                         | \The state of affairs of the city of Los Angeles[Pahren]                                 |
+| $P_s$                    |                   | surface pressure                                       | \The state of affairs of the city of Los Angeles[Pahren]                                 |
+|                          |                   |                                                        |                                                                                          |
+| $R^{\downarrow}_{(d,b)}$ | $(d=1,2;b=1,2,3)$ | Surface downward radiation flux                        | \W/m$^2$]                                                                                |
+| $\cos\zeta$              |                   | cosine of the solar zenith angle                       | \The state of affairs of the company in the first place is in the form of the following. |
+
+where $d=1,2$ denotes direct and diffuse, respectively; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
+
+
+### 2.2.3 Output variables of the flux calculation section
+
+The following variables are output from the flux calculation section:
+
+| Header0           | Header1            | Header2                               | Header3                                 |
+|:------------------|:-------------------|:--------------------------------------|:----------------------------------------|
+| $\tau_x$          |                    | surface-to-west wind stress           | \N/m$^2$]                               |
+| $\tau_y$          |                    | surface-to-south wind stress          | \N/m$^2$45]                             |
+| $H$               |                    | surface sensible heat flux            | The\\\brahammer\bra_Penny.com[W/m$^2$]  |
+| $E$               |                    | Surface Water Vapor Flux              | \[kg/m$^2$/s]                           |
+| $R^{\uparrow}_S$  |                    | Upward Bound Shortwave Radiation Flux |                                         |
+| $R^{\uparrow}_L$  |                    | Upward Bound Longwave Radiation Flux  |                                         |
+| $\alpha_{s(b)}$   | $(b=1,2,3)$        | surface albedo                        | \The state of affairs of the world[$-$] |
+| $T_{sR}$          |                    | surface radiation temperature         | \K.L.A.[K.R.I.E.D.]                     |
+| $F_{g(1/2)}$      |                    | Surface Heat Transfer Flux            |                                         |
+| $F_{Sn(1/2)}$     |                    | Heat Transfer Flux for Snow Surface   | The\\\brax.com[W/m$^2$]                 |
+| $Et_{(i,j)}$      | $(i=1,2;j=1,2,3)$  | Evapotranspiration components         | \[kg/m$^2$/s\braham]                    |
+| $\Delta F_{conv}$ |                    | surface energy convergence            |                                         |
+| $F_{root(k)}$     | $(k=1,\ldots,K_g)$ | Root sucking flux                     | \[kg/m$^2$/s]                           |
+| $LAI$             |                    | leaf area index                       | \[m$^2$/m$^2$]                          |
+| $A_{Snc}$         |                    | Canopy freezing area ratio            | \Holy shit...[$-$]                      |
+
+where  $i=1,2$  denotes liquid and solid evapotranspiration, respectively; and $j=1,2,3$ denotes evaporation from the bare soil surface (forest floor), transpiration, and canopy water evaporation, respectively. Other indexes are the same as described earlier.
+
+## 2.3 Land surface integration section
+
+### 2.3.1 Structure of land surface integration section
+
+The procedure of the land surface integration section is implemented as follows:
+
+1.  Input variables are received from the coupler.
+
+2.  The subroutines for various processes are called and land surface prognostic variables are updated. Specifically, the following subroutines are called in the order shown below:
+
+	(a) MATCNW: calculation of canopy water balance
+
+	(b) MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo
+
+	(c) MATROF: calculation of runoff
+
+	(d) MATGND: calculation of soil temperature, soil moisture, and frozen soil
+
+3. The output variables are transferred to the coupler.
+
+4. History output variables are registered and added.
+
+Each subroutine called from the main land surface integration section constitutes a specific submodel, and the program of each submodel is consolidated into a specific file, as listed below:
+
+- MATCNW (matcnw.F): canopy water balance submodel
+
+- MATSNW (matsnw.F): snow submodel
+
+- MATROF (matrof.F): runoff submodel
+
+- MATGND (matgnd.F ): soil submodel
+
+The submodels are basically executed in this order, although in order to refer to the values of parameters managed by other submodels, subroutines may be called between submodels as the need arises. Moreover, subroutines in the abovementioned submodels may sometimes be called from the flux calculation section for the same purpose.
+
+### 2.3.2 Input variables of land surface integration section
+
+The following variables are input in the land surface integration section:
+
+| Header0           | Header1            | Header2                             | Header3                                                                |
+|:------------------|:-------------------|:------------------------------------|:-----------------------------------------------------------------------|
+| $Pr_{c}$          |                    | Convective rainfall flux            | \[kg/m$^2$/s]                                                          |
+| $Pr_{l}$          |                    | Layered Rainfall Flux               | \[kg/m$^2$/s]                                                          |
+| $P_{Snc}$         |                    | Convective snowfall flux            | \[kg/m$^2$/s]                                                          |
+| $P_{Snl}$         |                    | Layered Snowfall Flux               | \[kg/m$^2$/s]                                                          |
+| $F_{g(1/2)}$      |                    | Surface Heat Transfer Flux          | \The "W/m$^2$\                                                         |
+| $F_{Sn(1/2)}$     |                    | Heat Transfer Flux for Snow Surface | \W/m$^2$8]                                                             |
+| $Et_{(i,j)}$      | $(i=1,2;j=1,2,3)$  | Evapotranspiration components       | \[kg/m$^2$/s]                                                          |
+| $\Delta F_{conv}$ |                    | surface energy convergence          |                                                                        |
+| $F_{root(k)}$     | $(k=1,\ldots,K_g)$ | Root sucking flux                   | [kg/m$^2$/s\\\blade}]                                                  |
+| $LAI$             |                    | leaf area index                     | \The state of affairs of the state [m$^2$/m$^2$]                       |
+| $A_{Snc}$         |                    | Canopy freezing area ratio          | \The state of affairs in the state of affairs of the company [$-$0101] |
+
+### 2.3.3 Output variables of land surface integration section
+
+The following variable is output from the land surface integration section:
+
+| Header0 | Header1 | Header2 | Header3             |
+|:--------|:--------|:--------|:--------------------|
+| $Ro$    |         | runoff  | [kg/m$^2$/s\\blind} |
+
+Runoff is used as an input variable for the river channel network model.
+
+## 2.4 External parameters
+
+The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are among the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
+
+parameter given by map:
+
+$$
+ \phi(i,j)
+$$
+
+parameter given by table:
+
+$$
+ \psi(I),I = I_L (i,j)
+$$
+
+or
+
+$$
+ \psi(I),I = I_S (i,j),
+$$
+
+where $(i,j)$ are indexes of the grid horizontal location, $I_L$ is the land use type, and $I_S$ is the soil type.
+
+### 2.4.1 External parameters given by map
+
+The types of external parameters given by map are as follows:
+
+| Header0         | Header1     | Header2                              | Header3     | Header4       |
+|:----------------|:------------|:-------------------------------------|:------------|:--------------|
+| $I_L$           |             | Land cover type                      | constant    | [-]           |
+| $I_S$           |             | Soil Type                            | constant    | [-]           |
+| $LAI_0$         |             | Leaf Area Index (LAI)                | every month | [m$^2$/m$^2$] |
+| $\alpha_{0(b)}$ | $(b=1,2,3)$ | Ground surface (forest floor) albedo | constant    | [-]           |
+| $\tan\beta_{s}$ |             | Tangent of the mean surface slope    | constant    | [-]           |
+| $\sigma_z$      |             | elevation standard deviation         | constant    | [m]           |
+
+2.4.2 External parameters given by table for each land cover type
+
+The types of external parameters given by table for each land cover type are as follows:
+
+| Header0                    | Header1            | Header2                                                                        | Header3    |
+|:---------------------------|:-------------------|:-------------------------------------------------------------------------------|:-----------|
+| $h_0$                      |                    | vegetation height                                                              | [m]        |
+| $h_{B0}$                   |                    | Height of the bottom of the canopy                                             | [m]        |
+| $r_{f(b)}$                 | ($b$=1,2)          | Reflectivity of individual leaves                                              | [-]        |
+| $t_{f(b)}$                 | ($b$=1,2)          | Transmittance of individual leaves                                             | [-]        |
+| $f_{root(k)}$              | ($k=1,\ldots,K_g$) | Percentage of root presence                                                    | [-]        |
+| $c_d$                      |                    | Momentum exchange coefficient between the individual leaves and the atmosphere | [-]        |
+| $c_h$                      |                    | Heat Exchange Coefficient between individual leaves and the atmosphere         | [-]        |
+| $f_V$                      |                    | vegetation coverage                                                            | [-]        |
+| $V_{\max}$                 |                    | Rubisco Reaction Capacity                                                      | [m/s]      |
+| $m$                        |                    | $A_n$-$g_s$ Slope of the relationship                                          | [-]        |
+| $b$                        |                    | $A_n$-$g_s$ relationship intercepts                                            | [m/s]      |
+| $\epsilon_3$, $\epsilon_4$ |                    | Photosynthetic efficiency per photon                                           | [m/s/moll] |
+| $\theta_{ce}$              |                    | Coupling factor between     $w_c$ and $w_e$                                    | [-]        |
+| $\theta_{ps}$              |                    | Coupling factor between     $w_p$ and $w_s$                                    | [-]        |
+| $f_d$                      |                    | respiratory coefficient                                                        | [-]        |
+| $s_2$                      |                    | Critical temperature of high temperature suppression                           | [K]        |
+| $s_4$                      |                    | Critical temperature of cryogenic suppression                                  | [K]        |
+
+### 2.4.3 External parameters given by table for each soil type
+
+| Header0       | Header1            | Header2                                | Header3       |
+|:--------------|:-------------------|:---------------------------------------|:--------------|
+| $c_{g(k)}$    | ($k=1,\ldots,K_g$) | Specific Heat of Soil                  | [J/m$^3$]     |
+| $k_{g(k)}$    | ($k=1,\ldots,K_g$) | Thermal Conductivity of Soil           | [W/m/K]       |
+| $w_{sat(k)}$  | ($k=1,\ldots,K_g$) | Soil Porosity                          | [m$^3$/m$^3$] |
+| $K_{s(k)}$    | ($k=1,\ldots,K_g$) | Saturated Permeability of Soil         | [m/s]         |
+| $\psi_{s(k)}$ | ($k=1,\ldots,K_g$) | Soil Saturation Moisture Potential     | [m]           |
+| $b_{(k)}$     | ($k=1,\ldots,K_g$) | Index of Soil Moisture Potential Curve | [-]           |
+
+
+# 3 MATBND Boundary Value Submodel
+
+## 3.1 Vegetation type parameter set
+
+The leaf area index (LAI), vegetation height, etc. are set as vegetation type parameters.
+
+Seasonally changing horizontal distributions are loaded as external parameters for LAI, and the values according to land use type are loaded as external parameters for the heights of the canopy top and bottom. When there is snow, only the vegetation above the level of the snow depth is taken into consideration and the type parameters are corrected as follows:
+
+$$
+ h = \max( h_0 - D_{Sn}, 0 ) \\
+ h_B = \max( h_{B0} - D_{Sn}, 0 ) \\
+ LAI = LAI_0 \frac{h-h_B}{h_0-h_{B0}}
+$$
+
+where $h$ is the height of the canopy top (vegetation height), $h_B$ is the height of the canopy bottom (height of clear length),  $LAI$ is the leaf area index, and $h_0$, $h_{B0}$, and $LAI_0$ are the respective values when there is no snow. $D_{Sn}$ is the snow depth. LAI is approximated on the assumption that it is uniformly distributed vertically between the canopy top and bottom.
+
+In terms of coding, next the mean values of the snow-free and snow-covered portions are solved by weighting with the snow-covered ratio ($A_{Sn}$), etc., as follows:
+
+$$
+	h = A_{Sn}h + (1-A_{Sn})h_0
+$$
+
+However, because the snow-free portion and snow-covered portion are respectively calculated, it should be noted that $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion), so no mixing of values occurs (similar cases are also seen later).
+
+## 3.2 Calculation of radiation parameters
+
+Next, the radiation parameters (albedo, vegetation transmissivity , etc.) are calculated.
+
+### 3.2.1 Calculation of　ground surface (forest floor) albedo
+
+The horizontal distributions of the ground surface (forest floor) albedo $b=1,2$ are loaded as external parameters, with $b=1,2$ denoting the wavelength bands of visible and near infrared, respectively. The infrared ground surface albedo ($\alpha_{0(3)}$) is set to a fixed value (horizontal distributions can also be prepared if desired).
+
+With regard to the ice-sheet portion and snow-covered portion, the dependence of the incidence angle of albedo is considered by the following function form:
+
+$$
+ \alpha_{0(d,b)} = \hat{\alpha}_{0(b)} + ( 1 - \hat{\alpha}_{0(b)} )
+                         \cdot 0.4 ( 1 - \cos \phi_{in(d)} )^5
+$$
+
+where $b=1,2$ are wavelength bands; $d=1,2$ are direct and diffuse, respectively; and  $\hat{\alpha}_{0(b)}$ is the value of albedo when the incidence angle is 0 (from directly overhead). The cosine of the incidence angle ! is expressed as
+
+$$
+ \cos\psi_{in(1)} = \cos\zeta, \ \ \
+ \cos\psi_{in(2)} = \cos 50^{\circ}
+$$
+
+for direct insolation and diffuse radiation, respectively, where $\zeta$ is the solar zenith angle.
+
+With regard to regions other than the ice-sheet portion and snow-covered portion, the zenith angle dependence is not taken into consideration for the albedo of the ground surface (forest floor) and the same values are given to direct insolation and diffuse radiation; that is,
+
+$$
+ \alpha_{0(d,b)} = \alpha_{0(b)}\ \ \ (d=1,2;\ b=1,2)
+$$
+
+Moreover, in the case of the infrared wavelength only diffuse radiation needs to be considered. The value of the infrared albedo for all ground surfaces is given independently of the zenith angle, as follows:
+
+$$
+ \alpha_{0(2,3)} = \alpha_{0(3)}
+$$
+
+
+### 3.2.2 Calculation of canopy albedo and transmissivity
+
+The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by Watanabe and Ohtani (1995).
+
+Considering the canopy as vertically uniform and making use of several assumptions for simplification, the transfer equations of insolation within the canopy and the boundary condition are expressed as
+
+
+$$
+ \frac{dS^{\downarrow}_d}{dL} = -F \sec\zeta S^{\downarrow}_d \\
+ \frac{dS^{\downarrow}_r}{dL} = -F (1-t_{f(b)})d_f S^{\downarrow}_r
+                                  +F t_{f(b)} \sec\zeta S^{\downarrow}_d
+                                  +F r_{f(b)} d_f S^{\uparrow}_r \\
+ \frac{dS^{\uparrow}_r}{dL}   =  F (1-t_{f(b)})d_f S^{\uparrow}_r
+                                  -F r_{f(b)} ( d_f S^{\downarrow}_r
+                                         + \sec\zeta S^{\downarrow}_d ) \\
+ S^{\downarrow}_d(0) = S^{top}_d \\
+ S^{\downarrow}_r(0) = S^{top}_r \\
+ S^{\uparrow}_r(LAI) = \alpha_{0(1,b)}S^{\downarrow}_d(LAI)
+                       + \alpha_{0(2,b)}S^{\downarrow}_r(LAI)
+$$
+
+where  $S^{\downarrow}_d$ is the downward direct insolation; $S^{\uparrow}_r$ and $S^{\downarrow}_r$ are the upward and downward diffuse radiation, respectively; $L$  is the leaf area cumulatively added downward from the canopy top; $d_f$ is the diffusivity factor ($=\sec 53^{\circ}$), $r_{f(b)}$; $t_{f(b)}$ are the leaf albedo and transmissivity, respectively (the same value is used for diffuse radiation and direct insolation); and $F$  is a factor denoting the direction of the leaves with respect to the radiation. Here, the distribution of the direction of the leaves is assumed to be random ($F=0.5$) for simplicity.
+
+These can be solved analytically, giving the following solutions:
+
+$$
+ S^{\downarrow}_d(L) = S^{top}_d \exp(-F\cdot L\cdot \sec\zeta) \\
+ S^{\downarrow}_r(L) = C_1 e^{a L} + C_2 e^{-a L} + C_3 S^{\downarrow}_d(L) \\
+ S^{\uparrow}_r(L)   = A_1 C_1 e^{a L} + A_2 C_2 e^{-a L} + C_4 S^{\downarrow}_d(L)
+$$
+
+where
+
+$$
+   a = F d_f [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}  \\
+ A_1 = \{ 1 - t_{f(b)} + [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \tag{eq17} \\
+ A_2 = \{ 1 - t_{f(b)} - [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \\
+ A_3 = (A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+        -(A_2 - \alpha_{0(2,b)}) e^{-a LAI } \\
+ C_1 = \{ -(A_2 - \alpha_{0(2,b)}) e^{-a LAI} (S^{top}_r - C_3 S^{top}_d)
+            +[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_2 = \{  (A_1 - \alpha_{0(2,b)}) e^{ a LAI} (S^{top}_r - C_3 S^{top}_d)
+            -[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_3 = \frac{\sec\zeta[t_{f(b)}\sec\zeta + d_f t_{f(b)}(1-t_{f(b)}) + d_f r_{f(b)}^2]}
+              {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta} \\
+ C_4 = \frac{r_{f(b)}(d_f - \sec\zeta)\sec\zeta}
+              {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta}
+$$
+
+Albedo  $\alpha_s$ at the canopy top is expressed as
+
+$$
+ S^{\uparrow}_r(0) = \alpha_{s(1,b)} S^{\downarrow}_d(0)
+                   + \alpha_{s(2,b)} S^{\downarrow}_r(0)
+$$
+
+therefore,
+
+$$
+ \alpha_{s(2,b)} = \{ A_2 ( A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+                      - A_1 ( A_2 - \alpha_{0(2,b)}) e^{-a LAI }
+                   \} / A_3 \\
+ \alpha_{s(1,b)} = - C_3 \alpha_{s(2,b)} + C_4
+                  + ( A_1 - A_2 ) ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4)
+                  e^{- F\cdot LAI\cdot \sec\zeta} / A_3
+$$
+
+are obtained.
+
+If the canopy transmissivity (${\mathcal{T}}_c$) (specifically, the ratio of incident insolation absorbed by the forest floor to the incident insolation of the canopy top) is defined by
+
+
+$$
+  {\mathcal{T}}_{c(2,b)}= \{ ( 1 - A_2 )( A_1 - \alpha_{0(2,b)} )
+                      - ( 1 - A_1 )( A_2 - \alpha_{0(2,b)} ) \} / A_3 \\
+ {\mathcal{T}}_{c(1,b)}= - C_3 {\mathcal{T}}_{c(2,b)}  \\
+ +               \{ ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4 )
+                   ( ( 1 - A_1 ) e^{ a LAI }
+                   - ( 1 - A_2 ) e^{-a LAI } )  / A_3
+                   + C_3 - C_4 +1 \} e^{- F\cdot LAI\cdot \sec\zeta}
+ \\
+$$
+
+the following are obtained:
+
+$$
+ S^{\downarrow}_d(LAI) + S^{\downarrow}_r(LAI) - S^{\uparrow}_r(LAI)
+= {\mathcal{T}}_{c(1,b)} S^{\downarrow}_d(0)
++ {\mathcal{T}}_{c(2,b)} S^{\downarrow}_r(0)
+$$
+
+The above calculations are performed for $b=1, 2$ (visible and near infrared), respectively.
+
+The leaf albedo $r_f$ and transmissivity $t_f$ are loaded as external parameters for each land cover type; however, the following two modifications are made before these parameters are used in the above calculations.
+
+1. Snow (ice) effect on leaf surface
+
+When the canopy temperature does not exceed 0°C, the canopy water is regarded as snow (ice). In this case, using the snow albedo ($\alpha_{Sn(b)}$) and canopy water ($w_c$), the following assumptions are made:
+
+$$
+ r_{f(b)} = ( 1 - f_{cwet} ) r_{f(b)}
+         + f_{cwet} \alpha_{Sn(b)} \\
+  f_{cwet} = {w_c}/w_{c,cap}
+$$
+
+
+where $w_{c,cap}$ is the canopy water capacity. With regard to transmissivity, the following assumption is made for convenience so that the absorptivity $1-r_f-t_f$) does not take a negative value:
+
+$$
+ t_{f(b)} = ( 1 - f_{cwet} ) t_{f(b)}
+         + f_{cwet} t_{Sn(b)}, \ \ \
+ t_{Sn(b)} = \min( 0.5(1 - \alpha_{Sn(b)}), t_{f(b)} )
+$$
+
+When the canopy water is in the liquid state, the resultant change in the leaf radiation parameter is ignored. Moreover, although the cases of snowfall after interception by the canopy (snow cover) and of frozen water in the canopy (ice) can be considered, with each having different radiation characteristics, the same albedo of snow on the forest floor is used for all cases here.
+
+2. Effect considering the directions of reflection and transmission
+
+In solving the above equations, all reflected light is assumed to return in the direction of incidence. However, if, for example, the diffusion of only a portion of the reflected light in the direction of incidence is taken into consideration, the leaf radiation parameters can be replaced as follows (Watanabe, personal communication):
+
+$$
+  r_{f(b)} = 0.75 r_{f(b)} + 0.25 t_{f(b)} \\
+  t_{f(b)} = 0.75 t_{f(b)} + 0.25 r_{f(b)}
+$$
+
+
+The above calculations are performed for $b=1, 2$ (visible and near infrared), respectively.
+
+In addition, in consideration of the uneven distribution of vegetation (such as savanna) in parts of the grid cells, before calculating the albedo, etc., the LAI (taking the original LAI as the grid mean value) of the vegetation-covered portion is calculated as follows:
+
+$$
+  LAI = LAI / f_V
+$$
+
+and this is used for the calculation for albedo, etc. mentioned above. ($R^{\downarrow}_{(d,b)}$) is the vegetation-covered ratio in the grid cell. After the albedo, etc. are calculated, the area-weighted mean of the vegetation-covered portion and non- vegetation-covered portion are obtained as
+
+$$
+  \alpha_{s(d,b)} = f_V \alpha_{s(d,b)}
+                       + ( 1 - f_V ) \alpha_{0(d,b)} \\
+  {\mathcal{T}}_{c(d,b)} = f_V {\mathcal{T}}_{c(d,b)}
+                       + ( 1 - f_V ) ( 1 - \alpha_{0(d,b)} )
+$$
+
+### 3.2.3 Calculation of surface radiation flux, etc.
+
+Using the surface downward radiation flux  ($R^{\downarrow}_{(d,b)}$) and albedo calculated above, the following radiation fluxes are calculated:
+
+$$
+ R^{\downarrow}_S = \sum_{b=1}^2\sum_{d=1}^2 R^{\downarrow}_{(d,b)} \\
+ R^{\uparrow}_S = \sum_{b=1}^2\sum_{d=1}^2 \alpha_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ R^{\downarrow}_L = R^{\downarrow}_{(2,3)} \\
+ R^{gnd}_S = \sum_{b=1}^2\sum_{d=1}^2 {\mathcal{T}}_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ PAR = \sum_{d=1}^2 R^{\downarrow}_{(d,1)}
+$$
+
+where $R^{\downarrow}_S$ and $R^{\uparrow}_S$  are the downward and upward shortwave radiation flux, respectively; $R^{\downarrow}_L$ is the downward longwave flux; $R^{gnd}_S$ is the shortwave flux absorbed by the forest floor; and $PAR$ is the downward photosynthesis active radiation (PAR) flux.
+
+The canopy transmissivity of shortwave and longwave radiation, and the emissivity of longwave radiation, are then calculated as follows:
+
+$$
+ {\mathcal{T}}_{cS} = R^{gnd}_S / ( R^{\downarrow}_S - R^{\uparrow}_S ) \\
+ {\mathcal{T}}_{cL} = \exp( - F \cdot LAI \cdot d_f ) \\
+ \epsilon = 1 - \alpha_{s(2,3)}
+$$
+
+# 3.3 Calculation of turbulence parameter (bulk coefficient)
+
+Next, the turbulence parameter (bulk coefficient) is calculated.
+
+### 3.3.1 Calculation of roughness with respect to momentum and heat
+
+The calculation of roughness is based on Watanabe (1994). In that study, using the results of a multilayer canopy model by Kondo and Watanabe (1992) as a function form for the roughness of a bulk model best fitting those results, Watanabe (1994) proposed the following:
+
+$$
+ \left(\ln \frac{h-d}{z_0}\right)^{-1} =
+ \left[ 1 - \exp( -A^+) + \left(-\ln \frac{z_{0s}}{h}\right)^{-1/0.45}
+  \exp(-2A^+)\right]^{0.45} \\
+ \left(\ln \frac{h-d}{z_T^{\dagger}}\right)^{-1} =
+ \frac{1}{-\ln(z_{Ts}/h)} \left[ \frac{P_1}{P_1 + A^+ \exp({A^+})}\right] ^{P2} \\
+ \left(\ln \frac{h-d}{z_0}\right)^{-1} \left(\ln \frac{h-d}{z_T}\right)^{-1}
+ = C_T^{\infty} \left[1-\exp(-P_3 A^+)
+  + \left(\frac{C_T^0}{C_T^{\infty}}\right)^{1/0.9} \exp(-P_4 A^+)\right]^{0.9} \\
+ h-d = h [1-\exp(-A^+)] / {A^+} \\
+ A^+ = \frac{c_d LAI}{2k^2} \\
+ \frac1{C_T^0} = \ln \frac{h-d}{z_0} \ln \frac{h-d}{z_T^{\dagger}} \\
+ C_T^{\infty} = \frac{-1+(1+8F_T)^{1/2}}{2} \\
+ P_1 = 0.0115 \left(\frac{z_{Ts}}{h}\right)^{0.1}
+  \exp\left[5 \left(\frac{z_{Ts}}{h}\right)^{0.22}\right] \\
+ P_2 = 0.55 \exp\left[-0.58 \left(\frac{z_{Ts}}{h}\right)^{0.35}\right] \\
+ P_3 = [F_T + 0.084 \exp(-15 F_T)]^{0.15} \\
+ P_4 = 2 F_T^{1.1} \\
+ F_T = c_h / c_d
+$$
+
+
+where $z_0$ and $z_T$ are the roughness of the overall canopy with respect to momentum and heat, respectively; $z_0s$ and $z_Ts$ are the roughness of the ground surface (forest floor) with respect to momentum and heat, respectively; $c_d$ and $c_h$ are the exchange coefficient between an individual leaf and the atmosphere with respect to momentum and heat, respectively; $h$ is the vegetation height; $d$ is the zero-plane displacement; and $LAI$ is LAI. $z_T^{\dagger}$ is the roughness with respect to heat when assuming no transfer of heat to or from the leaf surface, and is used when solving the coefficient of heat transfer from the forest floor.
+
+$z_{0s}$ and $z_{Ts}$  are given as external data for each land cover type. Their values ($z_{0s}=0.05$ m, $z_{Ts}=0.005$ m) are fixed as standards. However, the following modifications are made with respect to the snow-covered portion:
+
+$$
+ z_{0s} = \max( f_{Sn} z_{0s}, z_{0Sn} ) \\
+ z_{Ts} = \max( f_{Sn} z_{0s}, z_{TSn} ) \\
+          f_{Sn} = 1 - D_{Sn} / z_{0s}
+$$
+
+where $D_{Sn}$, $z_{0Sn}$ and $z_{TSn}$ are the roughness of the snow-covered portion with respect to momentum and heat, respectively.
+
+$c_d$ and $c_h$ are parameters determined by the leaf shape, and are given as external data for each land cover type.
+
+### 3.3.2 Calculation of bulk coefficient with respect to momentum and heat
+
+After Watanabe (1994), the bulk coefficient is also calculated using Monin-Obukhov similarity as
+
+$$
+ C_M = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
+ C_H = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-1}
+             \left[ \ln \frac{z_a-d}{z_T} + \Psi_h(\zeta) \right]^{-1} \\
+ C_{Hs} = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta_g) \right]^{-1}
+             \left[ \ln \frac{z_a-d}{z_T^{\dagger}} + \Psi_h(\zeta_g) \right]^{-1} \\
+ C_{Hc} = C_H - C_{Hs}
+$$
+
+
+where $C_M$ and $C_H$ are the bulk coefficients of the overall canopy (leaf surface + forest floor) with respect to momentum and heat, respectively; $C_{Hs}$ is the bulk coefficient of the ground surface (forest floor) flux with respect to heat; $C_{Hc}$ is the bulk coefficient of the canopy (leaf surface) flux with respect to heat; $\Psi_m$ and $\Psi_h$ are Monin-Obukhov shear functions with respect to momentum and heat, respectively; and $z_a$ is the reference height of the atmosphere (height of the troposphere). Using the Monin-Obukhov lengths $\zeta$ and $\zeta_g$ related to the overall canopy and ground surface (forest floor), respectively, $L$ and $L_g$ are respectively expressed as:
+
+
+$$
+ \zeta = \frac{z_a - d}{L} \\
+ \zeta_g = \frac{z_a - d}{L_g}
+$$
+
+and the Monin-Obukhov lengths are expressed as:
+
+$$
+ L = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg(C_{Hs}(T_s - T_a) + C_{Hc}(T_c - T_a))} \\
+ L_s = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg C_{Hs}(T_s - T_a)}
+$$
+
+
+where $\Theta_0$ =300K; $|V_a|$ is the absolute value of the surface wind speed; $k$ is the Karman constant; $g$ is the gravitational acceleration; and $T_a,$T_c$ and $T_s$ are the temperature of the troposphere, canopy (leaf surface), and ground surface (forest floor), respectively.
+
+Since the bulk coefficient is necessary for calculation of the Monin-Obukhov length, and the Monin-Obukhov length is necessary for calculation of the bulk coefficient, the calculation is iterated (twice as a standard) with a neutral bulk coefficient as the initial value.
+
+Prior to this calculation, the snow depth in the snow-covered portion is added to the zero-plane displacement. However, the upper limit is set so that the zero-plane displacement does not exceed the value of $z_a$:
+
+
+$$
+ d = \min( d + D_{Sn} ,\  f_{\max} \cdot z_a )
+$$
+
+
+As a standard, $f_${\max}$ is set at 0.5.
+
+### 3.3.3 Calculation of bulk coefficient with respect to vapor
+
+This calculation is performed after the calculation of stomatal resistance, described later.
+
+When the stomatal resistance ($r_{st}$)  and ground surface evaporation resistance　($r_{soil}$)  have been solved, the bulk coefficient with respect to vapor is solved as:
+
+$$
+ C_{Ec} |V_a| = \left[ (C_{Hc} |V_a|)^{-1} + r_{st} / LAI\right]^{-1} \\
+ C_{Es} |V_a| = \left[ (C_{Hs} |V_a|)^{-1} + r_{soil}\right]^{-1}
+$$
+
+(Previously, this parameter was solved by converting stomatal resistance, etc. into a decrease of the exchange coefficient via roughness. However, since this approach seems to be problematic, a simpler method had been adopted in its place.)
+
+In addition, when there is no stomatal resistance, etc. (such as evaporation from wet surfaces), the same value as for the bulk coefficient of heat is used for the bulk coefficient of vapor.
+
+## 3.4 Calculation of stomatal resistance
+
+For the calculation of stomatal resistance, a photosynthesis-stomatal model based on Farquhar et al. (1980), Ball (1988), and Collatz et al. (1990, 1991, 1992) is used. The code of SiB2 (Sellers et al., 1996) is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.
+
+### 3.4.1 Calculation of soil moisture stress factor
+
+Soil moisture stress with respect to transpiration is solved. By solving the soil moisture stress factor in each soil layer, and weighting with the root distribution in each layer, the stress factor of the overall soil is calculated.
+
+Referring to SiB2 (Sellers et al., 1996), the soil moisture stress in each layer is evaluated by the following equation:
+
+$$
+ f_{w(k)} = [ 1 + \exp( 0.02 (\psi_{cr} - \psi_{k}) ) ]^{-1}
+\ \ \ \ \ (k=1,\ldots,K_g)
+$$
+
+The stress factor of the overall soil is then obtained by
+
+$$
+ f_w = \sum_{k=1}^{K_g} f_{w(k)} f_{root(k)}
+$$
+
+where  $f_{root(k)}$ is the root distribution fraction in each layer, which is an external parameter for each land cover type.  $\sum_{k=1}^{K_g} f_{root(k)}=1$.　
+
+Furthermore, the weight of transpiration distributed to the root uptake flux in each layer is expressed as
+
+$$
+ f_{rootup(k)} = f_{w(k)} f_{root(k)} / f_w
+\ \ \ \ \ (k=1,\ldots,K_g)
+$$
+
+Note that $\sum_{k=1}^{K_g} f_{rootup(k)} = 1$ here.
+
+### 3.4.2 Calculation of amount of photosynthesis
+
+The amount of photosynthesis is calculated after SiB2 (Sellers et al., 1996).
+
+The amount of photosynthesis is considered to be regulated by the following three upper limits:
+
+
+$$
+ A \leq \min( w_c, w_e, w_s) \tag{eq76}
+$$
+
+
+where $w_c is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by CO<sub>2</sub> concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).
+
+The respective magnitudes are estimated as follows:
+
+
+$$
+ w_c = \left\{
+\begin{array}{ll}
+\displaystyle{
+V_m \left[ \frac{c_i - \Gamma^*}{c_i + K_c(1+O_2/K_O)}\right]
+}
+  \mathrm{(in case of C_3 vegetation)}\\
+ V_m
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right. \\
+ w_e = \left\{
+\begin{array}{ll}
+\displaystyle{
+PAR\cdot \epsilon_3 \left[ \frac{c_i-\Gamma^* }{c_i+2\Gamma^*}\right]
+}
+  \mathrm{(in case of C_3 vegetation)}\\
+PAR\cdot \epsilon_4
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right. \\
+ w_s = \left\{
+\begin{array}{ll}
+V_m / 2
+  \mathrm{(in case of C_3 vegetation)}\\
+V_m c_i/ 5
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right.
+$$
+
+
+where $V_m$ is the Rubisco reaction capacity, $c_i$ is the partial pressure of CO<sub>2</sub>　in the stoma, O<sub>2</sub> is the partial pressure of oxygen in the stoma, and $PAR$is the photosynthetically active radiation (PAR).  is the CO<sub>2</sub> compensation point, which is expressed by $\Gamma^* $ is the compensation point of CO$_2$ and is represented by $\Gamma^* = 0.5 O_2 / S$ $K_c$, $K_O$, and $S$ are functions of temperature, whose function form is shown later. $\epsilon_3$ and $\epsilon_4$  are constants determined by the vegetation type.
+
+In order to express a smooth transition between the different upper limits, [Eq. (76)](#eq76) is actually solved as
+
+$$
+ \beta_{ce} w_p^2 - w_p(w_c + w_e) + w_c w_e = 0 \\
+ \beta_{ps} A^2 - A(w_p + w_s) + w_p w_s = 0
+$$
+
+The amount of net photosynthesis $A__n$ can be obtained when solving the two equations in order while selecting the smaller of the two solutions for each equation. $\beta_{ce}, \beta_{ps}$ are constants determined by the vegetation type. Note that when $\beta=1$, coincidence is achieved with a simple minimum-value operation.
+
+When the amount of photosynthesis has been solved, ($A_n$) is solved as
+
+$$
+ A_n = A - R_d
+$$
+
+where $R_d$ is the amount of respiration, expressed as
+
+
+$$
+ R_d = f_d V_m
+$$
+
+Here, $f_d$  is a constant determined by the vegetation type.
+
+$V_m$, etc. depend on the temperature and soil moisture, as follows (note that although the temperature dependence differs according to the term in which $V_m$ appears, the value is expressed by the same $V_m$):
+
+$$
+ V_m = V_{\max} f_T(T_c) f_w \\
+ K_c = 30 \times 2.1^{Q_T} \\
+ K_O = 30000 \times 1.2^{Q_T} \\
+ S   = 2600 \times 0.57^{Q_T} \\
+ f_T(T_c) = \left\{
+\begin{array}{ll}
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}  (\mathrm{C_3 の w_c, w_e のとき})\\
+ 1.8^{Q_T}/\{1 + \exp[s_3(s_4-T_c)]\}  (\mathrm{C_3 の w_s のとき}) \\
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}/\{1 + \exp[s_3(s_4-T_c)]\}
+    (\mathrm{C_4 の w_c, w_e のとき})\\
+ 1.8^{Q_T}   (\mathrm{C_4 の w_s のとき}) \\
+ 2^{Q_T}/\{1 + \exp[s_5(T_c-s_6)]\}   (\mathrm{R_d のとき})
+\end{array}
+\right. \\
+Q^T = (T_c - 298) / 10
+$$
+
+
+where $V_{\max}$, $s_1, \ldots, s_6$ are constants determined by the vegetation type.
+
+If $V_{\max}$, $PAR$, $c_i$, $T_c$ and $f_w$ are given by the above, the amount of photosynthesis in an individual leaf can be calculated. In reality, these values can be considered to be distributed unevenly even in the same canopy; however, $c_i$, $T_c$, and $f_w$ are approximated here as being the same for all leaves, whereas vertical distribution is taken into consideration in the case of $V_{\max}$ and $PAR$. $PAR$ is greater at the top of the canopy, and the lower the position in the canopy, the more it is attenuated. $V_{\max}$ is also considered to conform with this property of $PAR$and to have a similar distribution.
+
+The average vertical distribution of$PAR$ (and therefore the vertical distribution of $V_{\max}$) is expressed as
+
+$$
+ PAR(L) = PAR^{top} \exp(- f_{atn} a L)
+$$
+
+where $L$ is the leaf area added cumulatively from the canopy top, $PAR^${to@}$is $PAR$ at the canopy top, $a$ is the attenuation coefficient defined in [Eq. (17)](#eq17), and $f_{atn}$ is a constant for adjustment. Using this, the factor $f_{avr}$ expressing the average value of $PAR$, is defined as follows:
+
+$$
+ f_{avr} = \int_0^{LAI} PAR(L) dL \Bigm / (LAI \cdot PAR^{top})
+ = \frac{1 - \exp(- f_{atn} a L)}{f_{atn} a}
+$$
+
+Since each of the terms $A_n$ ($w_c, w_s, w_e, R_d$) is proportional to $V_{\max}$ or $PAR$, based on the assumption that the vertical distributions of $V_{\max}$ and $PAR$ are proportional, by multiplying $A_n$, which was solved using the values of $V_{\max}$ and $PAR$ at the top of the canopy, by $f_${avr}$, the average amount of photosynthesis of leaf ($\overline{A_n}$) can be solved:
+
+$$
+ \overline{A_n} = f_{avr} A_n
+$$
+
+This parameter is expressed as $A_n$ hereafter.
+
+### 3.4.3 Calculation of stomatal resistance
+
+The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of Ball (1988) as follows:
+
+$$
+ g_s = m \frac {A_n}{c_s} h_s + b f_w \tag{eq93}
+$$
+
+where  $c_s$ is the molar fraction of CO<sub>2</sub> (number of mol of CO<sub>2</sub> per 1 mol of air) at the leaf surface, $f_w$ is the soil moisture stress factor, and $m$ and $b$ are constants determined by the vegetation type.
+
+$h_s$ is the relative humidity at the leaf surface and is defined as
+
+$$
+ h_s = e_s / e_i \tag{eq94}
+$$
+
+
+where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^*(T_c)$ is the mole fraction of water vapor in the stomata. $e^*$ denotes the molar fraction of saturated vapor.
+
+Assuming that the vapor flux from the inside of the stoma to the leaf surface is equal to the vapor flux from the leaf surface to the atmosphere (i.e., that there is no convergence and divergence of vapor at the leaf surface),
+
+$$
+ g_s(e_i - e_s) = g_l(e_s - e_a) \tag{eq95}
+$$
+
+from which we obtain
+
+$$
+ e_s = ( g_l e_a + g_s e_i ) / ( g_l + g_s )\tag{eq96}
+$$
+
+where $e_a$ is the molar fraction of vapor in the atmosphere and $g_l$ is the conductance from the leaf surface to the atmosphere. $g_l$ is expressed by $g_l = C_{Hc}|V_a| /
+LAI$ using the bulk coefficient.
+
+Similarly, assuming that there is no convergence and divergence of CO<sub>2</sub> at the leaf surface,
+
+$$
+ A_n = g_l(c_a - c_s)/1.4
+     = g_s(c_s - c_i)/1.6
+$$
+
+from which we obtain
+
+$$
+ c_s = c_a - 1.4 A_n/g_l \\
+ c_i = c_s - 1.6 A_n/g_s \tag{eq99}
+$$
+
+where  $c_a$ and $c_i$  are the molar fractions of CO<sub>2</sub> in the atmosphere and in the stoma, respectively. The numerical values 1.4 and 1.6 are constants that appear due to the difference in the diffusion coefficients of vapor and CO<sub>2</sub>.
+
+If we order the equations by substituting [Eq. (94)](#eq94) and [Eq. (96)](#eq96) into [Eq. (93)](#eq93), the following equation is obtained for $g_s$:
+
+
+$$
+ H g_s^2 + ( H g_l - e_i - H b f_w ) g_s - g_l ( H b f_w + e_a ) = 0 \tag{eq100}
+$$
+
+However, since
+
+$$
+ H = (e_i c_s)/(m A_n)
+$$
+
+[Eq. (99)](#eq99) is used for $c_s$.
+
+Among the two solutions of [Eq. (100)](#eq100), the larger one is the significant solution. From the above, if  $A_n$ is known, $g_s$ can be solved; however, when solving $g_s$, $c_i$ is used. $c_i$ can be solved by [Eq. (99)](#eq99) if $g_s$ is solved. That is, $A_n$ is necessary in order to solve $g_s$, whereas $c_i$, namely $g_s$, is necessary in order to solve $A_n$. Iterative calculation is therefore required.
+
+The algorithm for the iterative calculation is ported from SiB2, which uses the method of quickening the convergence by iterating six times and putting the errors in decreasing order to estimate the next solution.
+
+Lastly, using stomatal conductance, the stomatal resistance is expressed as
+
+$$
+ r_{st} = 1/g_{st}
+$$
+
+### 3.4.4 Calculation of ground surface evaporation resistance
+
+The ground surface evaporation resistance ($r_{soil}$) and relative humidity of the uppermost soil layer ($h_{soil}$) are calculated as follows:
+
+$$
+ r_{soil} = a_1 ( 1 - W_{(1)} ) / ( a_2 + W_{(1)} ) \\
+ h_{soil} = \exp \left(\frac{\psi_{(1)} g}{R_{air} T_{g(1)}} \right)
+$$
+
+where $W_{(1)} = w_{(1)}/w_{sat(1)}$ is the degree of saturation of the uppermost soil layer, $\psi_{1}$ is the moisture potential of the uppermost soil layer, $g$ is the gravitational acceleration, $R_{air}$ is the gas constant of the air, and $T_{g(1)}$ is the temperature of the uppermost soil layer. $a_1$ and $a_2$ are constants, with $a_1=800$, $a_2$=0.2. as standard values.
+
+# 4. MATSFC Surface Submodel
+
+## 4.1 Calculation of surface turbulent fluxes
+
+The turbulent fluxes at the ground surface are solved by bulk formulae as follows. Then, by solving the surface energy balance, the ground surface temperature ($T_s$) and canopy temperature ($T_c$) are updated, and the surface flux values with respect to those values are also updated. The solutions obtained here are temporary values. In order to solve the energy balance by linearizing with respect to $T_s$ and $T_c$, the differential with respect to $T_s$ and $T_c$ of each flux is calculated beforehand.
+
+- Momentum flux
+
+$$
+ \tau_x = - \rho C_{M}|V_a| u_a \\
+ \tau_y = - \rho C_{M}|V_a| v_a
+$$
+
+
+where $\tau_x$ and $\tau_y$  are the momentum fluxes (surface stress) of the zonal and meridional directions, respectively.
+
+- Sensible heat flux
+
+$$
+ H_s = c_p \rho C_{Hs}|V_a| (T_s - (P_s/P_a)^{\kappa}T_a) \tag{eq107}
+  \\
+ H_c = c_p \rho C_{Hc}|V_a| (T_c - (P_s/P_a)^{\kappa}T_a) \\
+ \partial H_s/\partial T_s = c_p \rho C_{Hs}|V_a| \\
+ \partial H_c/\partial T_c = c_p \rho C_{Hc}|V_a|
+$$
+
+where $H_s$ and $H_c$ are the sensible heat flux from the ground surface (forest floor) and canopy (leaf surface), respectively; $\kappa = R_{air} / c_p$ and $R_{air}$are the gas constants of air; and $c_p$ is the specific heat of air.
+
+- Bare soil surface (forest floor) evaporation flux
+
+$$
+ Et_{(1,1)} = (1-A_{Sn})(1-f_{ice})\cdot
+           \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
+ Et_{(2,1)} = (1-A_{Sn})f_{ice}\cdot
+           \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
+ \partial Et_{(1,1)}/\partial T_s = (1-A_{Sn})(1-f_{ice})\cdot
+           \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s} \\
+ \partial Et_{(2,1)}/\partial T_s = (1-A_{Sn})f_{ice}\cdot
+           \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s}
+$$
+
+where $Et_{(1,1)}$ and $Et_{(2,1)}$ are the water evaporation and ice sublimation fluxes at the bare soil surface, respectively; $q^*(T_s)$ is the saturation specific humidity at the ground surface temperature; $h_{soil}$ is the relative humidity at the soil surface layer; $A_{Sn}$ is the snow-covered ratio; and $f_{ice}$ is the ratio of ice in the uppermost soil layer, expressed as
+
+$$
+  f_{ice} = w_{i(1)}/w_{(1)}
+$$
+
+Since the snow-free portion and snow-covered portion are calculated separately, it should be noted that $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion). When the flux is downward (i.e., dew formation), there is no soil moisture resistance; therefore, the bulk coefficient is taken as:
+
+$$
+  \widetilde{C_{Es}} = \left\{
+  \begin{array}{ll}
+   C_{Es} (h_{soil}q^*(T_s) - q_a > 0 {のとき})\\
+   C_{Hs} (h_{soil}q^*(T_s) - q_a \leq 0 {のとき})
+  \end{array}
+  \right.
+$$
+
+- Transpiration flux
+
+$$
+ Et_{(1,2)} = (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|(q^*(T_c) - q_a) \\
+ Et_{(2,2)} = 0 \\
+ \partial Et_{(1,2)}/\partial T_c =
+  (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|\cdot dq^*/dT|_{T_c} \\
+ \partial Et_{(2,2)}/\partial T_c = 0
+$$
+
+where $Et_{(1,2)}$ and $Et_{(2,2)}$ are transpiration of water and ice, respectively; and $Et_{(2,2)}$ is always 0. $f_{cwet} = w_c / w_{c,cap}$ is the wet fraction of the canopy. When the flux is downward, which is considered to be dew formation on the dry part of the leaf, the bulk coefficient is taken as:
+
+$$
+  \widetilde{C_{Ec}} = \left\{
+  \begin{array}{ll}
+   C_{Ec} (q^*(T_c) - q_a > 0 {のとき})\\
+   C_{Hc} (q^*(T_c) - q_a \leq 0 {のとき})
+  \end{array}
+  \right.
+$$
+
+- Canopy evaporation flux
+
+When      $T_c$ $\geq$ 0 $^{\circ}$ C:
+
+
+$$
+ Et_{(1,3)} =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
+ Et_{(2,3)} = 0 \\
+ \partial Et_{(1,3)} \partial T_c =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c} \\
+ \partial Et_{(2,3)} \partial T_c = 0
+$$
+
+when  $T_c$ $<$ 0 $^{\circ}$ In case of C:
+
+$$
+ Et_{(1,3)} = 0 \\
+ Et_{(2,3)} =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
+ \partial Et_{(1,3)} \partial T_c = 0 \\
+ \partial Et_{(2,3)} \partial T_c =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c}
+$$
+
+where $Et_{(1,3)}$ and $Et_{(2,3)}$ are the evaporation of water and the sublimation of ice at the canopy surface, respectively.
+
+- Snow sublimation flux
+
+$$
+ E_{Sn} = A_{Sn}\cdot \rho C_{Hs}|V_a|(q^*(T_s) - q_a) \\
+ \partial E_{Sn}/\partial T_s = A_{Sn}\cdot \rho C_{Hs}|V_a|
+ \cdot dq^*/dT|_{T_s}
+$$
+
+where $E_{Sn}$ is the snow sublimation flux. Since the snow-free portion and snow-covered portion are calculated separately, it should also be noted here that $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).
+
+## 4.2 Calculation of heat conduction fluxes
+
+The heat conduction fluxes in the snow-free and snow-covered portions are calculated. Similarly to the turbulent fluxes, when the energy balance is solved later and the surface temperature is updated, the heat conduction flux values are updated with respect to that value.
+
+In addition, it should also be noted here that since the snow-free portion and snow-covered portion are calculated separately, $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).
+
+- Heat conduction flux in the snow-free portion
+
+$$
+  F_{g(1/2)} = (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)} (T_{g(1)} - T_s) \\
+  \partial F_{g(1/2)}/\partial T_s =
+  - (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)}
+$$
+where $F_{g(1/2)}$ is the heat conduction flux, $k_{g(1/2)}$ is the soil heat conductivity, $\Delta z_{g(1/2)}$  is the thickness from the temperature definition point of the uppermost soil layer to the ground surface, and $T_{g(1)}$ is the temperature of the uppermost soil layer.
+
+- Heat conduction flux in the snow-covered portion　
+
+$$
+  F_{Sn(1/2)} = A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} (T_{Sn(1)} - T_s)
+ \\
+  \partial F_{Sn(1/2)}/\partial T_s =
+  - A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} \tag{eq135}
+$$
+
+where $F_{Sn(1/2)}$ is the heat conduction flux, $k_{Sn(1/2)}$ is the snow heat conductivity, $\Delta z_{Sn(1/2)}$ is the thickness from the temperature definition point of the uppermost snow layer to the ground surface, and $T_{Sn(1)}$ is the temperature of the uppermost snow layer.
+
+## 4.3 Solution of energy balance at ground surface and canopy
+
+The energy balance is solved for two cases: (1) when there is no melting at the ground surface, and (2) when there is melting at the ground surface. In case (2), the solution is obtained by fixing the ground surface temperature ($T_s$) at 0°C, and the energy available for use in melting is diagnosed from the energy balance. Snowmelt on vegetation is treated by correction later on; therefore, that case is not solved separately here. Moreover, the case of the snow completely melting within the time steps is also treated by correction later on.
+
+### 4.3.1 Energy balance at ground surface and canopy
+
+The energy divergence at the ground surface (forest floor) is
+
+$$
+ \Delta F_s =
+  H_s + R^{net}_s + l Et_{(1,1)} + l_s ( Et_{(2,1)} + E_{Sn} )
+  - F_{g(1/2)} - F_{Sn(1/2)} \tag{eq136}
+$$
+
+where  $l$ and $l_s$  are the latent heat of evaporation and sublimation, respectively; and $R^{net}_s$ is the net radiation divergence at the ground surface, given by
+
+$$
+  R^{net}_s = -(R^{\downarrow}_S - R^{\uparrow}_S) {\mathcal{T}}_{cS}
+              - \epsilon R^{\downarrow}_L {\mathcal{T}}_{cL}
+              + \epsilon \sigma T_s^4
+              - \epsilon \sigma T_c^4 (1 - {\mathcal{T}}_{cL})
+$$
+
+where$\sigma$ is the Stefan-Boltzmann constant.
+
+The energy divergence at the canopy (leaf surface) is
+
+$$
+  \Delta F_c =
+  H_c + R^{net}_c + l ( Et_{(1,2)} + Et_{(1,3)} )
+  + l_s ( Et_{(2,2)} + Et_{(2,3)} )
+$$
+
+where $R^{net}_c$ is the net radiation divergence at the canopy, given by
+
+$$
+  R^{net}_c = -(R^{\downarrow}_S - R^{\uparrow}_S) (1-{\mathcal{T}}_{cS})
+              - \epsilon R^{\downarrow}_L (1-{\mathcal{T}}_{cL})
+              + ( 2 \epsilon \sigma T_c^4
+              - \epsilon \sigma T_s^4 ) (1 - {\mathcal{T}}_{cL}) \tag{eq139}
+$$
+
+
+### 4.3.2 Case 1: When there is no melting at the ground surface
+
+When there is no melting at the ground surface, $\Delta F_s=\Delta F_c=0$ are solved so that $T_s$ and $T_c$ holds true for the energy balance at the ground surface and canopy.
+
+The energy balance equation linearizing each term with respect to $T_s$ and $T_c$ can be expressed as
+
+
+$$
+ \left(
+\begin{array}{l}
+ \Delta F_s \\
+ \Delta F_c \\
+\end{array}
+\right)^{current}
+=
+\left(
+\begin{array}{l}
+ \Delta F_s \\
+ \Delta F_c \\
+\end{array}
+\right)^{past}
++
+\left(
+\begin{array}{ll}
+ {\partial \Delta F_s}/{\partial T_s}
+ {\partial \Delta F_s}/{\partial T_c} \\
+ {\partial \Delta F_c}/{\partial T_s}
+ {\partial \Delta F_c}/{\partial T_c} \\
+\end{array}
+\right)
+\left(
+\begin{array}{l}
+ \Delta T_s \\
+ \Delta T_c \\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{l}
+ 0 \\
+ 0 \\
+\end{array}
+\right) \tag{eq140}
+$$
+
+The part with $pst$ on the right-hand side is where the fluxes calculated [Eq. (107)](eq107) to [Eq. (135)](#eq135) are substituted into [Eq. (136)](eq136) to [Eq. (139)](#eq139) using the values of $T_s$ and $T_c$ obtained in the previous step.
+
+The differential terms are as follows:
+
+$$
+ \frac{\partial \Delta F_s}{\partial T_s} =
+ \frac{\partial H_s}{\partial T_s}
++\frac{\partial R^{net}_s}{\partial T_s}
++l\frac{\partial Et_{(1,1)}}{\partial T_s}
++l_s\left(\frac{\partial Et_{(2,1)}}{\partial T_s}
++    \frac{\partial E_{Sn}}{\partial T_s}\right)
+-\frac{\partial F_{g(1/2)}}{\partial T_s}
+-\frac{\partial F_{Sn(1/2)}}{\partial T_s} \\
+ \frac{\partial \Delta F_s}{\partial T_c} =
+ \frac{\partial R^{net}_s}{\partial T_c} \\
+ \frac{\partial \Delta F_c}{\partial T_s} =
+ \frac{\partial R^{net}_c}{\partial T_s} \\
+ \frac{\partial \Delta F_c}{\partial T_c} =
+ \frac{\partial H_c}{\partial T_c}
++\frac{\partial R^{net}_c}{\partial T_c}
++l  \left(\frac{\partial Et_{(1,2)}}{\partial T_c}
++         \frac{\partial Et_{(1,3)}}{\partial T_c}\right)
++l_s\left(\frac{\partial Et_{(2,2)}}{\partial T_c}
++         \frac{\partial Et_{(2,3)}}{\partial T_c}\right)
+$$
+
+where
+
+
+$$
+ \frac{\partial R^{net}_s}{\partial T_s} =
+ \epsilon 4 \sigma T_s^3 \\
+ \frac{\partial R^{net}_s}{\partial T_c} =
+ - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3 \\
+ \frac{\partial R^{net}_c}{\partial T_s} =
+ - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_s^3 \\
+ \frac{\partial R^{net}_c}{\partial T_c} =
+  2( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3
+$$
+
+Using the above equations, [Eq. (140)]($eq140) is solved for $T_s$ and $T_c$.
+
+### 4.3.3 Case 2: When there is melting at the ground surface
+
+When either there is snow on the ground surface or the land cover type is ice sheet, and also the ground surface temperature solved in case 1, $T_s^{current} = T_s^{past}+\Delta T_s$, is higher than 0°C, melting at the ground surface occurs. When there is melting at the ground surface, the ground surface temperature is fixed at 0°C. That is:
+
+$$
+ \Delta T_s = \Delta T_s^{melt} = T_{melt} - T_s^{past}
+$$
+
+where $T_{melt}$ is the melting point (0°C) of ice.
+
+With $T_c$ known, $\Delta T_s$ is solved by the following equation similarly to [Eq. (140)](#eq140):
+
+$$
+ \Delta T_c = \left( - \Delta F_c^{past}
+            - \frac{\partial \Delta F_c}{\partial T_s} \Delta T_s^{melt}
+              \right) \Bigm/ \frac{\partial \Delta F_c}{\partial T_c}
+$$
+
+Thus, $\Delta T_s$ and $\Delta T_c$ are determined, and the energy convergence at the ground surface to be used for melting is solved by the following equation:
+
+$$
+ \Delta F_{conv} =
+ - \Delta F_s^{current} = - \Delta F_s^{past}
+ - \frac{\partial \Delta F_s}{\partial T_s} \Delta T_s^{melt}
+ - \frac{\partial \Delta F_s}{\partial T_c} \Delta T_c
+$$
+
+### 4.3.4 Conditions for solutions
+
+Several conditions are set for the solution of the ground surface energy balance. After solving the energy balance, if any of the conditions are not followed, the flux that has contravened the conditions is fixed at the limit value that satisfies the conditions, and the energy balance is solved again.
+
+1. Vapor in the troposphere should not be excessively removed.
+
+Due to the instability of temporal calculations, it is possible that large downward latent heat is produced. The conditions are set so that even in such a case, the vapor in the troposphere from the surface is not completely removed; that is,
+
+$$
+  Et_{(i,j)}^{current} > - q_a ( P_s - P_a ) / (g \Delta t)
+   \ \ \ \ \ (i=1,2 ; j=1,2,3) \\
+  E_{Sn}^{current} > - q_a ( P_s - P_a ) / (g \Delta t)
+$$
+
+
+where $g$ is the gravitational acceleration and $\Delta t$ denotes the time steps of the atmospheric model. For the values of $Et$ etc. to be used for judgment, the updated flux values ($current$) with respect to the values of $T_s$ and $T_c$that have been updated so as to satisfy the energy balance are used. The same applies to all of the other conditions listed below. Updating of the flux values is described later.
+
+2. Soil moisture should not take a negative value.
+
+Soil moisture should not take a negative value due to transpiration; that is,
+
+$$
+   Et_{(1,2)}^{current} <
+     \sum_{k\in rootzone} \rho_w w_{k}\Delta z_{g(k)} /\Delta t_L
+$$
+
+where $\rho_w$  is the water density and $\Delta t_L$ denotes the time steps of the land surface model.
+
+3. Canopy water should not take a negative value.
+
+Canopy water should not take a negative value due to evaporation; that is,
+
+$$
+   Et_{(i,3)}^{current} < \rho_w w_c /\Delta t_L
+   \ \ \ \ \ (i=1,2)
+$$
+
+4. The snow water equivalent should not take a negative value.
+
+The snow water equivalent should not take a negative value due to sublimation of snow; that is,
+
+$$
+   E_{Sn}^{current} < Sn /\Delta t_L
+$$
+
+### 4.3.5 Updating of ground surface and canopy temperatures
+
+The ground surface temperature and canopy temperature are updated as follows:
+
+$$
+ T_s^{current} = T_s^{past} + \Delta T_s \\
+ T_c^{current} = T_c^{past} + \Delta T_c
+$$
+
+Based on the updated canopy temperature, the canopy water is diagnosed in advance as being either liquid or solid. This information is used when treating freezing and melting of the canopy water, as follows:
+
+
+$$
+ A_{Snc} = \left\{
+\begin{array}{ll}
+ 0 (T_c \geq T_{melt})\\
+ 1 (T_c <    T_{melt})
+\end{array}
+\right.
+$$
+
+where $A_{Snc}$ is the frozen fraction on the canopy.
+
+### 4.3.6 Updating of flux values
+
+The flux values are updated with respect to the updated values of $T_s$ and $T_c$. When $F$ denotes any given flux, updating of the values is performed as follows:
+
+$$
+ F^{current} = F^{past} + \frac{\partial F}{\partial T_s} \Delta T_s
+                        + \frac{\partial F}{\partial T_c} \Delta T_c
+$$
+
+Using the updated flux values, the fluxes output into the atmosphere, etc. are calculated as follows:
+
+
+$$
+ H = H_s + H_c \\
+ E = \sum_{j=1}^3 \sum_{i=1}^2 Et_{(i,j)} + E_{Sn} \\
+ R^{\uparrow}_L = {\mathcal{T}}_{cL} \epsilon \sigma T_s^4
+ + (1 - {\mathcal{T}}_{cL}) \epsilon \sigma T_c^4
+ + (1 - \epsilon) R^{\downarrow}_L \\
+ T_{sR} = ( R^{\uparrow}_L / \sigma )^{1/4}
+$$
+
+
+where $T_{sR}$ is the radiation temperature at the ground surface.
+
+The root uptake flux in each soil layer is then calculated as follows:
+
+$$
+ F_{root(k)} = f_{rootup(k)} Et_{(1,2)} \ \ \ \ (k=1,\ldots,K_g)
+$$
+
+where $F_{root(k)}$ is the root uptake flux and  $f_{rootup(k)}$ is the weighting for distribution of the transpiration to the root uptake flux in each layer.
+
+# 5 MATCNW Canopy Water Balance Submodel
+
+The canopy water balance is calculated.
+
+## 5.1 Diagnosis of canopy water phase
+
+With regard to canopy water, the liquid phase (intercepted rainfall, dew formation, and frozen water content that has melted) and solid phase (intercepted snow, icing, and liquid water content that has frozen) are considered separately and the coexistence of the two phases is allowed. The only prognostic variable is the water content ![](media/media/image748.png) encompassing both the liquid and solid phases, and depending on whether the canopy temperature ![](media/media/image746.png) is higher or lower than ![](media/media/image747.png)C, it is diagnosed as liquid or solid, respectively. The reason why the liquid and solid phases can coexist is that ![](media/media/image785.png) in snow-covered and snow-free portions is calculated separately. That is, the frozen fraction on the canopy ![](media/media/image801.png) is defined (in actuality, it is obtained as a result of spatial averaging by the coupler) as follows:
+
+$$
+ A_{Snc} = \left\{
+\begin{array}{ll}
+ 0  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} \geq T_{melt} {のとき})\\
+ (1-A_{Sn})  (T_{c(1)} < T_{melt}, \ T_{c(2)} \geq T_{melt} {のとき})\\
+ A_{Sn}  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} < T_{melt} {のとき})\\
+ 1  (T_{c(1)} < T_{melt}, \ T_{c(2)} < T_{melt} {のとき})
+\end{array}
+\right.
+$$
+
+where ![](media/media/image774.png) and ![](media/media/image770.png) are the liquid and solid water content of the canopy, respectively.
+
+For ![](media/media/image764.png), the value updated in the flux calculation section ![](media/media/image767.png)　is given by the coupler, but the value of the previous step ![](media/media/image775.png) is stored in MATCNW. ![](media/media/image708.png) denotes the time steps. This is solved from the initial values of ![](media/media/image707.png) and ![](media/media/image712.png) at the time of initiating the calculation, and therefore does not become a new prognostic variable.
+
+5.2 Prognosis of canopy water
+
+The prognostic equations for the canopy water in the liquid and solid phases are given respectively as
+
+![](media/media/image702.png), (169)
+
+![](media/media/image697.png), (170)
+
+where![](media/media/image701.png) and ![](media/media/image704.png) are the precipitation interception in the respective cases, ![](media/media/image700.png) and ![](media/media/image699.png) are the evaporation (sublimation), ![](media/media/image703.png) and ![](media/media/image749.png) are the dripping, and ![](media/media/image728.png) is the melting. Note that here, the values before the updated![](media/media/image740.png) and ![](media/media/image735.png) are defined using ![](media/media/image729.png) before it is updated, as follows:
+
+![](media/media/image723.png), (171)
+
+![](media/media/image730.png). (172)
+
+5.2.1 Evaporation (sublimation) of canopy water
+
+First, by subtracting the evaporation (sublimation), the canopy water is partially updated as follows. The evaporation (sublimation) has already been solved in the flux calculation section.
+
+![](media/media/image733.png), (173)
+
+![](media/media/image724.png), (174)
+
+![](media/media/image713.png), (175)
+
+![](media/media/image669.png). (176)
+
+Then, if either ![](media/media/image666.png) or ![](media/media/image659.png) become negative in value, it is supplemented by the other until the value returns to 0, and the melting (negative value in the case of frozen water) that is assumed to be produced is then inserted in ![](media/media/image667.png).
+
+5.2.2 Interception of precipitation by the canopy
+
+The precipitation interception and dripping are considered by separating the places of convective precipitation and nonconvective precipitation. The fraction of the convective precipitation area ![](media/media/image671.png) is assumed to be uniform (0.1 as a standard value). Stratiform precipitation is also assumed to be uniform.
+
+![](media/media/image662.png), (177)
+
+![](media/media/image653.png), (178)
+
+![](media/media/image657.png), (179)
+
+![](media/media/image665.png), (180)
+
+where ![](media/media/image652.png) and ![](media/media/image62.png) denote the interception in the convective precipitation area, and ![](media/media/image67.png) and ![](media/media/image61.png) denote the interception in the nonconvective precipitation area. ![](media/media/image54.png) is the interception efficiency, and is simply given by
+
+![](media/media/image58.png). (181)
+
+By adding the intercepted precipitation, the canopy water is further partially updated as follows:
+
+![](media/media/image64.png), (182)
+
+![](media/media/image56.png), (183)
+
+![](media/media/image57.png), (184)
+
+![](media/media/image48.png). (185)
+
+5.2.3 Dripping of the canopy water
+
+For dripping, dripping due to the canopy water capacity being exceeded and natural dripping due to gravity are considered, as follows:
+
+![](media/media/image65.png), (186)
+
+![](media/media/image32.png), (187)
+
+![](media/media/image25.png), (188)
+
+![](media/media/image21.png), (189)
+
+where the canopy water capacity ![](media/media/image1.png) is, from the water capacity per unit leaf area ![](media/media/image8.png) and LAI, assumed to be
+
+![](media/media/image7.png). (190)
+
+![](media/media/image3.png) is set at 0.2 mm as a standard value, and the same value is used with respect to the liquid and solid phases.
+
+The natural dripping due to gravity ![](media/media/image11.png) is, after Rutter et al. (1975), assumed to be
+
+![](media/media/image4.png). (191)
+
+![](media/media/image14.png) = 1.14 x 10<sup>-11</sup> and ![](media/media/image28.png) = 3.7 x 10<sup>3</sup> are standard values, and the same values are used with respect to the liquid and solid phases.
+
+By subtracting the dripping, the values are updated as follows:
+
+![](media/media/image22.png), (192)
+
+![](media/media/image23.png), (193)
+
+![](media/media/image26.png), (194)
+
+![](media/media/image27.png). (195)
+
+5.2.4 Updating and melting of canopy water
+
+Moreover, by taking the average of the convective precipitation area and nonconvective precipitation area, the canopy water can be updated as follows:
+
+![](media/media/image46.png), (196)
+
+![](media/media/image52.png), (197)
+
+![](media/media/image15.png). (198)
+
+However, if updating of the frozen fraction ![](media/media/image19.png) is considered,
+
+![](media/media/image16.png), (199)
+
+![](media/media/image356.png). (200)
+
+The melting![](media/media/image357.png) is therefore diagnosed as
+
+![](media/media/image378.png). (201)
+
+When the melting is produced during evaporation, that portion is added.
+
+Here, the canopy temperature should be changed due to the latent heat of melting; however, it is impossible because we are ignoring the heat capacity of the canopy. Moreover, although it would be advantageous to change the temperature of the surrounding atmosphere, this is also not possible in view of the need for agreement with the calculation in the land surface integration section. Hence, for convenience, in order to conserve the energy of the system, the latent heat of melting is given as the heat flux to the soil (or snow).
+
+5.3 Fluxes given to the soil, snow, and runoff process
+
+The water flux ![](media/media/image355.png) given to the snow or the runoff process after interception by the canopy is respectively expressed with respect to the convective precipitation area and nonconvective precipitation area, and the liquid and solid phases, as follows:
+
+![](media/media/image404.png), (202)
+
+![](media/media/image364.png), (203)
+
+![](media/media/image367.png), (204)
+
+![](media/media/image343.png). (205)
+
+For the calculation of runoff, convective rainfall and stratiform rainfall are given separately, while snowfall is consolidated because separation is not necessary, as follows:
+
+![](media/media/image346.png), (206)
+
+![](media/media/image350.png), (207)
+
+![](media/media/image386.png), (208)
+
+where ![](media/media/image385.png), ![](media/media/image384.png), and ![](media/media/image373.png) are the convective precipitation, the stratiform precipitation, and the snowfall after interception by the canopy, respectively.
+
+The energy flux correction portion for the soil or the snow is
+
+![](media/media/image368.png), (209)
+
+where ![](media/media/image398.png) is the latent heat of melting.
+
+# 6 MATSNW Snow Submodel
+
+> The snow water equivalent, snow temperature, and snow albedo are calculated here.
+
+6.1 Diagnosis of snow-covered ratio
+
+When the amount of snow is small, the snow in the subgrid cells is considered. The snow-covered ratio ![](media/media/image382.png) is given as a unique function of the snow water equivalent ![](media/media/image372.png) by
+
+![](media/media/image365.png). (210)
+
+![](media/media/image374.png) = 100 \[kg/m<sup>2</sup>\] is a standard value.
+
+> In actuality, various factors can be considered to affect the snow-covered ratio, such as differences in topography, the time of snowfall or snow melting, etc. With regard to this point, introduction the Subgrid Snow Distribution (SSNOWD) model proposed by Liston (personal communication) is being studied.
+
+![](media/media/image316.png) is referred to at the beginning of the flux calculation section, and the various fluxes calculated there are used for the area-weighted mean as follows:
+
+![](media/media/image311.png), (211)
+
+where ![](media/media/image317.png) and ![](media/media/image318.png) are fluxes at the snow-free portion and snow-covered portion, respectively. In actuality, this operation is performed through the flux coupler.
+
+6.2 Vertical division of snow layers
+
+> In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
+
+The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
+
+As a standard, the mass of each layer ![](media/media/image303.png) is determined as follows (![](media/media/image325.png) is the uppermost layer):
+
+![](media/media/image313.png), (212)
+
+![](media/media/image308.png), (213)
+
+![](media/media/image304.png), (214)
+
+where
+
+![](media/media/image291.png), (215)
+
+![](media/media/image345.png) is the grid-mean snow water equivalent, and ![](media/media/image338.png) is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ![](media/media/image333.png) is also the value of the snow-covered portion, not the grid-mean value. The unit is kg/m<sup>2</sup>.
+
+From the above, it can be clearly seen that the number of snow layers ![](media/media/image344.png) is as follows, as a standard:
+
+![](media/media/image337.png). (216)
+
+6.3 Calculation of snow water equivalent
+
+> The prognostic equation of the snow water equivalent is given by
+
+![](media/media/image330.png), (217)
+
+where ![](media/media/image328.png) is the snowfall flux after interception by the canopy, ![](media/media/image334.png) is the sublimation flux, ![](media/media/image341.png) is the snowmelt, and ![](media/media/image327.png) is the refreeze of snowmelt or the freeze of rainfall.
+
+6.3.1 Sublimation of snow
+
+> First, by subtracting the sublimation, the snow water equivalent is partially updated:
+
+![](media/media/image259.png), (218)
+
+![](media/media/image298.png). (219)
+
+In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
+
+6.3.2 Snowmelt
+
+Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be ![](media/media/image262.png). When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than ![](media/media/image258.png)C, the temperature of the uppermost layer is fixed at ![](media/media/image260.png) and the calculation is performed again. In this case, the energy convergence ![](media/media/image270.png) in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
+
+![](media/media/image285.png). (220)
+
+With regard to the second layer and below, if the temperature is higher than ![](media/media/image248.png), it is put back to ![](media/media/image263.png) and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
+
+![](media/media/image254.png), (221)
+
+![](media/media/image274.png) is newly defined by
+
+![](media/media/image320.png), (222)
+
+and the snowmelt is solved as in Eq. (220).
+
+> By subtracting the snowmelt, the mass of each layer is updated:
+
+![](media/media/image292.png). (223)
+
+During these calculations, when a certain layer is fully melted, the remaining amount of ![](media/media/image274.png) is given to the layer below to raise the temperature in that layer; that is,
+
+![](media/media/image283.png), (224)
+
+![](media/media/image315.png), (225)
+
+where ![](media/media/image293.png) is the specific heat of snow (ice). When all of the snow is melted, ![](media/media/image274.png) is given to the soil.
+
+> The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):
+
+![](media/media/image272.png). (226)
+
+> By subtracting the snowmelt, the snow water equivalent is partially updated:
+
+![](media/media/image284.png). (227)
+
+6.3.3 Freeze of snowmelt water and rainfall in snow
+
+> The freeze of snowmelt water and rainfall in the snow is calculated next. With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer. The retention of liquid water content in the snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.
+>
+> The liquid water flux at the snow upper boundary in the snow-covered portion is
+
+![](media/media/image251.png). (228)
+
+Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).
+
+It is reasonable to assume the temperature of the snowmelt water as 0°C, and the temperature of rainfall on the snow is also assumed to be 0°C for convenience. The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0°C, any additional water is assumed to be unable to freeze and to percolate to the layer below. In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer ![](media/media/image224.png) is solved by
+
+![](media/media/image252.png), (229)
+
+where ![](media/media/image230.png) is the liquid water flux percolated from the upper boundary of the ![](media/media/image211.png)th layer of the snow. ![](media/media/image220.png) is assumed to be 0.1 as a standard value.
+
+The snow temperature change is updated by
+
+![](media/media/image246.png), (230)
+
+and the mass is updated as follows:
+
+![](media/media/image247.png). (231)
+
+> The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
+
+![](media/media/image209.png). (232)
+
+> By adding the amount of freeze, the snow water equivalent is partially updated:
+
+![](media/media/image213.png). (233)
+
+> The liquid water that has percolated from the snow to the lower boundary is given to the soil.
+
+6.3.4 Snowfall
+
+> Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
+
+![](media/media/image465.png). (234)
+
+However, when the temperature of the uppermost soil layer is 0°C or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
+
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ![](media/media/image459.png) is newly diagnosed by Eq. (210) and the snow temperature ![](media/media/image463.png) is assumed to be equal to the temperature of the uppermost soil layer.
+
+> The snowfall is added to the mass of the uppermost layer:
+
+![](media/media/image485.png). (235)
+
+6.3.5 Redivision of snow layer and rediagnosis of temperature
+
+> When the snow water equivalent is updated, the snow-covered ratio is rediagnosed by Eq. (210) and the mass of each layer is redivided by Eq. (212) to (214). The temperature in each redivided layer is rediagnosed so that the energy is conserved, as follows:
+
+![](media/media/image462.png). (236)
+
+It should be noted that the variables with the index *old* and *new* are those before and after redivision, respectively. ![](media/media/image461.png) is the ratio of the mass of the ![](media/media/image450.png)th layer after redivision to the mass of the ![](media/media/image452.png)th layer before redivision.
+
+6.4 Calculation of snow heat conduction
+
+6.4.1 Snow heat conduction equations
+
+> The prognostic equation of the snow temperature due to snow heat conduction is as follows:
+
+![](media/media/image469.png), (237)
+
+with the heat conduction flux ![](media/media/image458.png) given by
+
+![](media/media/image440.png), (238)
+
+where ![](media/media/image433.png) is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. ![](media/media/image430.png) is the thickness of each snow layer, defined by
+
+![](media/media/image432.png), (239)
+
+where ![](media/media/image425.png) is the snow density, assigned the fixed value of 300 kg/m<sup>3</sup> as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
+
+In Eq. (238), the snow upper boundary flux ![](media/media/image441.png) is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance ![](media/media/image431.png), the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition ![](media/media/image419.png), and the energy correction produced when a change has occurred in the phase of the canopy water ![](media/media/image422.png). ![](media/media/image428.png) is assumed to be given only to the snow-covered portion, while ![](media/media/image422.png) is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+
+In the equation for the snow lower boundary flux ![](media/media/image444.png), ![](media/media/image455.png) is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
+
+![](media/media/image439.png), (240)
+
+there is assumed to be no convergence at the snow lower boundary, and by putting
+
+![](media/media/image435.png), (241)
+
+![](media/media/image436.png) is solved. When this is substituted into Eq. (242), the following is obtained:
+
+![](media/media/image437.png). (242)
+
+6.4.2 Case 1: When snowmelt does not occur in the uppermost layer
+
+> The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:
+
+![](media/media/image456.png), (243)
+
+![](media/media/image427.png), (244)
+
+![](media/media/image438.png), (245)
+
+![](media/media/image403.png), (246)
+
+and Eq. (237) is treated as
+
+![](media/media/image409.png)
+
+![](media/media/image426.png)
+
+![](media/media/image429.png), (247)
+
+and solved by the LU factorization method as ![](media/media/image401.png) simultaneous equations with respect to ![](media/media/image399.png). At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
+
+![](media/media/image395.png). (248)
+
+6.4.3 Case 2: When snowmelt occurs in the uppermost layer
+
+When the temperature of the uppermost snow layer solved in case 1 is higher than ![](media/media/image397.png)C, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0°C. The flux from the second snow layer to the uppermost snow layer is then expressed as
+
+![](media/media/image400.png), (249)
+
+and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
+
+> The energy convergence used for melting in the uppermost snow layer is given by:
+
+![](media/media/image394.png). (250)
+
+Even if the temperature of the second snow layer and below is higher than ![](media/media/image415.png), the calculation is not iterated and the snowmelt is corrected accordingly.
+
+6.5 Glacier formation
+
+> In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
+
+![](media/media/image446.png), (251)
+
+![](media/media/image417.png), (252)
+
+![](media/media/image447.png), (253)
+
+where ![](media/media/image423.png) is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. ![](media/media/image413.png) is uniformly assigned the value of 1000 kg/m<sup>2</sup> as a standard.
+
+6.6 Fluxes given to the soil or the runoff process
+
+> The heat flux given to the soil through the snow process is
+
+![](media/media/image442.png), (254)
+
+where ![](media/media/image418.png) is the energy convergence remaining when all of the snow has melted, ![](media/media/image414.png) is the heat conduction flux at the lowest snow layer, and ![](media/media/image411.png) is the snowfall that melts immediately when it reaches the ground.
+
+Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
+
+![](media/media/image846.png). (255)
+
+> The water flux given to the runoff process through the snow process is then expressed as
+
+![](media/media/image859.png), (256)
+
+![](media/media/image867.png), (257)
+
+where ![](media/media/image842.png) is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
+
+6.7 Calculation of snow albedo
+
+> The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
+
+The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
+
+![](media/media/image838.png), (258)
+
+where ![](media/media/image855.png) = 5000 and ![](media/media/image844.png) = 1 x 10<sup>6</sup>. ![](media/media/image840.png) is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
+
+> Using this, the albedo of the snow is solved by
+
+![](media/media/image863.png), (259)
+
+where ![](media/media/image839.png) is solved beforehand by calculating back from the prognostic variable ![](media/media/image864.png) using the same equation.
+
+> When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
+
+![](media/media/image879.png), (260)
+
+where ![](media/media/image874.png) is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+
+# 7 MATROF Runoff Submodel
+
+> The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
+
+7.1 Outline of TOPMODEL
+
+In TOPMODEL, the horizontal distribution of a water table along the slope in a catchment basin is considered. The downward groundwater flow at a certain point on the slope is assumed to be equal to the accumulated groundwater recharge in the upper part of the slope above that point (quasi-equilibrium assumption). Then, the groundwater flow must be greater in the lower part of the slope. Under another assumption described later, for the groundwater flow to be greater, the water table needs to be shallow. Thus, the distribution is derived such that the lower the slope, the shallower the water table. When the mean water table is shallower than a certain level, the water table rises to the ground surface at an area lower than a certain point in the slope to form a saturated area. In this way, TOPMODEL is characterized by the mean water table, the size of the saturated area, and the groundwater flow velocity, which are important concepts for estimating the runoff, being physically connected in a coherent manner.
+
+TOPMODEL contains the following major assumptions:
+
+1.  The soil saturation hydraulic conductivity is attenuated toward the depth of the soil in the manner of an exponential function.
+
+2.  The gradient of the water table is in close agreement locally with the gradient of the slope.
+
+3.  The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.
+
+> The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).
+
+Assumption 1 can be expressed as
+
+![](media/media/image872.png), (261)
+
+where ![](media/media/image856.png) is the soil saturation hydraulic conductivity at depth ![](media/media/image866.png), ![](media/media/image873.png) is the saturation hydraulic conductivity at the ground surface, and ![](media/media/image861.png) is the attenuation coefficient.
+
+When the depth of the water table at a certain point ![](media/media/image853.png) is designated as ![](media/media/image847.png), the downward groundwater flux on the slope at that point ![](media/media/image796.png) is
+
+![](media/media/image824.png), (262)
+
+where ![](media/media/image804.png) is the gradient of the slope, and assumption 2 is applied here. ![](media/media/image793.png) is the depth of the impervious surface; normally, however, ![](media/media/image805.png)is assumed to be sufficiently deep compared with ![](media/media/image787.png), so the term ![](media/media/image798.png) is omitted. Moreover, since the slope direction soil moisture flux in the unsaturated zone above the water table is small, it is ignored.
+
+If the groundwater recharge rate ![](media/media/image802.png) is assumed to be horizontally uniform, assumption 3 is expressed as
+
+![](media/media/image797.png), (263)
+
+where ![](media/media/image780.png) is the total upstream area (per unit contour line length at point ![](media/media/image834.png)) with respect to point ![](media/media/image834.png).
+
+When this is solved for ![](media/media/image828.png), the following is obtained:
+
+![](media/media/image837.png). (264)
+
+The averaged water table depth ![](media/media/image812.png) in domain ![](media/media/image819.png) is
+
+![](media/media/image810.png), (265)
+
+![](media/media/image813.png). (266)
+
+The recharge rate ![](media/media/image826.png) can then be expressed as a function of the mean water table depth ![](media/media/image812.png) as follows:
+
+![](media/media/image765.png). (267)
+
+Under assumption 3, this is exclusively the groundwater runoff discharged from domain ![](media/media/image754.png).
+
+Next, if ![](media/media/image756.png) is substituted into Eq. (264), the following relationship of ![](media/media/image786.png) and　![](media/media/image753.png) is obtained:
+
+![](media/media/image758.png) (268)
+
+The domain that satisfies ![](media/media/image752.png) is the surface saturated area.
+
+7.2 Application of TOPMODEL assuming simplified topography
+
+Normally, when TOPMODEL is used, detailed topographical data on the target area is required. Here, however, the average shape of the slope in a grid cell is roughly estimated from the data on the average inclination and the standard deviation of the altitude in the grid (this estimation method is temporary at this stage, and further study is required).
+
+The topography in the grid cell is represented by the slope with uniform gradient ![](media/media/image739.png) and the distance from the ridge to valley ![](media/media/image745.png).
+
+![](media/media/image745.png) is estimated using the standard deviation of altitude ![](media/media/image93.png) as follows:
+
+![](media/media/image82.png), (269)
+
+where ![](media/media/image83.png) is the altitude difference between the ridge and valley in serrate topography such that the standard deviation of altitude is ![](media/media/image89.png).
+
+The x-axis is taken from the ridge toward the valley on the horizontal surface. Then, the total upstream area at point ![](media/media/image87.png) is ![](media/media/image87.png), and Eq. (264) becomes
+
+![](media/media/image78.png). (270)
+
+Using this, from Eq. (265) the mean water table is
+
+![](media/media/image90.png), (271)
+
+from Eq. (267) the groundwater recharge rate is
+
+![](media/media/image88.png), (272)
+
+and from Eq. (268), the relationship between the water table at point ![](media/media/image87.png) and the mean water table is
+
+![](media/media/image71.png). (273)
+
+If ![](media/media/image72.png) is solved for ![](media/media/image87.png), the following are obtained:
+
+![](media/media/image70.png), (274)
+
+![](media/media/image68.png). (275)
+
+Therefore, the fraction of the saturated area is solved as
+
+![](media/media/image102.png). (276)
+
+However, ![](media/media/image75.png), and when ![](media/media/image74.png), no saturated area exists.
+
+7.3 Calculation of runoff
+
+> Four types of runoff mechanisms are considered, and the total of the runoffs by each mechanism is assumed to be the total runoff from the grid cell:
+
+![](media/media/image100.png), (277)
+
+where ![](media/media/image69.png) is the saturation excess runoff (Dunne runoff), ![](media/media/image86.png) is the infiltration excess runoff (Horton runoff), and ![](media/media/image85.png) is the overflow of the uppermost soil layer, these three being classified as the surface runoff; and ![](media/media/image81.png) is the groundwater runoff.
+
+7.3.1 Estimation of mean water table depth
+
+The soil moisture is examined from the lowest soil layer. When a layer that becomes unsaturated for the first time is assumed to be the ![](media/media/image76.png)th layer, the mean water table depth ![](media/media/image73.png) is estimated by
+
+![](media/media/image80.png). (278)
+
+This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as ![](media/media/image77.png), and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium).
+
+When ![](media/media/image79.png), if ![](media/media/image38.png) is the lowest layer, the water table is assumed to not exist. When ![](media/media/image38.png) is not the lowest layer, the layer below (the uppermost layer among the saturated layers) is assumed to be ![](media/media/image38.png) and the above equation is applied.
+
+> When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface.
+
+7.3.2 Calculation of groundwater runoff
+
+From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in Eq. (272); therefore,
+
+![](media/media/image42.png). (279)
+
+However, when a frozen soil surface exists under the water table, referring to the case of not omitting the term ![](media/media/image39.png) in Eq. (262), it is assumed that
+
+![](media/media/image45.png), (280)
+
+where ![](media/media/image50.png) is the depth of the frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, the other relations are not changed here for the sake of simplification.
+
+> When there is an unfrozen layer under the frozen soil surface and a water table exists, the groundwater runoff from there is added by a similar calculation.
+
+The water content from the groundwater runoff is removed from the ![](media/media/image37.png)th soil layer:
+
+![](media/media/image47.png), (281)
+
+where ![](media/media/image44.png) denotes the runoff flux from the ![](media/media/image43.png)th soil layer.
+
+7.3.3 Calculation of surface runoff
+
+> All of the rainfall that falls on the surface saturated area runs off as is (saturation excess runoff):
+
+![](media/media/image40.png). (282)
+
+The fraction of the surface saturated area ![](media/media/image66.png) is given by Eq. (276). Here, the correlation between the rainfall distribution of the subgrid and topography is ignored.
+
+With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area![](media/media/image59.png) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
+
+![](media/media/image92.png), (283)
+
+![](media/media/image91.png), (284)
+
+![](media/media/image84.png), (285)
+
+where ![](media/media/image51.png) and ![](media/media/image53.png) are ![](media/media/image60.png) in the convective precipitation area and nonconvective precipitation area, respectively; and ![](media/media/image63.png) is the saturation hydraulic conductivity in the uppermost soil layer.
+
+The overflow of the uppermost soil layer, allowing a small amount of ponding ![](media/media/image49.png) (1 mm as a standard value), is assumed to be
+
+![](media/media/image20.png). (286)
+
+This portion is subtracted from the uppermost soil layer later, and therefore should be remembered as the runoff from the uppermost layer, as follows.
+
+![](media/media/image9.png). (287)
+
+7.4 Water flux given to soil
+
+> The water flux given to the soil through the runoff process is
+
+![](media/media/image55.png). (288)
+
+# 8 MATGND Soil Submodel
+
+The soil temperature, the soil moisture, and the frozen soil are calculated next.
+
+8.1 Calculation of soil heat conduction
+
+8.1.1 Soil heat conduction equations
+
+> The prognostic equation for the soil temperature by soil heat conduction is
+
+![](media/media/image34.png), (289)
+
+with ![](media/media/image13.png), the soil heat capacity, defined by
+
+![](media/media/image36.png), (290)
+
+where ![](media/media/image10.png) is the specific heat of the soil, and is given as a parameter for each soil type; ![](media/media/image6.png) is the specific heat of the water; ![](media/media/image5.png) is the soil moisture (volumetric moisture content); and ![](media/media/image2.png) is the thickness of the ![](media/media/image31.png)th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.
+
+The heat conduction flux![](media/media/image33.png) is given by
+
+![](media/media/image35.png), (291)
+
+with ![](media/media/image24.png), the soil heat conductivity, expressed as
+
+![](media/media/image41.png), (292)
+
+where ![](media/media/image30.png) is the heat conductivity when the soil moisture is 0, and ![](media/media/image29.png) and ![](media/media/image17.png) are constants.
+
+![](media/media/image12.png) is the thickness between the soil temperature definition points of the ![](media/media/image18.png)th layer and the ![](media/media/image375.png)th layer (when ![](media/media/image353.png), the thickness between the uppermost layer temperature definition point and the soil upper boundary; when ![](media/media/image359.png), the thickness between the lowest layer temperature definition point and the soil lower boundary).
+
+In Eq. (291), the value given to the soil upper boundary condition ![](media/media/image366.png) is the value obtained at the time of solving the ground surface energy balance, with the addition of the energy convergence at the snow lower boundary (including the heat conduction flux at the snow lower boundary) as well as the allotment to the snow-free portion of the energy correction term due to phase change of the canopy water. The flux takes an upward (positive) direction, so when the amount of convergence is added it has a negative sign. The soil lower boundary condition ![](media/media/image361.png) is assumed to be zero flux.
+
+8.1.2 Solution of heat conduction equations
+
+These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for ![](media/media/image352.png), the heat conduction flux is expressed as
+
+![](media/media/image380.png), (293)
+
+![](media/media/image354.png), (294)
+
+![](media/media/image349.png), (295)
+
+![](media/media/image351.png), (296)
+
+and Eq. (289) is treated as
+
+![](media/media/image390.png)
+
+![](media/media/image388.png)
+
+![](media/media/image391.png), (297)
+
+and solved by the LU factorization method as ![](media/media/image396.png) simultaneous equations with respect to ![](media/media/image381.png). At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:
+
+![](media/media/image392.png). (298)
+
+The soil temperature is partially updated by the above equation. By this, as well as through correction of the phase change in the soil moisture mentioned later, the soil temperature is completely updated.
+
+8.2 Calculation of soil moisture movement
+
+8.2.1 Soil moisture movement equations
+
+> The equation for soil moisture movement (Richards equation) is given by
+
+![](media/media/image406.png). (299)
+
+The soil moisture flux ![](media/media/image393.png) is given by
+
+![](media/media/image389.png), (300)
+
+in which ![](media/media/image370.png) is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
+
+![](media/media/image348.png), (301)
+
+where ![](media/media/image331.png) is the saturation hydraulic conductivity and ![](media/media/image319.png) is the index of the moisture potential curve, which are given as external parameters for each soil type. ![](media/media/image314.png) is the degree of saturation considered excluding the frozen soil moisture, given by
+
+![](media/media/image321.png), (302)
+
+where ![](media/media/image323.png) is the porosity of the soil, which is also given as a parameter for each soil type. ![](media/media/image336.png) is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by
+
+![](media/media/image309.png), (303)
+
+where ![](media/media/image347.png).
+
+The soil moisture potential ![](media/media/image322.png) is given as follows from Clapp and Hornberger:
+
+![](media/media/image489.png), (304)
+
+where ![](media/media/image486.png) is given as an external parameter for each soil type.
+
+In Eq. (299), ![](media/media/image490.png) is a source term which, considering the root uptake and the runoff, is given by
+
+![](media/media/image492.png). (305)
+
+In Eq. 300, the soil upper boundary condition ![](media/media/image483.png) is the difference between the moisture flux through the runoff process ![](media/media/image481.png) and　the evaporation flux from the soil ![](media/media/image478.png). Separately from this, the sublimation flux portion is subtracted from the frozen soil moisture of the uppermost layer before calculation of the soil moisture movement:
+
+![](media/media/image509.png), (306)
+
+![](media/media/image511.png). (307)
+
+8.2.2 Solution of soil moisture movement equations
+
+These equations are solved by using the implicit method for the soil moisture from the uppermost layer to the lowest layer. For ![](media/media/image352.png), the soil moisture flux is
+
+![](media/media/image507.png), (308)
+
+![](media/media/image457.png), (309)
+
+![](media/media/image460.png), (310)
+
+![](media/media/image467.png), (311)
+
+and Eq. (299) is treated as
+
+![](media/media/image491.png)
+
+![](media/media/image464.png)
+
+![](media/media/image482.png), (312)
+
+and solved by the LU factorization method as ![](media/media/image401.png) simultaneous equations with respect to ![](media/media/image381.png). At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions.
+
+> The soil moisture is updated by
+
+![](media/media/image477.png). (313)
+
+As a result of this calculation, if a part appears where the soil moisture become supersaturated, it is adjusted in the vertical direction to eliminate supersaturation. The reason why such a supersaturated portion is not considered as runoff is that this supersaturation is artificially produced because the vertical movement of the soil moisture is solved without saturation data. First, from the second soil layer downwards, the supersaturated portion of the soil moisture is given to the layer below. Next, from the lowest soil layer upwards, the supersaturated portion of the soil moisture is given to the next layer up. With this operation, when the soil moisture is large enough, a saturated layer around the lowest soil layer is formed and the water table of Eq. (278) can be defined.
+
+8.3 Phase change of soil moisture
+
+As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than ![](media/media/image471.png)C, or when the temperature in the layer containing solid water is higher than ![](media/media/image474.png), the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the ![](media/media/image473.png)th layer is assumed to be ![](media/media/image470.png),
+
+when ![](media/media/image475.png) and ![](media/media/image472.png) (frozen):
+
+![](media/media/image476.png), (314)
+
+when ![](media/media/image479.png) and ![](media/media/image468.png) (melted):
+
+![](media/media/image480.png). (315)
+
+The frozen soil moisture and the soil moisture are then updated as follows:
+
+![](media/media/image451.png), (316)
+
+![](media/media/image488.png). (317)
+
+8.3.1 Ice sheet process
+
+When the land cover type is ice sheet, if the soil temperature exceeds ![](media/media/image449.png), it is returned to![](media/media/image453.png):
+
+![](media/media/image454.png). (318)
+
+The rate of change of the ice sheet *F<sub>ice</sub>* is then diagnosed as
+
+![](media/media/image466.png). (319)
+
+# References
+
+Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
+
+Beven, K. J. and M. J. Kirkby, 1979: A physically based, variable contributing area model of basin hydrology. Hydrol. Sci. Bull. 24, 43–69.
+
+Clapp, R. B. and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. Water Resour. Res. 14, 601–604.
+
+Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. Plant Cell Environ. 13, 219–225.
+
+Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. Agric. For. Meteor. 54, 107–136.
+
+Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled photosynthesis-stomatal conductance model for leaves of C![](media/media/image443.png) plants. Aust. J. Plant. Physiol. 19, 519–538.
+
+Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic CO![](media/media/image445.png) fixation in leaves of C![](media/media/image448.png) species. Planta 149, 78–90.
+
+Kondo, J. and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. J. Atmos. Sci. 49, 2183–2199.
+
+Rutter, A. J., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. J. Appl. Ecol. 12, 367–380.
+
+Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. J. Climate 9, 676–705.
+
+Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity: 2. A scaled model of storm runoff production. Water Resour. Res. 23, 2266–2278.
+
+Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. J. Climate 10, 118–137.
+
+Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. Boundary-Layer Meteorol. 70, 13–35.
+
+Wiscombe, W. J. and S. G. Warren, 1980: A model for the spectral albedo of snow: I. Pure snow. J. Atmos. Sci. 37, 2712–2733.
+
+Watanabe T. and Y. Ohtani, 1995: A simple model of shortwave-radiation transport within canopy (in Japanese). J. Agric. Meteorol. 51, 57-60.
