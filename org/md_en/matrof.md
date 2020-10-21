@@ -256,8 +256,7 @@ $$
 The water fluxes fed to the soil through the runoff process are as follows.
 
 $$
- Pr^{***} = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
+ Pr^{*** } = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
 $$
 
  Translated with www.DeepL.com/Translator (free version)
-

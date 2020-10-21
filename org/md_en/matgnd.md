@@ -136,7 +136,7 @@ $$
  F_{w(k+1/2)} =
 \left\{
 \begin{array}{ll}
-Pr^{***} - Et_{(1,1)}
+Pr^{*** } - Et_{(1,1)}
  (k=0)\\
 \displaystyle{
 K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
@@ -191,7 +191,7 @@ $$
 $$
 
 
-In (12), the boundary condition $F_{w(1/2)}$ is the difference between the water flux ($P^{***}$) and the evaporation flux ($Et_{(1,1)}$) at the top of the soil through the runoff process. Apart from this, the sublimation flux is subtracted from the frozen soil moisture in the first layer prior to the calculation of soil moisture transfer.
+In (12), the boundary condition $F_{w(1/2)}$ is the difference between the water flux ($P^{*** }$) and the evaporation flux ($Et_{(1,1)}$) at the top of the soil through the runoff process. Apart from this, the sublimation flux is subtracted from the frozen soil moisture in the first layer prior to the calculation of soil moisture transfer.
 
 $$
  w_{i(k)}^{\tau} = w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
@@ -263,7 +263,6 @@ $$
  w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
 $$
 
-
 The soil moisture content is updated using the LU decomposition method.
 
 If this calculation results in supersaturation of soil moisture, the supersaturation is removed by vertical adjustment. The supersaturation is not considered as runoff because this supersaturation is artificial and is caused by the solution of the vertical soil moisture transfer without information about the saturation. First, supersaturated soil moisture is applied from the second soil layer downward. Then, from the lowermost layer of soil to the uppermost layer, the supersaturated soil moisture is added to the uppermost layer. This operation results in the formation of a saturated layer near the bottom of the soil when soil moisture is sufficiently high to define the groundwater level (with a certain amount of water content of the ground surface in the vicinity of the lowest layer of soil (with a certain amount of water content of the ground surface in the vicinity of the lowest level of soil).
@@ -316,6 +315,3 @@ The rate of change in the amount of ice cover, $F_{ice}$, is diagnosed as
 $$
  F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
 $$
-
- Translated with www.DeepL.com/Translator (free version)
-
