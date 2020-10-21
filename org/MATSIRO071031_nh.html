@@ -1,0 +1,2905 @@
+<!DOCTYPE html><html><head>
+      <title>MATSIRO071031_nh</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({"extensions":["tex2jax.js"],"jax":["input/TeX","output/HTML-CSS"],"messageStyle":"none","tex2jax":{"processEnvironments":false,"processEscapes":true,"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"TeX":{"extensions":["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]},"HTML-CSS":{"availableFonts":["TeX"],"imageFont":null},"root":"file:///Users/kanonkino/.atom/packages/markdown-preview-enhanced/node_modules/@shd101wyy/mume/dependencies/mathjax"});
+        </script>
+        <script type="text/javascript" async src="file:////Users/kanonkino/.atom/packages/markdown-preview-enhanced/node_modules/@shd101wyy/mume/dependencies/mathjax/MathJax.js" charset="UTF-8"></script>
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+.markdown-preview.markdown-preview h1 {
+  margin-top: 0.5em;
+  padding: 0.3em;
+  /*文字周りの余白*/
+  color: #494949;
+  /*文字色*/
+  background: #fffaf4;
+  /*背景色*/
+  border-left: solid 5px #ffaf58;
+  /*左線（実線 太さ 色）*/
+}
+.markdown-preview.markdown-preview h2 {
+  /*線の種類（実線） 太さ 色*/
+  color: #494949;
+  /*文字色*/
+  border-bottom: solid 1.5px #ffaf58;
+}
+.markdown-preview.markdown-preview h3 {
+  margin-left: 1em;
+  /*線の種類（実線） 太さ 色*/
+  color: #494949;
+  /*文字色*/
+}
+.markdown-preview.markdown-preview h4 {
+  margin-left: 2em;
+  /*線の種類（実線） 太さ 色*/
+  color: #494949;
+  /*文字色*/
+}
+.markdown-preview.markdown-preview .wrapper {
+  min-height: 100vh;
+  position: relative;
+  /*←相対位置*/
+  padding-bottom: 120px;
+  /*←footerの高さ*/
+  box-sizing: border-box;
+  /*←全て含めてmin-height:100vhに*/
+}
+.markdown-preview.markdown-preview html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+.markdown-preview.markdown-preview header {
+  font-size: 3em;
+  font-style: border;
+  padding: 0em;
+  /*文字周りの余白*/
+  color: #494949;
+  /*文字色*/
+  background: #ffffff;
+  /*背景色*/
+  text-align: left;
+  border-bottom: solid 3px #ffaf58;
+  /*左線（実線 太さ 色）*/
+  margin-bottom: 0.5em;
+}
+.markdown-preview.markdown-preview body {
+  margin: 0;
+}
+.markdown-preview.markdown-preview footer {
+  margin-top: 10em;
+  padding: 0.5em;
+  /*文字周りの余白*/
+  color: #494949;
+  /*文字色*/
+  text-align: center;
+  background-color: #fffaf4;
+  height: 60px;
+  width: auto;
+  margin-top: 0.5em;
+  bottom: 0;
+}
+.markdown-preview.markdown-preview summary {
+  display: block;
+}
+.markdown-preview.markdown-preview audio,
+.markdown-preview.markdown-preview canvas,
+.markdown-preview.markdown-preview progress,
+.markdown-preview.markdown-preview video {
+  display: inline-block;
+  vertical-align: baseline;
+}
+.markdown-preview.markdown-preview audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+.markdown-preview.markdown-preview button {
+  overflow: visible;
+}
+.markdown-preview.markdown-preview button,
+.markdown-preview.markdown-preview select {
+  text-transform: none;
+}
+.markdown-preview.markdown-preview button,
+.markdown-preview.markdown-preview html input[type="button"],
+.markdown-preview.markdown-preview input[type="reset"],
+.markdown-preview.markdown-preview input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+.markdown-preview.markdown-preview button[disabled],
+.markdown-preview.markdown-preview html input[disabled] {
+  cursor: default;
+}
+.markdown-preview.markdown-preview button::-moz-focus-inner,
+.markdown-preview.markdown-preview input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+.markdown-preview.markdown-preview input {
+  line-height: normal;
+}
+.markdown-preview.markdown-preview input[type="checkbox"],
+.markdown-preview.markdown-preview input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+.markdown-preview.markdown-preview input[type="number"]::-webkit-inner-spin-button,
+.markdown-preview.markdown-preview input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+.markdown-preview.markdown-preview input[type="search"] {
+  -webkit-appearance: textfield;
+  box-sizing: content-box;
+}
+.markdown-preview.markdown-preview input[type="search"]::-webkit-search-cancel-button,
+.markdown-preview.markdown-preview input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+.markdown-preview.markdown-preview fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+.markdown-preview.markdown-preview legend {
+  border: 0;
+  padding: 0;
+}
+.markdown-preview.markdown-preview textarea {
+  overflow: auto;
+}
+.markdown-preview.markdown-preview optgroup {
+  font-weight: bold;
+}
+.markdown-preview.markdown-preview table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.markdown-preview.markdown-preview samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+.markdown-preview.markdown-preview a {
+  background-color: transparent;
+  text-underline-position: left;
+  text-decoration: underline;
+}
+.markdown-preview.markdown-preview a:link {
+  color: #793f00;
+}
+.markdown-preview.markdown-preview a:visited {
+  color: #793f00;
+}
+.markdown-preview.markdown-preview a:hover {
+  color: #e8912a;
+}
+.markdown-preview.markdown-preview a:active {
+  color: #e8912a;
+}
+.markdown-preview.markdown-preview b,
+.markdown-preview.markdown-preview strong {
+  font-weight: bold;
+}
+.markdown-preview.markdown-preview dfn {
+  font-style: italic;
+}
+.markdown-preview.markdown-preview h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+.markdown-preview.markdown-preview h2 {
+  font-size: 1.5em;
+  margin: 0.67em 0;
+}
+.markdown-preview.markdown-preview h3 {
+  font-size: 1.1em;
+  margin: 0.67em 0.67em;
+}
+.markdown-preview.markdown-preview h4 {
+  font-size: 1em;
+  margin: 0.67em 0.67em;
+}
+.markdown-preview.markdown-preview mark {
+  background: #ff0;
+  color: #000;
+}
+.markdown-preview.markdown-preview small {
+  font-size: 80%;
+}
+.markdown-preview.markdown-preview sub,
+.markdown-preview.markdown-preview sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.markdown-preview.markdown-preview sup {
+  top: -0.5em;
+}
+.markdown-preview.markdown-preview sub {
+  bottom: -0.25em;
+}
+.markdown-preview.markdown-preview img {
+  border: 0;
+}
+.markdown-preview.markdown-preview svg:not(:root) {
+  overflow: hidden;
+}
+.markdown-preview.markdown-preview figure {
+  margin: 1em 40px;
+}
+.markdown-preview.markdown-preview hr {
+  box-sizing: content-box;
+  height: 0;
+}
+.markdown-preview.markdown-preview pre {
+  overflow: auto;
+}
+.markdown-preview.markdown-preview [hidden],
+.markdown-preview.markdown-preview template {
+  display: none;
+}
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <p>Description of Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) Land Surface Parameterization</p>
+<p>November 10, 2001</p>
+<p>Seita Emori<sup>1</sup></p>
+<p>Frontier Research System for Global Change</p>
+<p><sup>1</sup> On loan from the National Institute for Environmental Studies</p>
+<div class="code-chunk" data-id="code-chunk-id-0" data-cmd="toc"><div class="input-div"><div class="btn-group"><div class="run-btn btn"><span>&#x25B6;&#xFE0E;</span></div><div class="run-all-btn btn">all</div></div><div class="status">running...</div></div><div class="output-div"></div></div>
+<ul>
+<li><a href="#1-introduction">1 Introduction</a></li>
+<li><a href="#2-structure-of-matsiro">2 Structure of MATSIRO</a>
+<ul>
+<li><a href="#21-overview-of-matsiro">2.1 Overview of MATSIRO</a>
+<ul>
+<li><a href="#211-general-structure">2.1.1 General structure</a></li>
+<li><a href="#212-internal-variables-of-matsiro">2.1.2 Internal variables of MATSIRO</a></li>
+</ul></li>
+<li><a href="#22-flux-calculation-section">2.2 Flux calculation section</a>
+<ul>
+<li><a href="#221-structure-of-the-flux-calculation-section">2.2.1 Structure of the flux calculation section</a></li>
+<li><a href="#222-input-variables-of-the-flux-calculation-section">2.2.2 Input variables of the flux calculation section</a></li>
+<li><a href="#223-output-variables-of-the-flux-calculation-section">2.2.3 Output variables of the flux calculation section</a></li>
+</ul></li>
+<li><a href="#23-land-surface-integration-section">2.3 Land surface integration section</a>
+<ul>
+<li><a href="#231-structure-of-land-surface-integration-section">2.3.1 Structure of land surface integration section</a></li>
+<li><a href="#232-input-variables-of-land-surface-integration-section">2.3.2 Input variables of land surface integration section</a></li>
+<li><a href="#233-output-variables-of-land-surface-integration-section">2.3.3 Output variables of land surface integration section</a></li>
+</ul></li>
+<li><a href="#24-external-parameters">2.4 External parameters</a>
+<ul>
+<li><a href="#241-external-parameters-given-by-map">2.4.1 External parameters given by map</a></li>
+<li><a href="#243-external-parameters-given-by-table-for-each-soil-type">2.4.3 External parameters given by table for each soil type</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#3-matbnd-boundary-value-submodel">3 MATBND Boundary Value Submodel</a>
+<ul>
+<li><a href="#31-vegetation-type-parameter-set">3.1 Vegetation type parameter set</a></li>
+<li><a href="#32-calculation-of-radiation-parameters">3.2 Calculation of radiation parameters</a>
+<ul>
+<li><a href="#321-calculation-of-ground-surface-forest-floor-albedo">3.2.1 Calculation of&#x3000;ground surface (forest floor) albedo</a></li>
+<li><a href="#322-calculation-of-canopy-albedo-and-transmissivity">3.2.2 Calculation of canopy albedo and transmissivity</a></li>
+<li><a href="#323-calculation-of-surface-radiation-flux-etc">3.2.3 Calculation of surface radiation flux, etc.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#33-calculation-of-turbulence-parameter-bulk-coefficient">3.3 Calculation of turbulence parameter (bulk coefficient)</a>
+<ul>
+<li><a href="#331-calculation-of-roughness-with-respect-to-momentum-and-heat">3.3.1 Calculation of roughness with respect to momentum and heat</a></li>
+<li><a href="#332-calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat">3.3.2 Calculation of bulk coefficient with respect to momentum and heat</a></li>
+<li><a href="#333-calculation-of-bulk-coefficient-with-respect-to-vapor">3.3.3 Calculation of bulk coefficient with respect to vapor</a></li>
+<li><a href="#34-calculation-of-stomatal-resistance">3.4 Calculation of stomatal resistance</a>
+<ul>
+<li><a href="#341-calculation-of-soil-moisture-stress-factor">3.4.1 Calculation of soil moisture stress factor</a></li>
+<li><a href="#342-calculation-of-amount-of-photosynthesis">3.4.2 Calculation of amount of photosynthesis</a></li>
+<li><a href="#343-calculation-of-stomatal-resistance-2">3.4.3 Calculation of stomatal resistance (2)</a></li>
+<li><a href="#344-calculation-of-ground-surface-evaporation-resistance">3.4.4 Calculation of ground surface evaporation resistance</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#4-matsfc-surface-submodel">4. MATSFC Surface Submodel</a>
+<ul>
+<li><a href="#41-calculation-of-surface-turbulent-fluxes">4.1 Calculation of surface turbulent fluxes</a></li>
+<li><a href="#42-calculation-of-heat-conduction-fluxes">4.2 Calculation of heat conduction fluxes</a></li>
+<li><a href="#43-solution-of-energy-balance-at-ground-surface-and-canopy">4.3 Solution of energy balance at ground surface and canopy</a>
+<ul>
+<li><a href="#431-energy-balance-at-ground-surface-and-canopy">4.3.1 Energy balance at ground surface and canopy</a></li>
+<li><a href="#432-case-1-when-there-is-no-melting-at-the-ground-surface">4.3.2 Case 1: When there is no melting at the ground surface</a></li>
+<li><a href="#433-case-2-when-there-is-melting-at-the-ground-surface">4.3.3 Case 2: When there is melting at the ground surface</a></li>
+<li><a href="#434-conditions-for-solutions">4.3.4 Conditions for solutions</a></li>
+<li><a href="#435-updating-of-ground-surface-and-canopy-temperatures">4.3.5 Updating of ground surface and canopy temperatures</a></li>
+<li><a href="#436-updating-of-flux-values">4.3.6 Updating of flux values</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#5-matcnw-canopy-water-balance-submodel">5 MATCNW Canopy Water Balance Submodel</a>
+<ul>
+<li><a href="#51-diagnosis-of-canopy-water-phase">5.1 Diagnosis of canopy water phase</a></li>
+<li><a href="#52-prognosis-of-canopy-water">5.2 Prognosis of canopy water</a>
+<ul>
+<li><a href="#521-evaporation-sublimation-of-canopy-water">5.2.1 Evaporation (sublimation) of canopy water</a></li>
+<li><a href="#522-interception-of-precipitation-by-the-canopy">5.2.2 Interception of precipitation by the canopy</a></li>
+<li><a href="#523-dripping-of-the-canopy-water">5.2.3 Dripping of the canopy water</a></li>
+<li><a href="#524-updating-and-melting-of-canopy-water">5.2.4 Updating and melting of canopy water</a></li>
+</ul></li>
+<li><a href="#53-fluxes-given-to-the-soil-snow-and-runoff-process">5.3 Fluxes given to the soil, snow, and runoff process</a></li>
+</ul></li>
+<li><a href="#6-matsnw-snow-submodel">6 MATSNW Snow Submodel</a>
+<ul>
+<li><a href="#61-diagnosis-of-snow-covered-ratio">6.1 Diagnosis of snow-covered ratio</a></li>
+<li><a href="#62-vertical-division-of-snow-layers">6.2 Vertical division of snow layers</a></li>
+<li><a href="#63-calculation-of-snow-water-equivalent">6.3 Calculation of snow water equivalent</a>
+<ul>
+<li><a href="#631-sublimation-of-snow">6.3.1 Sublimation of snow</a></li>
+<li><a href="#632-snowmelt">6.3.2 Snowmelt</a></li>
+<li><a href="#633-freeze-of-snowmelt-water-and-rainfall-in-snow">6.3.3 Freeze of snowmelt water and rainfall in snow</a></li>
+<li><a href="#634-snowfall">6.3.4 Snowfall</a></li>
+<li><a href="#635-redivision-of-snow-layer-and-rediagnosis-of-temperature">6.3.5 Redivision of snow layer and rediagnosis of temperature</a></li>
+</ul></li>
+<li><a href="#64-calculation-of-snow-heat-conduction">6.4 Calculation of snow heat conduction</a>
+<ul>
+<li><a href="#641-snow-heat-conduction-equations">6.4.1 Snow heat conduction equations</a></li>
+<li><a href="#642-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer">6.4.2 Case 1: When snowmelt does not occur in the uppermost layer</a></li>
+</ul></li>
+<li><a href="#65-glacier-formation">6.5 Glacier formation</a></li>
+<li><a href="#66-fluxes-given-to-the-soil-or-the-runoff-process">6.6 Fluxes given to the soil or the runoff process</a></li>
+<li><a href="#67-calculation-of-snow-albedo">6.7 Calculation of snow albedo</a></li>
+</ul></li>
+<li><a href="#7-matrof-runoff-submodel">7 MATROF Runoff Submodel</a>
+<ul>
+<li><a href="#71-outline-of-topmodel">7.1 Outline of TOPMODEL</a></li>
+<li><a href="#72-application-of-topmodel-assuming-simplified-topography">7.2 Application of TOPMODEL assuming simplified topography</a></li>
+<li><a href="#73-calculation-of-runoff">7.3 Calculation of runoff</a>
+<ul>
+<li><a href="#731-estimation-of-mean-water-table-depth">7.3.1 Estimation of mean water table depth</a></li>
+<li><a href="#732-calculation-of-groundwater-runoff">7.3.2 Calculation of groundwater runoff</a></li>
+<li><a href="#733-calculation-of-surface-runoff">7.3.3 Calculation of surface runoff</a></li>
+</ul></li>
+<li><a href="#74-water-flux-given-to-soil">7.4 Water flux given to soil</a></li>
+</ul></li>
+<li><a href="#8-matgnd-soil-submodel">8 MATGND Soil Submodel</a>
+<ul>
+<li><a href="#81-calculation-of-soil-heat-conduction">8.1 Calculation of soil heat conduction</a>
+<ul>
+<li><a href="#811-soil-heat-conduction-equations">8.1.1 Soil heat conduction equations</a></li>
+<li><a href="#812-solution-of-heat-conduction-equations">8.1.2 Solution of heat conduction equations</a></li>
+</ul></li>
+<li><a href="#82-calculation-of-soil-moisture-movement">8.2 Calculation of soil moisture movement</a>
+<ul>
+<li><a href="#821-soil-moisture-movement-equations">8.2.1 Soil moisture movement equations</a></li>
+<li><a href="#822-solution-of-soil-moisture-movement-equations">8.2.2 Solution of soil moisture movement equations</a></li>
+</ul></li>
+<li><a href="#83-phase-change-of-soil-moisture">8.3 Phase change of soil moisture</a>
+<ul>
+<li><a href="#831-ice-sheet-process">8.3.1 Ice sheet process</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#references">References</a></li>
+</ul>
+<h1 id="introduction">1 Introduction</h1>
+<p>Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land surface parameterization formulated for application&#x3000;to the atmospheric general circulation model developed by the Center for Climate System Research at the University of Tokyo and the National Institute for Environmental Studies (CCSR/NIES AGCM), as well as to other global climate models. It has been designed to be primarily used for integral climate calculations such as those involving long time scales from one month to several hundred years coupled with the atmospheric model at grid resolutions of tens of kilometers or more. The main objective in its development was to represent all of the important water and energy circulation processes between land and atmosphere as fully and accurately as possible (i.e., <em>advanced</em> treatment) in such time and spatial scales, while modeling them as simply as possible (i.e., <em>minimal</em> treatment) so as to allow the results to be easily interpreted.</p>
+<p>MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by Watanabe (1994), while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with the current AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which now serves as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions in recent years, was ported from SiB2 code.</p>
+<h1 id="structure-of-matsiro">2 Structure of MATSIRO</h1>
+<h2 id="overview-of-matsiro">2.1 Overview of MATSIRO</h2>
+<h3 id="general-structure">2.1.1 General structure</h3>
+<p>MATSIRO is divided into the following two parts:</p>
+<ul>
+<li><p>the flux calculation section (LNDFLX), and</p></li>
+<li><p>the land surface integration section (LNDSTP)</p></li>
+</ul>
+<p>These match the standard land surface process routines of AGCM5.6.</p>
+<p>The flux calculation section is called by time steps of the atmospheric model as part of its physical processes, while the land surface integration section is called from the main routine of the coupled model as a land surface model equivalent to the atmospheric and ocean models. The time steps are set independently from the atmospheric model.</p>
+<p>The exchange of data between the flux calculation section and the land surface integration section is carried out through a flux coupler. In the flux calculation section, snow-covered and snow-free portions in a grid cell are treated separately and the surface fluxes for each portion are respectively calculated. The calculated fluxes in the two portions are averaged by weighting with the fractions of the portions and transferred to the land surface integration section through the flux coupler. A time averaging operation is simultaneously performed at this juncture.</p>
+<p>In program terms, the entry of the flux calculation section LNDFLX and the entry of the land surface integration section LNDSTP are contained in the driver program (matdrv.F), and subroutines for the various processes required are respectively called from these entries. LNDFLX and LNDSTP share the same internal variables of MATSIRO.</p>
+<h3 id="internal-variables-of-matsiro">2.1.2 Internal variables of MATSIRO</h3>
+<p>MATSIRO has the following internal variables:</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 22%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(T_{s(l)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((l=1,2)\)</span></td>
+<td style="text-align: left;">surface temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(T_{c(l)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((l=1,2)\)</span></td>
+<td style="text-align: left;">Canopy temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="4"></td>
+
+
+
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(T_{g(k)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_g)\)</span></td>
+<td style="text-align: left;">Soil temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">$w_{(k)} $</td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_g)\)</span></td>
+<td style="text-align: left;">soil moisture content</td>
+<td style="text-align: left;">[m<span class="math inline">\(^3\)</span>/m<span class="math inline">\(^3\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(w_{i(k)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_g)\)</span></td>
+<td style="text-align: left;">Frozen soil moisture content</td>
+<td style="text-align: left;">[m<span class="math inline">\(^3\)</span>/m<span class="math inline">\(^3\)</span>]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="4"></td>
+
+
+
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(w_c\)</span></td>
+
+<td style="text-align: left;">Water content in the canopy</td>
+<td style="text-align: left;">\0.25\0.25\0.25\0.25\0.25\0.25\0.25\0.00}.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"></td>
+
+<td style="text-align: left;">amount of snowfall</td>
+<td style="text-align: left;">\kosmos[kg/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(T_{Sn(k)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_{Sn})\)</span></td>
+<td style="text-align: left;">snow temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\alpha_{Sn(b)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((b=1,2,3)\)</span></td>
+<td style="text-align: left;">snow albedo</td>
+<td style="text-align: left;">\The state of affairs in the state of affairs of others [<span class="math inline">\(-\)</span>]</td>
+</tr>
+</tbody>
+</table>
+<p>where e <span class="math inline">\(l=1,2\)</span> denotes snow-free and snow-covered portions, respectively; <span class="math inline">\(k\)</span> is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper); <span class="math inline">\(K_g\)</span> is the number of soil layers; <span class="math inline">\(K_{Sn}\)</span> is the number of snow layers; and <span class="math inline">\(b=1,2,3\)</span> denotes the bands of visible, near infrared , and infrared wavelengths, respectively.</p>
+<p>As a standard, the soil has five layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, and 200 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same.</p>
+<p>The number of snow layers is variable, increasing with the increase of snow water equivalent. As a standard, the maximum number is three layers.</p>
+<p>The ground surface temperature and canopy temperature are so-called skin temperatures whose heat capacity is zero; however, they take the form of prognostic variables. (The current calculation method depends on the values of the preceding step because the stability, etc. assessed by the values of the preceding step are used. If the stability, etc. were to be assessed by updated values and calculation iterated to the point of convergence, perfect diagnostic variables would be obtained that would not depend on the values of the preceding step.) The other variables are all prognostic variables that always require the values of the preceding step.</p>
+<p>The ground surface temperature and canopy temperature are updated in the flux calculation section. All of the other variables (original prognostic variables) are updated in the land surface integration section.</p>
+<h2 id="flux-calculation-section">2.2 Flux calculation section</h2>
+<h3 id="structure-of-the-flux-calculation-section">2.2.1 Structure of the flux calculation section</h3>
+<p>The procedure of the flux calculation section is implemented as follows:</p>
+<ol type="1">
+<li><p>Input variables are received from the coupler.</p></li>
+<li><p>The snow-covered ratio in each subgrid cell is diagnosed.</p></li>
+<li><p>For each snow-free portion (<span class="math inline">\(l=1\)</span>) and snow-covered portion (<span class="math inline">\(l=2\)</span>), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown:</p>
+<ol type="a">
+<li>MATLAI: vegetation type parameter (LAI, vegetation height) set</li>
+<li>MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)</li>
+<li>MATBLK: calculation of turbulence parameters (bulk coefficients) (momentum and heat)</li>
+<li>MATRST: calculation of stomatal resistance, bare soil surface evaporation resistance, etc. (e)MATBLQ: calculation of turbulence parameters (bulk coefficients) (vapor)</li>
+<li>MATFLX: calculation of surface flux</li>
+<li>MATGHC: calculation of soil heat conductivity</li>
+<li>MATSHB: solution of energy balance at ground surface and canopy</li>
+</ol></li>
+<li><p>The output variables are transferred to the coupler.</p></li>
+<li><p>History output variables are registered and added.</p>
+<p>(a) to (e) are classified into boundary value submodels, and the program is consolidated into matbnd.F.</p>
+<p>(f) to (h) are classified into surface submodels, and the program is consolidated into matsfc.F. The photosynthesis scheme MATPHT is called from (d). The photosynthesis scheme is consolidated into matpht.F.</p></li>
+</ol>
+<h3 id="input-variables-of-the-flux-calculation-section">2.2.2 Input variables of the flux calculation section</h3>
+<p>The following variables are input in the flux calculation section:</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 29%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(u_a\)</span></td>
+
+<td style="text-align: left;">Atmospheric 1st layer east-west wind</td>
+<td style="text-align: left;">\The &quot;m/score</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(v_a\)</span></td>
+
+<td style="text-align: left;">First layer of atmospheric north-south wind</td>
+<td style="text-align: left;">\The &quot;m/score</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(T_a\)</span></td>
+
+<td style="text-align: left;">Atmospheric 1st layer temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(q_a\)</span></td>
+
+<td style="text-align: left;">Specific humidity in the first layer of the atmosphere</td>
+<td style="text-align: left;">[kg/kg\]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(P_a\)</span></td>
+
+<td style="text-align: left;">Atmospheric 1st layer pressure</td>
+<td style="text-align: left;">\The state of affairs of the city of Los Angeles[Pahren]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(P_s\)</span></td>
+
+<td style="text-align: left;">surface pressure</td>
+<td style="text-align: left;">\The state of affairs of the city of Los Angeles[Pahren]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="4"></td>
+
+
+
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(R^{\downarrow}_{(d,b)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((d=1,2;b=1,2,3)\)</span></td>
+<td style="text-align: left;">Surface downward radiation flux</td>
+<td style="text-align: left;">\W/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\cos\zeta\)</span></td>
+
+<td style="text-align: left;">cosine of the solar zenith angle</td>
+<td style="text-align: left;">\The state of affairs of the company in the first place is in the form of the following.</td>
+</tr>
+</tbody>
+</table>
+<p>where <span class="math inline">\(d=1,2\)</span> denotes direct and diffuse, respectively; and <span class="math inline">\(b=1,2,3\)</span> denotes the bands of visible, near infrared, and infrared wavelengths, respectively.</p>
+<h3 id="output-variables-of-the-flux-calculation-section">2.2.3 Output variables of the flux calculation section</h3>
+<p>The following variables are output from the flux calculation section:</p>
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 32%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\tau_x\)</span></td>
+
+<td style="text-align: left;">surface-to-west wind stress</td>
+<td style="text-align: left;">\N/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\tau_y\)</span></td>
+
+<td style="text-align: left;">surface-to-south wind stress</td>
+<td style="text-align: left;">\N/m$^2$45]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(H\)</span></td>
+
+<td style="text-align: left;">surface sensible heat flux</td>
+<td style="text-align: left;">The\\brahammer\bra_Penny.com[W/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(E\)</span></td>
+
+<td style="text-align: left;">Surface Water Vapor Flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(R^{\uparrow}_S\)</span></td>
+
+<td style="text-align: left;" colspan="2">Upward Bound Shortwave Radiation Flux</td>
+
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(R^{\uparrow}_L\)</span></td>
+
+<td style="text-align: left;" colspan="2">Upward Bound Longwave Radiation Flux</td>
+
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\alpha_{s(b)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((b=1,2,3)\)</span></td>
+<td style="text-align: left;">surface albedo</td>
+<td style="text-align: left;">\The state of affairs of the world[<span class="math inline">\(-\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(T_{sR}\)</span></td>
+
+<td style="text-align: left;">surface radiation temperature</td>
+<td style="text-align: left;">\K.L.A.[K.R.I.E.D.]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(F_{g(1/2)}\)</span></td>
+
+<td style="text-align: left;" colspan="2">Surface Heat Transfer Flux</td>
+
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(F_{Sn(1/2)}\)</span></td>
+
+<td style="text-align: left;">Heat Transfer Flux for Snow Surface</td>
+<td style="text-align: left;">The\\brax.com[W/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(Et_{(i,j)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((i=1,2;j=1,2,3)\)</span></td>
+<td style="text-align: left;">Evapotranspiration components</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s\braham]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\Delta F_{conv}\)</span></td>
+
+<td style="text-align: left;" colspan="2">surface energy convergence</td>
+
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(F_{root(k)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_g)\)</span></td>
+<td style="text-align: left;">Root sucking flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(LAI\)</span></td>
+
+<td style="text-align: left;">leaf area index</td>
+<td style="text-align: left;">[m<span class="math inline">\(^2\)</span>/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(A_{Snc}\)</span></td>
+
+<td style="text-align: left;">Canopy freezing area ratio</td>
+<td style="text-align: left;">\Holy shit&#x2026;[<span class="math inline">\(-\)</span>]</td>
+</tr>
+</tbody>
+</table>
+<p>where <span class="math inline">\(i=1,2\)</span> denotes liquid and solid evapotranspiration, respectively; and <span class="math inline">\(j=1,2,3\)</span> denotes evaporation from the bare soil surface (forest floor), transpiration, and canopy water evaporation, respectively. Other indexes are the same as described earlier.</p>
+<h2 id="land-surface-integration-section">2.3 Land surface integration section</h2>
+<h3 id="structure-of-land-surface-integration-section">2.3.1 Structure of land surface integration section</h3>
+<p>The procedure of the land surface integration section is implemented as follows:</p>
+<ol type="1">
+<li><p>Input variables are received from the coupler.</p></li>
+<li><p>The subroutines for various processes are called and land surface prognostic variables are updated. Specifically, the following subroutines are called in the order shown below:</p>
+<ol type="a">
+<li><p>MATCNW: calculation of canopy water balance</p></li>
+<li><p>MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo</p></li>
+<li><p>MATROF: calculation of runoff</p></li>
+<li><p>MATGND: calculation of soil temperature, soil moisture, and frozen soil</p></li>
+</ol></li>
+<li><p>The output variables are transferred to the coupler.</p></li>
+<li><p>History output variables are registered and added.</p></li>
+</ol>
+<p>Each subroutine called from the main land surface integration section constitutes a specific submodel, and the program of each submodel is consolidated into a specific file, as listed below:</p>
+<ul>
+<li><p>MATCNW (matcnw.F): canopy water balance submodel</p></li>
+<li><p>MATSNW (matsnw.F): snow submodel</p></li>
+<li><p>MATROF (matrof.F): runoff submodel</p></li>
+<li><p>MATGND (matgnd.F ): soil submodel</p></li>
+</ul>
+<p>The submodels are basically executed in this order, although in order to refer to the values of parameters managed by other submodels, subroutines may be called between submodels as the need arises. Moreover, subroutines in the abovementioned submodels may sometimes be called from the flux calculation section for the same purpose.</p>
+<h3 id="input-variables-of-land-surface-integration-section">2.3.2 Input variables of land surface integration section</h3>
+<p>The following variables are input in the land surface integration section:</p>
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 25%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(Pr_{c}\)</span></td>
+
+<td style="text-align: left;">Convective rainfall flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(Pr_{l}\)</span></td>
+
+<td style="text-align: left;">Layered Rainfall Flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(P_{Snc}\)</span></td>
+
+<td style="text-align: left;">Convective snowfall flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(P_{Snl}\)</span></td>
+
+<td style="text-align: left;">Layered Snowfall Flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(F_{g(1/2)}\)</span></td>
+
+<td style="text-align: left;">Surface Heat Transfer Flux</td>
+<td style="text-align: left;">\The &quot;W/m<span class="math inline">\(^2\)</span>\</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(F_{Sn(1/2)}\)</span></td>
+
+<td style="text-align: left;">Heat Transfer Flux for Snow Surface</td>
+<td style="text-align: left;">\W/m$^2$8]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(Et_{(i,j)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((i=1,2;j=1,2,3)\)</span></td>
+<td style="text-align: left;">Evapotranspiration components</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\Delta F_{conv}\)</span></td>
+
+<td style="text-align: left;" colspan="2">surface energy convergence</td>
+
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(F_{root(k)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((k=1,\ldots,K_g)\)</span></td>
+<td style="text-align: left;">Root sucking flux</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s\\blade}]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(LAI\)</span></td>
+
+<td style="text-align: left;">leaf area index</td>
+<td style="text-align: left;">\The state of affairs of the state [m<span class="math inline">\(^2\)</span>/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(A_{Snc}\)</span></td>
+
+<td style="text-align: left;">Canopy freezing area ratio</td>
+<td style="text-align: left;">\The state of affairs in the state of affairs of the company [$-$0101]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="output-variables-of-land-surface-integration-section">2.3.3 Output variables of land surface integration section</h3>
+<p>The following variable is output from the land surface integration section:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(Ro\)</span></td>
+
+<td style="text-align: left;">runoff</td>
+<td style="text-align: left;">[kg/m<span class="math inline">\(^2\)</span>/s\blind}</td>
+</tr>
+</tbody>
+</table>
+<p>Runoff is used as an input variable for the river channel network model.</p>
+<h2 id="external-parameters">2.4 External parameters</h2>
+<p>The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are among the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,</p>
+<p>parameter given by map:</p>
+<p><span class="math display">\[
+ \phi(i,j)
+\]</span></p>
+<p>parameter given by table:</p>
+<p><span class="math display">\[
+ \psi(I),I = I_L (i,j)
+\]</span></p>
+<p>or</p>
+<p><span class="math display">\[
+ \psi(I),I = I_S (i,j),
+\]</span></p>
+<p>where <span class="math inline">\((i,j)\)</span> are indexes of the grid horizontal location, <span class="math inline">\(I_L\)</span> is the land use type, and <span class="math inline">\(I_S\)</span> is the soil type.</p>
+<h3 id="external-parameters-given-by-map">2.4.1 External parameters given by map</h3>
+<p>The types of external parameters given by map are as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+<th style="text-align: left;">Header4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(I_L\)</span></td>
+
+<td style="text-align: left;">Land cover type</td>
+<td style="text-align: left;">constant</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(I_S\)</span></td>
+
+<td style="text-align: left;">Soil Type</td>
+<td style="text-align: left;">constant</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(LAI_0\)</span></td>
+
+<td style="text-align: left;">Leaf Area Index (LAI)</td>
+<td style="text-align: left;">every month</td>
+<td style="text-align: left;">[m<span class="math inline">\(^2\)</span>/m<span class="math inline">\(^2\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\alpha_{0(b)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\((b=1,2,3)\)</span></td>
+<td style="text-align: left;">Ground surface (forest floor) albedo</td>
+<td style="text-align: left;">constant</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\tan\beta_{s}\)</span></td>
+
+<td style="text-align: left;">Tangent of the mean surface slope</td>
+<td style="text-align: left;">constant</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\sigma_z\)</span></td>
+
+<td style="text-align: left;">elevation standard deviation</td>
+<td style="text-align: left;">constant</td>
+<td style="text-align: left;">[m]</td>
+</tr>
+</tbody>
+</table>
+<p>2.4.2 External parameters given by table for each land cover type</p>
+<p>The types of external parameters given by table for each land cover type are as follows:</p>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 14%">
+<col style="width: 57%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(h_0\)</span></td>
+
+<td style="text-align: left;">vegetation height</td>
+<td style="text-align: left;">[m]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(h_{B0}\)</span></td>
+
+<td style="text-align: left;">Height of the bottom of the canopy</td>
+<td style="text-align: left;">[m]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(r_{f(b)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(b\)</span>=1,2)</td>
+<td style="text-align: left;">Reflectivity of individual leaves</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(t_{f(b)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(b\)</span>=1,2)</td>
+<td style="text-align: left;">Transmittance of individual leaves</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(f_{root(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Percentage of root presence</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(c_d\)</span></td>
+
+<td style="text-align: left;">Momentum exchange coefficient between the individual leaves and the atmosphere</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(c_h\)</span></td>
+
+<td style="text-align: left;">Heat Exchange Coefficient between individual leaves and the atmosphere</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(f_V\)</span></td>
+
+<td style="text-align: left;">vegetation coverage</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(V_{\max}\)</span></td>
+
+<td style="text-align: left;">Rubisco Reaction Capacity</td>
+<td style="text-align: left;">[m/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(m\)</span></td>
+
+<td style="text-align: left;"><span class="math inline">\(A_n\)</span>-<span class="math inline">\(g_s\)</span> Slope of the relationship</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(b\)</span></td>
+
+<td style="text-align: left;"><span class="math inline">\(A_n\)</span>-<span class="math inline">\(g_s\)</span> relationship intercepts</td>
+<td style="text-align: left;">[m/s]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\epsilon_3\)</span>, <span class="math inline">\(\epsilon_4\)</span></td>
+
+<td style="text-align: left;">Photosynthetic efficiency per photon</td>
+<td style="text-align: left;">[m/s/moll]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\theta_{ce}\)</span></td>
+
+<td style="text-align: left;">Coupling factor between <span class="math inline">\(w_c\)</span> and <span class="math inline">\(w_e\)</span></td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(\theta_{ps}\)</span></td>
+
+<td style="text-align: left;">Coupling factor between <span class="math inline">\(w_p\)</span> and <span class="math inline">\(w_s\)</span></td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(f_d\)</span></td>
+
+<td style="text-align: left;">respiratory coefficient</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(s_2\)</span></td>
+
+<td style="text-align: left;">Critical temperature of high temperature suppression</td>
+<td style="text-align: left;">[K]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;" colspan="2"><span class="math inline">\(s_4\)</span></td>
+
+<td style="text-align: left;">Critical temperature of cryogenic suppression</td>
+<td style="text-align: left;">[K]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="external-parameters-given-by-table-for-each-soil-type">2.4.3 External parameters given by table for each soil type</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Header0</th>
+<th style="text-align: left;">Header1</th>
+<th style="text-align: left;">Header2</th>
+<th style="text-align: left;">Header3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(c_{g(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Specific Heat of Soil</td>
+<td style="text-align: left;">[J/m<span class="math inline">\(^3\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(k_{g(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Thermal Conductivity of Soil</td>
+<td style="text-align: left;">[W/m/K]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(w_{sat(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Soil Porosity</td>
+<td style="text-align: left;">[m<span class="math inline">\(^3\)</span>/m<span class="math inline">\(^3\)</span>]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(K_{s(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Saturated Permeability of Soil</td>
+<td style="text-align: left;">[m/s]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\psi_{s(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Soil Saturation Moisture Potential</td>
+<td style="text-align: left;">[m]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(b_{(k)}\)</span></td>
+<td style="text-align: left;">(<span class="math inline">\(k=1,\ldots,K_g\)</span>)</td>
+<td style="text-align: left;">Index of Soil Moisture Potential Curve</td>
+<td style="text-align: left;">[-]</td>
+</tr>
+</tbody>
+</table>
+<h1 id="matbnd-boundary-value-submodel">3 MATBND Boundary Value Submodel</h1>
+<h2 id="vegetation-type-parameter-set">3.1 Vegetation type parameter set</h2>
+<p>The leaf area index (LAI), vegetation height, etc. are set as vegetation type parameters.</p>
+<p>Seasonally changing horizontal distributions are loaded as external parameters for LAI, and the values according to land use type are loaded as external parameters for the heights of the canopy top and bottom. When there is snow, only the vegetation above the level of the snow depth is taken into consideration and the type parameters are corrected as follows:</p>
+<p><span class="math display">\[
+ h = \max( h_0 - D_{Sn}, 0 ) \\
+ h_B = \max( h_{B0} - D_{Sn}, 0 ) \\
+ LAI = LAI_0 \frac{h-h_B}{h_0-h_{B0}}
+\]</span></p>
+<p>where <span class="math inline">\(h\)</span> is the height of the canopy top (vegetation height), <span class="math inline">\(h_B\)</span> is the height of the canopy bottom (height of clear length), <span class="math inline">\(LAI\)</span> is the leaf area index, and <span class="math inline">\(h_0\)</span>, <span class="math inline">\(h_{B0}\)</span>, and <span class="math inline">\(LAI_0\)</span> are the respective values when there is no snow. <span class="math inline">\(D_{Sn}\)</span> is the snow depth. LAI is approximated on the assumption that it is uniformly distributed vertically between the canopy top and bottom.</p>
+<p>In terms of coding, next the mean values of the snow-free and snow-covered portions are solved by weighting with the snow-covered ratio (<span class="math inline">\(A_{Sn}\)</span>), etc., as follows:</p>
+<p><span class="math display">\[
+    h = A_{Sn}h + (1-A_{Sn})h_0
+\]</span></p>
+<p>However, because the snow-free portion and snow-covered portion are respectively calculated, it should be noted that <span class="math inline">\(A_{Sn}\)</span> takes the value of either 0 (snow-free portion) or 1 (snow-covered portion), so no mixing of values occurs (similar cases are also seen later).</p>
+<h2 id="calculation-of-radiation-parameters">3.2 Calculation of radiation parameters</h2>
+<p>Next, the radiation parameters (albedo, vegetation transmissivity , etc.) are calculated.</p>
+<h3 id="calculation-of-ground-surface-forest-floor-albedo">3.2.1 Calculation of&#x3000;ground surface (forest floor) albedo</h3>
+<p>The horizontal distributions of the ground surface (forest floor) albedo <span class="math inline">\(b=1,2\)</span> are loaded as external parameters, with <span class="math inline">\(b=1,2\)</span> denoting the wavelength bands of visible and near infrared, respectively. The infrared ground surface albedo (<span class="math inline">\(\alpha_{0(3)}\)</span>) is set to a fixed value (horizontal distributions can also be prepared if desired).</p>
+<p>With regard to the ice-sheet portion and snow-covered portion, the dependence of the incidence angle of albedo is considered by the following function form:</p>
+<p><span class="math display">\[
+ \alpha_{0(d,b)} = \hat{\alpha}_{0(b)} + ( 1 - \hat{\alpha}_{0(b)} )
+                         \cdot 0.4 ( 1 - \cos \phi_{in(d)} )^5
+\]</span></p>
+<p>where <span class="math inline">\(b=1,2\)</span> are wavelength bands; <span class="math inline">\(d=1,2\)</span> are direct and diffuse, respectively; and <span class="math inline">\(\hat{\alpha}_{0(b)}\)</span> is the value of albedo when the incidence angle is 0 (from directly overhead). The cosine of the incidence angle ! is expressed as</p>
+<p><span class="math display">\[
+ \cos\psi_{in(1)} = \cos\zeta, \ \ \
+ \cos\psi_{in(2)} = \cos 50^{\circ}
+\]</span></p>
+<p>for direct insolation and diffuse radiation, respectively, where <span class="math inline">\(\zeta\)</span> is the solar zenith angle.</p>
+<p>With regard to regions other than the ice-sheet portion and snow-covered portion, the zenith angle dependence is not taken into consideration for the albedo of the ground surface (forest floor) and the same values are given to direct insolation and diffuse radiation; that is,</p>
+<p><span class="math display">\[
+ \alpha_{0(d,b)} = \alpha_{0(b)}\ \ \ (d=1,2;\ b=1,2)
+\]</span></p>
+<p>Moreover, in the case of the infrared wavelength only diffuse radiation needs to be considered. The value of the infrared albedo for all ground surfaces is given independently of the zenith angle, as follows:</p>
+<p><span class="math display">\[
+ \alpha_{0(2,3)} = \alpha_{0(3)}
+\]</span></p>
+<h3 id="calculation-of-canopy-albedo-and-transmissivity">3.2.2 Calculation of canopy albedo and transmissivity</h3>
+<p>The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by Watanabe and Ohtani (1995).</p>
+<p>Considering the canopy as vertically uniform and making use of several assumptions for simplification, the transfer equations of insolation within the canopy and the boundary condition are expressed as</p>
+<p><span class="math display">\[
+ \frac{dS^{\downarrow}_d}{dL} = -F \sec\zeta S^{\downarrow}_d \\
+ \frac{dS^{\downarrow}_r}{dL} = -F (1-t_{f(b)})d_f S^{\downarrow}_r
+                                  +F t_{f(b)} \sec\zeta S^{\downarrow}_d
+                                  +F r_{f(b)} d_f S^{\uparrow}_r \\
+ \frac{dS^{\uparrow}_r}{dL}   =  F (1-t_{f(b)})d_f S^{\uparrow}_r
+                                  -F r_{f(b)} ( d_f S^{\downarrow}_r
+                                         + \sec\zeta S^{\downarrow}_d ) \\
+ S^{\downarrow}_d(0) = S^{top}_d \\
+ S^{\downarrow}_r(0) = S^{top}_r \\
+ S^{\uparrow}_r(LAI) = \alpha_{0(1,b)}S^{\downarrow}_d(LAI)
+                       + \alpha_{0(2,b)}S^{\downarrow}_r(LAI)
+\]</span></p>
+<p>where <span class="math inline">\(S^{\downarrow}_d\)</span> is the downward direct insolation; <span class="math inline">\(S^{\uparrow}_r\)</span> and <span class="math inline">\(S^{\downarrow}_r\)</span> are the upward and downward diffuse radiation, respectively; <span class="math inline">\(L\)</span> is the leaf area cumulatively added downward from the canopy top; <span class="math inline">\(d_f\)</span> is the diffusivity factor (<span class="math inline">\(=\sec 53^{\circ}\)</span>), <span class="math inline">\(r_{f(b)}\)</span>; <span class="math inline">\(t_{f(b)}\)</span> are the leaf albedo and transmissivity, respectively (the same value is used for diffuse radiation and direct insolation); and <span class="math inline">\(F\)</span> is a factor denoting the direction of the leaves with respect to the radiation. Here, the distribution of the direction of the leaves is assumed to be random (<span class="math inline">\(F=0.5\)</span>) for simplicity.</p>
+<p>These can be solved analytically, giving the following solutions:</p>
+<p><span class="math display">\[
+ S^{\downarrow}_d(L) = S^{top}_d \exp(-F\cdot L\cdot \sec\zeta) \\
+ S^{\downarrow}_r(L) = C_1 e^{a L} + C_2 e^{-a L} + C_3 S^{\downarrow}_d(L) \\
+ S^{\uparrow}_r(L)   = A_1 C_1 e^{a L} + A_2 C_2 e^{-a L} + C_4 S^{\downarrow}_d(L)
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+   a = F d_f [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}  \\
+ A_1 = \{ 1 - t_{f(b)} + [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \tag{eq17} \\
+ A_2 = \{ 1 - t_{f(b)} - [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \\
+ A_3 = (A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+        -(A_2 - \alpha_{0(2,b)}) e^{-a LAI } \\
+ C_1 = \{ -(A_2 - \alpha_{0(2,b)}) e^{-a LAI} (S^{top}_r - C_3 S^{top}_d)
+            +[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_2 = \{  (A_1 - \alpha_{0(2,b)}) e^{ a LAI} (S^{top}_r - C_3 S^{top}_d)
+            -[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_3 = \frac{\sec\zeta[t_{f(b)}\sec\zeta + d_f t_{f(b)}(1-t_{f(b)}) + d_f r_{f(b)}^2]}
+              {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta} \\
+ C_4 = \frac{r_{f(b)}(d_f - \sec\zeta)\sec\zeta}
+              {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta}
+\]</span></p>
+<p>Albedo <span class="math inline">\(\alpha_s\)</span> at the canopy top is expressed as</p>
+<p><span class="math display">\[
+ S^{\uparrow}_r(0) = \alpha_{s(1,b)} S^{\downarrow}_d(0)
+                   + \alpha_{s(2,b)} S^{\downarrow}_r(0)
+\]</span></p>
+<p>therefore,</p>
+<p><span class="math display">\[
+ \alpha_{s(2,b)} = \{ A_2 ( A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+                      - A_1 ( A_2 - \alpha_{0(2,b)}) e^{-a LAI }
+                   \} / A_3 \\
+ \alpha_{s(1,b)} = - C_3 \alpha_{s(2,b)} + C_4
+                  + ( A_1 - A_2 ) ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4)
+                  e^{- F\cdot LAI\cdot \sec\zeta} / A_3
+\]</span></p>
+<p>are obtained.</p>
+<p>If the canopy transmissivity (<span class="math inline">\({\mathcal{T}}_c\)</span>) (specifically, the ratio of incident insolation absorbed by the forest floor to the incident insolation of the canopy top) is defined by</p>
+<p><span class="math display">\[
+  {\mathcal{T}}_{c(2,b)}= \{ ( 1 - A_2 )( A_1 - \alpha_{0(2,b)} )
+                      - ( 1 - A_1 )( A_2 - \alpha_{0(2,b)} ) \} / A_3 \\
+ {\mathcal{T}}_{c(1,b)}= - C_3 {\mathcal{T}}_{c(2,b)}  \\
+ +               \{ ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4 )
+                   ( ( 1 - A_1 ) e^{ a LAI }
+                   - ( 1 - A_2 ) e^{-a LAI } )  / A_3
+                   + C_3 - C_4 +1 \} e^{- F\cdot LAI\cdot \sec\zeta}
+ \\
+\]</span></p>
+<p>the following are obtained:</p>
+<p><span class="math display">\[
+ S^{\downarrow}_d(LAI) + S^{\downarrow}_r(LAI) - S^{\uparrow}_r(LAI)
+= {\mathcal{T}}_{c(1,b)} S^{\downarrow}_d(0)
++ {\mathcal{T}}_{c(2,b)} S^{\downarrow}_r(0)
+\]</span></p>
+<p>The above calculations are performed for <span class="math inline">\(b=1, 2\)</span> (visible and near infrared), respectively.</p>
+<p>The leaf albedo <span class="math inline">\(r_f\)</span> and transmissivity <span class="math inline">\(t_f\)</span> are loaded as external parameters for each land cover type; however, the following two modifications are made before these parameters are used in the above calculations.</p>
+<ol type="1">
+<li>Snow (ice) effect on leaf surface</li>
+</ol>
+<p>When the canopy temperature does not exceed 0&#xB0;C, the canopy water is regarded as snow (ice). In this case, using the snow albedo (<span class="math inline">\(\alpha_{Sn(b)}\)</span>) and canopy water (<span class="math inline">\(w_c\)</span>), the following assumptions are made:</p>
+<p><span class="math display">\[
+ r_{f(b)} = ( 1 - f_{cwet} ) r_{f(b)}
+         + f_{cwet} \alpha_{Sn(b)} \\
+  f_{cwet} = {w_c}/w_{c,cap}
+\]</span></p>
+<p>where <span class="math inline">\(w_{c,cap}\)</span> is the canopy water capacity. With regard to transmissivity, the following assumption is made for convenience so that the absorptivity <span class="math inline">\(1-r_f-t_f\)</span>) does not take a negative value:</p>
+<p><span class="math display">\[
+ t_{f(b)} = ( 1 - f_{cwet} ) t_{f(b)}
+         + f_{cwet} t_{Sn(b)}, \ \ \
+ t_{Sn(b)} = \min( 0.5(1 - \alpha_{Sn(b)}), t_{f(b)} )
+\]</span></p>
+<p>When the canopy water is in the liquid state, the resultant change in the leaf radiation parameter is ignored. Moreover, although the cases of snowfall after interception by the canopy (snow cover) and of frozen water in the canopy (ice) can be considered, with each having different radiation characteristics, the same albedo of snow on the forest floor is used for all cases here.</p>
+<ol start="2" type="1">
+<li>Effect considering the directions of reflection and transmission</li>
+</ol>
+<p>In solving the above equations, all reflected light is assumed to return in the direction of incidence. However, if, for example, the diffusion of only a portion of the reflected light in the direction of incidence is taken into consideration, the leaf radiation parameters can be replaced as follows (Watanabe, personal communication):</p>
+<p><span class="math display">\[
+  r_{f(b)} = 0.75 r_{f(b)} + 0.25 t_{f(b)} \\
+  t_{f(b)} = 0.75 t_{f(b)} + 0.25 r_{f(b)}
+\]</span></p>
+<p>The above calculations are performed for <span class="math inline">\(b=1, 2\)</span> (visible and near infrared), respectively.</p>
+<p>In addition, in consideration of the uneven distribution of vegetation (such as savanna) in parts of the grid cells, before calculating the albedo, etc., the LAI (taking the original LAI as the grid mean value) of the vegetation-covered portion is calculated as follows:</p>
+<p><span class="math display">\[
+  LAI = LAI / f_V
+\]</span></p>
+<p>and this is used for the calculation for albedo, etc. mentioned above. (<span class="math inline">\(R^{\downarrow}_{(d,b)}\)</span>) is the vegetation-covered ratio in the grid cell. After the albedo, etc. are calculated, the area-weighted mean of the vegetation-covered portion and non- vegetation-covered portion are obtained as</p>
+<p><span class="math display">\[
+  \alpha_{s(d,b)} = f_V \alpha_{s(d,b)}
+                       + ( 1 - f_V ) \alpha_{0(d,b)} \\
+  {\mathcal{T}}_{c(d,b)} = f_V {\mathcal{T}}_{c(d,b)}
+                       + ( 1 - f_V ) ( 1 - \alpha_{0(d,b)} )
+\]</span></p>
+<h3 id="calculation-of-surface-radiation-flux-etc">3.2.3 Calculation of surface radiation flux, etc.</h3>
+<p>Using the surface downward radiation flux (<span class="math inline">\(R^{\downarrow}_{(d,b)}\)</span>) and albedo calculated above, the following radiation fluxes are calculated:</p>
+<p><span class="math display">\[
+ R^{\downarrow}_S = \sum_{b=1}^2\sum_{d=1}^2 R^{\downarrow}_{(d,b)} \\
+ R^{\uparrow}_S = \sum_{b=1}^2\sum_{d=1}^2 \alpha_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ R^{\downarrow}_L = R^{\downarrow}_{(2,3)} \\
+ R^{gnd}_S = \sum_{b=1}^2\sum_{d=1}^2 {\mathcal{T}}_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ PAR = \sum_{d=1}^2 R^{\downarrow}_{(d,1)}
+\]</span></p>
+<p>where <span class="math inline">\(R^{\downarrow}_S\)</span> and <span class="math inline">\(R^{\uparrow}_S\)</span> are the downward and upward shortwave radiation flux, respectively; <span class="math inline">\(R^{\downarrow}_L\)</span> is the downward longwave flux; <span class="math inline">\(R^{gnd}_S\)</span> is the shortwave flux absorbed by the forest floor; and <span class="math inline">\(PAR\)</span> is the downward photosynthesis active radiation (PAR) flux.</p>
+<p>The canopy transmissivity of shortwave and longwave radiation, and the emissivity of longwave radiation, are then calculated as follows:</p>
+<p><span class="math display">\[
+ {\mathcal{T}}_{cS} = R^{gnd}_S / ( R^{\downarrow}_S - R^{\uparrow}_S ) \\
+ {\mathcal{T}}_{cL} = \exp( - F \cdot LAI \cdot d_f ) \\
+ \epsilon = 1 - \alpha_{s(2,3)}
+\]</span></p>
+<h1 id="calculation-of-turbulence-parameter-bulk-coefficient">3.3 Calculation of turbulence parameter (bulk coefficient)</h1>
+<p>Next, the turbulence parameter (bulk coefficient) is calculated.</p>
+<h3 id="calculation-of-roughness-with-respect-to-momentum-and-heat">3.3.1 Calculation of roughness with respect to momentum and heat</h3>
+<p>The calculation of roughness is based on Watanabe (1994). In that study, using the results of a multilayer canopy model by Kondo and Watanabe (1992) as a function form for the roughness of a bulk model best fitting those results, Watanabe (1994) proposed the following:</p>
+<p><span class="math display">\[
+ \left(\ln \frac{h-d}{z_0}\right)^{-1} =
+ \left[ 1 - \exp( -A^+) + \left(-\ln \frac{z_{0s}}{h}\right)^{-1/0.45}
+  \exp(-2A^+)\right]^{0.45} \\
+ \left(\ln \frac{h-d}{z_T^{\dagger}}\right)^{-1} =
+ \frac{1}{-\ln(z_{Ts}/h)} \left[ \frac{P_1}{P_1 + A^+ \exp({A^+})}\right] ^{P2} \\
+ \left(\ln \frac{h-d}{z_0}\right)^{-1} \left(\ln \frac{h-d}{z_T}\right)^{-1}
+ = C_T^{\infty} \left[1-\exp(-P_3 A^+)
+  + \left(\frac{C_T^0}{C_T^{\infty}}\right)^{1/0.9} \exp(-P_4 A^+)\right]^{0.9} \\
+ h-d = h [1-\exp(-A^+)] / {A^+} \\
+ A^+ = \frac{c_d LAI}{2k^2} \\
+ \frac1{C_T^0} = \ln \frac{h-d}{z_0} \ln \frac{h-d}{z_T^{\dagger}} \\
+ C_T^{\infty} = \frac{-1+(1+8F_T)^{1/2}}{2} \\
+ P_1 = 0.0115 \left(\frac{z_{Ts}}{h}\right)^{0.1}
+  \exp\left[5 \left(\frac{z_{Ts}}{h}\right)^{0.22}\right] \\
+ P_2 = 0.55 \exp\left[-0.58 \left(\frac{z_{Ts}}{h}\right)^{0.35}\right] \\
+ P_3 = [F_T + 0.084 \exp(-15 F_T)]^{0.15} \\
+ P_4 = 2 F_T^{1.1} \\
+ F_T = c_h / c_d
+\]</span></p>
+<p>where <span class="math inline">\(z_0\)</span> and <span class="math inline">\(z_T\)</span> are the roughness of the overall canopy with respect to momentum and heat, respectively; <span class="math inline">\(z_0s\)</span> and <span class="math inline">\(z_Ts\)</span> are the roughness of the ground surface (forest floor) with respect to momentum and heat, respectively; <span class="math inline">\(c_d\)</span> and <span class="math inline">\(c_h\)</span> are the exchange coefficient between an individual leaf and the atmosphere with respect to momentum and heat, respectively; <span class="math inline">\(h\)</span> is the vegetation height; <span class="math inline">\(d\)</span> is the zero-plane displacement; and <span class="math inline">\(LAI\)</span> is LAI. <span class="math inline">\(z_T^{\dagger}\)</span> is the roughness with respect to heat when assuming no transfer of heat to or from the leaf surface, and is used when solving the coefficient of heat transfer from the forest floor.</p>
+<p><span class="math inline">\(z_{0s}\)</span> and <span class="math inline">\(z_{Ts}\)</span> are given as external data for each land cover type. Their values (<span class="math inline">\(z_{0s}=0.05\)</span> m, <span class="math inline">\(z_{Ts}=0.005\)</span> m) are fixed as standards. However, the following modifications are made with respect to the snow-covered portion:</p>
+<p><span class="math display">\[
+ z_{0s} = \max( f_{Sn} z_{0s}, z_{0Sn} ) \\
+ z_{Ts} = \max( f_{Sn} z_{0s}, z_{TSn} ) \\
+          f_{Sn} = 1 - D_{Sn} / z_{0s}
+\]</span></p>
+<p>where <span class="math inline">\(D_{Sn}\)</span>, <span class="math inline">\(z_{0Sn}\)</span> and <span class="math inline">\(z_{TSn}\)</span> are the roughness of the snow-covered portion with respect to momentum and heat, respectively.</p>
+<p><span class="math inline">\(c_d\)</span> and <span class="math inline">\(c_h\)</span> are parameters determined by the leaf shape, and are given as external data for each land cover type.</p>
+<h3 id="calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat">3.3.2 Calculation of bulk coefficient with respect to momentum and heat</h3>
+<p>After Watanabe (1994), the bulk coefficient is also calculated using Monin-Obukhov similarity as</p>
+<p><span class="math display">\[
+ C_M = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
+ C_H = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-1}
+             \left[ \ln \frac{z_a-d}{z_T} + \Psi_h(\zeta) \right]^{-1} \\
+ C_{Hs} = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta_g) \right]^{-1}
+             \left[ \ln \frac{z_a-d}{z_T^{\dagger}} + \Psi_h(\zeta_g) \right]^{-1} \\
+ C_{Hc} = C_H - C_{Hs}
+\]</span></p>
+<p>where <span class="math inline">\(C_M\)</span> and <span class="math inline">\(C_H\)</span> are the bulk coefficients of the overall canopy (leaf surface + forest floor) with respect to momentum and heat, respectively; <span class="math inline">\(C_{Hs}\)</span> is the bulk coefficient of the ground surface (forest floor) flux with respect to heat; <span class="math inline">\(C_{Hc}\)</span> is the bulk coefficient of the canopy (leaf surface) flux with respect to heat; <span class="math inline">\(\Psi_m\)</span> and <span class="math inline">\(\Psi_h\)</span> are Monin-Obukhov shear functions with respect to momentum and heat, respectively; and <span class="math inline">\(z_a\)</span> is the reference height of the atmosphere (height of the troposphere). Using the Monin-Obukhov lengths <span class="math inline">\(\zeta\)</span> and <span class="math inline">\(\zeta_g\)</span> related to the overall canopy and ground surface (forest floor), respectively, <span class="math inline">\(L\)</span> and <span class="math inline">\(L_g\)</span> are respectively expressed as:</p>
+<p><span class="math display">\[
+ \zeta = \frac{z_a - d}{L} \\
+ \zeta_g = \frac{z_a - d}{L_g}
+\]</span></p>
+<p>and the Monin-Obukhov lengths are expressed as:</p>
+<p><span class="math display">\[
+ L = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg(C_{Hs}(T_s - T_a) + C_{Hc}(T_c - T_a))} \\
+ L_s = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg C_{Hs}(T_s - T_a)}
+\]</span></p>
+<p>where <span class="math inline">\(\Theta_0\)</span> =300K; <span class="math inline">\(|V_a|\)</span> is the absolute value of the surface wind speed; <span class="math inline">\(k\)</span> is the Karman constant; <span class="math inline">\(g\)</span> is the gravitational acceleration; and <span class="math inline">\(T_a,\)</span>T_c$ and <span class="math inline">\(T_s\)</span> are the temperature of the troposphere, canopy (leaf surface), and ground surface (forest floor), respectively.</p>
+<p>Since the bulk coefficient is necessary for calculation of the Monin-Obukhov length, and the Monin-Obukhov length is necessary for calculation of the bulk coefficient, the calculation is iterated (twice as a standard) with a neutral bulk coefficient as the initial value.</p>
+<p>Prior to this calculation, the snow depth in the snow-covered portion is added to the zero-plane displacement. However, the upper limit is set so that the zero-plane displacement does not exceed the value of <span class="math inline">\(z_a\)</span>:</p>
+<p><span class="math display">\[
+ d = \min( d + D_{Sn} ,\  f_{\max} \cdot z_a )
+\]</span></p>
+<p>As a standard, <span class="math inline">\(f_\)</span>{\max}$ is set at 0.5.</p>
+<h3 id="calculation-of-bulk-coefficient-with-respect-to-vapor">3.3.3 Calculation of bulk coefficient with respect to vapor</h3>
+<p>This calculation is performed after the calculation of stomatal resistance, described later.</p>
+<p>When the stomatal resistance (<span class="math inline">\(r_{st}\)</span>) and ground surface evaporation resistance&#x3000;(<span class="math inline">\(r_{soil}\)</span>) have been solved, the bulk coefficient with respect to vapor is solved as:</p>
+<p><span class="math display">\[
+ C_{Ec} |V_a| = \left[ (C_{Hc} |V_a|)^{-1} + r_{st} / LAI\right]^{-1} \\
+ C_{Es} |V_a| = \left[ (C_{Hs} |V_a|)^{-1} + r_{soil}\right]^{-1}
+\]</span></p>
+<p>(Previously, this parameter was solved by converting stomatal resistance, etc. into a decrease of the exchange coefficient via roughness. However, since this approach seems to be problematic, a simpler method had been adopted in its place.)</p>
+<p>In addition, when there is no stomatal resistance, etc. (such as evaporation from wet surfaces), the same value as for the bulk coefficient of heat is used for the bulk coefficient of vapor.</p>
+<h2 id="calculation-of-stomatal-resistance">3.4 Calculation of stomatal resistance</h2>
+<p>For the calculation of stomatal resistance, a photosynthesis-stomatal model based on Farquhar et al.&#xA0;(1980), Ball (1988), and Collatz et al.&#xA0;(1990, 1991, 1992) is used. The code of SiB2 (Sellers et al., 1996) is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.</p>
+<h3 id="calculation-of-soil-moisture-stress-factor">3.4.1 Calculation of soil moisture stress factor</h3>
+<p>Soil moisture stress with respect to transpiration is solved. By solving the soil moisture stress factor in each soil layer, and weighting with the root distribution in each layer, the stress factor of the overall soil is calculated.</p>
+<p>Referring to SiB2 (Sellers et al., 1996), the soil moisture stress in each layer is evaluated by the following equation:</p>
+<p><span class="math display">\[
+ f_{w(k)} = [ 1 + \exp( 0.02 (\psi_{cr} - \psi_{k}) ) ]^{-1}
+\ \ \ \ \ (k=1,\ldots,K_g)
+\]</span></p>
+<p>The stress factor of the overall soil is then obtained by</p>
+<p><span class="math display">\[
+ f_w = \sum_{k=1}^{K_g} f_{w(k)} f_{root(k)}
+\]</span></p>
+<p>where <span class="math inline">\(f_{root(k)}\)</span> is the root distribution fraction in each layer, which is an external parameter for each land cover type. <span class="math inline">\(\sum_{k=1}^{K_g} f_{root(k)}=1\)</span>.&#x3000;</p>
+<p>Furthermore, the weight of transpiration distributed to the root uptake flux in each layer is expressed as</p>
+<p><span class="math display">\[
+ f_{rootup(k)} = f_{w(k)} f_{root(k)} / f_w
+\ \ \ \ \ (k=1,\ldots,K_g)
+\]</span></p>
+<p>Note that <span class="math inline">\(\sum_{k=1}^{K_g} f_{rootup(k)} = 1\)</span> here.</p>
+<h3 id="calculation-of-amount-of-photosynthesis">3.4.2 Calculation of amount of photosynthesis</h3>
+<p>The amount of photosynthesis is calculated after SiB2 (Sellers et al., 1996).</p>
+<p>The amount of photosynthesis is considered to be regulated by the following three upper limits:</p>
+<p><span class="math display">\[
+ A \leq \min( w_c, w_e, w_s) \tag{eq76}
+\]</span></p>
+<p>where $w_c is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and <span class="math inline">\(w_e\)</span> is the upper limit set by photosynthetically active radiation. <span class="math inline">\(w_s\)</span> is the upper&#x3000;limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by CO<sub>2</sub> concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).</p>
+<p>The respective magnitudes are estimated as follows:</p>
+<p><span class="math display">\[
+ w_c = \left\{
+\begin{array}{ll}
+\displaystyle{
+V_m \left[ \frac{c_i - \Gamma^*}{c_i + K_c(1+O_2/K_O)}\right]
+}
+  \mathrm{(in case of C_3 vegetation)}\\
+ V_m
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right. \\
+ w_e = \left\{
+\begin{array}{ll}
+\displaystyle{
+PAR\cdot \epsilon_3 \left[ \frac{c_i-\Gamma^* }{c_i+2\Gamma^*}\right]
+}
+  \mathrm{(in case of C_3 vegetation)}\\
+PAR\cdot \epsilon_4
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right. \\
+ w_s = \left\{
+\begin{array}{ll}
+V_m / 2
+  \mathrm{(in case of C_3 vegetation)}\\
+V_m c_i/ 5
+  \mathrm{(in case of C_4 vegetation)}
+\end{array}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(V_m\)</span> is the Rubisco reaction capacity, <span class="math inline">\(c_i\)</span> is the partial pressure of CO<sub>2</sub>&#x3000;in the stoma, O<sub>2</sub> is the partial pressure of oxygen in the stoma, and <span class="math inline">\(PAR\)</span>is the photosynthetically active radiation (PAR). is the CO<sub>2</sub> compensation point, which is expressed by $\Gamma^* $ is the compensation point of CO<span class="math inline">\(_2\)</span> and is represented by <span class="math inline">\(\Gamma^* = 0.5 O_2 / S\)</span> <span class="math inline">\(K_c\)</span>, <span class="math inline">\(K_O\)</span>, and <span class="math inline">\(S\)</span> are functions of temperature, whose function form is shown later. <span class="math inline">\(\epsilon_3\)</span> and <span class="math inline">\(\epsilon_4\)</span> are constants determined by the vegetation type.</p>
+<p>In order to express a smooth transition between the different upper limits, <a href="#eq76">Eq. (76)</a> is actually solved as</p>
+<p><span class="math display">\[
+ \beta_{ce} w_p^2 - w_p(w_c + w_e) + w_c w_e = 0 \\
+ \beta_{ps} A^2 - A(w_p + w_s) + w_p w_s = 0
+\]</span></p>
+<p>The amount of net photosynthesis <span class="math inline">\(A__n\)</span> can be obtained when solving the two equations in order while selecting the smaller of the two solutions for each equation. <span class="math inline">\(\beta_{ce}, \beta_{ps}\)</span> are constants determined by the vegetation type. Note that when <span class="math inline">\(\beta=1\)</span>, coincidence is achieved with a simple minimum-value operation.</p>
+<p>When the amount of photosynthesis has been solved, (<span class="math inline">\(A_n\)</span>) is solved as</p>
+<p><span class="math display">\[
+ A_n = A - R_d
+\]</span></p>
+<p>where <span class="math inline">\(R_d\)</span> is the amount of respiration, expressed as</p>
+<p><span class="math display">\[
+ R_d = f_d V_m
+\]</span></p>
+<p>Here, <span class="math inline">\(f_d\)</span> is a constant determined by the vegetation type.</p>
+<p><span class="math inline">\(V_m\)</span>, etc. depend on the temperature and soil moisture, as follows (note that although the temperature dependence differs according to the term in which <span class="math inline">\(V_m\)</span> appears, the value is expressed by the same <span class="math inline">\(V_m\)</span>):</p>
+<p><span class="math display">\[
+ V_m = V_{\max} f_T(T_c) f_w \\
+ K_c = 30 \times 2.1^{Q_T} \\
+ K_O = 30000 \times 1.2^{Q_T} \\
+ S   = 2600 \times 0.57^{Q_T} \\
+ f_T(T_c) = \left\{
+\begin{array}{ll}
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}  (\mathrm{C_3 &#x306E; w_c, w_e &#x306E;&#x3068;&#x304D;})\\
+ 1.8^{Q_T}/\{1 + \exp[s_3(s_4-T_c)]\}  (\mathrm{C_3 &#x306E; w_s &#x306E;&#x3068;&#x304D;}) \\
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}/\{1 + \exp[s_3(s_4-T_c)]\}
+    (\mathrm{C_4 &#x306E; w_c, w_e &#x306E;&#x3068;&#x304D;})\\
+ 1.8^{Q_T}   (\mathrm{C_4 &#x306E; w_s &#x306E;&#x3068;&#x304D;}) \\
+ 2^{Q_T}/\{1 + \exp[s_5(T_c-s_6)]\}   (\mathrm{R_d &#x306E;&#x3068;&#x304D;})
+\end{array}
+\right. \\
+Q^T = (T_c - 298) / 10
+\]</span></p>
+<p>where <span class="math inline">\(V_{\max}\)</span>, <span class="math inline">\(s_1, \ldots, s_6\)</span> are constants determined by the vegetation type.</p>
+<p>If <span class="math inline">\(V_{\max}\)</span>, <span class="math inline">\(PAR\)</span>, <span class="math inline">\(c_i\)</span>, <span class="math inline">\(T_c\)</span> and <span class="math inline">\(f_w\)</span> are given by the above, the amount of photosynthesis in an individual leaf can be calculated. In reality, these values can be considered to be distributed unevenly even in the same canopy; however, <span class="math inline">\(c_i\)</span>, <span class="math inline">\(T_c\)</span>, and <span class="math inline">\(f_w\)</span> are approximated here as being the same for all leaves, whereas vertical distribution is taken into consideration in the case of <span class="math inline">\(V_{\max}\)</span> and <span class="math inline">\(PAR\)</span>. <span class="math inline">\(PAR\)</span> is greater at the top of the canopy, and the lower the position in the canopy, the more it is attenuated. <span class="math inline">\(V_{\max}\)</span> is also considered to conform with this property of <span class="math inline">\(PAR\)</span>and to have a similar distribution.</p>
+<p>The average vertical distribution of<span class="math inline">\(PAR\)</span> (and therefore the vertical distribution of <span class="math inline">\(V_{\max}\)</span>) is expressed as</p>
+<p><span class="math display">\[
+ PAR(L) = PAR^{top} \exp(- f_{atn} a L)
+\]</span></p>
+<p>where <span class="math inline">\(L\)</span> is the leaf area added cumulatively from the canopy top, <span class="math inline">\(PAR^\)</span>{to@}$is <span class="math inline">\(PAR\)</span> at the canopy top, <span class="math inline">\(a\)</span> is the attenuation coefficient defined in <a href="#eq17">Eq. (17)</a>, and <span class="math inline">\(f_{atn}\)</span> is a constant for adjustment. Using this, the factor <span class="math inline">\(f_{avr}\)</span> expressing the average value of <span class="math inline">\(PAR\)</span>, is defined as follows:</p>
+<p><span class="math display">\[
+ f_{avr} = \int_0^{LAI} PAR(L) dL \Bigm / (LAI \cdot PAR^{top})
+ = \frac{1 - \exp(- f_{atn} a L)}{f_{atn} a}
+\]</span></p>
+<p>Since each of the terms <span class="math inline">\(A_n\)</span> (<span class="math inline">\(w_c, w_s, w_e, R_d\)</span>) is proportional to <span class="math inline">\(V_{\max}\)</span> or <span class="math inline">\(PAR\)</span>, based on the assumption that the vertical distributions of <span class="math inline">\(V_{\max}\)</span> and <span class="math inline">\(PAR\)</span> are proportional, by multiplying <span class="math inline">\(A_n\)</span>, which was solved using the values of <span class="math inline">\(V_{\max}\)</span> and <span class="math inline">\(PAR\)</span> at the top of the canopy, by <span class="math inline">\(f_\)</span>{avr}<span class="math inline">\(, the average amount of photosynthesis of leaf (\)</span>\overline{A_n}$) can be solved:</p>
+<p><span class="math display">\[
+ \overline{A_n} = f_{avr} A_n
+\]</span></p>
+<p>This parameter is expressed as <span class="math inline">\(A_n\)</span> hereafter.</p>
+<h3 id="calculation-of-stomatal-resistance-2">3.4.3 Calculation of stomatal resistance (2)</h3>
+<p>The net photosynthesis (<span class="math inline">\(A_n\)</span>) and stomatal conductance (<span class="math inline">\(g_s\)</span>) are related by the semiempirical equation of Ball (1988) as follows:</p>
+<p><span class="math display">\[
+ g_s = m \frac {A_n}{c_s} h_s + b f_w \tag{eq93}
+\]</span></p>
+<p>where <span class="math inline">\(c_s\)</span> is the molar fraction of CO<sub>2</sub> (number of mol of CO<sub>2</sub> per 1 mol of air) at the leaf surface, <span class="math inline">\(f_w\)</span> is the soil moisture stress factor, and <span class="math inline">\(m\)</span> and <span class="math inline">\(b\)</span> are constants determined by the vegetation type.</p>
+<p><span class="math inline">\(h_s\)</span> is the relative humidity at the leaf surface and is defined as</p>
+<p><span class="math display">\[
+ h_s = e_s / e_i \tag{eq94}
+\]</span></p>
+<p>where <span class="math inline">\(e_s\)</span> is the molar fraction of vapor at the leaf surface, <span class="math inline">\(e_i\)</span> is the molar fraction of vapor in the stoma, and <span class="math inline">\(e_i = e^* (T_c)\)</span> is the mole fraction of water vapor in the stomata. $e^* $ denotes the molar fraction of saturated vapor.</p>
+<p>Assuming that the vapor flux from the inside of the stoma to the leaf surface is equal to the vapor flux from the leaf surface to the atmosphere (i.e., that there is no convergence and divergence of vapor at the leaf surface),</p>
+<p><span class="math display">\[
+ g_s(e_i - e_s) = g_l(e_s - e_a) \tag{eq95}
+\]</span></p>
+<p>from which we obtain</p>
+<p><span class="math display">\[
+ e_s = ( g_l e_a + g_s e_i ) / ( g_l + g_s )\tag{eq96}
+\]</span></p>
+<p>where <span class="math inline">\(e_a\)</span> is the molar fraction of vapor in the atmosphere and <span class="math inline">\(g_l\)</span> is the conductance from the leaf surface to the atmosphere. <span class="math inline">\(g_l\)</span> is expressed by <span class="math inline">\(g_l = C_{Hc}|V_a| / LAI\)</span> using the bulk coefficient.</p>
+<p>Similarly, assuming that there is no convergence and divergence of CO<sub>2</sub> at the leaf surface,</p>
+<p><span class="math display">\[
+ A_n = g_l(c_a - c_s)/1.4
+     = g_s(c_s - c_i)/1.6
+\]</span></p>
+<p>from which we obtain</p>
+<p><span class="math display">\[
+ c_s = c_a - 1.4 A_n/g_l \\
+ c_i = c_s - 1.6 A_n/g_s \tag{eq99}
+\]</span></p>
+<p>where <span class="math inline">\(c_a\)</span> and <span class="math inline">\(c_i\)</span> are the molar fractions of CO<sub>2</sub> in the atmosphere and in the stoma, respectively. The numerical values 1.4 and 1.6 are constants that appear due to the difference in the diffusion coefficients of vapor and CO<sub>2</sub>.</p>
+<p>If we order the equations by substituting <a href="#eq94">Eq. (94)</a> and <a href="#eq96">Eq. (96)</a> into <a href="#eq93">Eq. (93)</a>, the following equation is obtained for <span class="math inline">\(g_s\)</span>:</p>
+<p><span class="math display">\[
+ H g_s^2 + ( H g_l - e_i - H b f_w ) g_s - g_l ( H b f_w + e_a ) = 0 \tag{eq100}
+\]</span></p>
+<p>However, since</p>
+<p><span class="math display">\[
+ H = (e_i c_s)/(m A_n)
+\]</span></p>
+<p><a href="#eq99">Eq. (99)</a> is used for <span class="math inline">\(c_s\)</span>.</p>
+<p>Among the two solutions of <a href="#eq100">Eq. (100)</a>, the larger one is the significant solution. From the above, if <span class="math inline">\(A_n\)</span> is known, <span class="math inline">\(g_s\)</span> can be solved; however, when solving <span class="math inline">\(g_s\)</span>, <span class="math inline">\(c_i\)</span> is used. <span class="math inline">\(c_i\)</span> can be solved by <a href="#eq99">Eq. (99)</a> if <span class="math inline">\(g_s\)</span> is solved. That is, <span class="math inline">\(A_n\)</span> is necessary in order to solve <span class="math inline">\(g_s\)</span>, whereas <span class="math inline">\(c_i\)</span>, namely <span class="math inline">\(g_s\)</span>, is necessary in order to solve <span class="math inline">\(A_n\)</span>. Iterative calculation is therefore required.</p>
+<p>The algorithm for the iterative calculation is ported from SiB2, which uses the method of quickening the convergence by iterating six times and putting the errors in decreasing order to estimate the next solution.</p>
+<p>Lastly, using stomatal conductance, the stomatal resistance is expressed as</p>
+<p><span class="math display">\[
+ r_{st} = 1/g_{st}
+\]</span></p>
+<h3 id="calculation-of-ground-surface-evaporation-resistance">3.4.4 Calculation of ground surface evaporation resistance</h3>
+<p>The ground surface evaporation resistance (<span class="math inline">\(r_{soil}\)</span>) and relative humidity of the uppermost soil layer (<span class="math inline">\(h_{soil}\)</span>) are calculated as follows:</p>
+<p><span class="math display">\[
+ r_{soil} = a_1 ( 1 - W_{(1)} ) / ( a_2 + W_{(1)} ) \\
+ h_{soil} = \exp \left(\frac{\psi_{(1)} g}{R_{air} T_{g(1)}} \right)
+\]</span></p>
+<p>where <span class="math inline">\(W_{(1)} = w_{(1)}/w_{sat(1)}\)</span> is the degree of saturation of the uppermost soil layer, <span class="math inline">\(\psi_{1}\)</span> is the moisture potential of the uppermost soil layer, <span class="math inline">\(g\)</span> is the gravitational acceleration, <span class="math inline">\(R_{air}\)</span> is the gas constant of the air, and <span class="math inline">\(T_{g(1)}\)</span> is the temperature of the uppermost soil layer. <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_2\)</span> are constants, with <span class="math inline">\(a_1=800\)</span>, <span class="math inline">\(a_2\)</span>=0.2. as standard values.</p>
+<h1 id="matsfc-surface-submodel">4. MATSFC Surface Submodel</h1>
+<h2 id="calculation-of-surface-turbulent-fluxes">4.1 Calculation of surface turbulent fluxes</h2>
+<p>The turbulent fluxes at the ground surface are solved by bulk formulae as follows. Then, by solving the surface energy balance, the ground surface temperature (<span class="math inline">\(T_s\)</span>) and canopy temperature (<span class="math inline">\(T_c\)</span>) are updated, and the surface flux values with respect to those values are also updated. The solutions obtained here are temporary values. In order to solve the energy balance by linearizing with respect to <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span>, the differential with respect to <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span> of each flux is calculated beforehand.</p>
+<ul>
+<li>Momentum flux</li>
+</ul>
+<p><span class="math display">\[
+ \tau_x = - \rho C_{M}|V_a| u_a \\
+ \tau_y = - \rho C_{M}|V_a| v_a
+\]</span></p>
+<p>where <span class="math inline">\(\tau_x\)</span> and <span class="math inline">\(\tau_y\)</span> are the momentum fluxes (surface stress) of the zonal and meridional directions, respectively.</p>
+<ul>
+<li>Sensible heat flux</li>
+</ul>
+<p><span class="math display">\[
+ H_s = c_p \rho C_{Hs}|V_a| (T_s - (P_s/P_a)^{\kappa}T_a) \tag{eq107}
+  \\
+ H_c = c_p \rho C_{Hc}|V_a| (T_c - (P_s/P_a)^{\kappa}T_a) \\
+ \partial H_s/\partial T_s = c_p \rho C_{Hs}|V_a| \\
+ \partial H_c/\partial T_c = c_p \rho C_{Hc}|V_a|
+\]</span></p>
+<p>where <span class="math inline">\(H_s\)</span> and <span class="math inline">\(H_c\)</span> are the sensible heat flux from the ground surface (forest floor) and canopy (leaf surface), respectively; <span class="math inline">\(\kappa = R_{air} / c_p\)</span> and <span class="math inline">\(R_{air}\)</span>are the gas constants of air; and <span class="math inline">\(c_p\)</span> is the specific heat of air.</p>
+<ul>
+<li>Bare soil surface (forest floor) evaporation flux</li>
+</ul>
+<p><span class="math display">\[
+ Et_{(1,1)} = (1-A_{Sn})(1-f_{ice})\cdot
+           \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
+ Et_{(2,1)} = (1-A_{Sn})f_{ice}\cdot
+           \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
+ \partial Et_{(1,1)}/\partial T_s = (1-A_{Sn})(1-f_{ice})\cdot
+           \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s} \\
+ \partial Et_{(2,1)}/\partial T_s = (1-A_{Sn})f_{ice}\cdot
+           \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s}
+\]</span></p>
+<p>where <span class="math inline">\(Et_{(1,1)}\)</span> and <span class="math inline">\(Et_{(2,1)}\)</span> are the water evaporation and ice sublimation fluxes at the bare soil surface, respectively; <span class="math inline">\(q^*(T_s)\)</span> is the saturation specific humidity at the ground surface temperature; <span class="math inline">\(h_{soil}\)</span> is the relative humidity at the soil surface layer; <span class="math inline">\(A_{Sn}\)</span> is the snow-covered ratio; and <span class="math inline">\(f_{ice}\)</span> is the ratio of ice in the uppermost soil layer, expressed as</p>
+<p><span class="math display">\[
+  f_{ice} = w_{i(1)}/w_{(1)}
+\]</span></p>
+<p>Since the snow-free portion and snow-covered portion are calculated separately, it should be noted that <span class="math inline">\(A_{Sn}\)</span> takes the value of either 0 (snow-free portion) or 1 (snow-covered portion). When the flux is downward (i.e., dew formation), there is no soil moisture resistance; therefore, the bulk coefficient is taken as:</p>
+<p><span class="math display">\[
+  \widetilde{C_{Es}} = \left\{
+  \begin{array}{ll}
+   C_{Es} (h_{soil}q^*(T_s) - q_a &gt; 0 {&#x306E;&#x3068;&#x304D;})\\
+   C_{Hs} (h_{soil}q^*(T_s) - q_a \leq 0 {&#x306E;&#x3068;&#x304D;})
+  \end{array}
+  \right.
+\]</span></p>
+<ul>
+<li>Transpiration flux</li>
+</ul>
+<p><span class="math display">\[
+ Et_{(1,2)} = (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|(q^*(T_c) - q_a) \\
+ Et_{(2,2)} = 0 \\
+ \partial Et_{(1,2)}/\partial T_c =
+  (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|\cdot dq^*/dT|_{T_c} \\
+ \partial Et_{(2,2)}/\partial T_c = 0
+\]</span></p>
+<p>where <span class="math inline">\(Et_{(1,2)}\)</span> and <span class="math inline">\(Et_{(2,2)}\)</span> are transpiration of water and ice, respectively; and <span class="math inline">\(Et_{(2,2)}\)</span> is always 0. <span class="math inline">\(f_{cwet} = w_c / w_{c,cap}\)</span> is the wet fraction of the canopy. When the flux is downward, which is considered to be dew formation on the dry part of the leaf, the bulk coefficient is taken as:</p>
+<p><span class="math display">\[
+  \widetilde{C_{Ec}} = \left\{
+  \begin{array}{ll}
+   C_{Ec} (q^*(T_c) - q_a &gt; 0 {&#x306E;&#x3068;&#x304D;})\\
+   C_{Hc} (q^*(T_c) - q_a \leq 0 {&#x306E;&#x3068;&#x304D;})
+  \end{array}
+  \right.
+\]</span></p>
+<ul>
+<li>Canopy evaporation flux</li>
+</ul>
+<p>When <span class="math inline">\(T_c\)</span> <span class="math inline">\(\geq\)</span> 0 <span class="math inline">\(^{\circ}\)</span> C:</p>
+<p><span class="math display">\[
+ Et_{(1,3)} =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
+ Et_{(2,3)} = 0 \\
+ \partial Et_{(1,3)} \partial T_c =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c} \\
+ \partial Et_{(2,3)} \partial T_c = 0
+\]</span></p>
+<p>when <span class="math inline">\(T_c\)</span> <span class="math inline">\(&lt;\)</span> 0 <span class="math inline">\(^{\circ}\)</span> In case of C:</p>
+<p><span class="math display">\[
+ Et_{(1,3)} = 0 \\
+ Et_{(2,3)} =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
+ \partial Et_{(1,3)} \partial T_c = 0 \\
+ \partial Et_{(2,3)} \partial T_c =
+  f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c}
+\]</span></p>
+<p>where <span class="math inline">\(Et_{(1,3)}\)</span> and <span class="math inline">\(Et_{(2,3)}\)</span> are the evaporation of water and the sublimation of ice at the canopy surface, respectively.</p>
+<ul>
+<li>Snow sublimation flux</li>
+</ul>
+<p><span class="math display">\[
+ E_{Sn} = A_{Sn}\cdot \rho C_{Hs}|V_a|(q^*(T_s) - q_a) \\
+ \partial E_{Sn}/\partial T_s = A_{Sn}\cdot \rho C_{Hs}|V_a|
+ \cdot dq^*/dT|_{T_s}
+\]</span></p>
+<p>where <span class="math inline">\(E_{Sn}\)</span> is the snow sublimation flux. Since the snow-free portion and snow-covered portion are calculated separately, it should also be noted here that <span class="math inline">\(A_{Sn}\)</span> takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).</p>
+<h2 id="calculation-of-heat-conduction-fluxes">4.2 Calculation of heat conduction fluxes</h2>
+<p>The heat conduction fluxes in the snow-free and snow-covered portions are calculated. Similarly to the turbulent fluxes, when the energy balance is solved later and the surface temperature is updated, the heat conduction flux values are updated with respect to that value.</p>
+<p>In addition, it should also be noted here that since the snow-free portion and snow-covered portion are calculated separately, <span class="math inline">\(A_{Sn}\)</span> takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).</p>
+<ul>
+<li>Heat conduction flux in the snow-free portion</li>
+</ul>
+<p><span class="math display">\[
+  F_{g(1/2)} = (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)} (T_{g(1)} - T_s) \\
+  \partial F_{g(1/2)}/\partial T_s =
+  - (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)}
+\]</span> where <span class="math inline">\(F_{g(1/2)}\)</span> is the heat conduction flux, <span class="math inline">\(k_{g(1/2)}\)</span> is the soil heat conductivity, <span class="math inline">\(\Delta z_{g(1/2)}\)</span> is the thickness from the temperature definition point of the uppermost soil layer to the ground surface, and <span class="math inline">\(T_{g(1)}\)</span> is the temperature of the uppermost soil layer.</p>
+<ul>
+<li>Heat conduction flux in the snow-covered portion&#x3000;</li>
+</ul>
+<p><span class="math display">\[
+  F_{Sn(1/2)} = A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} (T_{Sn(1)} - T_s)
+ \\
+  \partial F_{Sn(1/2)}/\partial T_s =
+  - A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} \tag{eq135}
+\]</span></p>
+<p>where <span class="math inline">\(F_{Sn(1/2)}\)</span> is the heat conduction flux, <span class="math inline">\(k_{Sn(1/2)}\)</span> is the snow heat conductivity, <span class="math inline">\(\Delta z_{Sn(1/2)}\)</span> is the thickness from the temperature definition point of the uppermost snow layer to the ground surface, and <span class="math inline">\(T_{Sn(1)}\)</span> is the temperature of the uppermost snow layer.</p>
+<h2 id="solution-of-energy-balance-at-ground-surface-and-canopy">4.3 Solution of energy balance at ground surface and canopy</h2>
+<p>The energy balance is solved for two cases: (1) when there is no melting at the ground surface, and (2) when there is melting at the ground surface. In case (2), the solution is obtained by fixing the ground surface temperature (<span class="math inline">\(T_s\)</span>) at 0&#xB0;C, and the energy available for use in melting is diagnosed from the energy balance. Snowmelt on vegetation is treated by correction later on; therefore, that case is not solved separately here. Moreover, the case of the snow completely melting within the time steps is also treated by correction later on.</p>
+<h3 id="energy-balance-at-ground-surface-and-canopy">4.3.1 Energy balance at ground surface and canopy</h3>
+<p>The energy divergence at the ground surface (forest floor) is</p>
+<p><span class="math display">\[
+ \Delta F_s =
+  H_s + R^{net}_s + l Et_{(1,1)} + l_s ( Et_{(2,1)} + E_{Sn} )
+  - F_{g(1/2)} - F_{Sn(1/2)} \tag{eq136}
+\]</span></p>
+<p>where <span class="math inline">\(l\)</span> and <span class="math inline">\(l_s\)</span> are the latent heat of evaporation and sublimation, respectively; and <span class="math inline">\(R^{net}_s\)</span> is the net radiation divergence at the ground surface, given by</p>
+<p><span class="math display">\[
+  R^{net}_s = -(R^{\downarrow}_S - R^{\uparrow}_S) {\mathcal{T}}_{cS}
+              - \epsilon R^{\downarrow}_L {\mathcal{T}}_{cL}
+              + \epsilon \sigma T_s^4
+              - \epsilon \sigma T_c^4 (1 - {\mathcal{T}}_{cL})
+\]</span></p>
+<p>where<span class="math inline">\(\sigma\)</span> is the Stefan-Boltzmann constant.</p>
+<p>The energy divergence at the canopy (leaf surface) is</p>
+<p><span class="math display">\[
+  \Delta F_c =
+  H_c + R^{net}_c + l ( Et_{(1,2)} + Et_{(1,3)} )
+  + l_s ( Et_{(2,2)} + Et_{(2,3)} )
+\]</span></p>
+<p>where <span class="math inline">\(R^{net}_c\)</span> is the net radiation divergence at the canopy, given by</p>
+<p><span class="math display">\[
+  R^{net}_c = -(R^{\downarrow}_S - R^{\uparrow}_S) (1-{\mathcal{T}}_{cS})
+              - \epsilon R^{\downarrow}_L (1-{\mathcal{T}}_{cL})
+              + ( 2 \epsilon \sigma T_c^4
+              - \epsilon \sigma T_s^4 ) (1 - {\mathcal{T}}_{cL}) \tag{eq139}
+\]</span></p>
+<h3 id="case-1-when-there-is-no-melting-at-the-ground-surface">4.3.2 Case 1: When there is no melting at the ground surface</h3>
+<p>When there is no melting at the ground surface, <span class="math inline">\(\Delta F_s=\Delta F_c=0\)</span> are solved so that <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span> holds true for the energy balance at the ground surface and canopy.</p>
+<p>The energy balance equation linearizing each term with respect to <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span> can be expressed as</p>
+<p><span class="math display">\[
+ \left(
+\begin{array}{l}
+ \Delta F_s \\
+ \Delta F_c \\
+\end{array}
+\right)^{current}
+=
+\left(
+\begin{array}{l}
+ \Delta F_s \\
+ \Delta F_c \\
+\end{array}
+\right)^{past}
++
+\left(
+\begin{array}{ll}
+ {\partial \Delta F_s}/{\partial T_s}
+ {\partial \Delta F_s}/{\partial T_c} \\
+ {\partial \Delta F_c}/{\partial T_s}
+ {\partial \Delta F_c}/{\partial T_c} \\
+\end{array}
+\right)
+\left(
+\begin{array}{l}
+ \Delta T_s \\
+ \Delta T_c \\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{l}
+ 0 \\
+ 0 \\
+\end{array}
+\right) \tag{eq140}
+\]</span></p>
+<p>The part with <span class="math inline">\(pst\)</span> on the right-hand side is where the fluxes calculated <a href="eq107">Eq. (107)</a> to <a href="#eq135">Eq. (135)</a> are substituted into <a href="eq136">Eq. (136)</a> to <a href="#eq139">Eq. (139)</a> using the values of <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span> obtained in the previous step.</p>
+<p>The differential terms are as follows:</p>
+<p><span class="math display">\[
+ \frac{\partial \Delta F_s}{\partial T_s} =
+ \frac{\partial H_s}{\partial T_s}
++\frac{\partial R^{net}_s}{\partial T_s}
++l\frac{\partial Et_{(1,1)}}{\partial T_s}
++l_s\left(\frac{\partial Et_{(2,1)}}{\partial T_s}
++    \frac{\partial E_{Sn}}{\partial T_s}\right)
+-\frac{\partial F_{g(1/2)}}{\partial T_s}
+-\frac{\partial F_{Sn(1/2)}}{\partial T_s} \\
+ \frac{\partial \Delta F_s}{\partial T_c} =
+ \frac{\partial R^{net}_s}{\partial T_c} \\
+ \frac{\partial \Delta F_c}{\partial T_s} =
+ \frac{\partial R^{net}_c}{\partial T_s} \\
+ \frac{\partial \Delta F_c}{\partial T_c} =
+ \frac{\partial H_c}{\partial T_c}
++\frac{\partial R^{net}_c}{\partial T_c}
++l  \left(\frac{\partial Et_{(1,2)}}{\partial T_c}
++         \frac{\partial Et_{(1,3)}}{\partial T_c}\right)
++l_s\left(\frac{\partial Et_{(2,2)}}{\partial T_c}
++         \frac{\partial Et_{(2,3)}}{\partial T_c}\right)
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+ \frac{\partial R^{net}_s}{\partial T_s} =
+ \epsilon 4 \sigma T_s^3 \\
+ \frac{\partial R^{net}_s}{\partial T_c} =
+ - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3 \\
+ \frac{\partial R^{net}_c}{\partial T_s} =
+ - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_s^3 \\
+ \frac{\partial R^{net}_c}{\partial T_c} =
+  2( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3
+\]</span></p>
+<p>Using the above equations, <a href="$eq140">Eq. (140)</a> is solved for <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span>.</p>
+<h3 id="case-2-when-there-is-melting-at-the-ground-surface">4.3.3 Case 2: When there is melting at the ground surface</h3>
+<p>When either there is snow on the ground surface or the land cover type is ice sheet, and also the ground surface temperature solved in case 1, <span class="math inline">\(T_s^{current} = T_s^{past}+\Delta T_s\)</span>, is higher than 0&#xB0;C, melting at the ground surface occurs. When there is melting at the ground surface, the ground surface temperature is fixed at 0&#xB0;C. That is:</p>
+<p><span class="math display">\[
+ \Delta T_s = \Delta T_s^{melt} = T_{melt} - T_s^{past}
+\]</span></p>
+<p>where <span class="math inline">\(T_{melt}\)</span> is the melting point (0&#xB0;C) of ice.</p>
+<p>With <span class="math inline">\(T_c\)</span> known, <span class="math inline">\(\Delta T_s\)</span> is solved by the following equation similarly to <a href="#eq140">Eq. (140)</a>:</p>
+<p><span class="math display">\[
+ \Delta T_c = \left( - \Delta F_c^{past}
+            - \frac{\partial \Delta F_c}{\partial T_s} \Delta T_s^{melt}
+              \right) \Bigm/ \frac{\partial \Delta F_c}{\partial T_c}
+\]</span></p>
+<p>Thus, <span class="math inline">\(\Delta T_s\)</span> and <span class="math inline">\(\Delta T_c\)</span> are determined, and the energy convergence at the ground surface to be used for melting is solved by the following equation:</p>
+<p><span class="math display">\[
+ \Delta F_{conv} =
+ - \Delta F_s^{current} = - \Delta F_s^{past}
+ - \frac{\partial \Delta F_s}{\partial T_s} \Delta T_s^{melt}
+ - \frac{\partial \Delta F_s}{\partial T_c} \Delta T_c
+\]</span></p>
+<h3 id="conditions-for-solutions">4.3.4 Conditions for solutions</h3>
+<p>Several conditions are set for the solution of the ground surface energy balance. After solving the energy balance, if any of the conditions are not followed, the flux that has contravened the conditions is fixed at the limit value that satisfies the conditions, and the energy balance is solved again.</p>
+<ol type="1">
+<li>Vapor in the troposphere should not be excessively removed.</li>
+</ol>
+<p>Due to the instability of temporal calculations, it is possible that large downward latent heat is produced. The conditions are set so that even in such a case, the vapor in the troposphere from the surface is not completely removed; that is,</p>
+<p><span class="math display">\[
+  Et_{(i,j)}^{current} &gt; - q_a ( P_s - P_a ) / (g \Delta t)
+   \ \ \ \ \ (i=1,2 ; j=1,2,3) \\
+  E_{Sn}^{current} &gt; - q_a ( P_s - P_a ) / (g \Delta t)
+\]</span></p>
+<p>where <span class="math inline">\(g\)</span> is the gravitational acceleration and <span class="math inline">\(\Delta t\)</span> denotes the time steps of the atmospheric model. For the values of <span class="math inline">\(Et\)</span> etc. to be used for judgment, the updated flux values (<span class="math inline">\(current\)</span>) with respect to the values of <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span>that have been updated so as to satisfy the energy balance are used. The same applies to all of the other conditions listed below. Updating of the flux values is described later.</p>
+<ol start="2" type="1">
+<li>Soil moisture should not take a negative value.</li>
+</ol>
+<p>Soil moisture should not take a negative value due to transpiration; that is,</p>
+<p><span class="math display">\[
+   Et_{(1,2)}^{current} &lt;
+     \sum_{k\in rootzone} \rho_w w_{k}\Delta z_{g(k)} /\Delta t_L
+\]</span></p>
+<p>where <span class="math inline">\(\rho_w\)</span> is the water density and <span class="math inline">\(\Delta t_L\)</span> denotes the time steps of the land surface model.</p>
+<ol start="3" type="1">
+<li>Canopy water should not take a negative value.</li>
+</ol>
+<p>Canopy water should not take a negative value due to evaporation; that is,</p>
+<p><span class="math display">\[
+   Et_{(i,3)}^{current} &lt; \rho_w w_c /\Delta t_L
+   \ \ \ \ \ (i=1,2)
+\]</span></p>
+<ol start="4" type="1">
+<li>The snow water equivalent should not take a negative value.</li>
+</ol>
+<p>The snow water equivalent should not take a negative value due to sublimation of snow; that is,</p>
+<p><span class="math display">\[
+   E_{Sn}^{current} &lt; Sn /\Delta t_L
+\]</span></p>
+<h3 id="updating-of-ground-surface-and-canopy-temperatures">4.3.5 Updating of ground surface and canopy temperatures</h3>
+<p>The ground surface temperature and canopy temperature are updated as follows:</p>
+<p><span class="math display">\[
+ T_s^{current} = T_s^{past} + \Delta T_s \\
+ T_c^{current} = T_c^{past} + \Delta T_c
+\]</span></p>
+<p>Based on the updated canopy temperature, the canopy water is diagnosed in advance as being either liquid or solid. This information is used when treating freezing and melting of the canopy water, as follows:</p>
+<p><span class="math display">\[
+ A_{Snc} = \left\{
+\begin{array}{ll}
+ 0 (T_c \geq T_{melt})\\
+ 1 (T_c &lt;    T_{melt})
+\end{array}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(A_{Snc}\)</span> is the frozen fraction on the canopy.</p>
+<h3 id="updating-of-flux-values">4.3.6 Updating of flux values</h3>
+<p>The flux values are updated with respect to the updated values of <span class="math inline">\(T_s\)</span> and <span class="math inline">\(T_c\)</span>. When <span class="math inline">\(F\)</span> denotes any given flux, updating of the values is performed as follows:</p>
+<p><span class="math display">\[
+ F^{current} = F^{past} + \frac{\partial F}{\partial T_s} \Delta T_s
+                        + \frac{\partial F}{\partial T_c} \Delta T_c
+\]</span></p>
+<p>Using the updated flux values, the fluxes output into the atmosphere, etc. are calculated as follows:</p>
+<p><span class="math display">\[
+ H = H_s + H_c \\
+ E = \sum_{j=1}^3 \sum_{i=1}^2 Et_{(i,j)} + E_{Sn} \\
+ R^{\uparrow}_L = {\mathcal{T}}_{cL} \epsilon \sigma T_s^4
+ + (1 - {\mathcal{T}}_{cL}) \epsilon \sigma T_c^4
+ + (1 - \epsilon) R^{\downarrow}_L \\
+ T_{sR} = ( R^{\uparrow}_L / \sigma )^{1/4}
+\]</span></p>
+<p>where <span class="math inline">\(T_{sR}\)</span> is the radiation temperature at the ground surface.</p>
+<p>The root uptake flux in each soil layer is then calculated as follows:</p>
+<p><span class="math display">\[
+ F_{root(k)} = f_{rootup(k)} Et_{(1,2)} \ \ \ \ (k=1,\ldots,K_g)
+\]</span></p>
+<p>where <span class="math inline">\(F_{root(k)}\)</span> is the root uptake flux and <span class="math inline">\(f_{rootup(k)}\)</span> is the weighting for distribution of the transpiration to the root uptake flux in each layer.</p>
+<h1 id="matcnw-canopy-water-balance-submodel">5 MATCNW Canopy Water Balance Submodel</h1>
+<p>The canopy water balance is calculated.</p>
+<h2 id="diagnosis-of-canopy-water-phase">5.1 Diagnosis of canopy water phase</h2>
+<p>With regard to canopy water, the liquid phase (intercepted rainfall, dew formation, and frozen water content that has melted) and solid phase (intercepted snow, icing, and liquid water content that has frozen) are considered separately and the coexistence of the two phases is allowed. The only prognostic variable is the water content (<span class="math inline">\(w_c\)</span>) encompassing both the liquid and solid phases, and depending on whether the canopy temperature (<span class="math inline">\(T_c\)</span>) is higher or lower than T_{melt} = 0^{\circ}$ C, it is diagnosed as liquid or solid, respectively. The reason why the liquid and solid phases can coexist is that <span class="math inline">\(T_c\)</span> in snow-covered and snow-free portions is calculated separately. That is, the frozen fraction on the canopy (<span class="math inline">\(A_{Snc}\)</span>) is defined (in actuality, it is obtained as a result of spatial averaging by the coupler) as follows:</p>
+<p><span class="math display">\[
+ A_{Snc} = \left\{
+\begin{array}{ll}
+ 0  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} \geq T_{melt} {&#x306E;&#x3068;&#x304D;})\\
+ (1-A_{Sn})  (T_{c(1)} &lt; T_{melt}, \ T_{c(2)} \geq T_{melt} {&#x306E;&#x3068;&#x304D;})\\
+ A_{Sn}  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} &lt; T_{melt} {&#x306E;&#x3068;&#x304D;})\\
+ 1  (T_{c(1)} &lt; T_{melt}, \ T_{c(2)} &lt; T_{melt} {&#x306E;&#x3068;&#x304D;})
+\end{array}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(w_{cl} = w_c ( 1 - A_{Snc})\)</span> and $w_{ci} = w_c A_{Snc} $ are the liquid and solid water content of the canopy, respectively.</p>
+<p>For <span class="math inline">\(A_{Snc}\)</span>, the value updated in the flux calculation section <span class="math inline">\(A_{Snc}^{\tau+1}\)</span>&#x3000;is given by the coupler, but the value of the previous step <span class="math inline">\(A_{Snc}^{\tau}\)</span> is stored in MATCNW. <span class="math inline">\(\tau\)</span> denotes the time steps. This is solved from the initial values of <span class="math inline">\(T_c\)</span> and <span class="math inline">\(Sn\)</span> at the time of initiating the calculation, and therefore does not become a new prognostic variable.</p>
+<h2 id="prognosis-of-canopy-water">5.2 Prognosis of canopy water</h2>
+<p>The prognostic equations for the canopy water in the liquid and solid phases are given respectively as</p>
+<p><span class="math display">\[
+ \rho_w \frac{w_{cl}^{\tau+1} - w_{cl}^{\tau}}{\Delta t_L}
+  = P_{Il} - E_l - D_l + M_c \\
+ \rho_w \frac{w_{ci}^{\tau+1} - w_{ci}^{\tau}}{\Delta t_L}
+  = P_{Ii} - E_i - D_i - M_c
+\]</span></p>
+<p>where <span class="math inline">\(P_{Il}\)</span> and <span class="math inline">\(P_{Ii}\)</span> are the precipitation interception in the respective cases, <span class="math inline">\(E_l\)</span> and <span class="math inline">\(E_i\)</span> are the evaporation (sublimation), <span class="math inline">\(D_l\)</span>, <span class="math inline">\(D_i\)</span> are the dripping, and <span class="math inline">\(M_c\)</span> is the melting. Note that here, the values before the updated <span class="math inline">\(w_{cl}^{\tau}\)</span> and <span class="math inline">\(w_{ci}^{\tau}\)</span> are defined using <span class="math inline">\(A_{Snc}^{\tau}\)</span> before it is updated, as follows:</p>
+<p><span class="math display">\[
+ w_{cl}^{\tau} = w_c^{\tau} ( 1 - A_{Snc}^{\tau}) \\
+ w_{ci}^{\tau} = w_c^{\tau} A_{Snc}^{\tau}
+\]</span></p>
+<h3 id="evaporation-sublimation-of-canopy-water">5.2.1 Evaporation (sublimation) of canopy water</h3>
+<p>First, by subtracting the evaporation (sublimation), the canopy water is partially updated as follows. The evaporation (sublimation) has already been solved in the flux calculation section.</p>
+<p><span class="math display">\[
+ w_{cl}^* = w_{cl}^{\tau} - E_l \Delta t_L / \rho_w \\
+ w_{ci}^* = w_{ci}^{\tau} - E_i \Delta t_L / \rho_w
+\]</span></p>
+<p><span class="math display">\[
+ E_l = Et_{(1,3)} \\
+ E_i = Et_{(2,3)}
+\]</span></p>
+<p>Then, if either <span class="math inline">\(w_{cl}\)</span> or <span class="math inline">\(w_{ci}\)</span> become negative in value, it is supplemented by the other until the value returns to 0, and the melting (negative value in the case of frozen water) that is assumed to be produced is then inserted in <span class="math inline">\(M_c\)</span>.</p>
+<h3 id="interception-of-precipitation-by-the-canopy">5.2.2 Interception of precipitation by the canopy</h3>
+<p>The precipitation interception and dripping are considered by separating the places of convective precipitation and nonconvective precipitation. The fraction of the convective precipitation area (<span class="math inline">\(A_c\)</span>) is assumed to be uniform (0.1 as a standard value). Stratiform precipitation is also assumed to be uniform.</p>
+<p><span class="math display">\[
+ P_{Il}^{c}  = f_{int} ( Pr_c / A_c + Pr_l ) \\
+ P_{Il}^{nc} = f_{int} Pr_l \\
+ P_{Ii}^{c}  = f_{int} ( P_{Snc} / A_c + P_{Snl} ) \\
+ P_{Ii}^{nc} = f_{int} P_{Snl}
+\]</span></p>
+<p>where <span class="math inline">\(P_{Il}^{c}\)</span> and <span class="math inline">\(P_{Ii}^{c}\)</span> denote the interception in the convective precipitation area, and <span class="math inline">\(P_{Il}^{nc}\)</span> and <span class="math inline">\(P_{Ii}^{nc}\)</span> denote the interception in the nonconvective precipitation area. <span class="math inline">\(f_{int}\)</span> is the interception efficiency, and is simply given by</p>
+<p><span class="math display">\[
+ f_{int} = \left\{
+\begin{array}{ll}
+ LAI  (LAI &lt; 1 {&#x306E;&#x3068;&#x304D;})\\
+ 1    (LAI \geq 1 {&#x306E;&#x3068;&#x304D;})
+\end{array}
+\right.
+\]</span></p>
+<p>By adding the intercepted precipitation, the canopy water is further partially updated as follows:</p>
+<p><span class="math display">\[
+ w_{cl}^{c*} = w_{cl}^*  + P_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc*}= w_{cl}^*  + P_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c*} = w_{ci}^*  + P_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc*}= w_{ci}^*  + P_{Ii}^{nc} \Delta t_L / \rho_w
+\]</span></p>
+<h3 id="dripping-of-the-canopy-water">5.2.3 Dripping of the canopy water</h3>
+<p>For dripping, dripping due to the canopy water capacity being exceeded and natural dripping due to gravity are considered, as follows:</p>
+<p><span class="math display">\[
+ D_l^c     =  \max( w_{cl}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{cl}^{c*}) \\
+ D_l^{nc}  =  \max( w_{cl}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{cl}^{nc*}) \\
+ D_i^c     =  \max( w_{ci}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{ci}^{c*}) \\
+ D_i^{nc}  =  \max( w_{ci}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{ci}^{nc*})
+\]</span></p>
+<p>where the canopy water capacity (<span class="math inline">\(w_{c,cap}\)</span>) is, from the water capacity per unit leaf area (<span class="math inline">\(w_{c\max}\)</span>) and LAI, assumed to be</p>
+<p><span class="math display">\[
+ W_{c,cap} = W_{c\max} LAI
+\]</span></p>
+<p><span class="math inline">\(W_{c\max}\)</span> is set at 0.2 mm as a standard value, and the same value is used with respect to the liquid and solid phases.</p>
+<p>The natural dripping due to gravity <span class="math inline">\(D_g\)</span> is, after Rutter et al.&#xA0;(1975), assumed to be</p>
+<p><span class="math display">\[
+ D_g(w_c) = D_1 \exp(D_2 w_c)
+\]</span></p>
+<p><span class="math inline">\(D_1=1.14 \times 10 ^{-11}\)</span> and <span class="math inline">\(D_2=3.7 \times\)</span> 10 ^{3} $ are standard values, and the same values are used with respect to the liquid and solid phases.</p>
+<p>By subtracting the dripping, the values are updated as follows:</p>
+<p><span class="math display">\[
+ w_{cl}^{c**} = w_{cl}^{c*}  - D_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc**}= w_{cl}^{nc*} - D_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c**} = w_{ci}^{c*}  - D_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc**}= w_{ci}^{nc*} - D_{Ii}^{nc} \Delta t_L / \rho_w
+\]</span></p>
+<h3 id="updating-and-melting-of-canopy-water">5.2.4 Updating and melting of canopy water</h3>
+<p>Moreover, by taking the average of the convective precipitation area and nonconvective precipitation area, the canopy water can be updated as follows:</p>
+<p><span class="math display">\[
+ w_{cl}^{**} = A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
+ w_{ci}^{**} = A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
+ w_c^{\tau+1} = w_{cl}^{**} + w_{ci}^{**}
+\]</span></p>
+<p>However, if updating of the frozen fraction (<span class="math inline">\(A_{Snc}\)</span>) is considered,</p>
+<p><span class="math display">\[
+ w_{cl}^{\tau+1} = w_{c}^{\tau+1} (1-A_{Snc}^{\tau+1}) \\
+ w_{ci}^{\tau+1} = w_{c}^{\tau+1} A_{Snc}^{\tau+1}
+\]</span></p>
+<p>The melting <span class="math inline">\(M_c\)</span> is therefore diagnosed as</p>
+<p><span class="math display">\[
+ M_c = - \rho_w ( w_{ci}^{\tau+1} - w_{ci}^{**} ) / \Delta t_L
+\]</span></p>
+<p>When the melting is produced during evaporation, that portion is added.</p>
+<p>Here, the canopy temperature should be changed due to the latent heat of melting; however, it is impossible because we are ignoring the heat capacity of the canopy. Moreover, although it would be advantageous to change the temperature of the surrounding atmosphere, this is also not possible in view of the need for agreement with the calculation in the land surface integration section. Hence, for convenience, in order to conserve the energy of the system, the latent heat of melting is given as the heat flux to the soil (or snow).</p>
+<h2 id="fluxes-given-to-the-soil-snow-and-runoff-process">5.3 Fluxes given to the soil, snow, and runoff process</h2>
+<p>The water flux <span class="math inline">\(F_w\)</span> given to the snow or the runoff process after interception by the canopy is respectively expressed with respect to the convective precipitation area and nonconvective precipitation area, and the liquid and solid phases, as follows:</p>
+<p><span class="math display">\[
+ F_{wl}^{c} = (1-f_{int})( Pr_c / A_c + Pr_l ) + D_{l}^{c} \\
+ F_{wl}^{nc} =(1-f_{int}) Pr_l + D_{l}^{nc} \\
+ F_{wi}^{c} = (1-f_{int})( P_{Snc} / A_c + P_{Snl} ) + D_{i}^{c} \\
+ F_{wi}^{nc} =(1-f_{int}) P_{Snl} + D_{i}^{nc}
+\]</span></p>
+<p>For the calculation of runoff, convective rainfall and stratiform rainfall are given separately, while snowfall is consolidated because separation is not necessary, as follows:</p>
+<p><span class="math display">\[
+ Pr_c^* = Ac ( F_{wl}^{c} - F_{wl}^{nc} ) \\
+ Pr_l^* = F_{wl}^{nc} \\
+ P_{Sn}^* = A_c F_{wl}^{c} + (1-A_c) F_{wl}^{nc}
+\]</span></p>
+<p>where <span class="math inline">\(Pr_c^*\)</span>, <span class="math inline">\(Pr_l^*\)</span>, and <span class="math inline">\(P_{Sn}^*\)</span> are the convective precipitation, the stratiform precipitation, and the snowfall after interception by the canopy, respectively.</p>
+<p>The energy flux correction portion for the soil or the snow is</p>
+<p><span class="math display">\[
+ \Delta F_{c,conv} = - l_m M_c
+\]</span></p>
+<p>where <span class="math inline">\(l_m\)</span>is the latent heat of melting.</p>
+<h1 id="matsnw-snow-submodel">6 MATSNW Snow Submodel</h1>
+<p>The snow water equivalent, snow temperature, and snow albedo are calculated here.</p>
+<h2 id="diagnosis-of-snow-covered-ratio">6.1 Diagnosis of snow-covered ratio</h2>
+<p>When the amount of snow is small, the snow in the subgrid cells is considered. The snow-covered ratio <span class="math inline">\(A_{Sn}\)</span> is given as a unique function of the snow water content (<span class="math inline">\(Sn_c\)</span>) by</p>
+<p><span class="math display">\[
+ A_{Sn} = \min(Sn/Sn_{c}, 1)^{1/2} \tag{eq210}
+\]</span></p>
+<p><span class="math inline">\(Sn_c\)</span>= 100 <span class="math display">\[kg/m&lt;sup&gt;2&lt;/sup&gt;\]</span> is a standard value.</p>
+<p>In actuality, various factors can be considered to affect the snow-covered ratio, such as differences in topography, the time of snowfall or snow melting, etc. With regard to this point, introduction the Subgrid Snow Distribution (SSNOWD) model proposed by Liston (personal communication) is being studied.</p>
+<p><span class="math inline">\(A_{Sn}\)</span> is referred to at the beginning of the flux calculation section, and the various fluxes calculated there are used for the area-weighted mean as follows:</p>
+<p><span class="math display">\[
+ \overline{F} = (1-A_{Sn}) F_{(1)} + A_{Sn} F_{(2)}
+\]</span></p>
+<p>where <span class="math inline">\(F_{(1)}\)</span> and <span class="math inline">\(F_{(2)}\)</span> are fluxes at the snow-free portion and snow-covered portion, respectively. In actuality, this operation is performed through the flux coupler.</p>
+<h2 id="vertical-division-of-snow-layers">6.2 Vertical division of snow layers</h2>
+<p>In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.</p>
+<p>The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.</p>
+<p>As a standard, the mass of each layer (\Delta \widetilde{Sn}_{(k)} (k=1,2,3)<span class="math inline">\() is determined as follows ()\)</span>k=1$ is the uppermost layer):</p>
+<p><span class="math display">\[
+ \Delta \widetilde{Sn}_{(1)} = \left\{
+\begin{array}{ll}
+ \widetilde{Sn}  (\widetilde{Sn} &lt; 20) \\
+ 0.5\widetilde{Sn}  (20 \leq \widetilde{Sn} &lt; 40) \\
+ 20  (\widetilde{Sn} \geq 40)
+\end{array} \tag{eq212}
+\right. \\
+ \Delta \widetilde{Sn}_{(2)} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} &lt; 20) \\
+ \widetilde{Sn} - \Delta Sn_{(1)}  (20 \leq \widetilde{Sn} &lt; 60)\\
+ 0.5(\widetilde{Sn}-20)  (60 \leq \widetilde{Sn} &lt; 100) \\
+ 40  (\widetilde{Sn} \geq 100)
+\end{array}
+\right.  \\
+ \Delta \widetilde{Sn}_{(3)} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} &lt; 60) \\
+ \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)}) (\widetilde{Sn} \geq 60)   
+\end{array}
+\right.
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+ \widetilde{Sn} =  Sn / A_{Sn}
+\]</span></p>
+<p><span class="math inline">\(Sn\)</span> is the grid-mean snow water equivalent, and <span class="math inline">\(\widetilde{Sn}\)</span> is the snow water equivalent in the snow-covered portion. Note that the mass of each layer (<span class="math inline">\(\Delta \widetilde{Sn}_{(k)}\)</span>) is also the value of the snow-covered portion, not the grid-mean value. The unit is kg/m<sup>2</sup>.</p>
+<p>From the above, it can be clearly seen that the number of snow layers (<span class="math inline">\(K_{Sn}\)</span>) is as follows, as a standard:</p>
+<p><span class="math display">\[
+ K_{Sn} = \left\{
+\begin{array}{ll}
+ 0  (\widetilde{Sn} = 0)\\
+ 1  (0&lt; \widetilde{Sn} &lt; 20)\\
+ 2  (20 \leq \widetilde{Sn} &lt; 60)\\
+ 3  (\widetilde{Sn} \geq 60)
+\end{array}
+\right.
+\]</span></p>
+<h2 id="calculation-of-snow-water-equivalent">6.3 Calculation of snow water equivalent</h2>
+<p>The prognostic equation of the snow water equivalent is given by</p>
+<p><span class="math display">\[
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^* - E_{Sn} - M_{Sn} + Fr_{Sn}
+\]</span></p>
+<p>where <span class="math inline">\(P_{Sn}^*\)</span> is the snowfall flux after interception by the canopy, <span class="math inline">\(E_{Sn}\)</span> is the sublimation flux, <span class="math inline">\(M_{Sn}\)</span> is the snowmelt, and <span class="math inline">\(Fr_{Sn}\)</span> is the refreeze of snowmelt or the freeze of rainfall.</p>
+<h3 id="sublimation-of-snow">6.3.1 Sublimation of snow</h3>
+<p>First, by subtracting the sublimation, the snow water equivalent is partially updated:</p>
+<p><span class="math display">\[
+ Sn^* = Sn^{\tau} - E_{Sn} \Delta t_L \\
+ \Delta \widetilde{Sn}_{(1)}^* = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L
+\]</span></p>
+<p>In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.</p>
+<h3 id="snowmelt">6.3.2 Snowmelt</h3>
+<p>Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be <span class="math inline">\(T_{Sn(k)}^*\)</span>. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than <span class="math inline">\(T_{melt} = 0^{\circ}\)</span> C, the temperature of the uppermost layer is fixed at <span class="math inline">\(T_{melt}\)</span> and the calculation is performed again. In this case, the energy convergence <span class="math inline">\(\Delta \widetilde{F}_{conv}\)</span> in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is</p>
+<p><span class="math display">\[
+ \widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^*/\Delta t_L ) \tag{eq220}
+\]</span></p>
+<p>With regard to the second layer and below, if the temperature is higher than <span class="math inline">\(T_{melt}\)</span>, it is put back to <span class="math inline">\(T_{melt}\)</span> and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be</p>
+<p><span class="math display">\[
+ T_{Sn(k)}^{**} = T_{melt}
+\]</span></p>
+<p><span class="math inline">\(\Delta \widetilde{F}_{conv}\)</span> is newly defined by</p>
+<p><span class="math display">\[
+ \Delta \widetilde{F}_{conv} = ( T_{Sn(k)}^* - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^*/\Delta t_L
+\]</span></p>
+<p>and the snowmelt is solved as in <a href="#eq220">Eq. (220)</a>.</p>
+<p>By subtracting the snowmelt, the mass of each layer is updated:</p>
+<p><span class="math display">\[
+ \Delta \widetilde{Sn}_{(k)}^{**} = \Delta \widetilde{Sn}_{(k)}^{*}
+ - \widetilde{M}_{Sn(k)}
+\]</span></p>
+<p>During these calculations, when a certain layer is fully melted, the remaining amount of <span class="math inline">\(\Delta \widetilde{F}_{conv}\)</span> is given to the layer below to raise the temperature in that layer; that is,</p>
+<p><span class="math display">\[
+ \Delta \widetilde{F}_{conv}^* = \Delta \widetilde{F}_{conv} - l_m \widetilde{M}_{Sn(k)}
+\]</span></p>
+<p><span class="math display">\[
+ T_{Sn(k+1)}^{**} = T_{Sn(k+1)}^{*} + \Delta \widetilde{F}_{conv}^* / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^*) \Delta t_L
+\]</span></p>
+<p>where <span class="math inline">\(c_{pi}\)</span> is the specific heat of snow (ice). When all of the snow is melted, <span class="math inline">\(\Delta \widetilde{F}_{conv}^*\)</span> is given to the soil.</p>
+<p>The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):</p>
+<p><span class="math display">\[
+ M_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{M}_{Sn(k)} A_{Sn}
+\]</span></p>
+<p>By subtracting the snowmelt, the snow water equivalent is partially updated:</p>
+<p><span class="math display">\[
+ Sn^{**} = Sn^{*} - M_{Sn} \Delta t_L
+\]</span></p>
+<h3 id="freeze-of-snowmelt-water-and-rainfall-in-snow">6.3.3 Freeze of snowmelt water and rainfall in snow</h3>
+<p>The freeze of snowmelt water and rainfall in the snow is calculated next. With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer. The retention of liquid water content in the snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.</p>
+<p>The liquid water flux at the snow upper boundary in the snow-covered portion is</p>
+<p><span class="math display">\[
+ \widetilde{F}_{wSn(1)} = Pr_c^* + Pr_l^* + M_{Sn} / A_{Sn}
+\]</span></p>
+<p>Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).</p>
+<p>It is reasonable to assume the temperature of the snowmelt water as 0&#xB0;C, and the temperature of rainfall on the snow is also assumed to be 0&#xB0;C for convenience. The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0&#xB0;C, any additional water is assumed to be unable to freeze and to percolate to the layer below. In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer<span class="math inline">\(\widetilde{Fr}_{Sn(k)}\)</span> is solved by</p>
+<p><span class="math display">\[
+ \widetilde{Fr}_{Sn(k)} = \min\left( \widetilde{F}_{wSn(k)}, \
+\frac{c_{pi}(T_{melt}-T_{Sn(k)}^{**})}{l_m}
+\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} , \
+f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \right)
+\]</span></p>
+<p>where <span class="math inline">\(F_{w_{Sn}(k)}\)</span> is the liquid water flux percolated from the upper boundary of the <span class="math inline">\(k\)</span>th layer of the snow. $\widetilde{F} _ { wSn(k) } $ is the liquid water flux flowing from the top of the <span class="math inline">\(k\)</span>th layer of snow cover. The standard value of the <span class="math inline">\(f_{Fmax}\)</span> is assumed to be 0.1 as a standard value.</p>
+<p>The snow temperature change is updated by</p>
+<p><span class="math display">\[
+ T_{Sn(k)}^{*** } = \frac{l_m \widetilde{Fr}_{Sn(k)}\Delta t_L
+   +c_{pi}(T_{Sn(k)}^{**}\Delta \widetilde{Sn}_{(k)}^{**} + T_{melt} \widetilde{Fr}_{Sn(k)}\Delta t_L ) }
+  {c_{pi} (\Delta \widetilde{Sn}_ { (k) }^{** } + \widetilde{Fr}_{Sn(k)}\Delta t_L)}
+\]</span></p>
+<p>and the mass is updated as follows:</p>
+<p><span class="math display">\[
+ \Delta \widetilde{Sn}_ {(k)}^{*** } = \Delta \widetilde{Sn}_{(k)}^{** } + \widetilde{Fr}_{Sn(k)}\Delta t_L
+\]</span></p>
+<p>The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):</p>
+<p><span class="math display">\[
+ Fr_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{Fr}_ {Sn(k)} A_{Sn}
+\]</span></p>
+<p>By adding the amount of freeze, the snow water equivalent is partially updated:</p>
+<p><span class="math display">\[
+ Sn^{*** } = Sn^{**} + Fr_{Sn} \Delta t_L
+\]</span></p>
+<p>The liquid water that has percolated from the snow to the lower boundary is given to the soil.</p>
+<h3 id="snowfall">6.3.4 Snowfall</h3>
+<p>Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:</p>
+<p><span class="math display">\[
+ Sn^{\tau+1} = Sn^{*** } + P_{Sn}^* \Delta t_L
+\]</span></p>
+<p>However, when the temperature of the uppermost soil layer is 0&#xB0;C or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.</p>
+<p>When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio (<span class="math inline">\(A_{Sn}\)</span>) is newly diagnosed by <a href="#eq210">Eq. (210)</a> and the snow temperature (<span class="math inline">\(T_{Sn(1)}\)</span>) is assumed to be equal to the temperature of the uppermost soil layer.</p>
+<p>The snowfall is added to the mass of the uppermost layer:</p>
+<p><span class="math display">\[
+ \Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{ * * * } + P_{Sn}^* \Delta t_L /A_{Sn}
+\]</span></p>
+<h3 id="redivision-of-snow-layer-and-rediagnosis-of-temperature">6.3.5 Redivision of snow layer and rediagnosis of temperature</h3>
+<p>When the snow water equivalent is updated, the snow-covered ratio is rediagnosed by <a href="#eq210">Eq. (210)</a> and the mass of each layer is redivided by <a href="#eq212">Eq. (212) to (214)</a>. The temperature in each redivided layer is rediagnosed so that the energy is conserved, as follows:</p>
+<p><span class="math display">\[
+ T_{Sn(k)}^{new} = \left(\sum_{l=1}^{K_{Sn}^{old}} f_{(l^{old}\in k^{new})} T_{Sn(l)}^{old} \Delta \widetilde{Sn}_{(l)}^{old} A_{Sn}^{old} \right)
+\Bigm/ (\Delta \widetilde{Sn}_{(k)}^{new} A_{Sn}^{new})
+\]</span></p>
+<p>It should be noted that the variables with the index <em>old</em> and <em>new</em> are those before and after redivision, respectively. <span class="math inline">\(f_{(l^{old}\in k^{new})}\)</span> is the ratio of the mass of the <span class="math inline">\(k\)</span>th layer after redivision to the mass of the <span class="math inline">\(l\)</span>th layer before redivision.</p>
+<h2 id="calculation-of-snow-heat-conduction">6.4 Calculation of snow heat conduction</h2>
+<h3 id="snow-heat-conduction-equations">6.4.1 Snow heat conduction equations</h3>
+<p>The prognostic equation of the snow temperature due to snow heat conduction is as follows:</p>
+<p><span class="math display">\[
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^* - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
+\qquad (k=1,\ldots,K_{Sn}) \tag{eq237}
+\]</span></p>
+<p>with the heat conduction flux <span class="math inline">\(\widetilde{F}_{Sn}\)</span> given by</p>
+<p><span class="math display">\[
+ \widetilde{F}_{Sn(k+1/2)} =
+\left\{
+\begin{array}{ll}
+( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
+ (k=0)\\
+\displaystyle{
+k_{Sn(k+1/2)} \frac{T_{Sn(k+1)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+k_{Sn(k+1/2)} \frac{T_{Sn(B)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=K_{Sn})
+\end{array} \tag{eq238}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(k_{Sn(k+1/2)}\)</span> is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. <span class="math inline">\(\Delta z_{Sn(k+1/2)}\)</span> is the thickness of each snow layer, defined by</p>
+<p>!<span class="math display">\[
+ \Delta z_{Sn(k+1/2)} =
+\left\{
+\begin{array}{ll}
+ 0.5 \Delta \widetilde{Sn}_{(1)} / \rho_{Sn}  (k=1)\\
+ 0.5 (\Delta \widetilde{Sn}_{(k)}+\Delta \widetilde{Sn}_{(k+1)}) / \rho_{Sn}
+ (k=2,\ldots,K_{Sn}-1)\\
+ 0.5 \Delta \widetilde{Sn}_{(K_{Sn})} / \rho_{Sn}  (k=K_{Sn})
+\end{array}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(\rho_{Sn}\)</span> is the snow density, assigned the fixed value of 300 kg/m<sup>3</sup> as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.</p>
+<p>In <a href="#eq238">Eq. (238)</a>, the snow upper boundary flux $ \widetilde{F}_ {Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance <span class="math inline">\(F_{Sn(1/2)}\)</span>, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition <span class="math inline">\(\Delta F_{conv}\)</span>), and the energy correction produced when a change has occurred in the phase of the canopy water <span class="math inline">\(\Delta F_{c,conv}\)</span>. (<span class="math inline">\(\Delta F_{conv}\)</span>) is assumed to be given only to the snow-covered portion, while (<span class="math inline">\(\Delta F_{c,conv}\)</span>) is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.</p>
+<p>In the equation for the snow lower boundary flux (<span class="math inline">\(\widetilde{F}_ {Sn(K_{Sn}+1/2)}\)</span>), <span class="math inline">\(T_{Sn(B)}\)</span> is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is</p>
+<p><span class="math display">\[
+\widetilde{F}_ {g(1/2)} = k_{g(1/2)} \frac{T_{g(1)}-T_{Sn(B)}}{\Delta z_{g(1/2)}}
+\]</span></p>
+<p>there is assumed to be no convergence at the snow lower boundary, and by putting</p>
+<p><span class="math display">\[
+\widetilde{F}_{Sn(K_{Sn}+1/2)} =  \widetilde{F}_{g(1/2)}
+\]</span></p>
+<p><span class="math inline">\(T_{Sn(B)}\)</span> is solved. When this is substituted into <a href="#eq242">Eq. (242)</a>, the following is obtained:</p>
+<p><span class="math display">\[
+\widetilde{F}_{Sn(K_{Sn}+1/2)} =
+\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+(T_{g(1)} - T_{Sn(K_{Sn})}) \tag{eq242}
+\]</span></p>
+<h3 id="case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer">6.4.2 Case 1: When snowmelt does not occur in the uppermost layer</h3>
+<p>The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:</p>
+<p><span class="math display">\[
+ \widetilde{F}_ {Sn(k+1/2)}^* = \widetilde{F}_{Sn(k+1/2)}^{\tau}
++\frac{\partial \widetilde{F}_ {Sn(k+1/2)}}{\partial T_{Sn(k)}}
+ \Delta T_{Sn(k)}
++\frac{\partial \widetilde{F}_ {Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
+ \Delta T_{Sn(k+1)}
+\]</span></p>
+<p><span class="math display">\[
+ \widetilde{F}_{Sn(k+1/2)}^{\tau} =
+\left\{
+\begin{array}{ll}
+( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
+ (k=0)\\
+\displaystyle{
+\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}} (T_{Sn(k+1)}^{\tau} - T_{Sn(k)}^{\tau})
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+(T_{g(1)} - T_{Sn(K_{Sn})}^{\tau})
+}
+ (k=K_{Sn})
+\end{array}
+\right.
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}} =
+\left\{
+\begin{array}{ll}
+\displaystyle{
+- \frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
+}
+ (k=1,\ldots,K_{Sn}-1) \\
+\displaystyle{
+- \left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
++\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
+\right]^{-1}
+}
+ (k=K_{Sn})
+\end{array}
+\right.
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}} =
+\left\{
+\begin{array}{ll}
+0  \ \quad \qquad \qquad \qquad \qquad (k=0) \\
+\displaystyle{
+\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
+}
+   \ \quad \qquad \qquad \qquad \qquad (k=1,\ldots,K_{Sn}-1)
+\end{array}
+\right.
+\]</span></p>
+<p>and <a href="#eq237">Eq. (237)</a> is treated as</p>
+<p><span class="math display">\[
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{\Delta T_{Sn(k)}}{\Delta t_L}
+= \widetilde{F}_{Sn(k+1/2)}^* - \widetilde{F}_{Sn(k-1/2)}^*  \\
+= \widetilde{F}_{Sn(k+1/2)}^{\tau}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}}
+ \Delta T_{Sn(k)}
++\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
+ \Delta T_{Sn(k+1)}  \\
+- \widetilde{F}_{Sn(k-1/2)}^{\tau}
+-\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
+ \Delta T_{Sn(k-1)}
+-\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
+ \Delta T_{Sn(k)}
+\]</span></p>
+<p>and solved by the LU factorization method as <span class="math inline">\(\Delta T_{Sn(k)}\ (k=1,\ldots,K_{Sn})\)</span> simultaneous equations with respect to <span class="math inline">\(K_{Sn}\)</span>. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by</p>
+<p><span class="math display">\[
+ T_{Sn(k)}^* = T_{Sn(k)}^{\tau} + \Delta T_{Sn(k)}
+\]</span></p>
+<p>6.4.3 Case 2: When snowmelt occurs in the uppermost layer</p>
+<p>When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0&#xB0;C. The flux from the second snow layer to the uppermost snow layer is then expressed as</p>
+<p><span class="math display">\[
+ \widetilde{F}_{3/2}^{*} =
+\frac{k_{Sn(3/2)}}{\Delta z_{Sn(3/2)}} (T_{Sn(2)}^{\tau} - T_{melt})
++\frac{\partial \widetilde{F}_{Sn(3/2)}}{\partial T_{Sn(2)}}
+ \Delta T_{Sn(2)}
+\]</span></p>
+<p>and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).</p>
+<p>The energy convergence used for melting in the uppermost snow layer is given by:</p>
+<p><span class="math display">\[
+ \Delta \widetilde{F}_{conv} = (\widetilde{F}_{3/2}^{*} - \widetilde{F}_{1/2})
+  - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn(1)}^*}{\Delta t_L}
+\]</span></p>
+<p>Even if the temperature of the second snow layer and below is higher than <span class="math inline">\(T_{melt}\)</span>, the calculation is not iterated and the snowmelt is corrected accordingly.</p>
+<h2 id="glacier-formation">6.5 Glacier formation</h2>
+<p>In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:</p>
+<p><span class="math display">\[
+ Ro_{gl} = \max( Sn - Sn_{\max} ) / \Delta t_L
+\]</span></p>
+<p><span class="math display">\[
+ Sn = Sn - Ro_{gl} \Delta t_L \\
+ \Delta \widetilde{Sn}_{(K_{Sn})} = \Delta \widetilde{Sn}_{(K_{Sn})}
+ - Ro_{gl} / A_{Sn} \Delta t_L
+\]</span></p>
+<p>where <span class="math inline">\(Ro_{gl}\)</span> is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. <span class="math inline">\(Sn_{\max}\)</span> is uniformly assigned the value of 1000 kg/m<sup>2</sup> as a standard.</p>
+<h2 id="fluxes-given-to-the-soil-or-the-runoff-process">6.6 Fluxes given to the soil or the runoff process</h2>
+<p>The heat flux given to the soil through the snow process is</p>
+<p><span class="math display">\[
+\Delta F_{conv}^* = A_{Sn} ( \Delta \widetilde{F}_{conv}^* - \widetilde{F}_{Sn_{K_{Sn}}} ) - l_m P_{Sn,melt}^*
+\]</span></p>
+<p>where <span class="math inline">\(\Delta \widetilde{F}_{conv}^*\)</span> is the energy convergence remaining when all of the snow has melted, <span class="math inline">\(\widetilde{F}_{Sn_{K_{Sn}}}\)</span> is the heat conduction flux at the lowest snow layer, and <span class="math inline">\(P_{Sn,melt}^*\)</span> is the snowfall that melts immediately when it reaches the ground.</p>
+<p>Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:</p>
+<p><span class="math display">\[
+ \Delta F_{c,conv}^* = ( 1 - A_{Sn}) \Delta F_{c,conv}
+\]</span></p>
+<p>The water flux given to the runoff process through the snow process is then expressed as</p>
+<p><span class="math display">\[
+ Pr_c^{**} = ( 1 - A_{Sn} ) Pr_c^{*} \\
+ Pr_l^{**} = ( 1 - A_{Sn} ) Pr_l^{*} + A_{Sn} \widetilde{F}_{wSn}^*
+ + P_{Sn,melt}^*
+\]</span></p>
+<p>where <span class="math inline">\(\widetilde{F}_{wSn}^*\)</span> is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.</p>
+<h2 id="calculation-of-snow-albedo">6.7 Calculation of snow albedo</h2>
+<p>The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.</p>
+<p>The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:</p>
+<p><span class="math display">\[
+ \frac {A_{g}^{\tau +1} - A_{g}^{\tau}}{\Delta t_L}
+ = \left\{
+\exp \left[ f_{ageT} \left( \frac{1}{T_{melt}}-\frac{1}{T_{Sn(1)}}\right) \right]
+  + r_{dirt} \right\} \Bigm/ {\tau_{age}}
+\]</span></p>
+<p>where <span class="math inline">\(f_{ageT}\)</span> = 5000 and <span class="math inline">\(\tau_{age}\)</span> = 1 x 10<sup>6</sup>. <span class="math inline">\(\tau_{age}\)</span> is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.</p>
+<p>Using this, the albedo of the snow is solved by</p>
+<p><span class="math display">\[
+ \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{new} + \frac{A_g^{\tau+1}}{1+A_g^{\tau+1}} (\alpha_{Sn(b)}^{old} - \alpha_{Sn(b)}^{new}) \qquad (b=1,2,3)
+\]</span></p>
+<p>where <span class="math inline">\(A_g^{\tau}\)</span> is solved beforehand by calculating back from the prognostic variable <span class="math inline">\(\alpha_{Sn(1)}^{\tau}\)</span> using the same equation.</p>
+<p>When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:</p>
+<p><span class="math display">\[
+ \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{\tau+1}
++ \min\left( \frac{P_{Sn}^* \Delta t_L}{\Delta{Sn_c}}, 1 \right) (\alpha_{Sn(b)}^{new} - \alpha_{Sn(b)}^{\tau+1}) \qquad (b=1,2,3)
+\]</span></p>
+<p><span class="math inline">\(\Delta {Sn_c}\)</span> is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.</p>
+<h1 id="matrof-runoff-submodel">7 MATROF Runoff Submodel</h1>
+<p>The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).</p>
+<h2 id="outline-of-topmodel">7.1 Outline of TOPMODEL</h2>
+<p>In TOPMODEL, the horizontal distribution of a water table along the slope in a catchment basin is considered. The downward groundwater flow at a certain point on the slope is assumed to be equal to the accumulated groundwater recharge in the upper part of the slope above that point (quasi-equilibrium assumption). Then, the groundwater flow must be greater in the lower part of the slope. Under another assumption described later, for the groundwater flow to be greater, the water table needs to be shallow. Thus, the distribution is derived such that the lower the slope, the shallower the water table. When the mean water table is shallower than a certain level, the water table rises to the ground surface at an area lower than a certain point in the slope to form a saturated area. In this way, TOPMODEL is characterized by the mean water table, the size of the saturated area, and the groundwater flow velocity, which are important concepts for estimating the runoff, being physically connected in a coherent manner.</p>
+<p>TOPMODEL contains the following major assumptions:</p>
+<ol type="1">
+<li><p>The soil saturation hydraulic conductivity is attenuated toward the depth of the soil in the manner of an exponential function.</p></li>
+<li><p>The gradient of the water table is in close agreement locally with the gradient of the slope.</p></li>
+<li><p>The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.</p></li>
+</ol>
+<p>The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).</p>
+<p>Assumption 1 can be expressed as</p>
+<p><span class="math display">\[
+ K_s(z) = K_0 \exp (-f z)
+\]</span></p>
+<p>where <span class="math inline">\(K_s(z)\)</span> is the soil saturation hydraulic conductivity at depth <span class="math inline">\(z\)</span>, <span class="math inline">\(K_0\)</span> is the saturation hydraulic conductivity at the ground surface, and <span class="math inline">\(f\)</span> is the attenuation coefficient.</p>
+<p>When the depth of the water table at a certain point (<span class="math inline">\(i\)</span>) is designated as <span class="math inline">\(z_i\)</span>, the downward groundwater flux on the slope at that point (<span class="math inline">\(q_i\)</span>) is</p>
+<p><span class="math display">\[
+ q_i = \int_{z_i}^Z K_s(z) dz \cdot \tan\beta
+   = \frac{K_0}{f}  \tan\beta [\exp(-f z_i) - \exp(-f Z)] \tag{eq262}
+\]</span></p>
+<p>where <span class="math inline">\(\beta\)</span> is the gradient of the slope, and assumption 2 is applied here. <span class="math inline">\(Z\)</span> is the depth of the impervious surface; normally, however, <span class="math inline">\(Z\)</span> is assumed to be sufficiently deep compared with <span class="math inline">\(1/f\)</span>, so the term <span class="math inline">\(\exp(-f Z)\)</span> is omitted. Moreover, since the slope direction soil moisture flux in the unsaturated zone above the water table is small, it is ignored.</p>
+<p>If the groundwater recharge rate <span class="math inline">\(R\)</span> is assumed to be horizontally uniform, assumption 3 is expressed as</p>
+<p><span class="math display">\[
+ a R = \frac{K_0}{f} \tan\beta \exp(-f z_i)
+\]</span></p>
+<p>where <span class="math inline">\(a\)</span> is the total upstream area (per unit contour line length at point <span class="math inline">\(i\)</span> with respect to point <span class="math inline">\(i\)</span>.</p>
+<p>When this is solved for <span class="math inline">\(z_i\)</span>, the following is obtained: <span class="math display">\[
+ z_i = -\frac{1}{f} \ln \left( \frac{faR}{K_0 \tan \beta}\right)  \tag{eq264}
+\]</span></p>
+<p>The averaged water table depth (<span class="math inline">\(\overline{z}\)</span>) in domain <span class="math inline">\(A\)</span> is</p>
+<p><span class="math display">\[
+   \overline{z} = \frac1{A}\int_{A} z_i dA
+  = - \Lambda - \frac1{f} \ln R  \tag{eq265}
+\]</span></p>
+<p><span class="math display">\[
+ \Lambda \equiv
+  \frac1{A}\int_{A} \ln \left( \frac{fa}{K_0 \tan \beta}\right) dA  \tag{eq266}
+\]</span></p>
+<p>The recharge rate <span class="math inline">\(R\)</span> can then be expressed as a function of the mean water table depth (<span class="math inline">\(\overline{z}\)</span>) as follows:</p>
+<p><span class="math display">\[
+ R = \exp (-f \overline{z} -\Lambda)  \tag{eq267}
+\]</span></p>
+<p>Under assumption 3, this is exclusively the groundwater runoff discharged from domain <span class="math inline">\(A\)</span>.</p>
+<p>Next, if <span class="math inline">\(R\)</span> is substituted into Eq. (264), the following relationship of <span class="math inline">\(z_i\)</span> and <span class="math inline">\(\overline{z}\)</span> is obtained:</p>
+<p><span class="math display">\[
+ z_i = \overline{z} - \frac{1}{f} \left[
+\ln \left( \frac{fa}{K_0 \tan \beta}\right) - \Lambda
+\right]  \tag{eq268}
+\]</span></p>
+<p>The domain that satisfies <span class="math inline">\(z_i \leq 0\)</span> is the surface saturated area.</p>
+<h2 id="application-of-topmodel-assuming-simplified-topography">7.2 Application of TOPMODEL assuming simplified topography</h2>
+<p>Normally, when TOPMODEL is used, detailed topographical data on the target area is required. Here, however, the average shape of the slope in a grid cell is roughly estimated from the data on the average inclination and the standard deviation of the altitude in the grid (this estimation method is temporary at this stage, and further study is required).</p>
+<p>The topography in the grid cell is represented by the slope with uniform gradient <span class="math inline">\(\beta_s\)</span> and the distance from the ridge to valley <span class="math inline">\(L_s\)</span>.</p>
+<p><span class="math inline">\(L_s\)</span> is estimated using the standard deviation of altitude (<span class="math inline">\(\sigma_z\)</span>) as follows:</p>
+<p><span class="math display">\[
+ L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
+\]</span></p>
+<p>where <span class="math inline">\(2\sqrt{3}\sigma_z\)</span> is the altitude difference between the ridge and valley in serrate topography such that the standard deviation of altitude is <span class="math inline">\(\sigma_z\)</span>.</p>
+<p>The x-axis is taken from the ridge toward the valley on the horizontal surface. Then, the total upstream area at point <span class="math inline">\(x\)</span> is <span class="math inline">\(x\)</span>, and Eq. (264) becomes</p>
+<p><span class="math display">\[
+ z(x) = - \frac{1}{f} \ln \left( \frac{fxR}{K_0 \tan \beta_s}\right)
+\]</span></p>
+<p>Using this, from <a href="#eq265">Eq. (265)</a> the mean water table is</p>
+<p><span class="math display">\[
+ \overline{z} = \frac 1{L_s}\int_0^{L_s} z(x) dx
+ = - \frac1{f}\left[
+ \ln \left( \frac{f L_s R}{K_0 \tan\beta_s}\right) -1
+\right]
+\]</span></p>
+<p>from <a href="#eq267">Eq. (267)</a> the groundwater recharge rate is</p>
+<p><span class="math display">\[
+ R = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) \tag{eq272}
+\]</span></p>
+<p>and from <a href="#eq268">Eq. (268)</a>, the relationship between the water table at point <span class="math inline">\(x\)</span> and the mean water table is</p>
+<p><span class="math display">\[
+ z(x) = \overline{z} - \frac{1}{f}\left(
+\ln \frac{x}{L_s} + 1
+\right)
+\]</span></p>
+<p>If <span class="math inline">\(z(x) \leq 0\)</span> is solved for <span class="math inline">\(x\)</span>, the following are obtained:</p>
+<p><span class="math display">\[
+ x \geq x_0
+\]</span></p>
+<p><span class="math display">\[
+x_0 = L_s \exp(f\overline{z}-1)
+\]</span></p>
+<p>Therefore, the fraction of the saturated area is solved as</p>
+<p><span class="math display">\[
+ A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1) \tag{eq276}
+\]</span></p>
+<p>However, <span class="math inline">\(A_{sat} \geq 0\)</span> and <span class="math inline">\(\overline{z} &gt; 1/f\)</span>, and when <span class="math inline">\(A_{sat} \geq 0\)</span> and <span class="math inline">\(\overline{z} &gt; 1/f\)</span>, no saturated area exists.</p>
+<h2 id="calculation-of-runoff">7.3 Calculation of runoff</h2>
+<p>Four types of runoff mechanisms are considered, and the total of the runoffs by each mechanism is assumed to be the total runoff from the grid cell:</p>
+<p><span class="math display">\[
+ Ro = Ro_s + Ro_i + Ro_o + Ro_b
+\]</span></p>
+<p>where <span class="math inline">\(Ro_s\)</span> is the saturation excess runoff (Dunne runoff), <span class="math inline">\(Ro_i\)</span> is the infiltration excess runoff (Horton runoff), and <span class="math inline">\(Ro_o\)</span> is the overflow of the uppermost soil layer, these three being classified as the surface runoff; and <span class="math inline">\(Ro_b\)</span> is the groundwater runoff.</p>
+<h3 id="estimation-of-mean-water-table-depth">7.3.1 Estimation of mean water table depth</h3>
+<p>The soil moisture is examined from the lowest soil layer. When a layer that becomes unsaturated for the first time is assumed to be the <span class="math inline">\(k_{WT}\)</span>th layer, the mean water table depth (<span class="math inline">\(\overline{z}\)</span>) is estimated by</p>
+<p><span class="math display">\[
+ \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
+\]</span></p>
+<p>This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as \psi_{k_{WT}}$, and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium).</p>
+<p>When <span class="math inline">\(\overline{z} &gt; z_{g(k_{WT}+1/2)}\)</span> is the lowest layer, the water table is assumed to not exist. When <span class="math inline">\(k_{WT}\)</span> is not the lowest layer, the layer below (the uppermost layer among the saturated layers) is assumed to be <span class="math inline">\(k_{WT}\)</span> and the above equation is applied.</p>
+<p>When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface.</p>
+<h3 id="calculation-of-groundwater-runoff">7.3.2 Calculation of groundwater runoff</h3>
+<p>From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in <a href="#eq272">Eq. (272)</a>; therefore,</p>
+<p><span class="math display">\[
+ Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z})
+\]</span></p>
+<p>However, when a frozen soil surface exists under the water table, referring to the case of not omitting the term <span class="math inline">\(\exp(-fZ)\)</span> in <a href="#eq262">Eq. (262)</a>, it is assumed that</p>
+<p><span class="math display">\[
+ Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
+  [ \exp(1-f \overline{z}) - \exp(1-f z_f) ]
+\]</span></p>
+<p>where <span class="math inline">\(z_f\)</span> is the depth of the frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, the other relations are not changed here for the sake of simplification.</p>
+<p>When there is an unfrozen layer under the frozen soil surface and a water table exists, the groundwater runoff from there is added by a similar calculation.</p>
+<p>The water content from the groundwater runoff is removed from the <span class="math inline">\(k_{WT}\)</span>th soil layer:</p>
+<p><span class="math display">\[
+ Ro_{(k_{WT})} = Ro_b
+\]</span></p>
+<p>where <span class="math inline">\(Ro_{(k)}\)</span> denotes the runoff flux from the <span class="math inline">\(k_{WT}\)</span>th soil layer.</p>
+<h3 id="calculation-of-surface-runoff">7.3.3 Calculation of surface runoff</h3>
+<p>All of the rainfall that falls on the surface saturated area runs off as is (saturation excess runoff):</p>
+<p><span class="math display">\[
+ Ro_s = (Pr_c^{**} + Pr_l^{**}) A_{sat}
+\]</span></p>
+<p>The fraction of the surface saturated area <span class="math inline">\(A_{sat}\)</span> is given by <a href="#eq276">Eq. (276)</a>. Here, the correlation between the rainfall distribution of the subgrid and topography is ignored.</p>
+<p>With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area (<span class="math inline">\(A_c\)</span>) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.</p>
+<p><span class="math display">\[
+ Ro_i^c = \max( Pr_c^{**}/A_c + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat}) \\
+ Ro_i^{nc} = \max( Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
+\]</span></p>
+<p><span class="math display">\[
+ Ro_i = A_c Ro_i^c + ( 1 - A_c ) Ro_i^{nc}
+\]</span></p>
+<p>where <span class="math inline">\(Ro_i^c\)</span> and <span class="math inline">\(Ro_i^{nc}\)</span> are <span class="math inline">\(Ro_i\)</span>in the convective precipitation area and nonconvective precipitation area, respectively; and <span class="math inline">\(K_{s(1)}\)</span>is the saturation hydraulic conductivity in the uppermost soil layer.</p>
+<p>The overflow of the uppermost soil layer, allowing a small amount of ponding <span class="math inline">\(w_{str}\)</span> (1 mm as a standard value), is assumed to be</p>
+<p><span class="math display">\[
+ Ro_o = \max(w_{(1)} - w_{sat(1)} - w_{str}, 0) \rho_w \Delta z_{g(1)} / \Delta t_L
+\]</span></p>
+<p>This portion is subtracted from the uppermost soil layer later, and therefore should be remembered as the runoff from the uppermost layer, as follows.</p>
+<p><span class="math display">\[
+ Ro_{(1)} = Ro_{(1)} + Ro_o
+\]</span></p>
+<h2 id="water-flux-given-to-soil">7.4 Water flux given to soil</h2>
+<p>The water flux given to the soil through the runoff process is</p>
+<p><span class="math display">\[
+ Pr^{*** } = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
+\]</span></p>
+<h1 id="matgnd-soil-submodel">8 MATGND Soil Submodel</h1>
+<p>The soil temperature, the soil moisture, and the frozen soil are calculated next.</p>
+<h2 id="calculation-of-soil-heat-conduction">8.1 Calculation of soil heat conduction</h2>
+<h3 id="soil-heat-conduction-equations">8.1.1 Soil heat conduction equations</h3>
+<p>The prognostic equation for the soil temperature by soil heat conduction is</p>
+<p><span class="math display">\[
+C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
+\qquad (k=1,\ldots,K_{g}) \tag{eq289}
+\]</span></p>
+<p>with <span class="math inline">\(C_{g(k)}\)</span> , the soil heat capacity, defined by</p>
+<p><span class="math display">\[
+ C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
+\]</span></p>
+<p>where <span class="math inline">\(c_{g(k)}\)</span> is the specific heat of the soil, and is given as a parameter for each soil type; <span class="math inline">\(c_{pw}\)</span> is the specific heat of the water; <span class="math inline">\(w_{(k)}\)</span> is the soil moisture (volumetric moisture content); and <span class="math inline">\(\Delta z_{g(k)}\)</span> is the thickness of the <span class="math inline">\(k\)</span> th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.</p>
+<p>The heat conduction flux <span class="math inline">\(F_{g}\)</span> is given by</p>
+<p><span class="math display">\[
+ F_{g(k+1/2)} =
+\left\{
+\begin{array}{ll}
+F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
+ (k=0)\\
+\displaystyle{
+k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right. \tag{eq291}
+\]</span></p>
+<p>with <span class="math inline">\(k_{g(k+1/2)}\)</span>, the soil heat conductivity, expressed as</p>
+<p><span class="math display">\[
+ k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
+\]</span></p>
+<p>where <span class="math inline">\(k_{g0(k+1/2)}\)</span> is the heat conductivity when the soil moisture is 0, and <span class="math inline">\(f_{kg}=6\)</span> and <span class="math inline">\(w_{kg}=0.25\)</span> are constants.</p>
+<p><span class="math inline">\(\Delta z_{g(k+1/2)}\)</span> is the thickness between the soil temperature definition points of the <span class="math inline">\(k+1\)</span>th layer and the <span class="math inline">\(k+1\)</span>th layer (when <span class="math inline">\(k=0\)</span>, the thickness between the uppermost layer temperature definition point and the soil upper boundary; when <span class="math inline">\(k=K_g\)</span>, the thickness between the lowest layer temperature definition point and the soil lower boundary).</p>
+<p>In <a href="#eq291">Eq. (291)</a>, the value given to the soil upper boundary condition (<span class="math inline">\(F_{g(1/2)}\)</span>) is the value obtained at the time of solving the ground surface energy balance, with the addition of the energy convergence at the snow lower boundary (including the heat conduction flux at the snow lower boundary) as well as the allotment to the snow-free portion of the energy correction term due to phase change of the canopy water. The flux takes an upward (positive) direction, so when the amount of convergence is added it has a negative sign. The soil lower boundary condition <span class="math inline">\(F_{g(K_g+1/2)}\)</span> is assumed to be zero flux.</p>
+<h3 id="solution-of-heat-conduction-equations">8.1.2 Solution of heat conduction equations</h3>
+<p>These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for <span class="math inline">\(k=1,\ldots,K_g-1\)</span>, the heat conduction flux is expressed as</p>
+<p><span class="math display">\[
+  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}
+\]</span></p>
+<p><span class="math display">\[
+  F_{g(k+1/2)}^{\tau} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
+- \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\]</span></p>
+<p>and <a href="#eq289">Eq. (289)</a> is treated as</p>
+<p><span class="math display">\[
+C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
+= F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \\
+= {F}_{g(k+1/2)}^{\tau}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}  \\
+- F_{g(k-1/2)}^{\tau}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k-1)}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k)}
+\]</span></p>
+<p>and solved by the LU factorization method as <span class="math inline">\(K_{g}\)</span> simultaneous equations with respect to <span class="math inline">\(\Delta T_{g(k)}\ (k=1,\ldots,K_{g})\)</span>. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:</p>
+<p><span class="math display">\[
+ T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
+\]</span></p>
+<p>The soil temperature is partially updated by the above equation. By this, as well as through correction of the phase change in the soil moisture mentioned later, the soil temperature is completely updated.</p>
+<h2 id="calculation-of-soil-moisture-movement">8.2 Calculation of soil moisture movement</h2>
+<h3 id="soil-moisture-movement-equations">8.2.1 Soil moisture movement equations</h3>
+<p>The equation for soil moisture movement (Richards equation) is given by</p>
+<p><span class="math display">\[
+\rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
+\frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
+\qquad (k=1,\ldots,K_{g}) \tag{eq299}
+\]</span></p>
+<p>The soil moisture flux <span class="math inline">\(F_{w}\)</span> is given by</p>
+<p><span class="math display">\[
+ F_{w(k+1/2)} =
+\left\{
+\begin{array}{ll}
+Pr^{*** } - Et_{(1,1)}
+ (k=0)\\
+\displaystyle{
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right. \tag{eq300}
+\]</span></p>
+<p>in which <span class="math inline">\(K_{(k+1/2)}\)</span> is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as</p>
+<p><span class="math display">\[
+ K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
+\]</span></p>
+<p>where <span class="math inline">\(K_{s(k+1/2)}\)</span> is the saturation hydraulic conductivity and <span class="math inline">\(b_{(k)}\)</span> is the index of the moisture potential curve, which are given as external parameters for each soil type. <span class="math inline">\(W_{(k)}\)</span> is the degree of saturation considered excluding the frozen soil moisture, given by</p>
+<p><span class="math display">\[
+ W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
+\]</span></p>
+<p>where <span class="math inline">\(w_{sat(k)}\)</span> is the porosity of the soil, which is also given as a parameter for each soil type. <span class="math inline">\(f_i\)</span> is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by</p>
+<p><span class="math display">\[
+ f_i = \left(1- W_{i(k)}\right)
+       \left(1- W_{i(k+1)}\right)
+\]</span></p>
+<p>where <span class="math inline">\(W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})\)</span>.</p>
+<p>The soil moisture potential <span class="math inline">\(\psi\)</span> is given as follows from Clapp and Hornberger:</p>
+<p><span class="math display">\[
+ \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
+\]</span></p>
+<p>where <span class="math inline">\(\psi_{s(k)}\)</span> is given as an external parameter for each soil type.</p>
+<p>In <a href="#eq299">Eq. (299)</a>, <span class="math inline">\(S_{w(k)}\)</span> is a source term which, considering the root uptake and the runoff, is given by</p>
+<p><span class="math display">\[
+ S_{w(k)} = - F_{root(k)} - Ro_{(k)}
+\]</span></p>
+<p>In <a href="#eq300">Eq. 300</a>, the soil upper boundary condition <span class="math inline">\(F_{w(1/2)}\)</span> is the difference between the moisture flux through the runoff process (<span class="math inline">\(P^{*** }\)</span>) and&#x3000;the evaporation flux from the soil (<span class="math inline">\(Et_{(1,1)}\)</span>). Separately from this, the sublimation flux portion is subtracted from the frozen soil moisture of the uppermost layer before calculation of the soil moisture movement:</p>
+<p><span class="math display">\[
+ w_{i(k)}^{\tau} = w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
+ w_{(k)}^{\tau} = w_{(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})
+\]</span></p>
+<h3 id="solution-of-soil-moisture-movement-equations">8.2.2 Solution of soil moisture movement equations</h3>
+<p>These equations are solved by using the implicit method for the soil moisture from the uppermost layer to the lowest layer. For <span class="math inline">\(k=1,\ldots,K_g-1\)</span>, the soil moisture flux is</p>
+<p><span class="math display">\[
+  F_{w(k+1/2)}^{\tau+1} = F_{w(k+1/2)}^{\tau}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}
+\]</span></p>
+<p><span class="math display">\[
+  F_{w(k+1/2)}^{\tau} =
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)}^{\tau} - \psi_{(k)}^{\tau}}{\Delta z_{g(k+1/2)}} - 1 \right)
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}} =
+- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k)}}{w_{sat(k)}-w_{i(k)}}W_{(k)}^{-b(k)-1}
+\right]
+\]</span></p>
+<p><span class="math display">\[
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}} =
+ \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k+1)}}{w_{sat(k+1)}-w_{i(k+1)}}W_{(k+1)}^{-b(k)-1}
+\right]
+\]</span></p>
+<p>and <a href="#eq299">Eq. (299)</a> is treated as</p>
+<p><span class="math display">\[
+\rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
+= F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)}  \\
+= {F}_{w(k+1/2)}^{\tau}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}  \\
+- F_{w(k-1/2)}^{\tau}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k-1)}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}
+\]</span></p>
+<p>and solved by the LU factorization method as <span class="math inline">\(K_g\)</span> simultaneous equations with respect to <span class="math inline">\(\Delta T_{g(k)}\ (k=1,\ldots,K_{g})\)</span>. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions.</p>
+<p>The soil moisture is updated by</p>
+<p><span class="math display">\[
+ w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
+\]</span></p>
+<p>As a result of this calculation, if a part appears where the soil moisture become supersaturated, it is adjusted in the vertical direction to eliminate supersaturation. The reason why such a supersaturated portion is not considered as runoff is that this supersaturation is artificially produced because the vertical movement of the soil moisture is solved without saturation data. First, from the second soil layer downwards, the supersaturated portion of the soil moisture is given to the layer below. Next, from the lowest soil layer upwards, the supersaturated portion of the soil moisture is given to the next layer up. With this operation, when the soil moisture is large enough, a saturated layer around the lowest soil layer is formed and the water table of Eq. (278) can be defined.</p>
+<h2 id="phase-change-of-soil-moisture">8.3 Phase change of soil moisture</h2>
+<p>As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than <span class="math inline">\(T_{melt}=0degC\)</span>, or when the temperature in the layer containing solid water is higher than <span class="math inline">\(T_{melt}\)</span>, the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the <span class="math inline">\(k\)</span>th layer is assumed to be <span class="math inline">\(\Delta w_{i(k)}\)</span>,</p>
+<p>when <span class="math inline">\(T_{g(k)}^*&lt;T_{melt}\)</span> and <span class="math inline">\(w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}&gt;0\)</span> (frozen):</p>
+<p><span class="math display">\[
+\Delta w_{i(k)} = \min\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}
+\right)
+\]</span></p>
+<p>when <span class="math inline">\(T_{g(k)}^*&gt;T_{melt}\)</span> and <span class="math inline">\(w_{i(k)}^{\tau}&gt;0\)</span> (melting):</p>
+<p><span class="math display">\[
+\Delta w_{i(k)} = \max\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+-w_{i(k)}^{\tau}
+\right)
+\]</span></p>
+<p>The frozen soil moisture and the soil moisture are then updated as follows:</p>
+<p><span class="math display">\[
+w_{i(k)}^{\tau+1} = w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
+T_{g(k)}^{\tau+1} = T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
+\]</span></p>
+<h3 id="ice-sheet-process">8.3.1 Ice sheet process</h3>
+<p>When the land cover type is ice sheet, if the soil temperature exceeds <span class="math inline">\(T_{melt}\)</span>, it is returned to <span class="math inline">\(T_{melt}\)</span>:</p>
+<p><span class="math display">\[
+ T_{g(k)}^{\tau+1} = \min( T_{g(k)}^*, \ T_{melt} )
+\]</span></p>
+<p>The rate of change of the ice sheet <em>F<sub>ice</sub></em> is then diagnosed as</p>
+<p><span class="math display">\[
+ F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
+\]</span></p>
+<h1 id="references">References</h1>
+<ul>
+<li><p>Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D.&#xA0;thesis, Stanford University, 89 pp.</p></li>
+<li><p>Beven, K. J., and M. J. Kirkby, 1979: A physically based variable contributing area model of basin hydrology, <span>Hydrol. Sci. Bull.</span>, <span><strong>24</strong></span>, 43&#x2013;69.</p></li>
+<li><p>Clapp, R. B., and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. <span>Water Resour. Res.</span>, <span><strong>14</strong></span>, 601&#x2013;604.</p></li>
+<li><p>Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. <span>Plant Cell Environ.</span>, <span><strong>13</strong></span>, 219&#x2013;225.</p></li>
+<li><p>Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. <span>Agric. For. Meteor.</span>, <span><strong>54</strong></span>, 107&#x2013;136.</p></li>
+<li><p>Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled Photosynthesis-Stomatal Conductance Model for leaves of TERM00000 plants. <span>Aust. J. Plant. Physiol.</span>, <span><strong>19</strong></span>, 519&#x2013;538.</p></li>
+<li><p>Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic TERM00001 fixation in leaves of TERM00002 species. <span>Planta</span>, <span><strong>149</strong></span>, 78&#x2013;90.</p></li>
+<li><p>Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span><strong>49</strong></span>, 2183&#x2013;2199.</p></li>
+<li><p>Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span><strong>12</strong></span>, 367&#x2013;380.</p></li>
+<li><p>Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span><strong>9</strong></span>, 676&#x2013;705.</p></li>
+<li><p>Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity. 2, A scaled model of storm runoff production. <span>Water Resour. Res</span>, <span><strong>23</strong></span>, 2266&#x2013;2278.</p></li>
+<li><p>Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. <span>J. Climate</span>, <span><strong>10</strong></span>, 118&#x2013;137.</p></li>
+<li><p>Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. <span>Boundary-Layer Met.</span>, <span><strong>70</strong></span>, 13&#x2013;35.</p></li>
+<li><p>Wiscombe, W. J., and S. G. Warren, 1980: A model for the spectral albedo of snow. I. Pure snow. <span>J. Atmos. Sci.</span>, <span><strong>37</strong></span>, 2712&#x2013;2733.</p></li>
+<li><p>&#x6E21;&#x8FBA;&#x529B;&#x30FB;&#x5927;&#x8C37;&#x7FA9;&#x4E00;, 1995: &#x30AD;&#x30E3;&#x30CE;&#x30D4;&#x30FC;&#x5C64;&#x5185;&#x306E;&#x65E5;&#x5C04;&#x91CF;&#x5206;&#x5E03;&#x306E;&#x8FD1;&#x4F3C;&#x8A08;&#x7B97;&#x6CD5;. <span>&#x8FB2;&#x696D;&#x6C17;&#x8C61;</span>, <span><strong>51</strong></span>, 57&#x2013;60.</p></li>
+</ul>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

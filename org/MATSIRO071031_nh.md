@@ -4,9 +4,100 @@ November 10, 2001
 
 Seita Emori<sup>1</sup>
 
+
 Frontier Research System for Global Change
 
 <sup>1</sup> On loan from the National Institute for Environmental Studies
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [1 Introduction](#1-introduction)
+- [2 Structure of MATSIRO](#2-structure-of-matsiro)
+  - [2.1 Overview of MATSIRO](#21-overview-of-matsiro)
+    - [2.1.1 General structure](#211-general-structure)
+    - [2.1.2 Internal variables of MATSIRO](#212-internal-variables-of-matsiro)
+  - [2.2 Flux calculation section](#22-flux-calculation-section)
+    - [2.2.1 Structure of the flux calculation section](#221-structure-of-the-flux-calculation-section)
+    - [2.2.2 Input variables of the flux calculation section](#222-input-variables-of-the-flux-calculation-section)
+    - [2.2.3 Output variables of the flux calculation section](#223-output-variables-of-the-flux-calculation-section)
+  - [2.3 Land surface integration section](#23-land-surface-integration-section)
+    - [2.3.1 Structure of land surface integration section](#231-structure-of-land-surface-integration-section)
+    - [2.3.2 Input variables of land surface integration section](#232-input-variables-of-land-surface-integration-section)
+    - [2.3.3 Output variables of land surface integration section](#233-output-variables-of-land-surface-integration-section)
+  - [2.4 External parameters](#24-external-parameters)
+    - [2.4.1 External parameters given by map](#241-external-parameters-given-by-map)
+    - [2.4.3 External parameters given by table for each soil type](#243-external-parameters-given-by-table-for-each-soil-type)
+- [3 MATBND Boundary Value Submodel](#3-matbnd-boundary-value-submodel)
+  - [3.1 Vegetation type parameter set](#31-vegetation-type-parameter-set)
+  - [3.2 Calculation of radiation parameters](#32-calculation-of-radiation-parameters)
+    - [3.2.1 Calculation of　ground surface (forest floor) albedo](#321-calculation-of-ground-surface-forest-floor-albedo)
+    - [3.2.2 Calculation of canopy albedo and transmissivity](#322-calculation-of-canopy-albedo-and-transmissivity)
+    - [3.2.3 Calculation of surface radiation flux, etc.](#323-calculation-of-surface-radiation-flux-etc)
+- [3.3 Calculation of turbulence parameter (bulk coefficient)](#33-calculation-of-turbulence-parameter-bulk-coefficient)
+    - [3.3.1 Calculation of roughness with respect to momentum and heat](#331-calculation-of-roughness-with-respect-to-momentum-and-heat)
+    - [3.3.2 Calculation of bulk coefficient with respect to momentum and heat](#332-calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat)
+    - [3.3.3 Calculation of bulk coefficient with respect to vapor](#333-calculation-of-bulk-coefficient-with-respect-to-vapor)
+  - [3.4 Calculation of stomatal resistance](#34-calculation-of-stomatal-resistance)
+    - [3.4.1 Calculation of soil moisture stress factor](#341-calculation-of-soil-moisture-stress-factor)
+    - [3.4.2 Calculation of amount of photosynthesis](#342-calculation-of-amount-of-photosynthesis)
+    - [3.4.3 Calculation of stomatal resistance (2)](#343-calculation-of-stomatal-resistance-2)
+    - [3.4.4 Calculation of ground surface evaporation resistance](#344-calculation-of-ground-surface-evaporation-resistance)
+- [4. MATSFC Surface Submodel](#4-matsfc-surface-submodel)
+  - [4.1 Calculation of surface turbulent fluxes](#41-calculation-of-surface-turbulent-fluxes)
+  - [4.2 Calculation of heat conduction fluxes](#42-calculation-of-heat-conduction-fluxes)
+  - [4.3 Solution of energy balance at ground surface and canopy](#43-solution-of-energy-balance-at-ground-surface-and-canopy)
+    - [4.3.1 Energy balance at ground surface and canopy](#431-energy-balance-at-ground-surface-and-canopy)
+    - [4.3.2 Case 1: When there is no melting at the ground surface](#432-case-1-when-there-is-no-melting-at-the-ground-surface)
+    - [4.3.3 Case 2: When there is melting at the ground surface](#433-case-2-when-there-is-melting-at-the-ground-surface)
+    - [4.3.4 Conditions for solutions](#434-conditions-for-solutions)
+    - [4.3.5 Updating of ground surface and canopy temperatures](#435-updating-of-ground-surface-and-canopy-temperatures)
+    - [4.3.6 Updating of flux values](#436-updating-of-flux-values)
+- [5 MATCNW Canopy Water Balance Submodel](#5-matcnw-canopy-water-balance-submodel)
+  - [5.1 Diagnosis of canopy water phase](#51-diagnosis-of-canopy-water-phase)
+  - [5.2 Prognosis of canopy water](#52-prognosis-of-canopy-water)
+    - [5.2.1 Evaporation (sublimation) of canopy water](#521-evaporation-sublimation-of-canopy-water)
+    - [5.2.2 Interception of precipitation by the canopy](#522-interception-of-precipitation-by-the-canopy)
+    - [5.2.3 Dripping of the canopy water](#523-dripping-of-the-canopy-water)
+    - [5.2.4 Updating and melting of canopy water](#524-updating-and-melting-of-canopy-water)
+  - [5.3 Fluxes given to the soil, snow, and runoff process](#53-fluxes-given-to-the-soil-snow-and-runoff-process)
+- [6 MATSNW Snow Submodel](#6-matsnw-snow-submodel)
+  - [6.1 Diagnosis of snow-covered ratio](#61-diagnosis-of-snow-covered-ratio)
+  - [6.2 Vertical division of snow layers](#62-vertical-division-of-snow-layers)
+  - [6.3 Calculation of snow water equivalent](#63-calculation-of-snow-water-equivalent)
+    - [6.3.1 Sublimation of snow](#631-sublimation-of-snow)
+    - [6.3.2 Snowmelt](#632-snowmelt)
+    - [6.3.3 Freeze of snowmelt water and rainfall in snow](#633-freeze-of-snowmelt-water-and-rainfall-in-snow)
+    - [6.3.4 Snowfall](#634-snowfall)
+    - [6.3.5 Redivision of snow layer and rediagnosis of temperature](#635-redivision-of-snow-layer-and-rediagnosis-of-temperature)
+  - [6.4 Calculation of snow heat conduction](#64-calculation-of-snow-heat-conduction)
+    - [6.4.1 Snow heat conduction equations](#641-snow-heat-conduction-equations)
+    - [6.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#642-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
+  - [6.5 Glacier formation](#65-glacier-formation)
+  - [6.6 Fluxes given to the soil or the runoff process](#66-fluxes-given-to-the-soil-or-the-runoff-process)
+  - [6.7 Calculation of snow albedo](#67-calculation-of-snow-albedo)
+- [7 MATROF Runoff Submodel](#7-matrof-runoff-submodel)
+  - [7.1 Outline of TOPMODEL](#71-outline-of-topmodel)
+  - [7.2 Application of TOPMODEL assuming simplified topography](#72-application-of-topmodel-assuming-simplified-topography)
+  - [7.3 Calculation of runoff](#73-calculation-of-runoff)
+    - [7.3.1 Estimation of mean water table depth](#731-estimation-of-mean-water-table-depth)
+    - [7.3.2 Calculation of groundwater runoff](#732-calculation-of-groundwater-runoff)
+    - [7.3.3 Calculation of surface runoff](#733-calculation-of-surface-runoff)
+  - [7.4 Water flux given to soil](#74-water-flux-given-to-soil)
+- [8 MATGND Soil Submodel](#8-matgnd-soil-submodel)
+  - [8.1 Calculation of soil heat conduction](#81-calculation-of-soil-heat-conduction)
+    - [8.1.1 Soil heat conduction equations](#811-soil-heat-conduction-equations)
+    - [8.1.2 Solution of heat conduction equations](#812-solution-of-heat-conduction-equations)
+  - [8.2 Calculation of soil moisture movement](#82-calculation-of-soil-moisture-movement)
+    - [8.2.1 Soil moisture movement equations](#821-soil-moisture-movement-equations)
+    - [8.2.2 Solution of soil moisture movement equations](#822-solution-of-soil-moisture-movement-equations)
+  - [8.3 Phase change of soil moisture](#83-phase-change-of-soil-moisture)
+    - [8.3.1 Ice sheet process](#831-ice-sheet-process)
+- [References](#references)
+
+<!-- /code_chunk_output -->
+
 
 # 1 Introduction
 
@@ -756,7 +847,7 @@ $$
 
 This parameter is expressed as $A_n$ hereafter.
 
-### 3.4.3 Calculation of stomatal resistance
+### 3.4.3 Calculation of stomatal resistance (2)
 
 The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of Ball (1988) as follows:
 
@@ -773,7 +864,7 @@ $$
 $$
 
 
-where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^*(T_c)$ is the mole fraction of water vapor in the stomata. $e^*$ denotes the molar fraction of saturated vapor.
+where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^* (T_c)$ is the mole fraction of water vapor in the stomata. $e^* $ denotes the molar fraction of saturated vapor.
 
 Assuming that the vapor flux from the inside of the stoma to the leaf surface is equal to the vapor flux from the leaf surface to the atmosphere (i.e., that there is no convergence and divergence of vapor at the leaf surface),
 
@@ -1915,7 +2006,7 @@ $$
   + r_{dirt} \right\} \Bigm/ {\tau_{age}}
 $$
 
-where $f_{ageT}$ = 5000 and ![](media/media/image844.png) = 1 x 10<sup>6</sup>. $\tau_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
+where $f_{ageT}$ = 5000 and $\tau_{age}$ = 1 x 10<sup>6</sup>. $\tau_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
 
 Using this, the albedo of the snow is solved by
 
@@ -2194,180 +2285,346 @@ The soil temperature, the soil moisture, and the frozen soil are calculated next
 
 The prognostic equation for the soil temperature by soil heat conduction is
 
-![](media/media/image34.png), (289)
+$$
+C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
+\qquad (k=1,\ldots,K_{g}) \tag{eq289}
+$$
 
-with ![](media/media/image13.png), the soil heat capacity, defined by
+with $C_{g(k)}$ , the soil heat capacity, defined by
 
-![](media/media/image36.png), (290)
+$$
+ C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
+$$
 
-where ![](media/media/image10.png) is the specific heat of the soil, and is given as a parameter for each soil type; ![](media/media/image6.png) is the specific heat of the water; ![](media/media/image5.png) is the soil moisture (volumetric moisture content); and ![](media/media/image2.png) is the thickness of the ![](media/media/image31.png)th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.
+where $c_{g(k)}$ is the specific heat of the soil, and is given as a parameter for each soil type; $c_{pw}$ is the specific heat of the water; $w_{(k)}$ is the soil moisture (volumetric moisture content); and $\Delta z_{g(k)}$  is the thickness of the $k$ th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.
 
-The heat conduction flux![](media/media/image33.png) is given by
+The heat conduction flux $F_{g}$ is given by
 
-![](media/media/image35.png), (291)
 
-with ![](media/media/image24.png), the soil heat conductivity, expressed as
+$$
+ F_{g(k+1/2)} =
+\left\{
+\begin{array}{ll}
+F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
+ (k=0)\\
+\displaystyle{
+k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right. \tag{eq291}
+$$
 
-![](media/media/image41.png), (292)
+with $k_{g(k+1/2)}$, the soil heat conductivity, expressed as
 
-where ![](media/media/image30.png) is the heat conductivity when the soil moisture is 0, and ![](media/media/image29.png) and ![](media/media/image17.png) are constants.
+$$
+ k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
+$$
 
-![](media/media/image12.png) is the thickness between the soil temperature definition points of the ![](media/media/image18.png)th layer and the ![](media/media/image375.png)th layer (when ![](media/media/image353.png), the thickness between the uppermost layer temperature definition point and the soil upper boundary; when ![](media/media/image359.png), the thickness between the lowest layer temperature definition point and the soil lower boundary).
+where $k_{g0(k+1/2)}$ is the heat conductivity when the soil moisture is 0, and $f_{kg}=6$ and $w_{kg}=0.25$  are constants.
 
-In Eq. (291), the value given to the soil upper boundary condition ![](media/media/image366.png) is the value obtained at the time of solving the ground surface energy balance, with the addition of the energy convergence at the snow lower boundary (including the heat conduction flux at the snow lower boundary) as well as the allotment to the snow-free portion of the energy correction term due to phase change of the canopy water. The flux takes an upward (positive) direction, so when the amount of convergence is added it has a negative sign. The soil lower boundary condition ![](media/media/image361.png) is assumed to be zero flux.
+$\Delta z_{g(k+1/2)}$ is the thickness between the soil temperature definition points of the $k+1$th layer and the $k+1$th layer (when $k=0$, the thickness between the uppermost layer temperature definition point and the soil upper boundary; when $k=K_g$, the thickness between the lowest layer temperature definition point and the soil lower boundary).
 
-8.1.2 Solution of heat conduction equations
+In [Eq. (291)](#eq291), the value given to the soil upper boundary condition ($F_{g(1/2)}$) is the value obtained at the time of solving the ground surface energy balance, with the addition of the energy convergence at the snow lower boundary (including the heat conduction flux at the snow lower boundary) as well as the allotment to the snow-free portion of the energy correction term due to phase change of the canopy water. The flux takes an upward (positive) direction, so when the amount of convergence is added it has a negative sign. The soil lower boundary condition $F_{g(K_g+1/2)}$ is assumed to be zero flux.
 
-These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for ![](media/media/image352.png), the heat conduction flux is expressed as
+### 8.1.2 Solution of heat conduction equations
 
-![](media/media/image380.png), (293)
+These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for $k=1,\ldots,K_g-1$, the heat conduction flux is expressed as
 
-![](media/media/image354.png), (294)
 
-![](media/media/image349.png), (295)
+$$
+  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}
+$$
 
-![](media/media/image351.png), (296)
 
-and Eq. (289) is treated as
+$$
+  F_{g(k+1/2)}^{\tau} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
+$$
 
-![](media/media/image390.png)
 
-![](media/media/image388.png)
+$$
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
+- \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+$$
 
-![](media/media/image391.png), (297)
 
-and solved by the LU factorization method as ![](media/media/image396.png) simultaneous equations with respect to ![](media/media/image381.png). At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:
+$$
+ \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
+\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
+$$
 
-![](media/media/image392.png). (298)
+
+and [Eq. (289)](#eq289) is treated as
+
+
+$$
+C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
+= F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \\
+= {F}_{g(k+1/2)}^{\tau}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
+ \Delta T_{g(k)}
++\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
+ \Delta T_{g(k+1)}  \\
+- F_{g(k-1/2)}^{\tau}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k-1)}
+-\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
+ \Delta T_{g(k)}
+$$
+
+and solved by the LU factorization method as $K_{g}$  simultaneous equations with respect to $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:
+
+$$
+ T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
+$$
 
 The soil temperature is partially updated by the above equation. By this, as well as through correction of the phase change in the soil moisture mentioned later, the soil temperature is completely updated.
 
-8.2 Calculation of soil moisture movement
+## 8.2 Calculation of soil moisture movement
 
-8.2.1 Soil moisture movement equations
+### 8.2.1 Soil moisture movement equations
 
-> The equation for soil moisture movement (Richards equation) is given by
+The equation for soil moisture movement (Richards equation) is given by
 
-![](media/media/image406.png). (299)
+$$
+\rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
+\frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
+\qquad (k=1,\ldots,K_{g}) \tag{eq299}
+$$
 
-The soil moisture flux ![](media/media/image393.png) is given by
+The soil moisture flux $F_{w}$ is given by
 
-![](media/media/image389.png), (300)
 
-in which ![](media/media/image370.png) is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
+$$
+ F_{w(k+1/2)} =
+\left\{
+\begin{array}{ll}
+Pr^{*** } - Et_{(1,1)}
+ (k=0)\\
+\displaystyle{
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
+}
+ (k=1,\ldots,K_{g}-1) \\
+\displaystyle{
+0
+}
+ (k=K_{g})
+\end{array}
+\right. \tag{eq300}
+$$
 
-![](media/media/image348.png), (301)
+in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
 
-where ![](media/media/image331.png) is the saturation hydraulic conductivity and ![](media/media/image319.png) is the index of the moisture potential curve, which are given as external parameters for each soil type. ![](media/media/image314.png) is the degree of saturation considered excluding the frozen soil moisture, given by
+$$
+ K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
+$$
 
-![](media/media/image321.png), (302)
+where $K_{s(k+1/2)}$ is the saturation hydraulic conductivity and $b_{(k)}$ is the index of the moisture potential curve, which are given as external parameters for each soil type. $W_{(k)}$ is the degree of saturation considered excluding the frozen soil moisture, given by
 
-where ![](media/media/image323.png) is the porosity of the soil, which is also given as a parameter for each soil type. ![](media/media/image336.png) is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by
+$$
+ W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
+$$
 
-![](media/media/image309.png), (303)
 
-where ![](media/media/image347.png).
 
-The soil moisture potential ![](media/media/image322.png) is given as follows from Clapp and Hornberger:
+where $w_{sat(k)}$  is the porosity of the soil, which is also given as a parameter for each soil type. $f_i$ is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by
 
-![](media/media/image489.png), (304)
+$$
+ f_i = \left(1- W_{i(k)}\right)
+       \left(1- W_{i(k+1)}\right)
+$$
 
-where ![](media/media/image486.png) is given as an external parameter for each soil type.
+where $W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})$.
 
-In Eq. (299), ![](media/media/image490.png) is a source term which, considering the root uptake and the runoff, is given by
+The soil moisture potential $\psi$ is given as follows from Clapp and Hornberger:
 
-![](media/media/image492.png). (305)
 
-In Eq. 300, the soil upper boundary condition ![](media/media/image483.png) is the difference between the moisture flux through the runoff process ![](media/media/image481.png) and　the evaporation flux from the soil ![](media/media/image478.png). Separately from this, the sublimation flux portion is subtracted from the frozen soil moisture of the uppermost layer before calculation of the soil moisture movement:
+$$
+ \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
+$$
 
-![](media/media/image509.png), (306)
+where $\psi_{s(k)}$ is given as an external parameter for each soil type.
 
-![](media/media/image511.png). (307)
+In [Eq. (299)](#eq299), $S_{w(k)}$ is a source term which, considering the root uptake and the runoff, is given by
 
-8.2.2 Solution of soil moisture movement equations
+$$
+ S_{w(k)} = - F_{root(k)} - Ro_{(k)}
+$$
 
-These equations are solved by using the implicit method for the soil moisture from the uppermost layer to the lowest layer. For ![](media/media/image352.png), the soil moisture flux is
 
-![](media/media/image507.png), (308)
+In [Eq. 300](#eq300), the soil upper boundary condition $F_{w(1/2)}$ is the difference between the moisture flux through the runoff process ($P^{*** }$) and　the evaporation flux from the soil ($Et_{(1,1)}$). Separately from this, the sublimation flux portion is subtracted from the frozen soil moisture of the uppermost layer before calculation of the soil moisture movement:
 
-![](media/media/image457.png), (309)
+$$
+ w_{i(k)}^{\tau} = w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
+ w_{(k)}^{\tau} = w_{(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})
+$$
 
-![](media/media/image460.png), (310)
+### 8.2.2 Solution of soil moisture movement equations
 
-![](media/media/image467.png), (311)
+These equations are solved by using the implicit method for the soil moisture from the uppermost layer to the lowest layer. For $k=1,\ldots,K_g-1$, the soil moisture flux is
 
-and Eq. (299) is treated as
 
-![](media/media/image491.png)
+$$
+  F_{w(k+1/2)}^{\tau+1} = F_{w(k+1/2)}^{\tau}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}
+$$
 
-![](media/media/image464.png)
 
-![](media/media/image482.png), (312)
+$$
+  F_{w(k+1/2)}^{\tau} =
+K_{(k+1/2)} \left(\frac{\psi_{(k+1)}^{\tau} - \psi_{(k)}^{\tau}}{\Delta z_{g(k+1/2)}} - 1 \right)
+$$
 
-and solved by the LU factorization method as ![](media/media/image401.png) simultaneous equations with respect to ![](media/media/image381.png). At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions.
 
-> The soil moisture is updated by
+$$
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}} =
+- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k)}}{w_{sat(k)}-w_{i(k)}}W_{(k)}^{-b(k)-1}
+\right]
+$$
 
-![](media/media/image477.png). (313)
+
+$$
+ \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}} =
+ \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
+\left[
+-b_{(k)} \frac{\psi_{s(k+1)}}{w_{sat(k+1)}-w_{i(k+1)}}W_{(k+1)}^{-b(k)-1}
+\right]
+$$
+
+
+and [Eq. (299)](#eq299) is treated as
+
+
+$$
+\rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
+= F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)}  \\
+= {F}_{w(k+1/2)}^{\tau}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
+ \Delta w_{(k)}
++\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
+ \Delta w_{(k+1)}  \\
+- F_{w(k-1/2)}^{\tau}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k-1)}
+-\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
+ \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}
+$$
+
+
+and solved by the LU factorization method as $K_g$ simultaneous equations with respect to $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions.
+
+The soil moisture is updated by
+
+$$
+ w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
+$$
 
 As a result of this calculation, if a part appears where the soil moisture become supersaturated, it is adjusted in the vertical direction to eliminate supersaturation. The reason why such a supersaturated portion is not considered as runoff is that this supersaturation is artificially produced because the vertical movement of the soil moisture is solved without saturation data. First, from the second soil layer downwards, the supersaturated portion of the soil moisture is given to the layer below. Next, from the lowest soil layer upwards, the supersaturated portion of the soil moisture is given to the next layer up. With this operation, when the soil moisture is large enough, a saturated layer around the lowest soil layer is formed and the water table of Eq. (278) can be defined.
 
-8.3 Phase change of soil moisture
+## 8.3 Phase change of soil moisture
 
-As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than ![](media/media/image471.png)C, or when the temperature in the layer containing solid water is higher than ![](media/media/image474.png), the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the ![](media/media/image473.png)th layer is assumed to be ![](media/media/image470.png),
+As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than $T_{melt}=0degC$, or when the temperature in the layer containing solid water is higher than $T_{melt}$, the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the $k$th layer is assumed to be $\Delta w_{i(k)}$,
 
-when ![](media/media/image475.png) and ![](media/media/image472.png) (frozen):
+when $T_{g(k)}^*<T_{melt}$ and $w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}>0$ (frozen):
 
-![](media/media/image476.png), (314)
+$$
+\Delta w_{i(k)} = \min\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}
+\right)
+$$
 
-when ![](media/media/image479.png) and ![](media/media/image468.png) (melted):
+when $T_{g(k)}^*>T_{melt}$ and $w_{i(k)}^{\tau}>0$ (melting):
 
-![](media/media/image480.png). (315)
+
+$$
+\Delta w_{i(k)} = \max\left(
+\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
+-w_{i(k)}^{\tau}
+\right)
+$$
 
 The frozen soil moisture and the soil moisture are then updated as follows:
 
-![](media/media/image451.png), (316)
 
-![](media/media/image488.png). (317)
+$$
+w_{i(k)}^{\tau+1} = w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
+T_{g(k)}^{\tau+1} = T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
+$$
 
-8.3.1 Ice sheet process
 
-When the land cover type is ice sheet, if the soil temperature exceeds ![](media/media/image449.png), it is returned to![](media/media/image453.png):
+### 8.3.1 Ice sheet process
 
-![](media/media/image454.png). (318)
+When the land cover type is ice sheet, if the soil temperature exceeds $T_{melt}$, it is returned to $T_{melt}$:
+
+
+$$
+ T_{g(k)}^{\tau+1} = \min( T_{g(k)}^*, \ T_{melt} )
+$$
+
 
 The rate of change of the ice sheet *F<sub>ice</sub>* is then diagnosed as
 
-![](media/media/image466.png). (319)
+$$
+ F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
+$$
 
 # References
+  -
+    Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
 
-Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
+  -
+    Beven, K. J., and M. J. Kirkby, 1979: A physically based variable contributing area model of basin hydrology, <span>Hydrol. Sci. Bull.</span>, <span>**24**</span>, 43–69.
 
-Beven, K. J. and M. J. Kirkby, 1979: A physically based, variable contributing area model of basin hydrology. Hydrol. Sci. Bull. 24, 43–69.
+  -
+    Clapp, R. B., and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. <span>Water Resour. Res.</span>, <span>**14**</span>, 601–604.
 
-Clapp, R. B. and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. Water Resour. Res. 14, 601–604.
+  -
+    Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. <span>Plant Cell Environ.</span>, <span>**13**</span>, 219–225.
 
-Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. Plant Cell Environ. 13, 219–225.
+  -
+    Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. <span>Agric. For. Meteor.</span>, <span>**54**</span>, 107–136.
 
-Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. Agric. For. Meteor. 54, 107–136.
+  -
+    Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled Photosynthesis-Stomatal Conductance Model for leaves of TERM00000 plants. <span>Aust. J. Plant. Physiol.</span>, <span>**19**</span>, 519–538.
 
-Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled photosynthesis-stomatal conductance model for leaves of C![](media/media/image443.png) plants. Aust. J. Plant. Physiol. 19, 519–538.
+  -
+    Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic TERM00001 fixation in leaves of TERM00002 species. <span>Planta</span>, <span>**149**</span>, 78–90.
 
-Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic CO![](media/media/image445.png) fixation in leaves of C![](media/media/image448.png) species. Planta 149, 78–90.
+  -
+    Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
 
-Kondo, J. and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. J. Atmos. Sci. 49, 2183–2199.
+  -
+    Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
 
-Rutter, A. J., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. J. Appl. Ecol. 12, 367–380.
+  -
+    Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span>**9**</span>, 676–705.
 
-Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. J. Climate 9, 676–705.
+  -
+    Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity. 2, A scaled model of storm runoff production. <span>Water Resour. Res</span>, <span>**23**</span>, 2266–2278.
 
-Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity: 2. A scaled model of storm runoff production. Water Resour. Res. 23, 2266–2278.
+  -
+    Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. <span>J. Climate</span>, <span>**10**</span>, 118–137.
 
-Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. J. Climate 10, 118–137.
+  -
+    Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. <span>Boundary-Layer Met.</span>, <span>**70**</span>, 13–35.
 
-Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. Boundary-Layer Meteorol. 70, 13–35.
+  -
+    Wiscombe, W. J., and S. G. Warren, 1980: A model for the spectral albedo of snow. I. Pure snow. <span>J. Atmos. Sci.</span>, <span>**37**</span>, 2712–2733.
 
-Wiscombe, W. J. and S. G. Warren, 1980: A model for the spectral albedo of snow: I. Pure snow. J. Atmos. Sci. 37, 2712–2733.
-
-Watanabe T. and Y. Ohtani, 1995: A simple model of shortwave-radiation transport within canopy (in Japanese). J. Agric. Meteorol. 51, 57-60.
+  -
+    渡辺力・大谷義一, 1995: キャノピー層内の日射量分布の近似計算法. <span>農業気象</span>, <span>**51**</span>, 57–60.
