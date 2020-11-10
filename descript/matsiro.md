@@ -28,7 +28,7 @@ Frontier Research System for Global Change
   - [5.2 Calculation of amount of photosynthesis](#52-calculation-of-amount-of-photosynthesis)
   - [5.3 Calculation of stomatal resistance (2)](#53-calculation-of-stomatal-resistance-2)
   - [5.4 Calculation of ground surface evaporation resistance](#54-calculation-of-ground-surface-evaporation-resistance)
-- [6 MATSFC Surface Submodel](#6-matsfc-surface-submodel)
+- [6 Surface energy balance](#6-surface-energy-balance)
   - [6.1 Calculation of surface turbulent fluxes](#61-calculation-of-surface-turbulent-fluxes)
   - [6.2 Calculation of heat conduction fluxes](#62-calculation-of-heat-conduction-fluxes)
   - [6.3 Solution of energy balance at ground surface and canopy](#63-solution-of-energy-balance-at-ground-surface-and-canopy)
@@ -38,7 +38,7 @@ Frontier Research System for Global Change
     - [6.3.4 Conditions for solutions](#634-conditions-for-solutions)
     - [6.3.5 Updating of ground surface and canopy temperatures](#635-updating-of-ground-surface-and-canopy-temperatures)
     - [6.3.6 Updating of flux values](#636-updating-of-flux-values)
-- [7 MATCNW Canopy Water Balance Submodel](#7-matcnw-canopy-water-balance-submodel)
+- [7 Canopy Water Balance](#7-canopy-water-balance)
   - [7.1 Diagnosis of canopy water phase](#71-diagnosis-of-canopy-water-phase)
   - [7.2 Prognosis of canopy water](#72-prognosis-of-canopy-water)
     - [7.2.1 Evaporation (sublimation) of canopy water](#721-evaporation-sublimation-of-canopy-water)
@@ -46,7 +46,7 @@ Frontier Research System for Global Change
     - [7.2.3 Dripping of the canopy water](#723-dripping-of-the-canopy-water)
     - [7.2.4 Updating and melting of canopy water](#724-updating-and-melting-of-canopy-water)
   - [7.3 Fluxes given to the soil, snow, and runoff process](#73-fluxes-given-to-the-soil-snow-and-runoff-process)
-- [8 MATSNW Snow Submodel](#8-matsnw-snow-submodel)
+- [8 Snow](#8-snow)
   - [8.1 Diagnosis of snow-covered ratio](#81-diagnosis-of-snow-covered-ratio)
   - [8.2 Vertical division of snow layers](#82-vertical-division-of-snow-layers)
   - [8.3 Calculation of snow water equivalent](#83-calculation-of-snow-water-equivalent)
@@ -61,7 +61,7 @@ Frontier Research System for Global Change
   - [8.5 Glacier formation](#85-glacier-formation)
   - [8.6 Fluxes given to the soil or the runoff process](#86-fluxes-given-to-the-soil-or-the-runoff-process)
   - [8.7 Calculation of snow albedo](#87-calculation-of-snow-albedo)
-- [9 MATROF Runoff Submodel](#9-matrof-runoff-submodel)
+- [9 Runoff](#9-runoff)
   - [9.1 Outline of TOPMODEL](#91-outline-of-topmodel)
   - [9.2 Application of TOPMODEL assuming simplified topography](#92-application-of-topmodel-assuming-simplified-topography)
   - [9.3 Calculation of runoff](#93-calculation-of-runoff)
@@ -69,7 +69,7 @@ Frontier Research System for Global Change
     - [9.3.2 Calculation of groundwater runoff](#932-calculation-of-groundwater-runoff)
     - [9.3.3 Calculation of surface runoff](#933-calculation-of-surface-runoff)
   - [9.4 Water flux given to soil](#94-water-flux-given-to-soil)
-- [10 MATGND Soil Submodel](#10-matgnd-soil-submodel)
+- [10 Soil](#10-soil)
   - [10.1 Calculation of soil heat conduction](#101-calculation-of-soil-heat-conduction)
     - [10.1.1 Soil heat conduction equations](#1011-soil-heat-conduction-equations)
     - [10.1.2 Solution of heat conduction equations](#1012-solution-of-heat-conduction-equations)
@@ -658,7 +658,7 @@ $$
 
 where $W_{(1)} = w_{(1)}/w_{sat(1)}$ is the degree of saturation of the uppermost soil layer, $\psi_{1}$ is the moisture potential of the uppermost soil layer, $g$ is the gravitational acceleration, $R_{air}$ is the gas constant of the air, and $T_{g(1)}$ is the temperature of the uppermost soil layer. $a_1$ and $a_2$ are constants, with $a_1=800$, $a_2=0.2$. as standard values.
 
-# 6 MATSFC Surface Submodel
+# 6 Surface energy balance
 
 ## 6.1 Calculation of surface turbulent fluxes
 
@@ -1058,7 +1058,7 @@ $$
 
 where $F_{root(k)}$ is the root uptake flux and  $f_{rootup(k)}$ is the weighting for distribution of the transpiration to the root uptake flux in each layer.
 
-# 7 MATCNW Canopy Water Balance Submodel
+# 7 Canopy Water Balance
 
 The canopy water balance is calculated.
 
@@ -1247,7 +1247,7 @@ $$
 
 where $l_m$is the latent heat of melting.
 
-# 8 MATSNW Snow Submodel
+# 8 Snow
 
  The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
@@ -1753,7 +1753,7 @@ $$
 
 $\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
-# 9 MATROF Runoff Submodel
+# 9 Runoff
 
 The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
 
@@ -2001,7 +2001,7 @@ $$
  Pr^{*** } = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
 $$
 
-# 10 MATGND Soil Submodel
+# 10 Soil
 
 The soil temperature, the soil moisture, and the frozen soil are calculated next.
 
