@@ -13,74 +13,84 @@ Frontier Research System for Global Change
 
 <!-- code_chunk_output -->
 
-- [1 Introduction](#1-introduction)
-- [2 Vegetation type parameters](#2-vegetation-type-parameters)
-- [3 Radiation parameters](#3-radiation-parameters)
-  - [3.1 Calculation of ground surface (forest floor) albedo](#31-calculation-of-ground-surface-forest-floor-albedo)
-  - [3.2 Calculation of canopy albedo and transmissivity](#32-calculation-of-canopy-albedo-and-transmissivity)
-  - [3.3 Calculation of surface radiation flux, etc.](#33-calculation-of-surface-radiation-flux-etc)
-- [4 Turbulence parameters (bulk coefficient)](#4-turbulence-parameters-bulk-coefficient)
-  - [4.1 Calculation of roughness with respect to momentum and heat](#41-calculation-of-roughness-with-respect-to-momentum-and-heat)
-  - [4.2 Calculation of bulk coefficient with respect to momentum and heat](#42-calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat)
-  - [4.3 Calculation of bulk coefficient with respect to vapor](#43-calculation-of-bulk-coefficient-with-respect-to-vapor)
-- [5 Stomatal resistance](#5-stomatal-resistance)
-  - [5.1 Calculation of soil moisture stress factor](#51-calculation-of-soil-moisture-stress-factor)
-  - [5.2 Calculation of amount of photosynthesis](#52-calculation-of-amount-of-photosynthesis)
-  - [5.3 Calculation of stomatal resistance (2)](#53-calculation-of-stomatal-resistance-2)
-  - [5.4 Calculation of ground surface evaporation resistance](#54-calculation-of-ground-surface-evaporation-resistance)
-- [6 MATSFC Surface Submodel](#6-matsfc-surface-submodel)
-  - [6.1 Calculation of surface turbulent fluxes](#61-calculation-of-surface-turbulent-fluxes)
-  - [6.2 Calculation of heat conduction fluxes](#62-calculation-of-heat-conduction-fluxes)
-  - [6.3 Solution of energy balance at ground surface and canopy](#63-solution-of-energy-balance-at-ground-surface-and-canopy)
-    - [6.3.1 Energy balance at ground surface and canopy](#631-energy-balance-at-ground-surface-and-canopy)
-    - [6.3.2 Case 1: When there is no melting at the ground surface](#632-case-1-when-there-is-no-melting-at-the-ground-surface)
-    - [6.3.3 Case 2: When there is melting at the ground surface](#633-case-2-when-there-is-melting-at-the-ground-surface)
-    - [6.3.4 Conditions for solutions](#634-conditions-for-solutions)
-    - [6.3.5 Updating of ground surface and canopy temperatures](#635-updating-of-ground-surface-and-canopy-temperatures)
-    - [6.3.6 Updating of flux values](#636-updating-of-flux-values)
-- [7 MATCNW Canopy Water Balance Submodel](#7-matcnw-canopy-water-balance-submodel)
-  - [7.1 Diagnosis of canopy water phase](#71-diagnosis-of-canopy-water-phase)
-  - [7.2 Prognosis of canopy water](#72-prognosis-of-canopy-water)
-    - [7.2.1 Evaporation (sublimation) of canopy water](#721-evaporation-sublimation-of-canopy-water)
-    - [7.2.2 Interception of precipitation by the canopy](#722-interception-of-precipitation-by-the-canopy)
-    - [7.2.3 Dripping of the canopy water](#723-dripping-of-the-canopy-water)
-    - [7.2.4 Updating and melting of canopy water](#724-updating-and-melting-of-canopy-water)
-  - [7.3 Fluxes given to the soil, snow, and runoff process](#73-fluxes-given-to-the-soil-snow-and-runoff-process)
-- [8 MATSNW Snow Submodel](#8-matsnw-snow-submodel)
-  - [8.1 Diagnosis of snow-covered ratio](#81-diagnosis-of-snow-covered-ratio)
-  - [8.2 Vertical division of snow layers](#82-vertical-division-of-snow-layers)
-  - [8.3 Calculation of snow water equivalent](#83-calculation-of-snow-water-equivalent)
-    - [8.3.1 Sublimation of snow](#831-sublimation-of-snow)
-    - [8.3.2 Snowmelt](#832-snowmelt)
-    - [8.3.3 Freeze of snowmelt water and rainfall in snow](#833-freeze-of-snowmelt-water-and-rainfall-in-snow)
-    - [8.3.4 Snowfall](#834-snowfall)
-    - [8.3.5 Redivision of snow layer and rediagnosis of temperature](#835-redivision-of-snow-layer-and-rediagnosis-of-temperature)
-  - [8.4 Calculation of snow heat conduction](#84-calculation-of-snow-heat-conduction)
-    - [8.4.1 Snow heat conduction equations](#841-snow-heat-conduction-equations)
-    - [8.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#842-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
-  - [8.5 Glacier formation](#85-glacier-formation)
-  - [8.6 Fluxes given to the soil or the runoff process](#86-fluxes-given-to-the-soil-or-the-runoff-process)
-  - [8.7 Calculation of snow albedo](#87-calculation-of-snow-albedo)
-- [9 MATROF Runoff Submodel](#9-matrof-runoff-submodel)
-  - [9.1 Outline of TOPMODEL](#91-outline-of-topmodel)
-  - [9.2 Application of TOPMODEL assuming simplified topography](#92-application-of-topmodel-assuming-simplified-topography)
-  - [9.3 Calculation of runoff](#93-calculation-of-runoff)
-    - [9.3.1 Estimation of mean water table depth](#931-estimation-of-mean-water-table-depth)
-    - [9.3.2 Calculation of groundwater runoff](#932-calculation-of-groundwater-runoff)
-    - [9.3.3 Calculation of surface runoff](#933-calculation-of-surface-runoff)
-  - [9.4 Water flux given to soil](#94-water-flux-given-to-soil)
-- [10 MATGND Soil Submodel](#10-matgnd-soil-submodel)
-  - [10.1 Calculation of soil heat conduction](#101-calculation-of-soil-heat-conduction)
-    - [10.1.1 Soil heat conduction equations](#1011-soil-heat-conduction-equations)
-    - [10.1.2 Solution of heat conduction equations](#1012-solution-of-heat-conduction-equations)
-  - [10.2 Calculation of soil moisture movement](#102-calculation-of-soil-moisture-movement)
-    - [10.2.1 Soil moisture movement equations](#1021-soil-moisture-movement-equations)
-    - [10.2.2 Solution of soil moisture movement equations](#1022-solution-of-soil-moisture-movement-equations)
-  - [10.3 Phase change of soil moisture](#103-phase-change-of-soil-moisture)
-    - [10.3.1 Ice sheet process](#1031-ice-sheet-process)
-- [11 Lake](#11-lake)
-- [12 Wetland](#12-wetland)
-- [13 Tile scheme](#13-tile-scheme)
+- [1 Introduction](#introduction)
+- [2 Vegetation type parameters](#vegetation-type-parameters)
+- [3 Radiation parameters](#radiation-parameters)
+  - [3.1 Calculation of ground surface (forest floor) albedo](#calculation-of-ground-surface-forest-floor-albedo)
+  - [3.2 Calculation of canopy albedo and transmissivity](#calculation-of-canopy-albedo-and-transmissivity)
+  - [3.3 Calculation of surface radiation flux, etc.](#calculation-of-surface-radiation-flux-etc)
+- [4 Turbulence parameters (bulk coefficient)](#turbulence-parameters-bulk-coefficient)
+  - [4.1 Calculation of roughness with respect to momentum and heat](#calculation-of-roughness-with-respect-to-momentum-and-heat)
+  - [4.2 Calculation of bulk coefficient with respect to momentum and heat](#calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat)
+  - [4.3 Calculation of bulk coefficient with respect to vapor](#calculation-of-bulk-coefficient-with-respect-to-vapor)
+- [5 Stomatal resistance](#stomatal-resistance)
+  - [5.1 Calculation of soil moisture stress factor](#calculation-of-soil-moisture-stress-factor)
+  - [5.2 Calculation of amount of photosynthesis](#calculation-of-amount-of-photosynthesis)
+  - [5.3 Calculation of stomatal resistance (2)](#calculation-of-stomatal-resistance-2)
+  - [5.4 Calculation of ground surface evaporation resistance](#calculation-of-ground-surface-evaporation-resistance)
+- [6 MATSFC Surface Submodel](#matsfc-surface-submodel)
+  - [6.1 Calculation of surface turbulent fluxes](#calculation-of-surface-turbulent-fluxes)
+  - [6.2 Calculation of heat conduction fluxes](#calculation-of-heat-conduction-fluxes)
+  - [6.3 Solution of energy balance at ground surface and canopy](#solution-of-energy-balance-at-ground-surface-and-canopy)
+    - [6.3.1 Energy balance at ground surface and canopy](#energy-balance-at-ground-surface-and-canopy)
+    - [6.3.2 Case 1: When there is no melting at the ground surface](#case-1-when-there-is-no-melting-at-the-ground-surface)
+    - [6.3.3 Case 2: When there is melting at the ground surface](#case-2-when-there-is-melting-at-the-ground-surface)
+    - [6.3.4 Conditions for solutions](#conditions-for-solutions)
+    - [6.3.5 Updating of ground surface and canopy temperatures](#updating-of-ground-surface-and-canopy-temperatures)
+    - [6.3.6 Updating of flux values](#updating-of-flux-values)
+- [7 MATCNW Canopy Water Balance Submodel](#matcnw-canopy-water-balance-submodel)
+  - [7.1 Diagnosis of canopy water phase](#diagnosis-of-canopy-water-phase)
+  - [7.2 Prognosis of canopy water](#prognosis-of-canopy-water)
+    - [7.2.1 Evaporation (sublimation) of canopy water](#evaporation-sublimation-of-canopy-water)
+    - [7.2.2 Interception of precipitation by the canopy](#interception-of-precipitation-by-the-canopy)
+    - [7.2.3 Dripping of the canopy water](#dripping-of-the-canopy-water)
+    - [7.2.4 Updating and melting of canopy water](#updating-and-melting-of-canopy-water)
+  - [7.3 Fluxes given to the soil, snow, and runoff process](#fluxes-given-to-the-soil-snow-and-runoff-process)
+- [8 MATSNW Snow Submodel](#matsnw-snow-submodel)
+  - [8.1 Diagnosis of snow-covered ratio](#diagnosis-of-snow-covered-ratio)
+  - [8.2 Vertical division of snow layers](#vertical-division-of-snow-layers)
+  - [8.3 Calculation of snow water equivalent](#calculation-of-snow-water-equivalent)
+    - [8.3.1 Sublimation of snow](#sublimation-of-snow)
+    - [8.3.2 Snowmelt](#snowmelt)
+    - [8.3.3 Freeze of snowmelt water and rainfall in snow](#freeze-of-snowmelt-water-and-rainfall-in-snow)
+    - [8.3.4 Snowfall](#snowfall)
+    - [8.3.5 Redivision of snow layer and rediagnosis of temperature](#redivision-of-snow-layer-and-rediagnosis-of-temperature)
+  - [8.4 Calculation of snow heat conduction](#calculation-of-snow-heat-conduction)
+    - [8.4.1 Snow heat conduction equations](#snow-heat-conduction-equations)
+    - [8.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
+  - [8.5 Glacier formation](#glacier-formation)
+  - [8.6 Fluxes given to the soil or the runoff process](#fluxes-given-to-the-soil-or-the-runoff-process)
+  - [8.7 Calculation of snow albedo](#calculation-of-snow-albedo)
+- [9 MATROF Runoff Submodel](#matrof-runoff-submodel)
+  - [9.1 Outline of TOPMODEL](#outline-of-topmodel)
+  - [9.2 Application of TOPMODEL assuming simplified topography](#application-of-topmodel-assuming-simplified-topography)
+  - [9.3 Calculation of runoff](#calculation-of-runoff)
+    - [9.3.1 Estimation of mean water table depth](#estimation-of-mean-water-table-depth)
+    - [9.3.2 Calculation of groundwater runoff](#calculation-of-groundwater-runoff)
+    - [9.3.3 Calculation of surface runoff](#calculation-of-surface-runoff)
+  - [9.4 Water flux given to soil](#water-flux-given-to-soil)
+- [10 MATGND Soil Submodel](#matgnd-soil-submodel)
+  - [10.1 Calculation of soil heat conduction](#calculation-of-soil-heat-conduction)
+    - [10.1.1 Soil heat conduction equations](#soil-heat-conduction-equations)
+    - [10.1.2 Solution of heat conduction equations](#solution-of-heat-conduction-equations)
+  - [10.2 Calculation of soil moisture movement](#calculation-of-soil-moisture-movement)
+    - [10.2.1 Soil moisture movement equations](#soil-moisture-movement-equations)
+    - [10.2.2 Solution of soil moisture movement equations](#solution-of-soil-moisture-movement-equations)
+  - [10.3 Phase change of soil moisture](#phase-change-of-soil-moisture)
+    - [10.3.1 Ice sheet process](#ice-sheet-process)
+- [11 Lake](#lake)
+  - [11.1 Surface Conditions](#surface-conditions)
+    - [11.1.1 Surface temperature](#surface-temperature)
+    - [11.1.2 Surface albedo](#surface-albedo)
+    - [11.1.3 Surface roughness](#surface-roughness)
+  - [11.3 Lake ice](#lake-ice)
+  - [11.4 Physical formulation & processes](#physical-formulation-processes)
+    - [11.4.1 Setting vertical diffusion and viscosity coefficients](#setting-vertical-diffusion-and-viscosity-coefficients)
+    - [11.4.2 Estimate the advection and diffusion terms of the tracer equations](#estimate-the-advection-and-diffusion-terms-of-the-tracer-equations)
+    - [11.4.3 Time integration of the tracer equations.](#time-integration-of-the-tracer-equations)
+    - [11.4.4 Convective adjustment for the unstable water column](#convective-adjustment-for-the-unstable-water-column)
+- [12 Wetland](#wetland)
+- [13 Tile scheme](#tile-scheme)
 - [References](#references)
 
 <!-- /code_chunk_output -->
@@ -2310,8 +2320,43 @@ $$
 $$
 
 # 11 Lake
+湖のプログラムは海洋モデルCOCOを元にしている。
+
+## 11.1 Surface Conditions
+`lakesf.F`
+
+### 11.1.1 Surface temperature
+'LAKEHB from OCNSLV: OCEAN HEAT BALANCE'.
+
+Reference: [Hasumi, 2015, Appendices A](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
 
 
+### 11.1.2 Surface albedo
+### 11.1.3 Surface roughness
+[surface flux section of MIROC-DOC](https://github.com/MIROC-DOC/model_description/blob/surface/draft/p-sfc.md)  will be transplanted after modification.
+
+## 11.3 Lake ice
+`lakeic.F`
+
+Reference: [Hasumi, 2015, Appendices B](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
+
+## 11.4 Physical formulation & processes
+`lakepo.F`
+### 11.4.1 Setting vertical diffusion and viscosity coefficients
+
+Reference: [Hasumi, 2015, Section 1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
+
+### 11.4.2 Estimate the advection and diffusion terms of the tracer equations
+
+Reference: [Hasumi, 2015, Section 4.1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
+
+### 11.4.3 Time integration of the tracer equations.
+
+Reference: [Hasumi, 2015, Section 3.2.4](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
+
+### 11.4.4 Convective adjustment for the unstable water column
+
+Reference: [Hasumi, 2015, Section 4.4](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
 
 # 12 Wetland
 
