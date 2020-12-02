@@ -19,9 +19,13 @@ $$
 $$
  Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
-  \tag{L143-149 & L185-189}
+  \tag{L143-147 & L185-189}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146
+$$
+ Ro_{(k_{WT})} = Ro_b
+  \tag{L148-149 & L190-191}
+$$
+the saturated hydraulic conductivity $K_0$ is defined in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L28
 
 ### 9.3.3 Calculation of surface runoff
 
@@ -51,7 +55,11 @@ $$
 $$
  Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
-  \tag{L179-185 & L228-232}
+  \tag{L179-183 & L228-232}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L76, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182
+$$
+ Ro_{(k_{WT})} = Ro_b
+  \tag{L184-185 & L233-234}
+$$
+the saturated hydraulic conductivity $K_0$ is defined in L76, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L40
 ### 9.3.3 Calculation of surface runoff
