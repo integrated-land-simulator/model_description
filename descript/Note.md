@@ -8,9 +8,9 @@ definitions of the 4 types of runoff can be found in L52-55. The calculation of 
 ### 9.3.1 Estimation of mean water table depth (For future plan I suggest using figure to illustrate the condition)
 $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}} 
- \tag{L163}
+ \tag{L161-167}
 $$
-the mositure(matric) potential $\psi$ is defined in L58, the uppermost half-saturated (or staturated?) layer $k_{WT}$ is difined in L65, the mean water table depth $\overline{z}$ is defined in L66.
+the mositure(matric) potential $\psi$ is defined in L58, the uppermost half-saturated (or staturated?) layer $k_{WT}$ is difined in L65, the mean water table depth $\overline{z}$ is defined in L165.
 ### 9.3.2 Calculation of groundwater runoff
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
@@ -21,7 +21,7 @@ $$
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
   \tag{L143-149 & L185-189}
 $$
-the saturated hydraulic conductivity $K_0$ is definede in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146
+the saturated hydraulic conductivity $K_0$ is defined in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146
 
 ### 9.3.3 Calculation of surface runoff
 
@@ -29,16 +29,29 @@ the saturated hydraulic conductivity $K_0$ is definede in L57, the tangent value
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
+\tag{L289-290 & L293-294 & L297-298}
 $$
 Or 
 $$
 R_O=(R_{O_s}+R_{O_i}+R_{O_o})\times?+R_{O_b}
+\tag{L281-283}
 $$
-definitions of the 4 types of runoff can be found in L69-72. The calculation of baseflow $R_{O_b}$ is illustrated in L171-192 and L221-236, and the calculation of surface flow including $R_{O_o}$ (L249-255, surface storage overflow), $R_{O_s}$ (L256-258, saturation excess runoff) and $R_{O_i}$ (L259-266, infiltration excess runoff) is illustrated in L246-266, and the equation for $R_O$ is expressed in L279-298.
+definitions of the 4 types of runoff can be found in L69-72. The calculation of baseflow $R_{O_b}$ is illustrated in L171-192 and L221-236, and the calculation of surface flow including $R_{O_o}$ (L249-255, surface storage overflow), $R_{O_s}$ (L256-258, saturation excess runoff) and $R_{O_i}$ (L259-266, infiltration excess runoff) is illustrated in L246-266.
 ### 9.3.1 Estimation of mean water table depth
 $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
+ \tag{L}
 $$
 the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-saturated layer $k_{WT}$ is difined in L84, the mean water table depth $\overline{z}$ is calculated through above equation in L199
 ### 9.3.2 Calculation of groundwater runoff
+$$
+Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
+ \tag{L175-178 & L224-227}
+$$
+$$
+ Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
+  [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
+  \tag{L179-185 & L228-232}
+$$
+the saturated hydraulic conductivity $K_0$ is defined in L76, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182
 ### 9.3.3 Calculation of surface runoff
