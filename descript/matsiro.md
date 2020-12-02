@@ -1927,7 +1927,7 @@ $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
 $$
 
-This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as \psi_{k_{WT}}$, and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium).
+This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium).
 
 When $\overline{z} > z_{g(k_{WT}+1/2)}$ is the lowest layer, the water table is assumed to not exist. When $k_{WT}$  is not the lowest layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and the above equation is applied.
 
