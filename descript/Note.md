@@ -40,9 +40,9 @@ definitions of the 4 types of runoff can be found in L69-72. The calculation of 
 ### 9.3.1 Estimation of mean water table depth
 $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
- \tag{L}
+ \tag{L197-206}
 $$
-the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-saturated layer $k_{WT}$ is difined in L84, the mean water table depth $\overline{z}$ is calculated through above equation in L199
+the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-saturated layer $k_{WT}$ is difined in L84, the mean water table depth $\overline{z}$ is calculated through above equation in L201
 ### 9.3.2 Calculation of groundwater runoff
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
