@@ -1,7 +1,7 @@
 # AR4 matrof.F (MATSIRO runoff submodel)
 ## 9.3 Calculation of runoff
 $$
-R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b} L227-228
+R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
 \tag{L227-228}
 $$
 definitions of the 4 types of runoff can be found in L52-55. The calculation of baseflow $R_{O_b}$ is illustrated in L135-156 and L178-193, and the calculation of surface flow including $R_{O_o}$ (L198-204, surface storage overflow), $R_{O_s}$ (L205-207, saturation excess runoff) and $R_{O_i}$ (L208-214, infiltration excess runoff) is illustrated in L195-215.
@@ -21,6 +21,7 @@ $$
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
   \tag{L143-149 & L185-189}
 $$
+the saturated hydraulic conductivity $K_0$ is definede in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146
 
 ### 9.3.3 Calculation of surface runoff
 
