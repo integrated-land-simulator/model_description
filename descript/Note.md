@@ -15,11 +15,13 @@ the mositure(matric) potential $\psi$ is defined in L58, the uppermost half-satu
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
  \tag{L139-142 & L181-184}
-\\
+$$
+$$
  Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
   \tag{L143-147 & L185-189}
-\\
+$$
+$$
  Ro_{(k_{WT})} = Ro_b
   \tag{L148-149 & L190-191}
 $$
@@ -33,10 +35,12 @@ the convective rain fall $Pr_c$ is defined in L32, the nonconvective precipitati
 $$
 Ro_i^c = \max( Pr_c/A_c + Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L209-210}
-\\
+$$
+$$
 Ro_i^{nc} = \max( Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L211}
-\\
+$$
+$$
 Ro_i = A_c Ro_i^c + ( 1 - A_c ) Ro_i^{nc}
 \tag{L212-214}
 $$
@@ -73,11 +77,13 @@ the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-satu
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
  \tag{L175-178 & L224-227}
-\\
+$$
+$$
  Ro_b = \frac{K_0 \tan\beta_s}{f L_s}
   [ \exp(1-f \overline{z}) - \exp(1-f z_f) ] 
   \tag{L179-183 & L228-232}
-\\
+$$
+$$
  Ro_{(k_{WT})} = Ro_b
   \tag{L184-185 & L233-234}
 $$
@@ -91,10 +97,12 @@ the convective rain fall $Pr_c$ is defined in L44, the nonconvective precipitati
 $$
 Ro_i^c = \max( Pr_c/A_c + Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L260-261}
-\\
+$$
+$$
 Ro_i^{nc} = \max( Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L262}
-\\
+$$
+$$
 Ro_i = A_c Ro_i^c + ( 1 - A_c ) Ro_i^{nc}
 \tag{L263-265}
 $$
