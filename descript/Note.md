@@ -1,4 +1,10 @@
 # AR4 matrof.F (MATSIRO runoff submodel)
+## 9.2 Application of TOPMODEL assuming simplified topography
+$$
+L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
+\tag{L308-310}
+$$
+the standard deviation of altitude $\sigma_z$ is defined in L274, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -25,7 +31,7 @@ $$
  Ro_{(k_{WT})} = Ro_b
   \tag{L148-149 & L190-191}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L57, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L28
+the saturated hydraulic conductivity $K_0$ is defined in L57, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L28
 ### 9.3.3 Calculation of surface runoff
 $$ 
 Ro_s = (Pr_c + Pr_l) A_{sat} 
@@ -56,6 +62,12 @@ $$
 the function somehow doesn't appear in the code file.
 
 # AR6 matrof.F (MATSIRO runoff submodel)
+## 9.2 Application of TOPMODEL assuming simplified topography
+$$
+L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
+\tag{L418-420}
+$$
+the standard deviation of altitude $\sigma_z$ is defined in L360, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -87,7 +99,7 @@ $$
  Ro_{(k_{WT})} = Ro_b
   \tag{L184-185 & L233-234}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L76, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L40
+the saturated hydraulic conductivity $K_0$ is defined in L76, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L40
 ### 9.3.3 Calculation of surface runoff
 $$ 
 Ro_s = (Pr_c + Pr_l) A_{sat} 
