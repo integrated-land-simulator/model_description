@@ -5,6 +5,11 @@ L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
 \tag{L308-310}
 $$
 the standard deviation of altitude $\sigma_z$ is defined in L274, the tangent value of mean surface slope $\tan\beta_s$ is defined in L69, the mean length of surface slope $L_s$ is defined in L70
+$$
+A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1) 
+\tag{eq179-180}
+$$
+the fraction of the surface saturated area $A_{sat}$ is defined in L61.
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -37,7 +42,7 @@ $$
 Ro_s = (Pr_c + Pr_l) A_{sat} 
 \tag{L206-207}
 $$
-the convective rain fall $Pr_c$ is defined in L32, the nonconvective precipitation $Pr_l$ in defined in L33, the fraction of the surface saturated area $A_{sat}$ is defined in L61.
+the convective rain fall $Pr_c$ is defined in L32, the nonconvective precipitation $Pr_l$ in defined in L33
 $$
 Ro_i^c = \max( Pr_c/A_c + Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L209-210}
@@ -68,6 +73,11 @@ L_s = 2\sqrt{3} \sigma_z / \tan\beta_s
 \tag{L418-420}
 $$
 the standard deviation of altitude $\sigma_z$ is defined in L360, the tangent value of mean surface slope $\tan\beta_s$ is defined in L89, the mean length of surface slope $L_s$ is defined in L90
+$$
+A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1) 
+\tag{eq222-223}
+$$
+the fraction of the surface saturated area $A_{sat}$ is defined in L80.
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -105,7 +115,7 @@ $$
 Ro_s = (Pr_c + Pr_l) A_{sat} 
 \tag{L257-258}
 $$
-the convective rain fall $Pr_c$ is defined in L44, the nonconvective precipitation $Pr_l$ in defined in L45, the fraction of the surface saturated area $A_{sat}$ is defined in L80.
+the convective rain fall $Pr_c$ is defined in L44, the nonconvective precipitation $Pr_l$ in defined in L45
 $$
 Ro_i^c = \max( Pr_c/A_c + Pr_l - K_{s(1)}, 0 ) (1 - A_{sat})
 \tag{L260-261}
