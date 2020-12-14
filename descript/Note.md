@@ -9,7 +9,7 @@ $$
 A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1) 
 \tag{eq179-180}
 $$
-the fraction of the surface saturated area $A_{sat}$ is defined in L61.
+the fraction of the surface saturated area $A_{sat}$ is defined in L61, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the mean water table depth $\overline{z}$ is defined in L165.
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -21,7 +21,7 @@ $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}} 
  \tag{L161-167}
 $$
-the mositure(matric) potential $\psi$ is defined in L58, the uppermost half-saturated (or staturated?) layer $k_{WT}$ is difined in L65, the mean water table depth $\overline{z}$ is defined in L165.
+the mositure(matric) potential $\psi$ is defined in L58, the uppermost half-saturated (or staturated?) layer $k_{WT}$ is difined in L65.
 ### 9.3.2 Calculation of groundwater runoff
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
@@ -36,7 +36,7 @@ $$
  Ro_{(k_{WT})} = Ro_b
   \tag{L148-149 & L190-191}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L57, the critical water table depth $\frac{1}{f}$ is defined in L73 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L146, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L28
+the saturated hydraulic conductivity $K_0$ is defined in L57, the depth of the frozen soil surface $z_f$ is defined in L146, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L28
 ### 9.3.3 Calculation of surface runoff
 $$ 
 Ro_s = (Pr_c + Pr_l) A_{sat} 
@@ -77,7 +77,7 @@ $$
 A_{sat} = (L_s - x_0)/ L_s = 1 - \exp(f\overline{z}-1) 
 \tag{eq222-223}
 $$
-the fraction of the surface saturated area $A_{sat}$ is defined in L80.
+the fraction of the surface saturated area $A_{sat}$ is defined in L80, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the mean water table depth $\overline{z}$ is defined in L201.
 ## 9.3 Calculation of runoff
 $$
 R_O=R_{O_s}+R_{O_i}+R_{O_o}+R_{O_b}
@@ -94,7 +94,7 @@ $$
  \overline{z} = z_{g(k_{WT}-1/2)} - \psi_{k_{WT}}
  \tag{L197-206}
 $$
-the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-saturated layer $k_{WT}$ is difined in L84, the mean water table depth $\overline{z}$ is calculated through above equation in L201
+the mositure(matric) potential $\psi$ is defined in L77, the uppermost half-saturated layer $k_{WT}$ is difined in L84.
 ### 9.3.2 Calculation of groundwater runoff
 $$
 Ro_b = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) 
@@ -109,7 +109,7 @@ $$
  Ro_{(k_{WT})} = Ro_b
   \tag{L184-185 & L233-234}
 $$
-the saturated hydraulic conductivity $K_0$ is defined in L76, the critical water table depth $\frac{1}{f}$ is defined in L98 ($f$ is the attenuation coefficient), the depth of the frozen soil surface $z_f$ is defined in L182, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L40
+the saturated hydraulic conductivity $K_0$ is defined in L76, the depth of the frozen soil surface $z_f$ is defined in L182, $Ro_{(k_{WT})}$ denotes the runoff flux from the $k_{WT}$th soil layer and is defined in L40
 ### 9.3.3 Calculation of surface runoff
 $$ 
 Ro_s = (Pr_c + Pr_l) A_{sat} 
