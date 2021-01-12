@@ -2321,7 +2321,7 @@ A snow-fed wetland scheme, in which snowmelt can be stored with consideration of
 
 The wetland scheme is integrated into the TOPMODEL submodule, and the flowchart of the wetland scheme is shown in Fig.12-1. The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers and 2) and increase in land surface wetness and hence evaporation in water-limited regimes. For the first effect, a tank (“Surface storage” in Fig.12-1) is introduced to temporarily stores part of the surface runoff. For the second effect, the outflow from the tank is re-added to the water inflow of the soil surface. In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
-![Fig.12-1_flowchart](https://github.com/superqiang-cc/Pic_libs/raw/master/Fig_12-1.jpg)
+![Fig.12-1_flowchart](https://github.com/superqiang-cc/Pic_libs/raw/master/Fig_12-1.jpg)  
 Fig.12-1 Flowchart of the wetland scheme in the MATSIRO 6
 
 ## 12.2 Storage of the surface runoff
@@ -2363,7 +2363,7 @@ $$
 \tau =max(\tau _{0}\left \{1-min\left [ zsd(x), zsd_{max} \right ]/zsd_{max}  \right \},\Delta t)
 $$
 
-where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and   $\tau _{0}$, $zsd_{max}$, and $\alpha$ are tunable parameters. The function and parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau _{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\tau _{0}$, $zsd_{max}$, and $\alpha$ are tunable parameters. The function and parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau _{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
 # 13 Tile scheme
 
 
