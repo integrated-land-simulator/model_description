@@ -80,6 +80,7 @@ Frontier Research System for Global Change
     - [10.3.1 Ice sheet process](#ice-sheet-process)
 - [11 Lake](#lake)
   - [11.1 Surface Conditions](#surface-conditions)
+    - [`LSFBCS`](#lsfbcs)
     - [11.1.1 Surface temperature](#surface-temperature)
     - [11.1.2 Surface albedo](#surface-albedo)
     - [11.1.3 Surface roughness](#surface-roughness)
@@ -2322,14 +2323,250 @@ $$
 # 11 Lake
 湖のプログラムは海洋モデルCOCOを元にしている。
 
+湖の次元は`src/include/zkg21c.F`にて管理されており、`KLMAX`が鉛直層数 `NLTDIM`が1:temp. 2:salt for lakeを表す。鉛直層は実際には、`KLSTR=2`から`KLEND=KLMAX+1`までを用いるため、管理用のパラメータとして`NLZDIM = KLMAX+KLSTR`が存在する。
+
 ## 11.1 Surface Conditions
 `lakesf.F`
+
+### `LSFBCS`
+
+- Output variables
+
+| Header0           | name in the texts | name in the program | dimension            | unit |
+|:------------------|:------------------|:--------------------|:---------------------|:-----|
+| surface albedo    | $\alpha$          | GRALB               | IJLSDM, NRDIR, NRBND | -    |
+| surface roughness | $$                | GRZ0                | IJLSDM, NTYZ0        |      |
+| heat flux         |                   | FOGFLX              | IJLSDM               |      |
+| dG/dTs            |                   | DGFDS               | IJLSDM               |      |
+
+- Input variables
+
+| Header0              | name in the texts | name in the program | dimension | unit |
+|:---------------------|:------------------|:--------------------|:----------|:-----|
+| skin temperature     | $T_s$             | GRTS                | IJLSDM    |      |
+| ice base temperature |                   | GRTB                | IJLSDM    |      |
+| sea ice              |                   | GRICE               | IJLSDM    |      |
+| snow amount          |                   | GRSNW               | IJLSDM    |      |
+| ice fraction         |                   | GRICR               | IJLSDM    |      |
+| u surface wind       |                   | GDUA                | IJLSDM    |      |
+| v surface wind       |                   | GDVA                | IJLSDM    |      |
+| cos(solar zenith)    |                   | RCOSZ               | IJLSDM    |      |
+
+- Internal work variables
+
+| Header0       | name in the texts | name in the program | dimension | unit |
+|:--------------|:------------------|:--------------------|:----------|:-----|
+| snow fraction |                   | GRSNR               | IJLSDM    | -    |
+|               |                   | TALSNX              | IJLSDM    |      |
+|               |                   | ALBSNX              | IJLSDM    |      |
+|               |                   | ALB0                | IJLSDM    |      |
+|               |                   | DALB                | IJLSDM    |      |
+|               |                   | TFACT               | IJLSDM    |      |
+|               |                   | ALBX                | IJLSDM    |      |
+|               |                   | Z00                 | IJLSDM    |      |
+|               |                   | DZ0                 | IJLSDM    |      |
+|               |                   | DFGT                | IJLSDM    |      |
+|               |                   | DFGX                | IJLSDM    |      |
+
+- Internal parameters
+
+| Header0                       | name in the texts | name in the program | unit | Header                                                    |
+|:------------------------------|:------------------|:--------------------|:-----|:----------------------------------------------------------|
+| diffusion coef. of snow       |                   | DFSNOW              |      | $0.4$                                                     |
+| maximum snow depth            |                   | SNWDMX              |      | $5.0$                                                     |
+| minimum snow                  |                   | EPSSNW              |      | $1.0\times 10^{-8}$                                       |
+| ice forming snow              |                   | SNWMAX              |      | $1000.0$                                                  |
+| snow albedo                   |                   | ABLSNW(2, NRBND)    |      | $0.75, 0.5, 0.75, 0.5, 0.0, 0.0$                          |
+| temperature for albedo change |                   | TALSNW(2)           |      | $258.15, 273.15$                                          |
+| roughness of snow             |                   | Z0SNW(NTYZ0)        |      | $1.0\times 10^{-2}, 1.0\times 10^{-3}, 1.0\times 10^{-3}$ |
+| snow amount for fraction=1    |                   | SNWCRT              |      | $100.0$                                                   |
+| snow density                  |                   | SNWDEN              |      | $400.0$                                                   |
+| diffusion coef. of sea ice    |                   | DFICE               |      | $2.00$                                                    |
+| sea ice albedo                |                   | ALBICE( NRBND )     |      | $0.5, 0.5, 0.05$                                          |
+| roughness of sea ice          |                   | Z0ICE ( NTYZ0 )     |      | $2.0\times 10^{-2}, 2.0\times 10^{-3}, 2.0\times 10^{-3}$ |
+| ice amount for conc.=1        |                   | SICCRT              |      | $300.0$                                                   |
+| sea ice density               |                   | SICDEN              |      | $1000.0$                                                  |
+| heat z0/moumentum z0          |                   | Z0FCT               |      | $0.1$                                                     |
+| minimum z0                    |                   | Z0MIN               |      | $.0\times 10^{-6}$                                        |
+| depth of ML Ocean             |                   | DZOCN               |      | $50.0$                                                    |
+| ocean dG/dTs                  |                   | DFOCN               |      | $1.0\times 10^{10}$                                       |
+| LW albedo (1-emis)            |                   | ALBLO               |      | $5.0\times 10^{-2}$                                       |
 
 ### 11.1.1 Surface temperature
 'LAKEHB from OCNSLV: OCEAN HEAT BALANCE'.
 
+`OCNSLV`と共通である。
+
+#### 11.1.1.1 Variables
+
+- Modified in this subroutine
+
+| Header0               | name in the texts | name in the program | dimension | unit |
+|:----------------------|:------------------|:--------------------|:----------|:-----|
+| skin temperature      | $T_s$             | GDTS                | IJLSDM    |      |
+| surface heat flux \*1 | $G$               | GFLUXS              | IJLSDM    |      |
+| flux of T             | $H$               | TFLUXS              | IJLSDM    |      |
+| flux of q             | $E$               | QFLUXS              | IJLDSM    |      |
+
+- Outputs
+
+| Header0                | name in the texts | name in the program | dimension | unit |
+|:-----------------------|:------------------|:--------------------|:----------|:-----|
+| surface water flux \*1 | $W_{free/ice}$    | WFLUXS              | IJLSDM,2  |      |
+| upward long wave       | $LW^\uparrow$     | RFLXLU              | IJLSDM    |      |
+| flux balance           | $F$               | SFLXBL              | IJLSDM    |      |
+
+	- \*1 コメントアウトには*soil*とかかれているが、陸面スキームから流用したプログラムのためであり、特に意味はない。
+
+- Inputs variables
+
+| Header0                             | name in the texts                 | name in the program |
+|:------------------------------------|:----------------------------------|:--------------------|
+| dH/dTs \*2                          | $\frac{\partial H}{\partial T_s}$ | DTFDS               |
+| dE/dTs \*2                          | $\frac{\partial E}{\partial T_s}$ | DQFDS               |
+| dG/dTs \*2                          | $\frac{\partial G}{\partial T_s}$ | DGFDS               |
+| downward SW radiation               | $SW^\downarrow$                   | RFLXSD              |
+| upward SW radiation                 | $SW^\uparrow$                     | RFLXLU              |
+| downward LW radiation               | $LW^\downarrow$                   | RFLXLD              |
+| lake surface LW albedo (1-emission) | $\alpha_L$                        | GRALBL              |
+| snow/ice ration                     | $R_ice$                           | GRICR               |
+
+	- \*2 コメントアウトには添字の*g*が使われているが、陸面スキームから流用したプログラムのためであり、特に意味はない。
+
+- Internal work
+
+| Header0                        | name in the texts                       | name in the program | dimension |
+|:-------------------------------|:----------------------------------------|:--------------------|:----------|
+| 昇華潜熱                       | $l_s$                                   | ESUB                |           |
+| emissivity of the lake surface | $\epsilon_L$                            | EMIS                |           |
+| black body radiation           | $(1-\alpha_L)\sigma T_s^4 $             | STG                 |           |
+| dR/dTs                         | $\frac{\partial R}{\partial T_s}$       | DRFDS               |           |
+| 地表面から射出されるフラックス | $F^*$                                   | SFLUX               |           |
+| 正味の地表面フラックス         | $F^*-G$                                 | GSFLUX              |           |
+| dG/dTs (更新後)                | $\frac{dG_s}{dT_s}$                     | DGSFDS              |           |
+| 無海氷域における地表フラックス | $G_{free}$                              | GFLUXF              |           |
+| 海氷域における顕熱フラックス   | $\delta H_{ice}$                        | SFLUXBI             |           |
+| 海氷域における dG/dTs          | $\frac{\partial G_{ice}}{\partial T_s}$ | DSBDSI              |           |
+| 海氷域における地表面温度変化   | $\delta T_{ice}$                        | DTI                 |           |
+| 海氷域における潜熱フラックス   | $\delta E_{ice}$                        | EVAPI               |           |
+| 海氷域における地表フラックス   | $G_{ice}$                               | GFLUXI              |           |
+| sea ice free fraction          | $1-R_{ice}$                             | FF                  |           |
+| sea ice fraction               | $R_{ice}$                               | FI                  |           |
+|                                | $R_{ice}\delta T_{ice}$                 | DTX                 |           |
+
+- Others (appeared in texts)
+
+| Header0                                    | name in the texts | name in the program | dimension | unit |
+|:-------------------------------------------|:------------------|:--------------------|:----------|:-----|
+| sea surface albedo for shortwave radiation | $\alpha_S$        |                     |           |      |
+| the Stefan-Boltzmann constant              | $\sigma$          | STB                 |           |      |
+
 Reference: [Hasumi, 2015, Appendices A](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
 
+Downward radiative fluxes are not directly dependent on the condition of the sea surface, and their observed values are simply specified to drive the model. Shotwave emission from the sea surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha _S$ be the sea surface albedo for shortwave radiation. The upward shortwave radiative flux is represented by
+
+$$
+	SW^\uparrow = - \alpha_S SW^\downarrow
+$$
+
+On the other hand, the upward longwave radiative flux has both reflection of the incoming flux and emission from the lake surface. Let $\alpha_L$ be the lake surface albedo for longwave radiation and $\epsilon_L$ be emissivity of the lake surface relative to the black body radiation. The upward shortwave radiative flux is represented by
+
+$$
+	LW^\uparrow = - \alpha_L LW^\downarrow + \epsilon_L \sigma T_s ^4
+$$
+
+where $\sigma$ is the Stefan-Boltzmann constant and $T_s$ is skin temperature. If lake ice exists, snow or lake ice temperature is considered by fractions. When radiative equilibrium is assumed, emissivity becomes identical to co-albedo:
+
+$$
+	\epsilon_L = 1 - \alpha_L
+$$
+
+<!-- ここからソースベース -->
+海表面から出るフラックスは、
+
+$$
+	F^*=H + (1-\alpha_L)\sigma T_s^4 + \alpha_L LW^\uparrow - LW^\downarrow +SW^\uparrow - SW^\downarrow		
+$$
+
+正味で海表面に入るフラックスは、
+
+$$
+	G = H_s - F^*
+$$
+
+地表面フラックスの温度微分項は、
+$$
+	\frac{\partial G}{\partial T_s} = \frac{\partial G}{\partial T_s}+\frac{\partial H}{\partial T_s}+\frac{\partial R}{\partial T_s}
+$$
+
+無海氷域($L=2$)では、凝結によって得られた潜熱フラックスを足して、
+
+$$
+	G_{free}=F^* + l_cE
+$$
+
+
+一方、海氷域($L=1$)では、
+
+$$
+	G_{ice} = G - l_s E
+$$
+
+$$
+	\frac{\partial G_{ice}}{\partial T_s}=\frac{\partial G}{\partial T_s} + l_s\frac{\partial E}{\partial T_s}
+$$
+
+よって、地表面温度変化は、
+
+$$
+	\delta T_{ice} = G_{ice} ( \frac{\partial G_{ice}}{\partial T_s})^{-1}
+$$
+
+このとき、潜熱フラックス、顕熱フラックスはそれぞれ
+
+$$
+	E_{ice} = E + \frac{\partial E}{\partial T_s} \delta T_{ice}
+$$
+
+$$
+	H_{ice} = E + \frac{\partial H}{\partial T_s} \delta T_{ice}
+$$
+
+以上より、地表面温度を更新する。
+
+$$
+	T_s = T_s +R_{ice}\delta T_{ice}
+$$
+
+また、各フラックスも更新する。
+
+$$
+	H=H+\frac{\partial H}{\partial T_s} R_{ice} \delta T_{ice}
+$$
+
+$$
+	LW^\uparrow=LW^\uparrow + \frac{\partial R}{\partial T_s} R_{ice} \delta T_{ice}
+$$
+
+$$
+	E=(1-R_{ice})E + R_{ice}E_{ice}
+$$
+
+$$
+	G=(1-R_{ice})G_{free} + R_{ice}G_{ice}
+$$
+
+$$
+	W_{free} = (1-R_{ice}) E
+$$
+
+$$
+	W_{ice} = R_{ice} E_{ice}
+$$
+
+$$
+	F = R_{ice} H_{ice}
+$$
 
 ### 11.1.2 Surface albedo
 ### 11.1.3 Surface roughness
@@ -2338,7 +2575,436 @@ Reference: [Hasumi, 2015, Appendices A](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/
 ## 11.3 Lake ice
 `lakeic.F`
 
+### 11.3.1 Heat Flux and Growth Rate `MODULE[FIHEATL]`
+
+- variables
+
+| Header0                                                                                            | name in the texts    | name in the program | dimension              | unit |
+|:---------------------------------------------------------------------------------------------------|:---------------------|:--------------------|:-----------------------|:-----|
+| lake ice concentration                                                                             | $A_I$                | A                   | IJLDIM                 | -    |
+| air-ice heat flux multiplied by the factor of sea ice concentration                                | $Q_{AI}$             | QAI                 | IJLDIM                 |      |
+| vertical heat flux through sea ice and snow                                                        | $Q_{IO}$             | QIO                 | IJLDIM                 |      |
+| snow growth rate due to heat inbalance                                                             | $W_{AS}$             | WAS                 | IJLDIM                 |      |
+| basal growth rate of lake ice                                                                      | $W_{IO}$             | WIO                 | IJLDIM                 |      |
+| Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied | $SW^A$               | SWABS               |                        |      |
+| Lake temperature                                                                                   | $T_{temp}, T_{salt}$ | T                   | IJLDIM, NLZDIM, NLTDIM | ◦C   |
+| time step                                                                                          | $\Delta t$           | TS                  |                        |      |
+| lake heat flux                                                                                     | $H_{lake}$           | FT                  | IJLDIM, NLTDIM         |      |
+
+
+- Internal works
+
+| Header0                   | name in the texts | name in the program | dimension | unit |
+|:--------------------------|:------------------|:--------------------|:----------|:-----|
+| $T_{temp} - T_f*T_{salt}$ | $\Delta T$        | TDEV                |           |      |
+| Sea ice growth rate       | $W_{FZ}$          | WFRZ                |           |      |
+
+- parameters
+
+| Header0                                                   | name in the texts      | name in the program | unit              | value              |
+|:----------------------------------------------------------|:-----------------------|:--------------------|:------------------|:-------------------|
+| coef. for a decreasing function of salinity               | $T_f$                  | dtds                |                   | -0.0543            |
+| density of sea water                                      | $\rho_O$               | rhoo                | $\mathsf{g/cm^3}$ | 1.0                |
+|                                                           |                        | emeltl              |                   | $3.4 \times 10^5$  |
+| latent heat fusion \*3                                    | $L_f$                  | hfus                |                   | EMELTL * 1.D+4     |
+|                                                           | $\frac{1}{\rho_O L_f}$ | rrhfus              |                   | 1.D0 / rhoo / hfus |
+| fraction of $SW^A$ absorbed by the lake model's top level | $c_1$                  | SWCNV1              |                   |                    |
+| heat capacity of lake water                               | $C_{po}$               | cpo                 |                   | $3.990\times 10^7$ |
+| thckness of the lake model's top level                    | $\Delta z_1$           | DZ1                 | $\mathsf{cm}$     | $1.0\times 10^2$   |
+
+- \*3 same value is applied to snow and sea ice.
+
+---
+
+
+以下、[Hasumi, 2015, Appendix B1.1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)をもとに加筆修正。
+
+Temperature at sea ice base is taken to be the lake model’s top level temperature $T_1$. In this model, lake ice exists only when and where T1 is at the freezing point Tf , which is a decreasing function of salinity ($T_f = −0.0543 S$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside sea ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
+
+Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of sea ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, AI is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
+
+![FugureB1]()
+
+Surface heat flux is separately calculated for each of air-sea and air-ice interfaces in one grid. $Q_{IO}$ is corresponding to $G_s$ and $Q_{AI} is corresponding to $G_{ice} - \delta H_{ice}$     in `MODULE[LAKEHB]`.
+
+$T_I$ is determined such That
+
+$$
+	Q_{AI} = Q_{IO}
+$$
+
+is satisified. However, When the estimated $T_I$ exceeds the melting point of lake ice $T_m$ (which is set to 0 ◦C for convenience), $T_I$ is reset to $T_m$ and $Q_{AI}$ and $Q_{IO} are re-estimated by using it. The heat inbalance between $Q_{AI}$ and $Q_{IO}$ is consumed to melt snow (lake ice when there is no snow cover). Snow growth rate due to this heat imbalance is estimated by
+
+$$
+	W_{AS} = \frac{Q_{AI}-Q_{IO}}{\rho L_f}
+$$
+
+where $\rho_O$ is density of seawater and $L_f$ is the latent heat of fusion (the same value is applied to snow and lake ice). This growth rate is expressed as a change of equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is weighted by lake ice concentration.
+
+Although it is assumed that $T_1 = T_f$ when lake ice exists, $T_1$ could deviated from $T_f$ due to a change of salinity or other factors. Such deviation should be adjusted by forming or melting lake ice. Under a temperature deviation
+
+$$
+	\Delta T = T_{temp} - L_f*T_{salt}
+$$
+
+lake ice growth rate necessary to compensate it in the single time step is given by
+
+$$
+	W_{FZ} = - \frac{C_{po} \Delta T * \Delta z_1}{L_f \Delta t}
+$$
+
+where $C_{po}$ is the heat capacity of lake water and $\Delta z_1=100 \mathsf{cm}$ is the thickenss of the lake model's top level (fixed in case of the lake model, while it'd be changed in case of the ocean model.) This growth rate is estimated at all grids, irrespective of lake ice existence, for a technical reason. As described below, this growth rate first estimates negative ice volume for ice-free grids, but the same heat flux calculation procedure as for ice-covered grids finally results in teh correct heat flux to force the lake. Basal growth rate of lake ice is given by
+
+$$
+	W_{IO} = A_I W_{FZ} + \frac{Q_{IO}}{\rho_OL_f}
+$$
+
+where, again, $W_{IO}$ is weighted by lake ice concentration.
+
+Lake ice formation could also occur in the ice-free area. Let us define $Q_{AO}$ by
+
+$$
+	Q_{AO} = (1-A_{I}) [Q-(1-\alpha_s)SW^\downward]
+$$
+
+i.e., air-lake heat flux except for shortwave, multiplied by the factor of the fraction of ice-free area. Here, $Q$ is  air-ice heat flux. Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied, is represented by
+
+$$
+	SW^\A = (1-A_I)(1-\alpha_S) SW^\Downward
+$$
+
+Lake ice growth rate in ice-free area is calculated by
+
+$$
+	W_{AO} = (1-A_I)W_{FZ} + \frac{Q_{AO}+c_1 SW^A}{\rho_O L_f}
+$$
+
+where $c_1$ denotes the fraction of $SW^A$ absorbed by the lake model's top level, which is calculate as
+
+$$
+	c_1 = \frac{I(O)-I(-\Delta z_1)}{I(0)}
+$$
+
+in `MODULE:[SVTSETL]` in lakepo.F.
+
+Lake heat flux is
+
+$$
+	H_{lake} = \frac{\Delta T\Delta z_1}{\Delta t}
+$$
+
+
+
+### 11.3.2 Sublimation of Sea Ice`MODULE[FWATERL]`
+
+- variables
+
+| Header0                         | name in the texts | name in the program | dimension | unit |
+|:--------------------------------|:------------------|:--------------------|:----------|:-----|
+| lake ice fraction               | $A_I$             | AX                  | IJLDIM    |      |
+| lake ice thickenss              | $h_I^'$           | HIX                 | IJLDIM    |      |
+| Snow depth                      | $h_S^'$           | HSX                 | IJLDIM    |      |
+| latent heat flux of evaporation |                   | WEV                 |           |      |
+| latent heat flux of sublimation | $F_W^{SB}$        | WSB                 | IJLDIM    |      |
+|                                 | $\Delta F_W$      | WDIF                |           |      |
+| time step                       | $\Delta t$        | TS                  |           |      |
+| latent heat flux of evaporation | $L_e$             | EVAP                | IJLDIM    |      |
+| latent heat flux of sublimation | $$                | SUBI                | IJLDIM    |      |
+
+
+- Internal variables
+| Header0                | name in the texts | name in the program | dimension | unit |
+|:-----------------------|:------------------|:--------------------|:----------|:-----|
+| Lake ice concentration | $A_I^'$           | AZ                  | IJLDIM    |      |
+| Snow depth             | $h_S^n$           | HSZ                 | IJLDIM    |      |
+| lake ice thickness     | $h_I^n$           | HIZ                 | IJLDIM    |      |
+
+- parameters
+
+| Header0                       | name in the texts | name in the program | unit              | value           |
+|:------------------------------|:------------------|:--------------------|:------------------|:----------------|
+| density of snow               | $\rho_S$          | rhos                | $\mathsf{g/cm^3}$ | 0.33            |
+| density of lake ice           | $\rho_I$          | rhoi                | $\mathsf{g/cm^3}$ | 0.9             |
+| Ratio of density (ocean/snow) | $R_{rho_I}$       | rrs                 | [-]               | $\rho_O/\rho_s$ |
+| Ratio of density (ocean/ice)  | $R_{rho_I}$       | rri                 | [-]               | $\rho_O/\rho_I$ |
+| Minimum thickness of ice      | $h_I^{min}$       | himin               |                   | 1.0\times 10^1  |
+
+---
+
+
+以下、[Hasumi, 2015, Appendix B1.2](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)をもとに加筆修正。
+
+Sublimation flux is first consumed to reduce snow thickness:
+
+$$
+	h_S^' = -h_S^n - \Delta t \frac{R_{rho_S} * F_W^{SB}}{A_I}
+$$
+
+If $h_S^'$ becomes less than zero, it is reset to zero. Then, $F_W^{SB}$ is redefined by
+
+$$
+	F_W^{SB} = F_W^{SB} + frac\{A_I*(h_S^' - h_S^n)}{R_{\rho_I}\Delta t}
+$$
+
+Where there remains lake ice ($h_I^n > h_I^{min}$),
+
+$$
+ h_I^' = h_I^n - \Delta t \frac{R_{\rho_I}F_W^{SB}}{A_I}
+$$
+
+If $h_I^'$ becomes less than $h_I^{min}$, it is reset to zero. Then, $F_W^{SB}$ is redefined by
+
+$$
+F_W^{SB} = F_W^{SB} - A_I \frac{h_I^n-h_I^'}{R_{\rho_I}\Delta t}
+$$
+
+Finaly, lake ice concentration is updated.
+
+$$
+	A_I^' = A_- \Delta t \frac{R_{\rho_I}F_W^{SB}}{h_I^{min}}
+$$
+
+if $A_I^'$ becomes less then 0, it is reset to zero. Even if $A_I^'$ becomes less than $A_I^{min}$, on the other hand, it is not adjusted here. If $A_I^'$ is adjusted to zero, it means that the sublimation flux is not used up by eliminating snow and lake ice.
+
+The remaining part is consumed to reduce lake water, so the evaporation flux is modified as
+
+$$
+	\Delta F_W = \frac{(A_I'-A_I) h_I^{min}}{R_{\rho_I}\Delta t}
+$$
+
+$$
+	F_W^{SB} = F_W^{SB} +\frac{(A_I'-A_I) h_I^{min}}{R_{\rho_I}\Delta t}
+$$
+
+$$
+	E = F_W^{EV} + F_W^{SB} - \Delta F_W
+$$
+
+The later two terms cancel out if the adjustment does not take place.
+
+If there is no lake ice, evaporation flux is just as
+
+$$
+	E = F_W^{EV} + F_W^{SB}
+$$
+
+When sublimation flux is consumed to reduce lake ice amount, salt contained in lake ice has to be added to the remaining lake ice or the underlying water. Otherwise, total salt of the ice-lake system is not coserved. Here, it is added to underlying water, and the way of this adjustment is described later. Nothe that sea ice tends to gradually drain high salinity water contained in brine pockets in reality. Thus, such an adjustment is not very unreasonable. When $A_I'$ is adjusted to zero, on the other hand, the remaining sublimation flux is consumed to reduce lake water. In this case, difference between the latent heat of sublimation and evaporation has to be adjusted, which is also described later.
+
+$$
+ADJLAT = E-	F_W^{EV}
+
+SNOW = SNOW+ SOFF
+$$
+
+SOFF(IJ) = (HIMAX - HI(IJ)) * AI(IJ) / rri
+		&              / ( LKHIDMP * 8.64D4 ) ! cm/sec
+$$
+
+
+### 11.3.3 `PCMPCTL`
+
+
+REAL*8     AX(IJLDIM),     AZ(IJLDIM)
+	REAL*8    HIX(IJLDIM)
+	REAL*8     TS
+	REAL*8    WAO(IJLDIM)
+	REAL*8    PHI
+	REAL*8      PM,     PF,  HIMIN,   AMIN,   AMAX
+	REAL*8     AIH,   AIHB,  ALPHA
+	SAVE PM, PF, HIMIN, AMIN, AMAX, AIH, AIHB
+	INTEGER  IFPAR,  JFPAR
+	INTEGER     IJ
+
+	REAL*8 rhoo, rhoi, rhos
+	PARAMETER ( rhoo = 1.D0, rhoi = 0.9D0, rhos = 0.33D0 )
+	REAL*8 RR
+	PARAMETER ( rr  = rhoo/rhoi )
+
+	NAMELIST /NMIFCTL/ PM, PF
+	NAMELIST /NMHIMNL/ HIMIN
+	NAMELIST /NMAMINL/ AMIN, AMAX
+	NAMELIST /NMIDIFL/ AIH, AIHB
+
+	DATA PM, PF / 0.5D+0, 4.0D+0 /
+	DATA HIMIN / 1.0D+1 /
+	DATA AMIN, AMAX / 1.0D-6, 1.0D+0 /
+	DATA AIH, AIHB / 2.D+8, 2.D+22 /
+
+---
+DO IJ = 1, IJLDIM
+
+	 AZ(IJ)     = AX(IJ)
+	 IF (WAO(IJ) .GT. 0.D0) THEN
+			PHI = PF
+	 ELSE
+			PHI = PM
+	 END IF
+	 AX(IJ) = AZ(IJ)
+&          + RR / HIX(IJ) * PHI * WAO(IJ) * TS
+
+	 IF (AX(IJ) .GT. AMAX) THEN
+			AX(IJ) = AMAX
+	 ELSE IF (AX(IJ) .LT. AMIN) THEN
+			AX(IJ) = 0.0D0
+	 END IF
+	 IF ((AZ(IJ) .EQ. 0.0D0) .AND. (WAO(IJ) .LE. 0.0D0)) THEN
+			AX(IJ) = 0.0D0
+	 END IF
+
+ENDDO
+---
+
+### 11.3.4 Growth and Melting `MODULE[PTHICKL]`
+
+以下、[Hasumi, 2015, Appendix B1.4](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)をもとに加筆修正。
+
+REAL*8      AX(IJLDIM),     AZ(IJLDIM)
+		REAL*8     HIX(IJLDIM),    HIZ(IJLDIM)
+		REAL*8     HSX(IJLDIM),    HSZ(IJLDIM)
+		REAL*8     WIO(IJLDIM),    WAO(IJLDIM),    WAS(IJLDIM)
+		REAL*8    PREC(IJLDIM),   SNOW(IJLDIM)
+		REAL*8    EVAP(IJLDIM),   SUBI(IJLDIM)
+		REAL*8    ROFF(IJLDIM), ADJLAT(IJLDIM)
+		REAL*8      FT(IJLDIM,NLTDIM),     FS(IJLDIM)
+		REAL*8   AXHIX(IJLDIM),  AXHSX(IJLDIM)
+		REAL*8  AXHIXN(IJLDIM), AXHSXN(IJLDIM)
+		REAL*8     WAI(IJLDIM)
+		REAL*8      TS
+
+		REAL*8 hfus, emeltl
+		PARAMETER ( emeltl = 3.4D5 )
+		PARAMETER ( HFUS = emeltl * 1.D+4 )
+		REAL*8 rhoo, rhoi, rhos
+		PARAMETER ( rhoo = 1.D0, rhoi = 0.9D0, rhos = 0.33D0 )
+		REAL*8 RRI, RRS, RORIRS,  RSRI, ROFUS
+		PARAMETER ( rri = rhoo/rhoi, rrs = rhoo/rhos, rsri = rhos/rhoi )
+		PARAMETER ( RORIRS = (rhoo - rhoi) / rhos )
+		PARAMETER ( ROFUS  = 1.0D+0 / rhoo / hfus )
+		REAL*8 cpo, cpi
+		PARAMETER ( cpo  = 3.990D+7, cpi  = 2.093D+7 )
+
+		REAL*8  CREDIS
+		SAVE CREDIS
+
+		REAL*8      WI,     WS,    WIN,    WSN
+		REAL*8    WRES(IJLDIM)
+		REAL*8    HSXO(IJLDIM)
+
+		INTEGER      K,      L,     LA,     LG,      N, IJ
+		INTEGER  IFPAR,  JFPAR
+		REAL*8   HIMIN,   AMIN,   AMAX
+		REAL*8      SI, SREF
+		REAL*8     AIH,   AIHB,  ALPHA
+		NAMELIST /NMHIMNL/ HIMIN
+		NAMELIST /NMAMINL/ AMIN, AMAX
+		NAMELIST /NMISLTL/ SI, SREF
+		NAMELIST /NMIDIFL/ AIH, AIHB
+		SAVE HIMIN, AMIN, AMAX, SI, SREF
+		DATA HIMIN / 1.0D+1 /
+		DATA AMIN, AMAX / 1.0D-6, 1.0D+0 /
+* modified 09/11/16 Hiro Watanabe
+*      DATA SI, SREF / 3.D0, 3.5D1 /
+		DATA SI, SREF / 0.D0, 3.5D1 /
+		DATA AIH, AIHB / 2.D+8, 2.D+22 /
+
+---
+
+      DO IJ = 1, IJLDIM
+         HIZ(IJ)   = HIX(IJ)
+         HSZ(IJ)   = HSX(IJ)
+         AXHIX(IJ) = AZ(IJ) * HIZ(IJ)
+         AXHSX(IJ) = AZ(IJ) * HSZ(IJ)
+      ENDDO
+
+      DO IJ = 1, IJLDIM
+         IF (AX(IJ) .EQ. 0.D0) THEN
+            HSX(IJ)   = 0.D0
+            SNOW(IJ)  = SNOW(IJ) + AXHSX(IJ)/RRS/TS
+            PREC(IJ)  = PREC(IJ) + SNOW(IJ)
+            AXHSX(IJ) = 0.D0
+         ELSE
+            HSX(IJ)   = AXHSX(IJ) / AX(IJ)
+     &                + TS * RRS * SNOW(IJ)
+            SNOW(IJ)  = (1.0D+0 - AX(IJ)) * SNOW(IJ)
+            PREC(IJ)  = PREC(IJ) + SNOW(IJ)
+            AXHSX(IJ) = AX(IJ) * HSX(IJ)
+         END IF
+
+         WRES(IJ) = AXHSX(IJ) / RRS / TS + WAS(IJ)
+         IF (AX(IJ) .GT. 0.D0) THEN
+            IF (WRES(IJ) .LT. 0.D0) THEN
+               WAS(IJ) = - AXHSX(IJ)/RRS/TS
+               WAI(IJ) = WRES(IJ)
+            ELSE
+               WAI(IJ) = 0.D0
+            END IF
+            HSX(IJ) = (AXHSX(IJ)+TS*RRS*WAS(IJ))/AX(IJ)
+            HSX(IJ) = MAX(HSX(IJ), 0.D0)
+         ELSE
+            WAI(IJ) = WAS(IJ)
+         END IF
+
+         WRES(IJ) = AXHIX(IJ) / RRI / TS + WAI(IJ)
+         IF (AX(IJ) .GT. 0.D0) THEN
+            IF (WRES(IJ) .LT. 0.D0) THEN
+               WAI(IJ) = - AXHIX(IJ)/RRI/TS
+               WIO(IJ) = WIO(IJ) + WRES(IJ)
+            END IF
+            AXHIXN(IJ) = AXHIX(IJ) + TS*RRI*WAI(IJ)
+         ELSE
+            WIO(IJ) = WIO(IJ) + WAI(IJ)
+            AXHIXN(IJ) = AXHIX(IJ)
+         END IF
+
+         AXHSXN(IJ) = AX(IJ) * HSX(IJ)
+         AXHIXN(IJ) = AXHIXN(IJ)
+     &              + TS * RRI * (WIO(IJ) + WAO(IJ))
+
+         IF (AXHIXN(IJ) .LT. 0.D0) THEN
+            AX(IJ)  = 0.D0
+            HIX(IJ) = HIMIN
+         ELSE IF (AX(IJ) .EQ. 0.D0) THEN
+            HIX(IJ) = HIMIN
+         ELSE
+            HIX(IJ) = AXHIXN(IJ) / AX(IJ)
+            IF (HIX(IJ) .LT. HIMIN) THEN
+               AX(IJ)  = AXHIXN(IJ)/ HIMIN
+               HIX(IJ) = HIMIN
+            END IF
+         END IF
+         IF (AX(IJ) .GT. AMAX) THEN
+            AX(IJ) = AMAX
+         ELSE IF (AX(IJ) .LT. AMIN) THEN
+            AX(IJ) = 0.D0
+         END IF
+
+         IF (      ((AMAX-AX(IJ))*HIX(IJ).GT.CREDIS)
+     &       .AND. (AX(IJ) .GT. 0.D0)) THEN
+            HIX(IJ) = (CREDIS + AX(IJ) * HIX(IJ)) /AMAX
+            HSX(IJ) = AX(IJ)*HSX(IJ)/(AMAX-CREDIS/HIX(IJ))
+            AX(IJ)  = AMAX - CREDIS / HIX(IJ)
+         END IF
+         HSXO(IJ)    = HSX(IJ)
+         HSX(IJ) = MIN(HSX(IJ), RORIRS * HIX(IJ))
+         HIX(IJ) = HIX(IJ)
+     &           + RSRI * (HSXO(IJ) - HSX(IJ))
+
+         WI = (AX(IJ) * HIX(IJ) - AXHIX(IJ)) / RRI / TS
+         WS = (AX(IJ) * HSX(IJ) - AXHSX(IJ)) / RRS / TS
+         WIN = (AX(IJ) * HIX(IJ) - AXHIXN(IJ)) / RRI / TS
+         WSN = (AX(IJ) * HSX(IJ) - AXHSXN(IJ)) / RRS / TS
+         FT(IJ,2) = (EVAP(IJ) - PREC(IJ) - ROFF(IJ) + WS + WI)
+         FS(IJ) = (WI - SUBI(IJ)) * SI
+         FT(IJ,1) = - FT(IJ,1) + hfus / cpo * (WIN + WSN - SNOW(IJ))
+     &           + ADJLAT(IJ) * hfus / cpo
+
+      ENDDO
+
+---
+
+
 Reference: [Hasumi, 2015, Appendices B](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
+
 
 ## 11.4 Physical formulation & processes
 `lakepo.F`
