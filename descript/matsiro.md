@@ -2313,57 +2313,56 @@ $$
 
 
 
-# 12 Wetland
-
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of subgrid terrain complexity, is incorporated in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017).
+# 12 Snow-fed Wetland
 
 ## 12.1 Outline of wetland scheme
 
-The wetland scheme is integrated into the TOPMODEL submodule, and the flowchart of the wetland scheme is shown in Fig.12-1. The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers and 2) and increase in land surface wetness and hence evaporation in water-limited regimes. For the first effect, a tank (“Surface storage” in Fig.12-1) is introduced to temporarily stores part of the surface runoff. For the second effect, the outflow from the tank is re-added to the water inflow of the soil surface. In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
+
+With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
 ![Fig.12-1_flowchart](https://github.com/superqiang-cc/Pic_libs/raw/master/Fig_12-1.jpg)  
 Fig.12-1 Flowchart of the wetland scheme in the MATSIRO 6
 
-## 12.2 Storage of the surface runoff
+## 12.2 Inflow and outflow of the wetland
 
-With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). The ratio of surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers changes to:   
-
-$$
-Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
-$$
-
-where $\alpha$ is parameter that controls the fraction of the surface runoff and inflow of the wetland; $Ro_{s}$ is the saturation excess runoff (Dunne runoff), $Ro_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro_{o}$ is the overflow of the uppermost soil layer, and all these three are classified as the surface runoff, and $Ro_{b}$ is the groundwater runoff. These four components of runoff are calculated based on the TOPMODEL.
-
-## 12.3 Inflow and outflow of the wetland
-
-The inflow of the wetland comes from the fraction of the surface runoff and is determined by the parameter $\alpha$, while the outflow of the wetland is re-added to the water input of soil surface and is determined by a time constant $\tau$. Therefore, the update of the wetland storage ($S$) at each time step can be represented as:
+The inflow of the wetland comes from the fraction of the surface runoff, and its amount is determined by the  tunable parameter $\alpha$. The outflow from the wetland is calculated using a time constant $\tau$ and the wetland storage $S$, consequently flowing into the soil surface. Therefore, the update of the wetland storage $S$ at each time step can be represented as:
 
 $$
 \frac{dS}{dt}=-\frac{S}{\tau }+(1-\alpha )R_{s}
 $$
 
-where $R_{s}$ is surface runoff calculated by the summary of $Ro_{s}$, $Ro_{i}$, and $Ro_{o}$; $t$ is time; and $\alpha$ and $\tau$ are parameters related to the inflow and outflow of the wetland storage, respectively.
+where $R_{s}$ is surface runoff calculated as a total of $Ro_{s}$ (saturation excess runoff), $Ro_{i}$ (infiltration excess runoff), and $Ro_{o}$ (overflow of the uppermost soil layer); $t$ is time; and $\alpha$ and $\tau$ are parameters related to the inflow and outflow of the wetland storage, respectively.
+
+$\tau$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
+
+$$
+\tau =max\left ( \tau _{0}\left \{ 1-min\left [ zsd\left ( x \right ),zsd_{max} \right ]/zsd_{max} \right \}, \Delta t \right \)
+$$
+
+where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\tau _{0}   $, $zsd_{max}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau _{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
+
+## 12.3 Storage of the surface runoff
+
+The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
+
+$$
+Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
+$$
+
+where $\alpha$ is the inflow parameter (see 12.1); $Ro_{s}$ is the saturation excess runoff (Dunne runoff), $Ro_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro_{b}$ is the groundwater runoff (section 7.3). 
 
 ## 12.4 Water input of soil surface
 
-The outflow of the wetland storage is re-added to the water inflow of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input of each time step can be represented as:
+The outflow from the wetland storage is re-added to the water input of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input $WI_{soil,total}$ of each time step can be represented as:
 
 $$
 WI_{soil,total}=WI_{soil,original}+\frac{S}{\tau }\Delta t
 $$
 
-where $S$ represents the wetland storage, $\tau$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
+where $WI_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\tau$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
+ 
 
-## 12.5 Optimization of the parameters
-
-Two parameters $\alpha$ and $\tau$, which respectively influence the inflow and outflow of the wetland storage need to be determined.   
-$\tau$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
-
-$$
-\tau =max(\tau _{0}\left \{1-min\left [ zsd(x), zsd_{max} \right ]/zsd_{max}  \right \},\Delta t)
-$$
-
-where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and            $\tau _{0}$, $zsd_{max}$, and $\alpha$ are tunable parameters. The function and parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau _{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
 # 13 Tile scheme
 
 
