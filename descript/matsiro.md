@@ -79,7 +79,7 @@ Frontier Research System for Global Change
   - [10.3 Phase change of soil moisture](#103-phase-change-of-soil-moisture)
     - [10.3.1 Ice sheet process](#1031-ice-sheet-process)
 - [11 Lake](#11-lake)
-- [12 Wetland](#12-wetland)
+- [12 Snow-fed Wetland](#12-wetland)
 - [13 Tile scheme](#13-tile-scheme)
 - [References](#references)
 
@@ -2337,10 +2337,12 @@ where $R_{s}$ is surface runoff calculated as a total of $Ro_{s}$ (saturation ex
 $\tau$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
 
 $$
-\tau =max\left ( \tau _{0}\left \{ 1-min\left [ zsd\left ( x \right ),zsd_{max} \right ]/zsd_{max} \right \}, \Delta t \right \)
+\tau =max\left ( \tau _{0}\left \{ 1-min\left [ zsd\left ( x \right ), zsd_{max} \right ]/zsd_{max} \right \}, \Delta t \right )
 $$
 
-where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\tau _{0}   $, $zsd_{max}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau _{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\tau _{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, 
+
+and $\tau \_{0}$, $zsd\_{max}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau \_{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
 
 ## 12.3 Storage of the surface runoff
 
