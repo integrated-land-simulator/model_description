@@ -1,41 +1,31 @@
-\documentclass[12pt,a4paper,onecolumn]{jarticle}
+\documentclass[11pt,a4paper,onecolumn]{jarticle}
 %
+\usepackage[top=30truemm,bottom=30truemm,left=25truemm,right=25truemm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{bm}
 \usepackage{graphicx}
 \usepackage{ascmac}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{ltablex,booktabs}
 \usepackage[dvipdfm]{hyperref}
 %
 
-
-
+\title{\Huge Description for MATSIRO6}
 \author{}
+\date{\today}
 \pagenumbering{arabic}
 %
 %
+%
 \begin{document}
-\begin{center}
-{\LARGE \bf
-陸面過程パラメタリゼーション\\
-``Minimal Advanced Treatments of Surface Interaction and RunOff
-(MATSIRO)''\\
-の記述
-}
-\bigskip \\
-{\Large \bf
-2001年 11月 10日 \medskip\\
-江守 正多\footnote{独立行政法人国立環境研究所より出向中}
-\\
-(地球フロンティア研究システム)
-\bigskip \\
-}
-\end{center}
 %
 	\maketitle
-	\tableofcontents
-	\clearpage
+	%\tableofcontents
+	%\clearpage
 	%
-	\include{matsiro}
+	\def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}
+	\include{descript/matsiro}
 	%
 	%
 \end{document}
