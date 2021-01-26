@@ -29,7 +29,7 @@ do
 	sed -e s/'\\begin{longtable}'/'\\setlength\\LTleft\{0pt\}\\setlength\\LTright\{0pt\}\\begin{longtable}'/g | \
 	sed -e s/'\\tag'/'\\label'/g | \
 	sed -e s/'\\protect\\hyperlink'/'\\ref'/g | \
-	sed -e 's/\(\\ref{.*}\)\({.*}\)/\1/g' \
+	sed -e 's/\(\\ref{.*}\)\({}\)/\1/g' \
 	> ${name}.tex
 done
 
