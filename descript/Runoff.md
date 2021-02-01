@@ -166,7 +166,7 @@ Ro = (Ro_s + Ro_i + Ro_o) \tau + Ro_b
 $$
 here $\tau$ determines the outflow from the surface tank, and its calculation will be mentioned in section 9.3.3. 
 
-![Rs_v2](https://github.com/integrated-land-simulator/model_description/tree/runoff/descript/Rs_v2.jpg?raw=true)
+![Rs_v2](https://github.com/integrated-land-simulator/model_description/tree/runoff/descript/Rs_v2.jpg)
 
 ### 9.3.1 Estimation of mean water table depth
 
