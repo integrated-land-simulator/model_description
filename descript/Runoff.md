@@ -166,7 +166,7 @@ Ro = (Ro_s + Ro_i + Ro_o) \tau + Ro_b
 $$
 here $\tau$ determines the outflow from the surface tank, and its calculation will be mentioned in section 9.3.3. 
 
-![Rs_v2](https://user-images.githubusercontent.com/43644051/106435706-93b6fa80-64b6-11eb-86fd-7464b72000e4.jpg)
+![Rs_v1](https://user-images.githubusercontent.com/43644051/106894313-20212180-6732-11eb-8552-c6155e5ee671.jpg)
 
 ### 9.3.1 Estimation of mean water table depth
 
