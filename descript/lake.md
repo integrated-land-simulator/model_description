@@ -1,22 +1,3 @@
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
-- [11 Lake](#11-lake)
-	- [11.1 Lake surface conditions `[LAKEBC]` [100% Written in Jan, 2021]](#111-lake-surface-conditions-lakebc-100-written-in-jan-2021)
-		- [11.1.1. lake surface albedo `[LAKEALB]`](#1111-lake-surface-albedo-lakealb)
-		- [11.1.2 Lake surface roughness `[LAKEZ0F]`](#1112-lake-surface-roughness-lakez0f)
-	- [11.2 Lake surface heat balance `[LAKEHB]` [100% Written in Jan, 2021]](#112-lake-surface-heat-balance-lakehb-100-written-in-jan-2021)
-	- [11.3 Lake ice submodel `[LAKEIC]`  [100% Written in Jan, 2021]](#113-lake-ice-submodel-lakeic-100-written-in-jan-2021)
-		- [11.3.1 Heat Flux and Growth Rate `MODULE[FIHEATL]`](#1131-heat-flux-and-growth-rate-modulefiheatl)
-		- [11.3.2 Sublimation of Sea Ice`MODULE[FWATERL]`](#1132-sublimation-of-sea-icemodulefwaterl)
-		- [11.3.3 Update snow and ice volume `[PCMPCTL]`](#1133-update-snow-and-ice-volume-pcmpctl)
-		- [11.3.4 Growth and Melting `[PTHICKL]`](#1134-growth-and-melting-pthickl)
-	- [11.4 Physical formulation & processes `[LAKEPO]`  [20% Written in Jan, 2021]](#114-physical-formulation-processes-lakepo-20-written-in-jan-2021)
-		- [11.4.1 Diffusion tracer flux `[VDIFFL]`](#1141-diffusion-tracer-flux-vdiffl)
-		- [11.4.2 Estimate the advection and diffusion terms of the tracer equations `[FLXTRCL]`](#1142-estimate-the-advection-and-diffusion-terms-of-the-tracer-equations-flxtrcl)
-		- [11.4.3 `[SLVTRCL]`](#1143-slvtrcl)
-		- [11.4.4 `[OVTURNL]`](#1144-ovturnl)
-
-<!-- /TOC -->
 
 # 11 Lake
 
@@ -26,13 +7,14 @@ Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the n
 
 Maximum and minimum thresholds for the lake scheme are given in `matdrv.F`.
 
+<!---
 | Meaning                         | Presentation   | Variable | unit          | value              |
 |:--------------------------------|:---------------|:---------|:--------------|:-------------------|
 | minimum depth of lake           | $h_{min}$      | HHMIN    | $\mathrm{cm}$ | $10^\times 10^{2}$ |
 | maximum of surface high anomaly | $\eta_{max}$   | HAMAX    | $\mathrm{cm}$ | $10^\times 10^{2}$ |
 | maximum of lake snow            | $h_{snow,max}$ | HSMAX    | $\mathrm{cm}$ | $10^\times 10^{2}$ |
 | maximum of lake ice thickness   | $h_{ice,max}$  | HIMAX    | $\mathrm{cm}$ | $10^\times 10^{2}$ |
-
+--->
 
 ## 11.1 Lake surface conditions `[LAKEBC]` [100% Written in Jan, 2021]
 
@@ -41,9 +23,9 @@ Maximum and minimum thresholds for the lake scheme are given in `matdrv.F`.
 | Meaning                    | Presentation                    | Variable | dimension            | unit |
 |:---------------------------|:--------------------------------|:---------|:---------------------|:-----|
 | surface albedo             | $\alpha$                        | GRALB    | IJLSDM, NRDIR, NRBND | -    |
-| surface roughness          | $r_0$                           | GRZ0     | IJLSDM, NTYZ0        |      |
-| heat flux                  | $G$                             | FOGFLX   | IJLSDM               |      |
-| heat diffusion coefficient | $\frac{\partial G}{\partial T}$ | DGFDS    | IJLSDM               |      |
+| surface roughness          | $r_0$                           | GRZ0     | IJLSDM, NTYZ0        | --   |
+| heat flux                  | $G$                             | FOGFLX   | IJLSDM               | --   |
+| heat diffusion coefficient | $\frac{\partial G}{\partial T}$ | DGFDS    | IJLSDM               | --   |
 
 - Inputs
 
@@ -58,45 +40,49 @@ Maximum and minimum thresholds for the lake scheme are given in `matdrv.F`.
 | v surface wind         | $V_0$                  | GDVA     | IJLSDM    |              |
 | cos(solar zenith)      | $\mathrm{cos}(\theta)$ | RCOSZ    | IJLSDM    |              |
 
-- Internal work variables
+
+
+  - Internal work variables
 
 | Meaning                    | Presentation                            | Variable | dimension | unit |
 |:---------------------------|:----------------------------------------|:---------|:----------|:-----|
 | snow fraction              | $R_{snow}$                              | GRSNR    | IJLSDM    | -    |
-|                            | $T_m^{max}-T_m^{min}$                   | TALSNX   | IJLSDM    |      |
-|                            | $\alpha_{snow(2,b)}-\alpha_{snow(1,b)}$ | ALBSNX   | IJLSDM    |      |
-|                            | $\alpha_0$                              | ALB0     | IJLSDM    |      |
-|                            | tmp                                     | DALB     | IJLSDM    |      |
-|                            | $F(T_s)$                                | TFACT    | IJLSDM    |      |
-|                            | $\alpha''$                              | ALBX     | IJLSDM    |      |
-|                            | $r'$                                    | Z00      | IJLSDM    |      |
-|                            |                                         | DZ0      | IJLSDM    |      |
-| heat diffusion coefficient |                                         | DFGT     | IJLSDM    |      |
-|                            |                                         | DFGX     | IJLSDM    |      |
+|                            | $T_m^{max}-T_m^{min}$                   | TALSNX   | IJLSDM    | --   |
+|                            | $\alpha_{snow(2,b)}-\alpha_{snow(1,b)}$ | ALBSNX   | IJLSDM    | --   |
+|                            | $\alpha_0$                              | ALB0     | IJLSDM    | --   |
+|                            | tmp                                     | DALB     | IJLSDM    | --   |
+|                            | $F(T_s)$                                | TFACT    | IJLSDM    | --   |
+|                            | $\alpha''$                              | ALBX     | IJLSDM    | --   |
+|                            | $r'$                                    | Z00      | IJLSDM    | --   |
+|                            |                                         | DZ0      | IJLSDM    | --   |
+| heat diffusion coefficient |                                         | DFGT     | IJLSDM    | --   |
+|                            |                                         | DFGX     | IJLSDM    | --   |
 
+<!---
 - Internal parameters
 
 | Meaning                       | Presentation           | Variable         | unit | Header                                                    |
 |:------------------------------|:-----------------------|:-----------------|:-----|:----------------------------------------------------------|
-| diffusion coef. of snow       | $D_{snow}$             | DFSNOW           |      | $0.4$                                                     |
-| maximum snow depth            |                        | SNWDMX           |      | $5.0$                                                     |
-| minimum snow                  |                        | EPSSNW           |      | $1.0\times 10^{-8}$                                       |
-| ice forming snow              |                        | SNWMAX           |      | $1000.0$                                                  |
-| snow albedo                   | $\alpha_{snow(d,b)}$   | ABLSNW(2, NRBND) |      | $0.75, 0.5, 0.75, 0.5, 0.0, 0.0$                          |
-| temperature for albedo change | $T_m^{min}, T_m^{max}$ | TALSNW(2)        |      | $258.15, 273.15$                                          |
-| roughness of snow             | $r_{snow}$             | Z0SNW(NTYZ0)     |      | $1.0\times 10^{-2}, 1.0\times 10^{-3}, 1.0\times 10^{-3}$ |
-| snow amount for fraction=1    |                        | SNWCRT           |      | $100.0$                                                   |
-| snow density                  |                        | SNWDEN           |      | $400.0$                                                   |
-| diffusion coef. of lake ice   | $D_{ice}$              | DFICE            |      | $2.00$                                                    |
-| lake ice albedo               | $\alpha_{ice(b)}$      | ALBICE( NRBND )  |      | $0.5, 0.5, 0.05$                                          |
-| roughness of lake ice         | $r_{ice}$              | Z0ICE ( NTYZ0 )  |      | $2.0\times 10^{-2}, 2.0\times 10^{-3}, 2.0\times 10^{-3}$ |
-| ice amount for conc.=1        |                        | SICCRT           |      | $300.0$                                                   |
-| sea ice density               |                        | SICDEN           |      | $1000.0$                                                  |
-| heat z0/moumentum z0          |                        | Z0FCT            |      | $0.1$                                                     |
-| minimum z0                    |                        | Z0MIN            |      | $.0\times 10^{-6}$                                        |
-| depth of ML Ocean             |                        | DZOCN            |      | $50.0$                                                    |
-| ocean dG/dTs                  |                        | DFOCN            |      | $1.0\times 10^{10}$                                       |
-| LW albedo (1-emis)            |                        | ALBLO            |      | $5.0\times 10^{-2}$                                       |
+| diffusion coef. of snow       | $D_{snow}$             | DFSNOW           | --   | $0.4$                                                     |
+| maximum snow depth            |                        | SNWDMX           | --   | $5.0$                                                     |
+| minimum snow                  |                        | EPSSNW           | --   | $1.0\times 10^{-8}$                                       |
+| ice forming snow              |                        | SNWMAX           | --   | $1000.0$                                                  |
+| snow albedo                   | $\alpha_{snow(d,b)}$   | ABLSNW(2, NRBND) | --   | $0.75, 0.5, 0.75, 0.5, 0.0, 0.0$                          |
+| temperature for albedo change | $T_m^{min}, T_m^{max}$ | TALSNW(2)        | --   | $258.15, 273.15$                                          |
+| roughness of snow             | $r_{snow}$             | Z0SNW(NTYZ0)     | --   | $1.0\times 10^{-2}, 1.0\times 10^{-3}, 1.0\times 10^{-3}$ |
+| snow amount for fraction=1    |                        | SNWCRT           | --   | $100.0$                                                   |
+| snow density                  |                        | SNWDEN           | --   | $400.0$                                                   |
+| diffusion coef. of lake ice   | $D_{ice}$              | DFICE            | --   | $2.00$                                                    |
+| lake ice albedo               | $\alpha_{ice(b)}$      | ALBICE( NRBND )  | --   | $0.5, 0.5, 0.05$                                          |
+| roughness of lake ice         | $r_{ice}$              | Z0ICE ( NTYZ0 )  | --   | $2.0\times 10^{-2}, 2.0\times 10^{-3}, 2.0\times 10^{-3}$ |
+| ice amount for conc.=1        |                        | SICCRT           | --   | $300.0$                                                   |
+| lake ice density              |                        | SICDEN           | --   | $1000.0$                                                  |
+| heat z0/moumentum z0          |                        | Z0FCT            | --   | $0.1$                                                     |
+| minimum z0                    |                        | Z0MIN            | --   | $.0\times 10^{-6}$                                        |
+| depth of ML Ocean             |                        | DZOCN            | --   | $50.0$                                                    |
+| ocean dG/dTs                  |                        | DFOCN            | --   | $1.0\times 10^{10}$                                       |
+| LW albedo (1-emis)            |                        | ALBLO            | --   | $5.0\times 10^{-2}$                                       |
+--->
 
 In this module, surface albedo and roughness are calculated. They are calculated supposing ice-free conditions, then modified.
 
@@ -108,7 +94,7 @@ $$
 	{\alpha'} = \alpha + (\alpha_{ice}-\alpha) R_{ice}
 $$
 
-where $\alpha_{ice}$ is the sea ice albedo. In addition, we want to consider the albedo change due to snow cover. Assuming that the snow albedo depends on the surface temperature ($T_s$), we can calculate the function $F(T_s)$
+where $\alpha_{ice}$ is the lake ice albedo. In addition, we want to consider the albedo change due to snow cover. Assuming that the snow albedo depends on the surface temperature ($T_s$), we can calculate the function $F(T_s)$
 
 $$
 	F(T_s) = \frac{T_s-T_m^{min}}{T_m^{max}-T_m^{min}}
@@ -181,13 +167,14 @@ $$
 |:--------------------------------------|:----------------|:---------|:----------|:-----|
 | lake surface albedo (direct, diffuse) | $\alpha_{L(d)}$ | GALB     | IJLSDM ,2 | [-]  |
 
+<!---
 - Internal parameters
 
 | Meaning | Presentation     | Variable | unit | Header                         |
 |:--------|:-----------------|:---------|:-----|:-------------------------------|
-|         | $C_1, C_2, C_3$  | CC       | [-]  | $-0.7479, -4.677039, 1.583171$ |
-|         | $\alpha_{L(2)} $ | ALBDIF   | [-]  | $0.06$                         |
-
+| --      | $C_1, C_2, C_3$  | CC       | [-]  | $-0.7479, -4.677039, 1.583171$ |
+| --      | $\alpha_{L(2)} $ | ALBDIF   | [-]  | $0.06$                         |
+--->
 
 For lake surface level albedo $\alpha_{L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
 
@@ -212,16 +199,16 @@ $$
 
 | Meaning                        | Presentation | Variable | dimension | unit |
 |:-------------------------------|:-------------|:---------|:----------|:-----|
-| surface roughness for momentum | $r_{0,M}$    | GRZ0M    | IJLSDM    |      |
-| surface roughness for heat     | $r_{0,H}$    | GRZ0H    | IJLSDM    |      |
-| surface roughness for vapor    | $r_{0,E}$    | GRZ0E    | IJLSDIM   |      |
+| surface roughness for momentum | $r_{0,M}$    | GRZ0M    | IJLSDM    | --   |
+| surface roughness for heat     | $r_{0,H}$    | GRZ0H    | IJLSDM    | --   |
+| surface roughness for vapor    | $r_{0,E}$    | GRZ0E    | IJLSDIM   | --   |
 
 - Inputs
 
 | Meaning        | Presentation | Variable | dimension | unit |
 |:---------------|:-------------|:---------|:----------|:-----|
-| u surface wind | $U_0$        | GDUA     | IJLSDM    |      |
-| v surface wind | $V_0$        | GDVA     | IJLSDM    |      |
+| u surface wind | $U_0$        | GDUA     | IJLSDM    | --   |
+| v surface wind | $V_0$        | GDVA     | IJLSDM    | --   |
 
 
 [surface flux section of MIROC-DOC](https://github.com/MIROC-DOC/model_description/blob/surface/draft/p-sfc.md)  will be transplanted after modification.
@@ -251,16 +238,15 @@ $$
 Here, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere. $z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base, and rough factor ($z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$) and smooth factor ($z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$), respectively.
 
 ## 11.2 Lake surface heat balance `[LAKEHB]` [100% Written in Jan, 2021]
-
 The comments for some variables say "soil", but this is because the program was adapted from a land surface scheme, and has no particular meaning.
 
 - Outputs
 
-| Meaning                | Presentation   | Variable | dimension | unit |
-|:-----------------------|:---------------|:---------|:----------|:-----|
-| surface water flux \*1 | $W_{free/ice}$ | WFLUXS   | IJLSDM,2  |      |
-| upward long wave       | $LW^\uparrow$  | RFLXLU   | IJLSDM    |      |
-| flux balance           | $F$            | SFLXBL   | IJLSDM    |      |
+| Meaning            | Presentation   | Variable | dimension | unit |
+|:-------------------|:---------------|:---------|:----------|:-----|
+| surface water flux | $W_{free/ice}$ | WFLUXS   | IJLSDM,2  | --   |
+| upward long wave   | $LW^\uparrow$  | RFLXLU   | IJLSDM    | --   |
+| flux balance       | $F$            | SFLXBL   | IJLSDM    | --   |
 
 
 - Inputs variables
@@ -276,46 +262,28 @@ The comments for some variables say "soil", but this is because the program was 
 | lake surface albedo           | $\alpha$                          | GRALBL   |
 | lake ice concentration        | $R_{ice}$                         | GRICR    |
 
+<!---
 - Modified in this subroutine
 
 | Meaning                         | Presentation | Variable | dimension | unit |
 |:--------------------------------|:-------------|:---------|:----------|:-----|
-| skin temperature                | $T_s$        | GDTS     | IJLSDM    |      |
-| surface heat flux from `LAKEBC` | $G$          | GFLUXS   | IJLSDM    |      |
-| sensible heat flux              | $H$          | TFLUXS   | IJLSDM    |      |
-| latent heat flux                | $E$          | QFLUXS   | IJLDSM    |      |
+| skin temperature                | $T_s$        | GDTS     | IJLSDM    | --   |
+| surface heat flux from `lakeBC` | $G$          | GFLUXS   | IJLSDM    | --   |
+| sensible heat flux              | $H$          | TFLUXS   | IJLSDM    | --   |
+| latent heat flux                | $E$          | QFLUXS   | IJLDSM    | --   |
 
-- Internal work
-
-| Meaning                                         | Presentation                            | Variable | dimension |
-|:------------------------------------------------|:----------------------------------------|:---------|:----------|
-| latent heat for sublimation                     | $l_s$                                   | ESUB     |           |
-| emissivity of the lake surface                  | $\epsilon$                              | EMIS     |           |
-| black body radiation                            | $(1-\alpha)\sigma T_s^4 $               | STG      |           |
-| dR/dTs                                          | $\frac{\partial R}{\partial T_s}$       | DRFDS    |           |
-| net surface flux                                | $F^*$                                   | SFLUX    |           |
-| net heat flux (downward positive)               | $G^*$                                   | GSFLUX   |           |
-| The temperature derivative term of $G^*$        | $\frac{dG^*}{dT_s}$                     | DGSFDS   |           |
-| surface heat flux for ice-free area             | $G_{free}$                              | GFLUXF   |           |
-| sensible heat flux for ice covered area         | $\delta H_{ice}$                        | SFLUXBI  |           |
-| temperature derivative term of $G_{ice}$        | $\frac{\partial G_{ice}}{\partial T_s}$ | DSBDSI   |           |
-| surface temperature change for ice-covored area | $\Delta T_{ice}$                        | DTI      |           |
-| latennt heat flux for ice covered area          | $E_{ice}$                               | EVAPI    |           |
-| surface heat flux for ice covered area          | $G_{ice}$                               | GFLUXI   |           |
-|                                                 | $1-R_{ice}$                             | FF       |           |
-| lake ice fraction                               | $R_{ice}$                               | FI       |           |
-|                                                 | $R_{ice}\Delta T_{ice}$                 | DTX      |           |
 
 - Others (appeared in texts)
 
 | Meaning                                                | Presentation | Variable | dimension | unit |
 |:-------------------------------------------------------|:-------------|:---------|:----------|:-----|
-| lake surface albedo for shortwave radiation (ice-free) | $\alpha_S$   |          | [-]       |      |
-| the Stefan-Boltzmann constant                          | $\sigma$     | STB      |           |      |
+| lake surface albedo for shortwave radiation (ice-free) | $\alpha_S$   | --       | [-]       | --   |
+| the Stefan-Boltzmann constant                          | $\sigma$     | STB      | --        | --   |
+--->
 
 Reference: [Hasumi, 2015, Appendices A](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
 
-Downward radiative fluxes are not directly dependent on the condition of the sea surface, and their observed values are simply specified to drive the model. Shotwave emission from the sea surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha _S$ be the sea surface albedo for shortwave radiation. The upward shortwave radiative flux is represented by
+Downward radiative fluxes are not directly dependent on the condition of the lake surface, and their observed values are simply specified to drive the model. Shotwave emission from the lake surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha _S$ be the lake surface albedo for shortwave radiation. The upward shortwave radiative flux is represented by
 
 $$
 	SW^\uparrow = - \alpha_S SW^\downarrow
@@ -339,7 +307,7 @@ $$
 	F^*=H + (1-\alpha)\sigma T_s^4 + \alpha LW^\uparrow - LW^\downarrow +SW^\uparrow - SW^\downarrow		
 $$
 
-The heat flux into the lake surface is presented, with the surface heat flux calculated in `LAKEBC`
+The heat flux into the lake surface is presented, with the surface heat flux calculated in `PSFCM`
 
 $$
 	G^* = G - F^*
@@ -430,7 +398,6 @@ $$
 	W_{ice} = R_{ice} E_{ice}
 $$
 
-
 ## 11.3 Lake ice submodel `[LAKEIC]`  [100% Written in Jan, 2021]
 
 The following is an addition based on [Hasumi, 2015, Appendix B1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf).
@@ -442,45 +409,46 @@ There are five prognostic variables in the lake ice model described herein: lake
 
 ### 11.3.1 Heat Flux and Growth Rate `MODULE[FIHEATL]`
 
+<!--
 - variables
 
 | Meaning                                                                                            | Presentation | Variable | dimension              | unit   |
 |:---------------------------------------------------------------------------------------------------|:-------------|:---------|:-----------------------|:-------|
-| lake ice concentration                                                                             | $A_I$        | A        | IJLDIM                 | -      |
-| Lake ice growth rate in ice-free area                                                              | $W_{AO}$     | WAO      | IJLDIM                 |        |
-| air-ice heat flux multiplied by the factor of sea ice concentration                                | $Q_{AI}$     | QAI      | IJLDIM                 |        |
-| vertical heat flux through sea ice and snow                                                        | $Q_{IO}$     | QIO      | IJLDIM                 |        |
-| snow growth rate due to heat inbalance                                                             | $W_{AS}$     | WAS      | IJLDIM                 |        |
-| basal growth rate of lake ice                                                                      | $W_{IO}$     | WIO      | IJLDIM                 |        |
-| Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied | $SW^A$       | SWABS    |                        |        |
+| lake ice concentration                                                                             | $A_I$        | A        | IJLDIM                 | [-]    |
+| Lake ice growth rate in ice-free area                                                              | $W_{AO}$     | WAO      | IJLDIM                 | --     |
+| air-ice heat flux multiplied by the factor of lake ice concentration                               | $Q_{AI}$     | QAI      | IJLDIM                 | --     |
+| vertical heat flux through lake ice and snow                                                       | $Q_{IO}$     | QIO      | IJLDIM                 | --     |
+| snow growth rate due to heat inbalance                                                             | $W_{AS}$     | WAS      | IJLDIM                 | --     |
+| basal growth rate of lake ice                                                                      | $W_{IO}$     | WIO      | IJLDIM                 | --     |
+| Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied | $SW^A$       | SWABS    | --                     | --     |
 | Lake temperature  /Salinity                                                                        | $T, S$       | T        | IJLDIM, NLZDIM, NLTDIM | ◦C/psu |
-| time step                                                                                          | $\Delta t$   | TS       |                        |        |
-| surfaceheat flux                                                                                   | $G$          | FT       | IJLDIM, NLTDIM         |        |
-
+| time step                                                                                          | $\Delta t$   | TS       | --                     | --     |
+| surfaceheat flux                                                                                   | $G$          | FT       | IJLDIM, NLTDIM         | --     |
 
 - Internal works
 
 | Meaning                   | Presentation | Variable | dimension | unit |
 |:--------------------------|:-------------|:---------|:----------|:-----|
-| freezing point depression | $\Delta T$   | TDEV     |           |      |
-| Sea ice growth rate       | $W_{FZ}$     | WFRZ     |           |      |
-
+| freezing point depression | $\Delta T$   | TDEV     | --        | --   |
+| lake ice growth rate      | $W_{FZ}$     | WFRZ     | --        | --   |
+-->
+<!---
 - parameters
-
 
 | Meaning                                                   | Presentation                    | Variable | unit                | value                        |
 |:----------------------------------------------------------|:--------------------------------|:---------|:--------------------|:-----------------------------|
-| coeficient for a decreasing function of salinity          | $\frac{\partial T}{\partial S}$ | dtds     |                     | $-0.0543$                    |
-| density of sea water                                      | $\rho_O$                        | rhoo     | $\mathrm{g/cm^3}$   | $1.0$                        |
-| latent heat cofefficient to melt                          |                                 | emeltl   | $\mathrm{J/kg}$     | $3.4 \times 10^5$            |
+| coeficient for a decreasing function of salinity          | $\frac{\partial T}{\partial S}$ | dtds     | --                  | $-0.0543$                    |
+| density of lake water                                     | $\rho_O$                        | rhoo     | $\mathrm{g/cm^3}$   | $1.0$                        |
+| latent heat cofefficient to melt                          | --                              | emeltl   | $\mathrm{J/kg}$     | $3.4 \times 10^5$            |
 | latent heat fusion \*3                                    | $L_f$                           | hfus     | $\mathrm{erg/g}$    | $E_l \times 1.0 \times 10^4$ |
-|                                                           | $\frac{1}{\rho_O L_f}$          | rrhfus   | $\mathrm{cm^3/erg}$ | $1.0 /\rho_I/L_f$            |
+| --                                                        | $\frac{1}{\rho_O L_f}$          | rrhfus   | $\mathrm{cm^3/erg}$ | $1.0 /\rho_I/L_f$            |
 | fraction of $SW^A$ absorbed by the lake model's top level | $I(z=2)$                        | SWCNV1   | $\mathrm{ND}$       |                              |
 | heat capacity of lake water                               | $C_{po}$                        | cpo      | $\mathrm{erg/g/K}$  | $3.990\times 10^7$           |
 | thickness of the lake model's top level                   | $D_1$                           | DZ1      | $\mathrm{cm}$       | $1.0\times 10^2$             |
 
 
-*3 same value is applied to snow and sea ice.
+*3 same value is applied to snow and lake ice.
+-->
 
 The following is an addition based on [Hasumi, 2015, Appendix B1.1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf).
 
@@ -488,11 +456,11 @@ This section is actually the same with
 
 Let us consider here a case that the model is integrated from the n-th time level to the (n+1)-th time level. $A_I$, $h_I$ and $h_S$ are incrementally modified in the following order.
 
-Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f= −0.0543 S \mathrm{[℃]}$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside sea ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
+Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f= −0.0543 S \mathrm{[℃]}$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
 
-Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of sea ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
+Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of lake ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
 
-Surface heat flux is separately calculated for each of air-sea and air-ice interfaces in one grid.
+Surface heat flux is separately calculated for each of air-lake and air-ice interfaces in one grid.
 
 The surface temperature of lake ice $T_I$ is determined such That
 
@@ -506,7 +474,7 @@ $$
 	W_{AS} = \frac{Q_{AI}-Q_{IO}}{\rho L_f}
 $$
 
-where $\rho_O$ is density of seawater and $L_f$ is the latent heat of fusion (the same value is applied to snow and lake ice). This growth rate is expressed as a change of equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is weighted by lake ice concentration.
+where $\rho_O$ is density of lakewater and $L_f$ is the latent heat of fusion (the same value is applied to snow and lake ice). This growth rate is expressed as a change of equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is weighted by lake ice concentration.
 
 Although it is assumed that $T(2) = T_f$ when lake ice exists, $T_1$ could deviated from $T_f$ due to a change of salinity or other factors. Such deviation should be adjusted by forming or melting lake ice. Under a temperature deviation of the top layer of lake,
 
@@ -554,40 +522,40 @@ $$
 	G_{lake} = \Delta z_1 \frac{\Delta T }{\Delta t}
 $$
 
-### 11.3.2 Sublimation of Sea Ice`MODULE[FWATERL]`
+### 11.3.2 Sublimation of lake Ice`MODULE[FWATERL]`
 
 - variables
 
-| Meaning                         | Presentation   | Variable | dimension | unit          |
-|:--------------------------------|:---------------|:---------|:----------|:--------------|
-| lake ice fraction               | $A_I'$         | AX       | IJLDIM    |               |
-| lake ice thickenss              | $h_I'$         | HIX      | IJLDIM    |               |
-| Snow depth                      | $h_S'$         | HSX      | IJLDIM    |               |
-| latent heat flux of evaporation | $F_W^{EV}$     | WEV      |           |               |
-| latent heat flux of sublimation | $F_W^{SB}$     | WSB      | IJLDIM    | \mathrm{cm/s} |
-|                                 | $\Delta F_W$   | WDIF     |           |               |
-| time step                       | $\Delta t$     | TS       |           |               |
-| latent heat flux of evaporation | $F_W^{EV}$     | EVAP     | IJLDIM    |               |
-| latent heat flux of sublimation | $F_W^{SB}{''}$ | SUBI     | IJLDIM    |               |
+| Meaning                         | Presentation   | Variable | dimension | unit            |
+|:--------------------------------|:---------------|:---------|:----------|:----------------|
+| lake ice fraction               | $A_I'$         | AX       | IJLDIM    | --              |
+| lake ice thickenss              | $h_I'$         | HIX      | IJLDIM    | --              |
+| Snow depth                      | $h_S'$         | HSX      | IJLDIM    | --              |
+| latent heat flux of evaporation | $F_W^{EV}$     | WEV      | --        | --              |
+| latent heat flux of sublimation | $F_W^{SB}$     | WSB      | IJLDIM    | $\mathrm{cm/s}$ |
+| --                              | $\Delta F_W$   | WDIF     | --        | --              |
+| time step                       | $\Delta t$     | TS       | --        | --              |
+| latent heat flux of evaporation | $F_W^{EV}$     | EVAP     | IJLDIM    | --              |
+| latent heat flux of sublimation | $F_W^{SB}{''}$ | SUBI     | IJLDIM    | --              |
 
 
 - Internal variables
 
 | Meaning                | Presentation | Variable | dimension | unit |
 |:-----------------------|:-------------|:---------|:----------|:-----|
-| Lake ice concentration | $A_I^n$      | AZ       | IJLDIM    |      |
-| Snow depth             | $h_S^n$      | HSZ      | IJLDIM    |      |
-| lake ice thickness     | $h_I^n$      | HIZ      | IJLDIM    |      |
+| Lake ice concentration | $A_I^n$      | AZ       | IJLDIM    | --   |
+| Snow depth             | $h_S^n$      | HSZ      | IJLDIM    | --   |
+| lake ice thickness     | $h_I^n$      | HIZ      | IJLDIM    | --   |
 
 - parameters
 
-| Meaning                       | Presentation | Variable | unit              | value           |
-|:------------------------------|:-------------|:---------|:------------------|:----------------|
-| density of snow               | $\rho_S$     | rhos     | $\mathrm{g/cm^3}$ | $0.33$          |
-| density of lake ice           | $\rho_I$     | rhoi     | $\mathrm{g/cm^3}$ | $0.9$           |
-| Ratio of density (ocean/snow) | $R_{\rho_S}$ | rrs      | [-]               | $\rho_O/\rho_s$ |
-| Ratio of density (ocean/ice)  | $R_{\rho_I}$ | rri      | [-]               | $\rho_O/\rho_I$ |
-| Minimum thickness of ice      | $h_I^{min}$  | himin    |                   | 1.0\times 10^1  |
+| Meaning                       | Presentation | Variable | unit              | value            |
+|:------------------------------|:-------------|:---------|:------------------|:-----------------|
+| density of snow               | $\rho_S$     | rhos     | $\mathrm{g/cm^3}$ | $0.33$           |
+| density of lake ice           | $\rho_I$     | rhoi     | $\mathrm{g/cm^3}$ | $0.9$            |
+| Ratio of density (ocean/snow) | $R_{\rho_S}$ | rrs      | [-]               | $\rho_O/\rho_s$  |
+| Ratio of density (ocean/ice)  | $R_{\rho_I}$ | rri      | [-]               | $\rho_O/\rho_I$  |
+| Minimum thickness of ice      | $h_I^{min}$  | himin    | --                | $1.0\times 10^1$ |
 
 
 The following is an addition based on [Hasumi, 2015, Appendix B1.2](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf).
@@ -604,7 +572,7 @@ $$
 	F_W^{SB}{'} = F_W^{SB} + \frac{\rho_S A_I^n (h_S' - h_S^n)}{\rho_O\Delta t}
 $$
 
-Where there no remains snow, but $F_W^{SB}{'}$ is not zero, The remain flux is consumed to reduce sea ice thickness:
+Where there no remains snow, but $F_W^{SB}{'}$ is not zero, The remain flux is consumed to reduce lake ice thickness:
 
 $$
 	h_I' = h_I^n - \frac{\rho_O F_W^{SB}{'} \Delta t }{\rho_I A_I^n}
@@ -672,31 +640,32 @@ If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ beco
 
 | Meaning                                    | Presentation            | Variable | dimension      | unit |
 |:-------------------------------------------|:------------------------|:---------|:---------------|:-----|
-| lake ice fraction                          | $A_I^{n+1}$             | AX       | IJLDIM         |      |
-| lake ice volume                            | $V_I$                   | AXHIX    | IJLDIM         |      |
-| lake snow volume                           | $V_S, V_S', V_S^{**}$   | AXHSX    | IJLDIM         |      |
-| lake ice volume                            | $V_I$                   | AXHIXN   | IJLDIM         |      |
-|                                            |                         | AXHSXN   | IJLDIM         |      |
-| lake ice thickenss                         | $h_I'$                  | HIX      | IJLDIM         |      |
-| Snow depth                                 | $h_S'$                  | HSX      | IJLDIM         |      |
-| Snow depth                                 | $h_S^n$                 | HSZ      | IJLDIM         |      |
-| lake ice thickness                         | $h_I^n$                 | HIZ      | IJLDIM         |      |
-| snow growth rate due to heat inbalance     | $W_{AS}$                | WAS      | IJLDIM         |      |
-| lake ice growth rate due to heat inbalance | $W_{AI}$                | WAI      | IJLDIM         |      |
-| Reduced heat flux                          | $W_{res}$               | WRES     | IJLDIM         |      |
-| basal growth rate of lake ice              | $W_{IO}$                | WIO      | IJLDIM         |      |
-| snow fall flux                             | $F_W^{SN}, {F_W^{SN}}'$ | SNOW     | IJLDIM         |      |
-| Lake ice growth rate in ice-free area      | $W_{AO}$                | WAO      | IJLDIM         |      |
-| precipitation flux                         | $F_W^{PR}$              | PREC     | IJLDIM         |      |
-| latent heat flux of evaporation            | $L_e$                   | EVAP     | IJLDIM         |      |
-| latent heat flux of sublimation            | $$                      | SUBI     | IJLDIM         |      |
-| Lake ice concentration                     | $A_I'$                  | AZ       | IJLDIM         |      |
-|                                            |                         | ROFF     | IJLDIM         |      |
-|                                            |                         | ADJLAT   | IJLDIM         |      |
-| lake heat flux                             | $H_{lake}$              | FT       | IJLDIM, NLTDIM |      |
-|                                            |                         | FS       | IJLDIM         |      |
-| time step                                  | $\Delta t$              | TS       |                |      |
+| lake ice fraction                          | $A_I^{n+1}$             | AX       | IJLDIM         | --   |
+| lake ice volume                            | $V_I$                   | AXHIX    | IJLDIM         | --   |
+| lake snow volume                           | $V_S, V_S', V_S^{**}$   | AXHSX    | IJLDIM         | --   |
+| lake ice volume                            | $V_I$                   | AXHIXN   | IJLDIM         | --   |
+| --                                         | --                      | AXHSXN   | IJLDIM         | --   |
+| lake ice thickenss                         | $h_I'$                  | HIX      | IJLDIM         | --   |
+| Snow depth                                 | $h_S'$                  | HSX      | IJLDIM         | --   |
+| Snow depth                                 | $h_S^n$                 | HSZ      | IJLDIM         | --   |
+| lake ice thickness                         | $h_I^n$                 | HIZ      | IJLDIM         | --   |
+| snow growth rate due to heat inbalance     | $W_{AS}$                | WAS      | IJLDIM         | --   |
+| lake ice growth rate due to heat inbalance | $W_{AI}$                | WAI      | IJLDIM         | --   |
+| Reduced heat flux                          | $W_{res}$               | WRES     | IJLDIM         | --   |
+| basal growth rate of lake ice              | $W_{IO}$                | WIO      | IJLDIM         | --   |
+| snow fall flux                             | $F_W^{SN}, {F_W^{SN}}'$ | SNOW     | IJLDIM         | --   |
+| Lake ice growth rate in ice-free area      | $W_{AO}$                | WAO      | IJLDIM         | --   |
+| precipitation flux                         | $F_W^{PR}$              | PREC     | IJLDIM         | --   |
+| latent heat flux of evaporation            | $L_e$                   | EVAP     | IJLDIM         | --   |
+| latent heat flux of sublimation            | --                      | SUBI     | IJLDIM         | --   |
+| Lake ice concentration                     | $A_I'$                  | AZ       | IJLDIM         | --   |
+| --                                         | --                      | ROFF     | IJLDIM         | --   |
+| --                                         | --                      | ADJLAT   | IJLDIM         | --   |
+| lake heat flux                             | $H_{lake}$              | FT       | IJLDIM, NLTDIM | --   |
+| --                                         | --                      | FS       | IJLDIM         | --   |
+| time step                                  | $\Delta t$              | TS       |                | --   |
 
+<!--
 - parameters
 
 | Meaning                       | Presentation | Variable | unit              | value               |
@@ -705,14 +674,14 @@ If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ beco
 | density of lake ice           | $\rho_I$     | rhoi     | $\mathrm{g/cm^3}$ | $0.9$               |
 | Ratio of density (ocean/snow) | $R_{rho_I}$  | rrs      | [-]               | $\rho_O/\rho_s$     |
 | Ratio of density (ocean/ice)  | $R_{rho_I}$  | rri      | [-]               | $\rho_O/\rho_I$     |
-| Minimum thickness of ice      | $h_I^{min}$  | himin    |                   | $1.0\times 10^1$    |
-|                               |              | AMIN     |                   | $1.0\times 10^{-6}$ |
-|                               |              | AMAX     |                   | $1.0$               |
-|                               |              | SI       |                   | $0.0$               |
-|                               |              | SREF     |                   | $3.5\times 10^1$    |
-|                               |              | AIH      |                   | $2.0\times 10^8$    |
-|                               |              | AIHB     |                   | $2.0\times 10^2$    |
-
+| Minimum thickness of ice      | $h_I^{min}$  | himin    | --                | $1.0\times 10^1$    |
+|                               | --           | AMIN     | --                | $1.0\times 10^{-6}$ |
+|                               | --           | AMAX     | --                | $1.0$               |
+|                               | --           | SI       | --                | $0.0$               |
+|                               | --           | SREF     | --                | $3.5\times 10^1$    |
+|                               | --           | AIH      | --                | $2.0\times 10^8$    |
+|                               | --           | AIHB     | --                | $2.0\times 10^2$    |
+-->
 
 以下、[Hasumi, 2015, Appendix B.1.3 and B.1.4 ](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)をもとに加筆修正。
 
@@ -814,7 +783,7 @@ $$
 	W_{IO}^* = W_{IO} + W_{AI}^*
 $$
 
-When the lake ice exists ($A_I^{n+1}>0), if the ice growth rate
+When the lake ice exists ($A_I^{n+1}>0$), if the ice growth rate
 
 $$
 	W_{AI}^* = W_{AI} + \frac{V_I^{*}}{R_{\rho_I \Delta t}}
@@ -878,7 +847,9 @@ $$
 
 If $V^{free}>V_0^{free}$, the ice thickness is increased, by adding $V^{free}$
 
+<!--
 ![](lakeice_volume.jpeg)
+-->
 
 $$
 	h_I^{*** } = V^{free} + \frac{A_I^{n+1} h_I^{m+1}}{A_I^{max}}
@@ -940,202 +911,3 @@ $$
 $$
 	F_W(2) =F_W^{EV} - F_W^{PR} - R_{off} + W_S^n + W_I^n
 $$
-
-## 11.4 Physical formulation & processes `[LAKEPO]`  [20% Written in Jan, 2021]
-
-`lakepo.F`
-
-### 11.4.1 Diffusion tracer flux `[VDIFFL]`
-
-- Inputs
-
-Though several valuables are written, they are not used here.
-
-- Outputs
-
-| Meaning                        | Presentation | Variable | dimension      | unit |
-|:-------------------------------|:-------------|:---------|:---------------|:-----|
-| vertical diffusion coefficient | $K_V$        | AHV      | IJLDIM, NLZDIM |      |
-
-- Parameters
-
-| Meaning                                             | Presentation | Variable        | unit | value         |
-|:----------------------------------------------------|:-------------|:----------------|:-----|:--------------|
-| vertical diffusion coefficient at the surface layer | $K_{V0}$     | AHVL0(NZ=KLMAX) |      | $k\times 1.0$ |
-
-The case considered in COCO4 is that( [Hasumi, 2015, Section 1.2](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)):
-1. Diffusive flux of tracer follows the Fick's law.
-2. Diffusuion coefficient tensor is diagonal, and its horizontal component is identical.
-
-Here, the vertical diffusion coefficent $K_V$ is simply set as
-
-$$
-	K_V(k) = K_{V0} k
-$$
-
-### 11.4.2 Estimate the advection and diffusion terms of the tracer equations `[FLXTRCL]`
-
-- Inputs
-
-| Meaning                        | Presentation | Variable | dimension              | unit |
-|:-------------------------------|:-------------|:---------|:-----------------------|:-----|
-| vertical diffusion coefficient | $K_V$        | AHV      | IJLDIM, NLZDIM         |      |
-| water temperature              | $T$          | TX       | IJLDIM, NLZDIM, NLTDIM |      |
-| water depth                    | $h$          | HX       | IJLDIM                 |      |
-
-- Outputs
-
-| Meaning                                     | Presentation                   | Variable | dimension              | unit |
-|:--------------------------------------------|:-------------------------------|:---------|:-----------------------|:-----|
-| vertical component of diffusive tracer flux | $F_D$                          | ADT      | IJLDIM, NLZDIM, NLTDIM |      |
-|                                             | $\frac{F_D}{D(k-\frac{1}{2})}$ | DIFFZ    | IJLDIM, NLZDIM         |      |
-
-- Internal variables
-
-| Meaning | Presentation | Variable | dimension              | unit |
-|:--------|:-------------|:---------|:-----------------------|:-----|
-|         |              | TH       | IJLDIM, NLZDIM, NLTDIM |      |
-|         | $h'$         | HZBOT    | IJLDIM                 |      |
-
--Parameters
-
-| Meaning                                                      | Presentation | Variable      | unit          | value                              |
-|:-------------------------------------------------------------|:-------------|:--------------|:--------------|:-----------------------------------|
-| thickness of each lake level                                 | $D$          | DZ(NLZDIM)    | $\mathrm{cm}$ | $0, S_0(1), S_0(2), S_0(3),S_0(4)$ |
-|                                                              | $S$          | DS(NLZDIM)    | $\mathrm{ND}$ |                                    |
-| thickness of the lake model’s top level                      | $D_1$        | DZ1           | $\mathrm{cm}$ | $1.0\times 10^2$                   |
-| Ratio of the thickness of the each layer in sigma coordinate | $S_0$        | DS0(NLZDIM-1) | $\mathrm{ND}$ | $0.1, 0.1, 0.2, 0.6$               |
-
-Supposing that the thickness of the 1st top layer ($k=2$) is $D_1$,
-
-$$
-	D(2) = D_1
-$$
-
- the thickness of the remaining water column ($h'$) is presented by
-
-$$
-	h' = h - D_1
-$$
-
-The thickness of each remaining layer ($k=3,4,5,6$) is
-
-$$
-	D(k) = S(k) {h'}
-$$
-
-Then, the component of the diffusive tracer flux is represented by
-
-$$
-	F_D = K_V \frac{\partial T}{\partial z}
-$$
-
-practically,
-
-$$
-	F_D(k) = K_V(k) \frac{T(k-1)-T(k)}{\frac{D(k-1)+D(k)}{2}} - K_V(k+1) \frac{T(k)-T(k+1)}{\frac{D(k)+D(k+1)}{2}}
-$$
-
-
-
-### 11.4.3 `[SLVTRCL]`
-
-- Inputs
-
-| Meaning                                     | Presentation                   | Variable | dimension              | unit                    |
-|:--------------------------------------------|:-------------------------------|:---------|:-----------------------|:------------------------|
-| vertical component of diffusive tracer flux | $F_D$                          | ADT      | IJLDIM, NLZDIM, NLTDIM |                         |
-|                                             | $\frac{F_D}{D(k-\frac{1}{2})}$ | DIFFZ    | IJLDIM, NLZDIM         |                         |
-| minimum depth of lake                       |                                | HXMIN    |                        | $\mathrm{cm}$           |
-| heat flux                                   |                                | FT       |                        | $\mathrm{K cm/s}$       |
-| absorbed shortwave                          |                                | SWABS    |                        | $\mathrm{erg/cm^2/sec}$ |
-|                                             |                                | FS       |                        |                         |
-| time step                                   | $\Delta t$                     | TS       |                        |                         |
-| surface-type fraction (lake)                | $$                             | LKFRAC   | IJLDIM                 | [-]                     |
-
-- Outputs
-
-| Meaning              | Presentation | Variable | dimension | unit          |
-|:---------------------|:-------------|:---------|:----------|:--------------|
-| lake water deficient |              | XHD      | IJLDIM    | $\mathrm{cm}$ |
-
-$$
-	A_A(k) = -\frac{K_V(k)}{\frac{D(k-1)+D(k)}{2}} \Delta t
-$$
-
-$$
-	A_C(k) = -\frac{K_V(k+1)}{\frac{D(k)+D(k+1)}{2}} \Delta t
-$$
-
-$$
-	A_B(k) = D)k-A_A(k)-A(k)
-$$
-
-Solve the linear equations expressed by tri-diagonal matrix in `MODULE: THOASL`. (original files ./ocean/utrdg.F)
-
-Then,
-$$
-	T(k)=T(k)+ F_D(k)\Delta t
-$$
-
-$$
-	h_D = -F_T \Delta t
-$$
-
-$$
-	V_D = \mathrm{max}(h_{min}-h - h_D, 0) R_{lake}
-$$
-
-$$
-	h_D = \mathrm{max}(h_D,h_{min}-h)
-$$
-
-Then, the deficient water is added.
-
-$$
-	h = h + h_D
-$$
-
-$$
-	h_{BOT}=h-D_1
-$$
-
-
-ここで、
-
-If $h_D\ge0$, $D^{top}=h_D S(\mathrm{KLEND})$ and $D^{bottom}=0$
-
-If $h_D\ge0$,
-下からループ
-
-$$
-	T(k) = T(k) + \frac{  T(k-1) D^{top}}{h_{BOT}S(k)}
-$$
-
-### 11.4.4 `[OVTURNL]`
-
-
-Reference: [Hasumi, 2015, Section 4.1](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf)
-
-
-Let us consider finite difference discretization of a flux-form, one-dimensional advection equation for tracer $\psi$.
-
-$$
-	\frac{\partial \psi}{\partial t} + \frac{\partial}{\partial z} (w\psi) = 0
-$$
-
-- Inputs
-
-| Meaning                 | Presentation | Variable | dimension | unit |
-|:------------------------|:-------------|:---------|:----------|:-----|
-| $depth of water column$ | $h$          | H        |           |      |
-| time step               | $\Delta t$   | TS       |           |      |
-
-- Outputs
-
-| Meaning | Presentation | Variable | dimension | unit |
-|:--------|:-------------|:---------|:----------|:-----|
-|         |              | R        |           |      |
-
-
-The unit of XHD will be changed to $\mathrm{kg/m2}$ after this module (in `MATDRV`).
