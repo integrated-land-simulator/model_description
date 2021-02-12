@@ -154,7 +154,7 @@ MATSIRO has the following internal variables:
 
 where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared , and infrared wavelengths, respectively.
 
-As a standard, the soil has five layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, and 200 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same.
+As a standard, the soil has six layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, 200, and 1000 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same.
 
 The number of snow layers is variable, increasing with the increase of snow water equivalent. As a standard, the maximum number is three layers.
 
