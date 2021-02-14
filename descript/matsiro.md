@@ -2326,28 +2326,28 @@ Fig.12-1 Flowchart of the wetland scheme in the MATSIRO 6
 
 ## 12.2 Inflow and outflow of the wetland
 
-The inflow of the wetland comes from the fraction of the surface runoff, and its amount is determined by the  tunable parameter $\alpha$. The outflow from the wetland is calculated using a time constant $\tau$ and the wetland storage $S$, consequently flowing into the soil surface. Therefore, the update of the wetland storage $S$ at each time step can be represented as:
+The inflow of the wetland comes from the fraction of the surface runoff, and its amount is determined by the  tunable parameter $\alpha$. The outflow from the wetland is calculated using a time constant $\beta$ and the wetland storage $S$, consequently flowing into the soil surface. Therefore, the update of the wetland storage $S$ at each time step can be represented as:
 
 $$
-\frac{dS}{dt}=-\frac{S}{\tau }+(1-\alpha )R_{s}
+\frac{S^{\tau +1}-S^{\tau }}{\Delta t_{L}}=-\frac{S}{\beta}+(1-\alpha )R_{s}
 $$
 
-where $R\_{s}$ is surface runoff calculated as a total of $Ro\_{s}$ (saturation excess runoff), $Ro\_{i}$ (infiltration excess runoff), and $Ro\_{o}$ (overflow of the uppermost soil layer); $t$ is time; and $\alpha$ and $\tau$ are parameters related to the inflow and outflow of the wetland storage, respectively.
+where $R\_{s}$ is surface runoff calculated as a total of $Ro\_{s}$ (saturation excess runoff), $Ro\_{i}$ (infiltration excess runoff), and $Ro\_{o}$ (overflow of the uppermost soil layer); $\tau$ is time; and $\alpha$ and $\beta$ are parameters related to the inflow and outflow of the wetland storage, respectively.
 
-$\tau$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
+$\beta$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
 
 $$
-\tau =max(\tau \_{0}\{1-min[zsd(x),zsd\_{max}]/zsd_{max}\}, \Delta t)
+\beta =max(\beta_{0}\{1-min[\sigma _{z}(x),\sigma _{z max}]/\sigma _{z max}\}, \Delta t_{L})
 $$
 
-where $\tau \_{0}$ is the maximum of the time constant, $zsd$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $zsd$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\tau \_{0}$, $zsd\_{max}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\tau \_{0}$, $zsd_{max}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t_{L}$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
 
 ## 12.3 Storage of the surface runoff
 
 The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
 
 $$
-Ro=(Ro\_{s}+Ro\_{i}+Ro\_{o})\times \alpha + Ro\_{b}
+Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
 $$
 
 where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3). 
@@ -2357,11 +2357,11 @@ where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation e
 The outflow from the wetland storage is re-added to the water input of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input $WI_{soil,total}$ of each time step can be represented as:
 
 $$
-WI\_{soil,total}=WI_{soil,original}+\frac{S}{\tau }\Delta t
+WI_{soil,total}=WI_{soil,original}+\frac{S}{\beta }\Delta t_{L}
 $$
 
-where $WI\_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\tau$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
- 
+where $WI\_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\beta$ represents the outflow parameter of the wetland, and $\Delta t_{L}$ is the time step.
+
 
 # 13 Tile scheme
 
