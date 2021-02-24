@@ -2,14 +2,14 @@
 
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-Up to and including the calculation of the surface flux (11.1-11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (11.3-11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1-2), while it is $\mathrm{°C}$ after the ice and inter lake (section 11.3-4). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and [Hasumi (2015)](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf).
+Up to and including the calculation of the surface flux (section [11.1](##-Calculation-of-lake-surface-conditions) and [11.2](##-Solution-of-energy-balance-at-lake-surface)), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section [11.3](##-Calculation-of-lake-ice) and [11.4]()) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section [11.1](##-calculation-of-lake-surface-conditions) and [11.2](##-Solution-of-energy-balance-at-lake-surface)), while it is $\mathrm{°C}$ after the ice and inter lake (section [11.3](##-Calculation-of-lake-ice) and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and [Hasumi (2015)](https://ccsr.aori.u-tokyo.ac.jp/~hasumi/COCO/coco4.pdf).
 
 Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
 
 Minimum depth of lake is given in `matdrv.F` as $10 \times 10^2 \mathrm{[cm]}$, hence any lakes cannot be disappeared even in severe conditions.
 
 
-## calculation of lake surface conditions
+## Calculation of lake surface conditions
 
 In `ENTRY[LAKEBC]` (in `SUBROUTINE:[LSFBCS]` of lakesf.F) lake surface albedo, roughness, and heat flux are calculated. They are calculated supposing ice-free conditions, then modified. While the albedo of snow is a pronostic variable, the lake surface albedo considering with ice and snow above is a diagnostic variable. The aging effect of the snow is  differently treated. These methods are acutally same with an old version of COCO-OGCM. The newst version of COCO, which is going to be coupled to MIROC7-AOGCM, has been applied a melt pond scheme a snow aging scheme which is basically the same with the treatment in the current land surface (Komuro, the GCM meeting on 22nd Feb, 2021).
 
@@ -145,7 +145,7 @@ $$
 $$
 
 
-###  11.1.1. Calculation of lake surface albedo
+###  Calculation of lake surface albedo
 
 <!--
 - Prognostic variables
@@ -182,7 +182,7 @@ $$
 	\alpha_{Lk,L(2)} = 0.06
 $$
 
-### 11.1.2 Lake surface roughness
+### Lake surface roughness
 
 Contents of `SUBROUTINE:[LAKEZ0F]` is the same with `SUBROUTINE:[SEAZ0F]` (of pgocn.F).
 
@@ -236,9 +236,9 @@ Here, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of th
 $z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat, and vapor, respectively.
 $z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base, and rough factor ($z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$) and smooth factor ($z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$) are taken into account.
 
-## 11.2 Solution of energy balance at lake surface
+## Solution of energy balance at lake surface
 
-In `SUBROUTINE:[LAKEHB]` (of lakesf.F), the energy balance at lake surface is solved. 
+In `SUBROUTINE:[LAKEHB]` (of lakesf.F), the energy balance at lake surface is solved.
 
 <!--
 - Prognostic variables
@@ -384,14 +384,14 @@ $$
 	W_{IcLk} = R_{IcLk} E_{IcLk}
 $$
 
-## 11.3 Calculation of lake ice
+## Calculation of lake ice
 
 In this section, the lake ice calculation is described. There are three prognostic variables in the lake ice model described herein: lake ice concentration $A_I$, which is area fraction of a grid covered by lake ice and takes a value between zero and unity; mean lake ice thickness $h_I$ over ice-covered part of a grid; mean snow depth $h_S$ over lake ice. Horizontal flow of ice is not considered in the lake parts, differently from the COCO-OGCM. Let us consider here a case that the model is integrated from the n-th time level to the (n+1)-th time level. $A_I$, $h_I$ and $h_S$ are incrementally modified.
 
 The model also calculates temperature at snow top (lake ice top when there is no snow cover) $T_I$, which is a diagnostic variable. Density of lake ice ($\rho_I$) and snow $(\rho_S)$ are assumed to be constant Lake ice is assumed to have nonzero salinity, and its value $S_I$ is assumed to be a constant parameter.
 
 
-### 11.3.1 Calculation of heat flux and growth rate
+### Calculation of heat flux and growth rate
 
 In `ENTRY:[FIHEATL]` (in `SUBROUTINE:[FIHSTL]` of lakeic.F), heat flux in lake ice and its growth rate is calculated.
 
@@ -513,7 +513,7 @@ $$
 	G_{lake} = \Delta z_1 \frac{\Delta T }{\Delta t}
 $$
 
-### 11.3.2 Sublimation and freshwater flux for lake
+### Sublimation and freshwater flux for lake
 
 In `ENTRY[FWATERL]` (in `SUBROUTINE:[FWASTL]` of lakeic.F), sublimation (freshwater) flux, which is practically come from the land ice runoff, is calculated or prescribed over lake ice cover.
 
@@ -608,7 +608,7 @@ $$
 
 $S_{off}$ is actually calculated in `SUBROUTINE[MATDRV]` (of matdrv.F) and handed to `ENTRY:[FWATER]`.
 
-### 11.3.3 Updating lake ice fraction
+### Updating lake ice fraction
 
 <!--
 - Input variables
@@ -628,7 +628,7 @@ $$
 If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ becomes smaller than zero, it is reset to zero.
 
 
-### 11.3.4 Growth and Melting
+### Growth and Melting
 
 In `ENTRY:[PTHICKL]` (in `SUBROUTINE:[OTHKSTL]` of lakeic.F), the lake ice growth and melting are calculated. The variables in the (n+1)-th time level are finally determined here.
 
