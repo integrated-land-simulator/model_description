@@ -139,18 +139,20 @@ Finally, the lake modules are called and the related prognostic variables are up
 
 MATSIRO has the following internal variables:
 
-| Variable                                | Description                  | Units                |
-|:----------------------------------------|:-----------------------------|:---------------------|
-| $T_{s(l)}$        $(l=1,2)$             | surface temperature          | $\mathrm{[K]}$       |
-| $T_{c(l)}$        $(l=1,2)$             | Canopy temperature           | $\mathrm{[K]}$       |
-| $T_{g(k)}$        $(k=1,\ldots,K_g)$    | Soil temperature             | $\mathrm{[K]}$       |
-| $w_{(k)}$         $(k=1,\ldots,K_g)$    | soil moisture content        | $\mathrm{[m^3/m^3]}$ |
-| $w_{i(k)}$        $(k=1,\ldots,K_g)$    | Frozen soil moisture content | $\mathrm{[m^3/m^3]}$ |
-| $w_c$                                   | Water content in the canopy  | $\mathrm{[m]}$       |
-| $Sn$                                    | amount of snowfall           | $\mathrm{[kg/m^2]}$  |
-| $T_{Sn(k)}$       $(k=1,\ldots,K_{Sn})$ | snow temperature             | $\mathrm{[K]}$       |
-| $\alpha_{Sn(b)}$  $(b=1,2,3)$           | snow albedo                  | $\mathrm{[-]}$       |
-
+| Variable                                | Description                                             | Units                |
+|:----------------------------------------|:--------------------------------------------------------|:---------------------|
+| $T_{s(l)}$        $(l=1,2)$             | surface temperature                                     | $\mathrm{[K]}$       |
+| $T_{c(l)}$        $(l=1,2)$             | Canopy temperature                                      | $\mathrm{[K]}$       |
+| $T_{g(k)}$        $(k=1,\ldots,K_g)$    | Soil temperature                                        | $\mathrm{[K]}$       |
+| $w_{(k)}$         $(k=1,\ldots,K_g)$    | soil moisture content                                   | $\mathrm{[m^3/m^3]}$ |
+| $w_{i(k)}$        $(k=1,\ldots,K_g)$    | Frozen soil moisture content                            | $\mathrm{[m^3/m^3]}$ |
+| $w_c$                                   | Water content in the canopy                             | $\mathrm{[m]}$       |
+| $Sn$                                    | amount of snowfall                                      | $\mathrm{[kg/m^2]}$  |
+| $T_{Sn(k)}$       $(k=1,\ldots,K_{Sn})$ | snow temperature                                        | $\mathrm{[K]}$       |
+| $\alpha_{Sn(b)}$  $(b=1,2,3)$           | snow albedo                                             | $\mathrm{[-]}$       |
+| $A_I$                                   | Lake ice concentration                                  | $\mathrm{[-]}$       |
+| $h_I$                                   | Mean lake ice thickness over ice-covered part of a grid | $\mathrm{[cm]}$      |
+| $h_S$                                   | Mean snow depth over lake ice                           | $\mathrm{[cm]}$      |
 
 where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared , and infrared wavelengths, respectively.
 
