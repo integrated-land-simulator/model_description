@@ -214,10 +214,6 @@ $$
 u^{\star} = \sqrt{C_{M_0} ({u_a}^2  +{v_a}^2)}
 $$
 
-$$
-u^{\star} = \sqrt{C_{M_0} ({u_a}^2  +{v_a}^2)}
-$$
-
 We perform successive approximation calculation of ${C_{M_0}}$, because $F_u,F_v,F_\theta,F_q$ are required.
 
 $$
@@ -232,9 +228,8 @@ $$
 	z_{Lk0,E} = z_{0,E_0} + z_{0,E_R} + \frac{z_{0,E_R} {u^\star }^2 }{g} + \frac{z_{0,E_S}\nu }{u^\star}
 $$
 
-Here, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere.
-$z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat, and vapor, respectively.
-$z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base, and rough factor ($z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$) and smooth factor ($z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$) are taken into account.
+where, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere, $z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat and vapor, and
+$z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base of them, and $z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$ are rough factor for them, and $z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$ are smooth factor for them, respectively.
 
 ## Solution of energy balance at lake surface
 
