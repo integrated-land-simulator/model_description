@@ -139,7 +139,7 @@ In SSNOWD, the snow cover fraction is formulated for accumulation and ablation s
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the SWE. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 $$ \int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{A4} $$
-where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+where $D$ is the SWE depth and $f(D)$ is the probability distribution function (PDF) of SWE depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 $$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ \left[ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 \right] }, \tag{A5} $$
 where
 $$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
@@ -153,6 +153,7 @@ $$ \mathrm{Sn}(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f
 Equations (A8) and (A9) can be solved analytically by deformation.
 
 While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
+
 Also, the computational flow that diagnoses the snow cover fraction was slightly modified. In the original SSNOWD model, the accumulated melt depth $D\_m$ and the accumulated snowfall $\mu$ are predicted in the host atmospheric or hydrological models by summing the snow accumulation and the snowmelt rates simulated by the host model. However, this produces some differences between the SWE calculated from MATSIRO and SSNOWD, because the original SSNOWD does not account for the amount of snow that completely melts during the time step. Therefore, in the latest version of MATSIRO, $D\_m$ is calculated from Eq.(A9) and $\mathrm{Sn}$ using Newton-Raphson methods. Then, the snow cover fraction is calculated from Eq.(A8) and $D\_m$. This modification was introduced to avoid physical inconsistency between the two methods.
 
 ## 8.2 Vertical division of snow layers
