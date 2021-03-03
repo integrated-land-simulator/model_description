@@ -90,14 +90,17 @@ Frontier Research System for Global Change
 
  The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
-## 8.1 (New title)
+## 8.1 Snow cover fraction
+The snow water equivalent (SWE) is calculated as
+$$ 
+  \frac{d/mathrm{Sn}}{dt} = P\_{sn}^{\*} 
+$$
 
 The snow cover fraction $A_{Sn}$ is defined as
 $$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
 with the threshold value $Sn_{max} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
 
-Snow temperature $T_{Sn}$ is predicted using the thermal conductivity equation. When the $T_{Sn}$ is higher than the melting point temperature after the thermal conductivity equation is solved, $T_{Sn}$ is set to $0\; ^\circ \mathrm{C}$ and the residual thermal convergence is used for snowmelt.
 
 ## 8.2 Vertical division of snow layers
 
@@ -584,12 +587,14 @@ $\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully r
 
 ## 8.7 [New] Snow and ice albedo
 (Watanabe et al., 2010)
+
 The effect of snow aging on surface albedo is considered following Yang et al. (1997). Among the three coefficients that affect the increment in the nondimensional age of snow, the one representing the effect of dirt increases according to its concentration in the surface snow layer. This mimics the observed relation between snow albedo and dirt concentration (Aoki et al., 2006). The dirt concentration is calculated from the decomposition fluxes of dust and soot in SPRINTARS. Since the absorption coefficients of dust and soot are very different, the deposition fluxes are multiplied by their relatice weights.
 
 The previous version of MATSIRO assumed constant values for the surface albedo over an ice sheet. This has been changed in the present version following Bougamont et al. (2005), who proposed that the ice sheet albedo be expressed as a function of the water content above the ice. This scheme is applicable for both visible and near infrared radiation, with a fixed value of 0.05 begin used for the infrared band.
 
 
 (Nitta et al., 2014)
+
 The snow albedo $\alpha_{b}$ is calculated as
 $$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{new}}-\alpha_{b,\mathrm{old}}), \tag{A3} $$
 where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.65, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
@@ -611,4 +616,5 @@ Equations (A8) and (A9) can be solved analytically by deformation.
 
 
 (Tatebe et al., 2019)
+
 A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover. In SSNOWD, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
