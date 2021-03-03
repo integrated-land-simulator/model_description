@@ -90,7 +90,7 @@ Frontier Research System for Global Change
 
  The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
-## 8.1 Snow cover fraction
+## (Memo for snow cover fraction)
 (Nitta et al., 2014)
 
 The snow water equivalent (SWE) is calculated as
@@ -123,7 +123,7 @@ A physically based parameterization of sub-grid snow distribution (SSNOWD; Listo
 
 In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately. For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the SWE. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
 
-(new)
+## 8.1 Snow cover fraction
 
 The snow water equivalent (SWE) is calculated as
 $$ \frac{d\mathrm{Sn}}{dt} = P\_{\mathrm{Sn}}^{\*} - E\_s^{(\mathrm{Sn})} - M\_{\mathrm{Sn}} + F\_R, $$
