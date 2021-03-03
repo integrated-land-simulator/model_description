@@ -91,14 +91,19 @@ Frontier Research System for Global Change
  The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
 ## 8.1 Snow cover fraction
+(Nitta et al., 2014)
+
 The snow water equivalent (SWE) is calculated as
-$$ \frac{d\mathrm{Sn}}{dt} = P\_{Sn}^{\*} - E\_s^{(Sn)} - M\_{Sn} + F\_R $$,
-where $Sn$ is the SWE, $P\_{Sn}^{\*}$ is the snowfall that goes through or drops from the canopy layer, $E\_s^{(Sn)}$ is the snow sublimation, $M\_{Sn}$ is snowmelt, and $F\_R$ is the refreezing of rainfall and snowmelt.
+$$ \frac{d\mathrm{Sn}}{dt} = P\_{\mathrm{Sn}}^{\*} - E\_s^{(\mathrm{Sn})} - M\_{\mathrm{Sn}} + F\_R $$,
+where $\mathrm{Sn}$ is the SWE, $P\_{\mathrm{Sn}}^{\*}$ is the snowfall that goes through or drops from the canopy layer, $E\_s^{(\mathrm{Sn})}$ is the snow sublimation, $M\_{\mathrm{Sn}}$ is snowmelt, and $F\_R$ is the refreezing of rainfall and snowmelt.
 
-The snow cover fraction $A\_{Sn}$ is defined as
-$$ A\_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn\_{max}}, \; 1\right) \tag{A2}$$
-with the threshold value $Sn\_{\mathrm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+The snow cover fraction $A\_{\mathrm{Sn}}$ is defined as
+$$ A\_{\mathrm{Sn}} = \mathrm{min}\left(\sqrt{\mathrm{Sn} / \mathrm{Sn}\_{\mathrm{max}}}, \; 1\right) \tag{A2}$$
+with the threshold value $\mathrm{Sn}\_{\mathrm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
+(Tatebe et al., 2019)
+
+A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover. In SSNOWD, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
 
 
 ## 8.2 Vertical division of snow layers
@@ -614,6 +619,3 @@ $$ Sn(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9
 Equations (A8) and (A9) can be solved analytically by deformation.
 
 
-(Tatebe et al., 2019)
-
-A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover. In SSNOWD, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
