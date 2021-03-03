@@ -1,95 +1,3 @@
-Description of Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) Land Surface Parameterization
-
-November 10, 2001
-
-Seita Emori<sup>1</sup>
-
-
-Frontier Research System for Global Change
-
-<sup>1</sup> On loan from the National Institute for Environmental Studies
-
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
-<!-- code_chunk_output -->
-
-- [1 Introduction](#1-introduction)
-- [2 Vegetation type parameters](#2-vegetation-type-parameters)
-- [3 Radiation parameters](#3-radiation-parameters)
-  - [3.1 Calculation of ground surface (forest floor) albedo](#31-calculation-of-ground-surface-forest-floor-albedo)
-  - [3.2 Calculation of canopy albedo and transmissivity](#32-calculation-of-canopy-albedo-and-transmissivity)
-  - [3.3 Calculation of surface radiation flux, etc.](#33-calculation-of-surface-radiation-flux-etc)
-- [4 Turbulence parameters (bulk coefficient)](#4-turbulence-parameters-bulk-coefficient)
-  - [4.1 Calculation of roughness with respect to momentum and heat](#41-calculation-of-roughness-with-respect-to-momentum-and-heat)
-  - [4.2 Calculation of bulk coefficient with respect to momentum and heat](#42-calculation-of-bulk-coefficient-with-respect-to-momentum-and-heat)
-  - [4.3 Calculation of bulk coefficient with respect to vapor](#43-calculation-of-bulk-coefficient-with-respect-to-vapor)
-- [5 Stomatal resistance](#5-stomatal-resistance)
-  - [5.1 Calculation of soil moisture stress factor](#51-calculation-of-soil-moisture-stress-factor)
-  - [5.2 Calculation of amount of photosynthesis](#52-calculation-of-amount-of-photosynthesis)
-  - [5.3 Calculation of stomatal resistance (2)](#53-calculation-of-stomatal-resistance-2)
-  - [5.4 Calculation of ground surface evaporation resistance](#54-calculation-of-ground-surface-evaporation-resistance)
-- [6 Surface energy balance](#6-surface-energy-balance)
-  - [6.1 Calculation of surface turbulent fluxes](#61-calculation-of-surface-turbulent-fluxes)
-  - [6.2 Calculation of heat conduction fluxes](#62-calculation-of-heat-conduction-fluxes)
-  - [6.3 Solution of energy balance at ground surface and canopy](#63-solution-of-energy-balance-at-ground-surface-and-canopy)
-    - [6.3.1 Energy balance at ground surface and canopy](#631-energy-balance-at-ground-surface-and-canopy)
-    - [6.3.2 Case 1: When there is no melting at the ground surface](#632-case-1-when-there-is-no-melting-at-the-ground-surface)
-    - [6.3.3 Case 2: When there is melting at the ground surface](#633-case-2-when-there-is-melting-at-the-ground-surface)
-    - [6.3.4 Conditions for solutions](#634-conditions-for-solutions)
-    - [6.3.5 Updating of ground surface and canopy temperatures](#635-updating-of-ground-surface-and-canopy-temperatures)
-    - [6.3.6 Updating of flux values](#636-updating-of-flux-values)
-- [7 Canopy Water Balance](#7-canopy-water-balance)
-  - [7.1 Diagnosis of canopy water phase](#71-diagnosis-of-canopy-water-phase)
-  - [7.2 Prognosis of canopy water](#72-prognosis-of-canopy-water)
-    - [7.2.1 Evaporation (sublimation) of canopy water](#721-evaporation-sublimation-of-canopy-water)
-    - [7.2.2 Interception of precipitation by the canopy](#722-interception-of-precipitation-by-the-canopy)
-    - [7.2.3 Dripping of the canopy water](#723-dripping-of-the-canopy-water)
-    - [7.2.4 Updating and melting of canopy water](#724-updating-and-melting-of-canopy-water)
-  - [7.3 Fluxes given to the soil, snow, and runoff process](#73-fluxes-given-to-the-soil-snow-and-runoff-process)
-- [8 Snow](#8-snow)
-  - [8.1 Diagnosis of snow-covered ratio](#81-diagnosis-of-snow-covered-ratio)
-  - [8.2 Vertical division of snow layers](#82-vertical-division-of-snow-layers)
-  - [8.3 Calculation of snow water equivalent](#83-calculation-of-snow-water-equivalent)
-    - [8.3.1 Sublimation of snow](#831-sublimation-of-snow)
-    - [8.3.2 Snowmelt](#832-snowmelt)
-    - [8.3.3 Freeze of snowmelt water and rainfall in snow](#833-freeze-of-snowmelt-water-and-rainfall-in-snow)
-    - [8.3.4 Snowfall](#834-snowfall)
-    - [8.3.5 Redivision of snow layer and rediagnosis of temperature](#835-redivision-of-snow-layer-and-rediagnosis-of-temperature)
-  - [8.4 Calculation of snow heat conduction](#84-calculation-of-snow-heat-conduction)
-    - [8.4.1 Snow heat conduction equations](#841-snow-heat-conduction-equations)
-    - [8.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#842-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
-  - [8.5 Glacier formation](#85-glacier-formation)
-  - [8.6 Fluxes given to the soil or the runoff process](#86-fluxes-given-to-the-soil-or-the-runoff-process)
-  - [8.7 Calculation of snow albedo](#87-calculation-of-snow-albedo)
-- [9 Runoff](#9-runoff)
-  - [9.1 Outline of TOPMODEL](#91-outline-of-topmodel)
-  - [9.2 Application of TOPMODEL assuming simplified topography](#92-application-of-topmodel-assuming-simplified-topography)
-  - [9.3 Calculation of runoff](#93-calculation-of-runoff)
-    - [9.3.1 Estimation of mean water table depth](#931-estimation-of-mean-water-table-depth)
-    - [9.3.2 Calculation of groundwater runoff](#932-calculation-of-groundwater-runoff)
-    - [9.3.3 Calculation of surface runoff](#933-calculation-of-surface-runoff)
-  - [9.4 Water flux given to soil](#94-water-flux-given-to-soil)
-- [10 Soil](#10-soil)
-  - [10.1 Calculation of soil heat conduction](#101-calculation-of-soil-heat-conduction)
-    - [10.1.1 Soil heat conduction equations](#1011-soil-heat-conduction-equations)
-    - [10.1.2 Solution of heat conduction equations](#1012-solution-of-heat-conduction-equations)
-  - [10.2 Calculation of soil moisture movement](#102-calculation-of-soil-moisture-movement)
-    - [10.2.1 Soil moisture movement equations](#1021-soil-moisture-movement-equations)
-    - [10.2.2 Solution of soil moisture movement equations](#1022-solution-of-soil-moisture-movement-equations)
-  - [10.3 Phase change of soil moisture](#103-phase-change-of-soil-moisture)
-    - [10.3.1 Ice sheet process](#1031-ice-sheet-process)
-- [11 Lake](#11-lake)
-- [12 Wetland](#12-wetland)
-- [13 Tile scheme](#13-tile-scheme)
-- [References](#references)
-
-<!-- /code_chunk_output -->
-
-
-# 8 Snow
-
- The snow water equivalent, snow temperature, and snow albedo are calculated here.
-
 ## (Memo for snow cover fraction)
 (Nitta et al., 2014)
 
@@ -123,11 +31,13 @@ A physically based parameterization of sub-grid snow distribution (SSNOWD; Listo
 
 In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately. For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the SWE. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
 
-## 8.1 Snow cover fraction
+## 8.1 Snow water equivalent
 
 The snow water equivalent (SWE) is calculated as
 $$ \frac{d\mathrm{Sn}}{dt} = P\_{\mathrm{Sn}}^{\*} - E\_s^{(\mathrm{Sn})} - M\_{\mathrm{Sn}} + F\_R, $$
 where $\mathrm{Sn}$ is the SWE, $P\_{\mathrm{Sn}}^{\*}$ is the snowfall that goes through or drops from the canopy layer, $E\_s^{(\mathrm{Sn})}$ is the snow sublimation, $M\_{\mathrm{Sn}}$ is snowmelt, and $F\_R$ is the refreezing of rainfall and snowmelt.
+
+## 8.2 Snow cover fraction
 
 The snow cover fraction $A\_{\mathrm{Sn}}$ is defined as
 $$ A\_{\mathrm{Sn}} = \mathrm{min}\left(\sqrt{\mathrm{Sn} / \mathrm{Sn}\_{\mathrm{max}}}, \; 1\right) \tag{A2}$$
