@@ -1302,23 +1302,6 @@ $$
 \end{array}
 \right.
 $$
-$$ \begin{split}
-  \Delta \widetilde{Sn}_{(1)} &= \begin{cases}
-    Sn & (Sn < 20) \\
-    0.5Sn & (20 \leq Sn < 40)  \\
-    20 & (Sn \geq 40)
-  \end{cases} \\
- \Delta \widetilde{Sn}_{(2)} &= \begin{cases}
-    0 \\
-    Sn - \Delta \widetilde{Sn}_{(1)} \\
-    0.5(Sn-20) \\
-    40
-  \end{cases} \\
-  \Delta \widetilde{Sn}_{(3)} &= \begin{cases}
-    0 \\
-    \widetilde{Sn} - (\Delta \widetilde{Sn}_{(1)} + \Delta \widetilde{Sn}_{(2)})
-  \end{cases}
-\end{split} $$
 
 where
 
