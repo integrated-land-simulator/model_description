@@ -92,7 +92,7 @@ Frontier Research System for Global Change
 
 ## 8.1 (New title)
 
-The snow cover fraction \(A_{Sn}\) is defined as
+The snow cover fraction $A_{Sn}$ is defined as
 $$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
 with the threshold value $Sn_{max} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
@@ -117,7 +117,7 @@ Here $\mathrm{CV}$ is the coefficient of variation and $\mu$ is the accumulated 
 The snow cover fraction $A_{Sn}(D_m)$ is represented as
 $$ A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD. \tag{A8} $$
 Then, the grid-averaged SWE is represented as
-$$ S_n(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9} $$
+$$ Sn(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9} $$
 Equations (A8) and (A9) can be solved analytically by deformation.
 
 
