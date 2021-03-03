@@ -99,29 +99,6 @@ with the threshold value $Sn_{max} = 120 \; \mathrm{kg \; m^{-2}}$ determining w
 
 Snow temperature $T_{Sn}$ is predicted using the thermal conductivity equation. When the $T_{Sn}$ is higher than the melting point temperature after the thermal conductivity equation is solved, $T_{Sn}$ is set to $0\; ^\circ \mathrm{C}$ and the residual thermal convergence is used for snowmelt.
 
-
-The snow albedo $\alpha_{b}$ is calculated as
-$$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{new}}-\alpha_{b,\mathrm{old}}), \tag{A3} $$
-where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.4, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
-
-
-In the accumulation season, snowfall occured uniformly and the snow cover fraction was assumed to be equal unity. During snowmelt, under the assumption of uniform melt depth $D_m$, the sum of snow-free and snow-covered fraction equals unity:
-$$ \int_0^{D_m} f(D)dD + \int_{D_m}^\infty f(D)dD = 1, \tag{A4} $$
-where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell was assumed to follow a lognormal distribution:
-$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ \left[ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 \right] }, \tag{A5} $$
-where
-$$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
-and
-$$ \zeta^2 = \ln(1+\mathrm{CV}). \tag{A7} $$
-Here $\mathrm{CV}$ is the coefficient of variation and $\mu$ is the accumulated snowfall.
-The snow cover fraction $A_{Sn}(D_m)$ is represented as
-$$ A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD. \tag{A8} $$
-Then, the grid-averaged SWE is represented as
-$$ Sn(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9} $$
-Equations (A8) and (A9) can be solved analytically by deformation.
-
-
-
 ## 8.2 Vertical division of snow layers
 
 In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
@@ -310,7 +287,7 @@ The liquid water that has percolated from the snow to the lower boundary is give
 Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
 
 $$
- Sn^{\tau+1} = Sn^{*** } + P_{Sn}^* \Delta t_L
+ Sn^{\tau+1} = Sn^{\*\*\*} + P_{Sn}^* \Delta t_L
 $$
 
 However, when the temperature of the uppermost soil layer is 0°C or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
@@ -570,7 +547,7 @@ $$
 
 where $\widetilde{F}_{wSn}^*$  is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
-## 8.7 Calculation of snow albedo
+## 8.7 [Old] Calculation of snow albedo
 
 The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
 
@@ -604,3 +581,34 @@ $$
 
 $\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
+
+## 8.7 [New] Snow and ice albedo
+(Watanabe et al., 2010)
+The effect of snow aging on surface albedo is considered following Yang et al. (1997). Among the three coefficients that affect the increment in the nondimensional age of snow, the one representing the effect of dirt increases according to its concentration in the surface snow layer. This mimics the observed relation between snow albedo and dirt concentration (Aoki et al., 2006). The dirt concentration is calculated from the decomposition fluxes of dust and soot in SPRINTARS. Since the absorption coefficients of dust and soot are very different, the deposition fluxes are multiplied by their relatice weights.
+
+The previous version of MATSIRO assumed constant values for the surface albedo over an ice sheet. This has been changed in the present version following Bougamont et al. (2005), who proposed that the ice sheet albedo be expressed as a function of the water content above the ice. This scheme is applicable for both visible and near infrared radiation, with a fixed value of 0.05 begin used for the infrared band.
+
+
+(Nitta et al., 2014)
+The snow albedo $\alpha_{b}$ is calculated as
+$$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{new}}-\alpha_{b,\mathrm{old}}), \tag{A3} $$
+where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.65, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
+
+In the accumulation season, snowfall occured uniformly and the snow cover fraction was assumed to be equal unity. During snowmelt, under the assumption of uniform melt depth $D_m$, the sum of snow-free and snow-covered fraction equals unity:
+$$ \int_0^{D_m} f(D)dD + \int_{D_m}^\infty f(D)dD = 1, \tag{A4} $$
+where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell was assumed to follow a lognormal distribution:
+$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ \left[ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 \right] }, \tag{A5} $$
+where
+$$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
+and
+$$ \zeta^2 = \ln(1+\mathrm{CV}). \tag{A7} $$
+Here $\mathrm{CV}$ is the coefficient of variation and $\mu$ is the accumulated snowfall.
+The snow cover fraction $A_{Sn}(D_m)$ is represented as
+$$ A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD. \tag{A8} $$
+Then, the grid-averaged SWE is represented as
+$$ Sn(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9} $$
+Equations (A8) and (A9) can be solved analytically by deformation.
+
+
+(Tatebe et al., 2019)
+A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover. In SSNOWD, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
