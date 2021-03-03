@@ -92,9 +92,9 @@ Frontier Research System for Global Change
 
 ## 8.1 (New title)
 
-    The snow cover fraction \(A_{Sn}\) is defined as
+The snow cover fraction \(A_{Sn}\) is defined as
 $$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
-with the threshold value \(Sn_{max} = 120 \; \mathrm{kg m^{-2}}\) determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+with the threshold value $Sn_{max} = 120 \; \mathrm{kg m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
 
 ## 8.2 Vertical division of snow layers
