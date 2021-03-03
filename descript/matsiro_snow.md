@@ -123,6 +123,37 @@ A physically based parameterization of sub-grid snow distribution (SSNOWD; Listo
 
 In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately. For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the SWE. A lognormal distribution function is assumed and the coefficient of variation category is diagnosed from the standard deviation of the subgrid topography, coldness index, and vegetation type that is a proxy for surface winds. While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
 
+(new)
+
+The snow water equivalent (SWE) is calculated as
+$$ \frac{d\mathrm{Sn}}{dt} = P\_{\mathrm{Sn}}^{\*} - E\_s^{(\mathrm{Sn})} - M\_{\mathrm{Sn}} + F\_R, $$
+where $\mathrm{Sn}$ is the SWE, $P\_{\mathrm{Sn}}^{\*}$ is the snowfall that goes through or drops from the canopy layer, $E\_s^{(\mathrm{Sn})}$ is the snow sublimation, $M\_{\mathrm{Sn}}$ is snowmelt, and $F\_R$ is the refreezing of rainfall and snowmelt.
+
+The snow cover fraction $A\_{\mathrm{Sn}}$ is defined as
+$$ A\_{\mathrm{Sn}} = \mathrm{min}\left(\sqrt{\mathrm{Sn} / \mathrm{Sn}\_{\mathrm{max}}}, \; 1\right) \tag{A2}$$
+with the threshold value $\mathrm{Sn}\_{\mathrm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+
+A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover.
+
+In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately.
+For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
+For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the SWE. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
+$$ \int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{A4} $$
+where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ \left[ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 \right] }, \tag{A5} $$
+where
+$$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
+and
+$$ \zeta^2 = \ln(1+\mathrm{CV}^2). \tag{A7} $$
+Here $\mu$ is the accumulated snowfall and $\mathrm{CV}$ is the coefficient of variation. $\mathrm{CV}$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. 
+The snow cover fraction $A\_{\mathrm{Sn}}(D\_m)$ is represented as 
+$$ A\_{\mathrm{Sn}}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD. \tag{A8} $$
+Then, the grid-averaged SWE is represented as
+$$ \mathrm{Sn}(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD. \tag{A9} $$
+Equations (A8) and (A9) can be solved analytically by deformation.
+
+While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 °C. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
+Also, the computational flow that diagnoses the snow cover fraction was slightly modified. In the original SSNOWD model, the accumulated melt depth $D\_m$ and the accumulated snowfall $\mu$ are predicted in the host atmospheric or hydrological models by summing the snow accumulation and the snowmelt rates simulated by the host model. However, this produces some differences between the SWE calculated from MATSIRO and SSNOWD, because the original SSNOWD does not account for the amount of snow that completely melts during the time step. Therefore, in the latest version of MATSIRO, $D\_m$ is calculated from Eq.(A9) and $\mathrm{Sn}$ using Newton-Raphson methods. Then, the snow cover fraction is calculated from Eq.(A8) and $D\_m$. This modification was introduced to avoid physical inconsistency between the two methods.
 
 ## 8.2 Vertical division of snow layers
 
