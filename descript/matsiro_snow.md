@@ -92,13 +92,12 @@ Frontier Research System for Global Change
 
 ## 8.1 Snow cover fraction
 The snow water equivalent (SWE) is calculated as
-$$ 
-  \frac{d/mathrm{Sn}}{dt} = P\_{sn}^{\*} 
-$$
+$$ \frac{d\mathrm{Sn}}{dt} = P\_{Sn}^{\*} - E\_s^{(Sn)} - M\_{Sn} + F\_R $$,
+where $Sn$ is the SWE, $P\_{Sn}^{\*}$ is the snowfall that goes through or drops from the canopy layer, $E\_s^{(Sn)}$ is the snow sublimation, $M\_{Sn}$ is snowmelt, and $F\_R$ is the refreezing of rainfall and snowmelt.
 
-The snow cover fraction $A_{Sn}$ is defined as
-$$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
-with the threshold value $Sn_{max} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+The snow cover fraction $A\_{Sn}$ is defined as
+$$ A\_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn\_{max}}, \; 1\right) \tag{A2}$$
+with the threshold value $Sn\_{\matrhm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
 
 
