@@ -131,7 +131,7 @@ where $\mathrm{Sn}$ is the SWE, $P\_{\mathrm{Sn}}^{\*}$ is the snowfall that goe
 
 The snow cover fraction $A\_{\mathrm{Sn}}$ is defined as
 $$ A\_{\mathrm{Sn}} = \mathrm{min}\left(\sqrt{\mathrm{Sn} / \mathrm{Sn}\_{\mathrm{max}}}, \; 1\right) \tag{A2}$$
-with the threshold value $\mathrm{Sn}\_{\mathrm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+with the threshold value $\mathrm{Sn}\_{\mathrm{max}}$ = 120kg m<sup>{-2}</sup> determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
 A physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover.
 
@@ -153,6 +153,60 @@ $$ A\_{\mathrm{Sn}}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD. \tag{A8} $$
 Then, the grid-averaged SWE is represented as
 $$ \mathrm{Sn}(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD. \tag{A9} $$
 The computational flow that diagnoses the snow cover fraction was also slightly modified. In the original SSNOWD model, the accumulated melt depth $D\_m$ and the accumulated snowfall $\mu$ are predicted in the host atmospheric or hydrological models by summing the snow accumulation and the snowmelt rates simulated by the host model. However, this produces some differences between the SWE calculated from MATSIRO and SSNOWD, because the original SSNOWD does not account for the amount of snow that completely melts during the time step. Therefore, in the latest version of MATSIRO, $D\_m$ is calculated from Eq.(A9) and $\mathrm{Sn}$ using Newton-Raphson methods. Then, the snow cover fraction is calculated from Eq.(A8) and $D\_m$. This modification was introduced to avoid physical inconsistency between the two methods.
+
+## 8.7 [Old] Calculation of snow albedo
+
+The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
+
+The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
+
+$$
+ \frac {A\_{g}^{\tau +1} - A\_{g}^{\tau}}{\Delta t\_L}
+ = \left\{
+\exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}}\right) \right]
+  + r\_{dirt} \right\} \Bigm/ {\tau\_{age}}
+$$
+
+where $f\_{ageT}$ = 5000 and $\tau\_{age}$ = 1 x 10<sup>6</sup>. $\tau\_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
+
+Using this, the albedo of the snow is solved by
+
+
+$$
+ \alpha\_{Sn(b)}^{\tau+1} = \alpha\_{Sn(b)}^{new} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{Sn(b)}^{old} - \alpha\_{Sn(b)}^{new}) \qquad (b=1,2,3)
+$$
+
+
+where $A\_g^{\tau}$ is solved beforehand by calculating back from the prognostic variable $\alpha\_{Sn(1)}^{\tau}$ using the same equation.
+
+When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
+
+$$
+ \alpha\_{Sn(b)}^{\tau+1} = \alpha\_{Sn(b)}^{\tau+1}
++ \min\left( \frac{P\_{Sn}^\* \Delta t\_L}{\Delta{Sn\_c}}, 1 \right) (\alpha\_{Sn(b)}^{new} - \alpha\_{Sn(b)}^{\tau+1}) \qquad (b=1,2,3)
+$$
+
+$\Delta {Sn\_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+
+## (Memo for snow and ice albedo)
+(Watanabe et al., 2010)
+
+The effect of snow aging on surface albedo is considered following Yang et al. (1997). Among the three coefficients that affect the increment in the nondimensional age of snow, the one representing the effect of dirt increases according to its concentration in the surface snow layer. This mimics the observed relation between snow albedo and dirt concentration (Aoki et al., 2006). The dirt concentration is calculated from the decomposition fluxes of dust and soot in SPRINTARS. Since the absorption coefficients of dust and soot are very different, the deposition fluxes are multiplied by their relatice weights.
+
+The previous version of MATSIRO assumed constant values for the surface albedo over an ice sheet. This has been changed in the present version following Bougamont et al. (2005), who proposed that the ice sheet albedo be expressed as a function of the water content above the ice. This scheme is applicable for both visible and near infrared radiation, with a fixed value of 0.05 begin used for the infrared band.
+
+(Nitta et al., 2014)
+
+The snow albedo $\alpha\_b$ is calculated as
+$$ \alpha\_b = \alpha\_{b,\mathrm{new}} + \frac{A\_g}{1+A\_g}(\alpha\_{b,\mathrm{old}}-\alpha\_{b,\mathrm{new}}), \tag{A3} $$
+where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow, and $A\_g$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.4, 0.2, and 0.1 for $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$, and $\alpha\_{\mathrm{ifr,old}}$, respectively.
+
+## 8.7 [New] Snow and ice albedo
+
+The snow albedo $\alpha\_b$ is calculated as
+$$ \alpha\_b = \alpha\_{b,\mathrm{new}} + \frac{A\_g}{1+A\_g}(\alpha\_{b,\mathrm{old}}-\alpha\_{b,\mathrm{new}}), \tag{A3} $$
+where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow, and $A\_g$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2, and 0.1 for $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$, and $\alpha\_{\mathrm{ifr,old}}$, respectively.
+
 
 ## 8.2 Vertical division of snow layers
 
@@ -601,53 +655,4 @@ $$
 
 
 where $\widetilde{F}_{wSn}^*$  is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
-
-## 8.7 [Old] Calculation of snow albedo
-
-The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
-
-The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
-
-$$
- \frac {A_{g}^{\tau +1} - A_{g}^{\tau}}{\Delta t_L}
- = \left\{
-\exp \left[ f_{ageT} \left( \frac{1}{T_{melt}}-\frac{1}{T_{Sn(1)}}\right) \right]
-  + r_{dirt} \right\} \Bigm/ {\tau_{age}}
-$$
-
-where $f_{ageT}$ = 5000 and $\tau_{age}$ = 1 x 10<sup>6</sup>. $\tau_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
-
-Using this, the albedo of the snow is solved by
-
-
-$$
- \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{new} + \frac{A_g^{\tau+1}}{1+A_g^{\tau+1}} (\alpha_{Sn(b)}^{old} - \alpha_{Sn(b)}^{new}) \qquad (b=1,2,3)
-$$
-
-
-where $A_g^{\tau}$ is solved beforehand by calculating back from the prognostic variable $\alpha_{Sn(1)}^{\tau}$ using the same equation.
-
-When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
-
-$$
- \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{\tau+1}
-+ \min\left( \frac{P_{Sn}^* \Delta t_L}{\Delta{Sn_c}}, 1 \right) (\alpha_{Sn(b)}^{new} - \alpha_{Sn(b)}^{\tau+1}) \qquad (b=1,2,3)
-$$
-
-$\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
-
-
-## 8.7 [New] Snow and ice albedo
-(Watanabe et al., 2010)
-
-The effect of snow aging on surface albedo is considered following Yang et al. (1997). Among the three coefficients that affect the increment in the nondimensional age of snow, the one representing the effect of dirt increases according to its concentration in the surface snow layer. This mimics the observed relation between snow albedo and dirt concentration (Aoki et al., 2006). The dirt concentration is calculated from the decomposition fluxes of dust and soot in SPRINTARS. Since the absorption coefficients of dust and soot are very different, the deposition fluxes are multiplied by their relatice weights.
-
-The previous version of MATSIRO assumed constant values for the surface albedo over an ice sheet. This has been changed in the present version following Bougamont et al. (2005), who proposed that the ice sheet albedo be expressed as a function of the water content above the ice. This scheme is applicable for both visible and near infrared radiation, with a fixed value of 0.05 begin used for the infrared band.
-
-
-(Nitta et al., 2014)
-
-The snow albedo $\alpha_{b}$ is calculated as
-$$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{new}}-\alpha_{b,\mathrm{old}}), \tag{A3} $$
-where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.65, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
 
