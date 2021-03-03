@@ -97,7 +97,7 @@ where $Sn$ is the SWE, $P\_{Sn}^{\*}$ is the snowfall that goes through or drops
 
 The snow cover fraction $A\_{Sn}$ is defined as
 $$ A\_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn\_{max}}, \; 1\right) \tag{A2}$$
-with the threshold value $Sn\_{\matrhm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+with the threshold value $Sn\_{\mathrm{max}} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
 
 
