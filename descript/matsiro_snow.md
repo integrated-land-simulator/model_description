@@ -94,7 +94,15 @@ Frontier Research System for Global Change
 
 The snow cover fraction \(A_{Sn}\) is defined as
 $$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
-with the threshold value $Sn_{max} = 120 \; \mathrm{kg m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+with the threshold value $Sn_{max} = 120 \; \mathrm{kg \; m^{-2}}$ determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
+
+
+Snow temperature $T_{Sn}$ is predicted using the thermal conductivity equation. When the $T_{Sn}$ is higher than the melting point temperature after the thermal conductivity equation is solved, $T_{Sn}$ is set to $0\; ^\circ \mathrm{C}$ and the residual thermal convergence is used for snowmelt.
+
+
+The snow albedo $\alpha_{b}$ is calculated as
+$$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{new}}-\alpha_{b,\mathrm{old}}), \tag{A3} $$
+where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.4, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
 
 
 ## 8.2 Vertical division of snow layers
