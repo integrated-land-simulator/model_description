@@ -90,25 +90,12 @@ Frontier Research System for Global Change
 
  The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
-## 8.1 Diagnosis of snow-covered ratio
+## 8.1 (New title)
 
-When the amount of snow is small, the snow in the subgrid cells is considered. The snow-covered ratio $A_{Sn}$ is given as a unique function of the snow water content ($Sn_c$) by
+    The snow cover fraction \(A_{Sn}\) is defined as
+$$ A_{Sn} = \mathrm{min}\left(\sqrt{Sn/Sn_{max}}, \; 1\right) \tag{A2}$$
+with the threshold value \(Sn_{max} = 120 \; \mathrm{kg m^{-2}}\) determining when the whole grid cell is covered with snow. The number of snow layers is determined by the SWE, with a maximum of three.
 
-$$
- A_{Sn} = \min(Sn/Sn_{c}, 1)^{1/2} \tag{eq210}
-$$
-
-$Sn_c$= 100 \[kg/m<sup>2</sup>\] is a standard value.
-
-In actuality, various factors can be considered to affect the snow-covered ratio, such as differences in topography, the time of snowfall or snow melting, etc. With regard to this point, introduction the Subgrid Snow Distribution (SSNOWD) model proposed by Liston (personal communication) is being studied.
-
-$A_{Sn}$ is referred to at the beginning of the flux calculation section, and the various fluxes calculated there are used for the area-weighted mean as follows:
-
-$$
- \overline{F} = (1-A_{Sn}) F_{(1)} + A_{Sn} F_{(2)}
-$$
-
-where $F_{(1)}$ and $F_{(2)}$  are fluxes at the snow-free portion and snow-covered portion, respectively. In actuality, this operation is performed through the flux coupler.
 
 ## 8.2 Vertical division of snow layers
 
