@@ -109,6 +109,7 @@ In the accumulation season, snowfall occured uniformly and the snow cover fracti
 $$ \int_0^{D_m} f(D)dD + \int_{D_m}^\infty f(D)dD = 1, \tag{A4} $$
 where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell was assumed to follow a lognormal distribution:
 $$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{\left[ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2\} \right]}, \tag{A5} $$
+$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 }, \tag{A5} $$
 where
 $$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
 and
