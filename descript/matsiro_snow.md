@@ -105,6 +105,24 @@ $$ \alpha_{b} = \alpha_{b,\mathrm{new}} \frac{A_{g}}{1+A_{g}}(\alpha_{b,\mathrm{
 where $\alpha_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha_{b,\mathrm{old}}$ is the albedo of old snow, and $A_{g}$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.4, 0.2, and 0.1 for $\alpha_{\mathrm{vis,new}}$, $\alpha_{\mathrm{nir,new}}$, $\alpha_{\mathrm{ifr,new}}$, $\alpha_{\mathrm{vis,old}}$, $\alpha_{\mathrm{nir,old}}$, and $\alpha_{\mathrm{ifr,old}}$, respectively.
 
 
+In the accumulation season, snowfall occured uniformly and the snow cover fraction was assumed to be equal unity. During snowmelt, under the assumption of uniform melt depth $D_m$, the sum of snow-free and snow-covered fraction equals unity:
+$$ \int_0^{D_m} f(D)dD + \int_{D_m}^\infty f(D)dD = 1, \tag{A4} $$
+where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell was assumed to follow a lognormal distribution:
+$$ f(D) = \frac{1}{D\zeta\sqrt{2}}
+ \exp{\left\{-\frac{1}{2}\left[ \frac{\ln(D)-\lambda}{\zeta} \right]^2 \right\}}, \tag{A5} $$
+where
+$$ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6} $$
+and
+$$ \zeta^2 = \ln(1+\mathrm{CV}). \tag{A7} $$
+Here $\mathrm{CV}$ is the coefficient of variation and $\mu$ is the accumulated snowfall.
+The snow cover fraction $A_{Sn}(D_m)$ is represented as
+$$ A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD. \tag{A8} $$
+Then, the grid-averaged SWE is represented as
+$$ S_n(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD. \tag{A9} $$
+Equations (A8) and (A9) can be solved analytically by deformation.
+
+
+
 ## 8.2 Vertical division of snow layers
 
 In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
