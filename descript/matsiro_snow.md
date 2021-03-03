@@ -124,7 +124,7 @@ Equations (A8) and (A9) can be solved analytically by deformation.
 $$ f(D) = \frac{1}{D\zeta\sqrt{2}} $$
 $$ \exp{\{-\frac{1}{2}\left[ \frac{\ln(D)-\lambda}{\zeta} \right]^2 \}} $$
 $$ \exp{-\frac{1}{2}\left[ \frac{\ln(D)-\lambda}{\zeta} \right]^2} $$
-$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{\left\{-\frac{1}{2}\left[ \frac{\ln(D)-\lambda}{\zeta} \right]^2 \right\}}, $$
+$$ f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{\{-\frac{1}{2}\left[ \frac{\ln(D)-\lambda}{\zeta} \right]^2\}}, $$
 
 ## 8.2 Vertical division of snow layers
 
