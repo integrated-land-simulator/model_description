@@ -443,7 +443,7 @@ $$
  T_{Sn_{(k)}}^{*} = T_{Sn_{(k)}}^{\tau} + \Delta T_{Sn_{(k)}}
 $$
 
-6.4.3 Case 2: When snowmelt occurs in the uppermost layer
+### 8.4.3 Case 2: When snowmelt occurs in the uppermost layer
 
 When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 
