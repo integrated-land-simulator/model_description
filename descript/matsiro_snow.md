@@ -2,9 +2,11 @@
 
 # 8. Snow
 
+The snow cover fraction, snow water equivalent, snow temperature and snow albedo are calculated here.
+
 ## 8.1 Diagnosis of snow cover fraction
 
-Various factors can be considered to affect the snow-covered ratio, such as differences in topography, the time of snowfall or snow melting, etc.
+Various factors can be considered to affect the snow cover fraction, such as differences in topography, the time of snowfall or snow melting, etc.
 With regard to this point, a physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover.
 
 In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately.
