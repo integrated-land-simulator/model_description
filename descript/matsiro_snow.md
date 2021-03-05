@@ -6,10 +6,9 @@ The snow cover fraction, snow water equivalent, snow temperature and snow albedo
 
 ## 8.1 Diagnosis of snow cover fraction
 
-Various factors can be considered to affect the snow cover fraction, such as differences in topography, the time of snowfall or snow melting, etc.
-With regard to this point, a physically based parameterization of sub-grid snow distribution (SSNOWD; Liston, 2004; Nitta et al., 2014) replaces the simple functional approach of snow water equivalent in calculating sub-grid snow fractions in MIROC5 in order to improve the seasonal cycle of snow cover.
+The snow cover fraction is diagnosed with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Tatebe et al., 2019).
 
-In SSNOWD, the snow cover fraction is formulated for accumulation and ablation seasons separately.
+The snow cover fraction is formulated for accumulation and ablation seasons separately. 
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
@@ -37,22 +36,19 @@ $$
 \zeta^2 = \ln(1+CV^2). \tag{A7}
 $$
 
-Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. 
-While the cold degree month was adopted for coldness in the original SSNOWD, we decided intead to introduce the annually averaged temperature over tha latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. In addition, a scheme representing a snow-fed wetland that takes into consideration sub-grid terrain complexity (Nitta et al., 2017) is incorporated.
+Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
-The snow cover fraction $A\_{Sn}(D\_m)$ is represented as 
-
-$$
-A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD. \tag{A8}
-$$
-
-Then, the grid-averaged snow water equivalent is represented as
+$D\_m$ is calculated from $Sn$ and the following equation using Newton-Raphson methods:
 
 $$
 Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD. \tag{A9}
 $$
 
-The computational flow that diagnoses the snow cover fraction was also slightly modified. In the original SSNOWD model, the accumulated melt depth $D\_m$ and the accumulated snowfall $\mu$ are predicted in the host atmospheric or hydrological models by summing the snow accumulation and the snowmelt rates simulated by the host model. However, this produces some differences between the snow water equivalent calculated from MATSIRO and SSNOWD, because the original SSNOWD does not account for the amount of snow that completely melts during the time step. Therefore, in the latest version of MATSIRO, $D\_m$ is calculated from Eq.(A9) and $Sn$ using Newton-Raphson methods. Then, the snow cover fraction is calculated from Eq.(A8) and $D\_m$. This modification was introduced to avoid physical inconsistency between the two methods.
+Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
+
+$$
+A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD. \tag{A8}
+$$
 
 
 ## 8.2 Vertical division of snow layers
@@ -519,6 +515,8 @@ where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted f
 
 ## 8.7 Snow and ice albedo
 
+### 8.7.1 Snow albedo
+
 The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
 
 The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
@@ -532,13 +530,13 @@ $$
 
 where $f\_{ageT}$ = 5000 and $\tau\_{age}$ = 1 &times; 10^6^. $\tau\_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
 
-Using this, the albedo of the snow is solved by
+Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
 $$
 \alpha\_b^{\tau+1} = \alpha\_{b,\mathrm{new}}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,\mathrm{old}}-\alpha\_{b,\mathrm{new}}), 
 $$
 
-where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow, and $A\_g$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir), and infrared (ifr), and used 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2, and 0.1 for $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$, and $\alpha\_{\mathrm{ifr,old}}$, respectively.
+where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow, and $A\_g$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr), and in default, $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$ and $\alpha\_{\mathrm{ifr,old}}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
@@ -547,3 +545,15 @@ $$
 $$
 
 $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+
+
+### 8.7.2 Ice albedo
+
+The ice sheet albedo, $\alpha\_{b,surf}$, is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
+
+$$
+\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)},
+$$
+
+where $\alpha\_{b,ice}$ is the land ice albedo without surface water, $\alpha\_{b,wet}$ is the one with surface water, $w\_{surf}$ is the thisness of surfice water and $w^{\*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha\_{vis,ice}$, $\alpha\_{nir,ice}$ and $\alpha\_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha\_{b,wet}$ is set to 0.15 for all bands.
+
