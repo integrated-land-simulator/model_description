@@ -13,24 +13,34 @@ $$
 where
 
 $$
-f\_{age} = exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]},
+f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]},
 $$
 
 $$
 f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}.
 $$
 
-The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
+$r\_{dirt}$ represents the effect of dirt and soot. When the option OPT\_SNWALB is inactive, 
 
 $$
-\frac{A\_g^{\tau +1} - A\_g^{\tau}}{\Delta t\_L}
- = \left\\{ 
- \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right]} + r\_{dirt} 
- \right\\}
- \Bigm/ {\tau\_{age}}
+r\_{dirt} = \left\\{
+ r\_{dirt,c} (over continental ice)\\
+ r\_{dirt,0} (elsewhere)
+\right,
 $$
 
-where $f\_{ageT}$ = 5000 and $\tau\_{age}$ = 1 &times; 10^6^. $\tau\_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
+where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$.
+
+When the option OPT\_SNWALB is active, the density of the dirt is considered as
+
+$$
+r\_{dirt} = \left\\{
+min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) (over continental ice)\\
+min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) (elsewhere)
+\right.,
+$$
+
+where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
 
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
@@ -38,7 +48,7 @@ $$
 \alpha\_b^{\tau+1} = \alpha\_{b,\mathrm{new}}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,\mathrm{old}}-\alpha\_{b,\mathrm{new}}), 
 $$
 
-where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow, and $A\_g$ is an aging factor from Yang et al. (1997). This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr), and in default, $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$ and $\alpha\_{\mathrm{ifr,old}}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
+where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow. This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr), and in default, $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$ and $\alpha\_{\mathrm{ifr,old}}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
