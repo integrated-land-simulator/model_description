@@ -26,7 +26,7 @@ $$
 r\_{dirt} = \left\\{
  r\_{dirt,c} (over continental ice)\\
  r\_{dirt,0} (elsewhere)
-\right,
+\right.,
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$.
