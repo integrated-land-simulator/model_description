@@ -500,18 +500,10 @@ $$
 The water flux given to the runoff process through the snow process is then expressed as
 
 $$
-\begin{alignat}{2}
+\begin{aligned}
  & Pr\_c^{\*\*} &=& ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
- & Pr\_l^{\*\*} &=& ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*}
- \+ P\_{Sn,melt}^{\*},
-\end{alignat}
-$$
-
-$$
-\begin{eqnarray*}
-a &=& b \\
-  &=& c 
-\end{eqnarray*}
+ & Pr\_l^{\*\*} &=& ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
+\end{aligned}
 $$
 
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
