@@ -18,7 +18,11 @@ $$
 $$
 
 $$
-\exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} 
+\left\{ \exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} \right\}
+$$
+
+$$
+\Bigm/ {\tau\_{age}}
 $$
 
 where $f\_{ageT}$ = 5000 and $\tau\_{age}$ = 1 &times; 10^6^. $\tau\_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
