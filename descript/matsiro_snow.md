@@ -436,11 +436,11 @@ and [Eq. (237)](#eq237) is treated as
 
 $$
 c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{\Delta t\_L}
-= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} - \widetilde{F}\_{Sn\_{(k-1/2)}}^{\*} \\
-= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+&= &&\widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} - \widetilde{F}\_{Sn\_{(k-1/2)}}^{\*} \\
+&= &&\widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
- \- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
+& &&\- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
  \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k-1)}}
  \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k)}}
 $$
