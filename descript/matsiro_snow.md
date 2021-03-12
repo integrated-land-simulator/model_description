@@ -54,7 +54,8 @@ $$
 and this equation is rewritten to
 
 $$
-Sn(D\_m) = frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
+Sn(D\_m) = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
+ \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
 $$
 
 $$
