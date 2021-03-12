@@ -432,22 +432,19 @@ $$
 \end{aligned} \right.
 $$
 
-
-$$
- \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T_{Sn\_{(k+1)}}} =
-\left\{
-\begin{array}{ll}
-0  \ \quad \qquad \qquad \qquad \qquad (k=0) \\
-\displaystyle{
-\frac{k_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{(k+1/2)}}}
-}
-   \ \quad \qquad \qquad \qquad \qquad (k=1,\ldots,K\_{Sn}-1)
-\end{array}
-\right.
-$$
-
-
 and [Eq. (237)](#eq237) is treated as
+
+$$
+c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{\Delta t\_L}
+= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} - \widetilde{F}\_{Sn\_{(k-1/2)}}^{\*} \\
+= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
+ \- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
+ \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k-1)}}
+ \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k)}}
+$$
+
 
 $$
 c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{\Delta t\_L}
