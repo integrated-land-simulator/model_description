@@ -1,8 +1,10 @@
 ## 8.7 Snow and ice albedo
 
-### 8.7.1 Snow albedo
+### 8.7.1 Snow albedo (SUBROUTINE SNWALB)
 
-The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
+The albedo of the snow is calculated in SUBROUTINE SNWALB as a prognostic variable.
+
+The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable. 
 
 The time development of the age of the snow is, after Yang et al. (1997), assumed to be given by the following equation:
 
@@ -13,12 +15,14 @@ $$
 where
 
 $$
-f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]},
+f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)}} \right) \right]},
 $$
 
 $$
-f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}.
+f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}, T\_{melt} = 273.15 \mathrm{K}.
 $$
+
+$T\_{Sn(1)}$ is the temperature of the first layer of snow.
 
 $r\_{dirt}$ represents the effect of dirt and soot. When the option OPT\_SNWALB is inactive, 
 
@@ -26,7 +30,7 @@ $$
 r\_{dirt} = \left\\{
  r\_{dirt,c} \mathrm{(over \; continental \; ice)} \\
  r\_{dirt,0} \mathrm{(elsewhere)}
-\right\\},
+\right.,
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$.
@@ -42,13 +46,26 @@ $$
 
 where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
 
+
+The nondimensional age of snow at the time step of ${\tau}$, $A\_g^{\tau}$, is formulated in 
+
+$$
+A\_g^{tau} = \frac{f\_{alb}}{1-f\_{alb}},
+$$
+
+where
+
+$$
+f\_{alb} = \min(\frac{\alpha\_{vis}^{\tau}-\alpha\_{vis,new}}{\alpha\_{vis,old}-\alpha\_{vis,new}}, 0.999).
+$$
+
+$\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here factors for visible band are used. $\alpha\_{b,new} is the albedo of newly fallen snow for band $b$ and $\alpha\_{b,old}$ is that of old snow. In default, $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$ and $\alpha\_{\mathrm{ifr,old}}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
+
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
 $$
 \alpha\_b^{\tau+1} = \alpha\_{b,\mathrm{new}}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,\mathrm{old}}-\alpha\_{b,\mathrm{new}}), 
 $$
-
-where $\alpha\_{b,\mathrm{new}}$ is the albedo of newly fallen snow for band $b$, $\alpha\_{b,\mathrm{old}}$ is the albedo of old snow. This factor evolves with time, as a function of snow temperature and the densities of dust and black carbon. We consider the three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr), and in default, $\alpha\_{\mathrm{vis,new}}$, $\alpha\_{\mathrm{nir,new}}$, $\alpha\_{\mathrm{ifr,new}}$, $\alpha\_{\mathrm{vis,old}}$, $\alpha\_{\mathrm{nir,old}}$ and $\alpha\_{\mathrm{ifr,old}}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
