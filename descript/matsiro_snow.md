@@ -655,8 +655,8 @@ $r\_{dirt}$ represents the effect of dirt and soot. When the option OPT\_SNWALB 
 
 $$
 r\_{dirt} = \left\\{ \begin{aligned}
- r\_{dirt,c} \;& \mathrm{(over \; continental \; ice)} \\
- r\_{dirt,0} \;& \mathrm{(elsewhere)}
+ r\_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
+ r\_{dirt,0} \;\;& \mathrm{(elsewhere)}
 \end{aligned} \right.,
 $$
 
@@ -664,8 +664,8 @@ where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When this option is active, 
 
 $$
 r\_{dirt} = \left\\{ \begin{aligned}
- \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;& \mathrm{(over \; continental \; ice)} \\
- \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;& \mathrm{(elsewhere)}
+ \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
+ \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
 \end{aligned} \right.,
 $$
 
