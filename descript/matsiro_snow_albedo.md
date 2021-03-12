@@ -23,11 +23,10 @@ $$
 $r\_{dirt}$ represents the effect of dirt and soot. When the option OPT\_SNWALB is inactive, 
 
 $$
-r\_{dirt} = \left\\{ \begin{aligned}
+r\_{dirt} = \left\\{
  r\_{dirt,c} &\mathrm{(over \; continental \; ice)} \\
  r\_{dirt,0} &\mathrm{(elsewhere)}
-\eng{aligned}
-\right.,
+\right\\},
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$.
