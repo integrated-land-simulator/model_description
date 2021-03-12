@@ -508,10 +508,10 @@ $$
 $$
 
 $$
-\begin{alignat}{2}
-a &= b & \quad & \text{(定義)} \\
-  &= c &       & \text{(なんかすごい定理)}
-\end{alignat}
+\begin{eqnarray\*}
+a &=& b \\
+  &=& c 
+\end{eqnarray\*}
 $$
 
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
