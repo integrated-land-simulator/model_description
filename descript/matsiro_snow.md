@@ -390,8 +390,8 @@ The implicit method is used to treat the temperature from the uppermost snow lay
 $$
 \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} 
  = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
- + \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
- + \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
 $$
 
 $$
@@ -407,23 +407,6 @@ $$
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; &&(k = K\_{Sn})
 \end{aligned} \right.
-$$
-
-$$
- \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau} = \left\\{
-\begin{array}{ll}
-(F\_{Sn\_{(1/2)}} - \Delta F\_{conv})/A\_{Sn} - \Delta F\_{c,conv} (k=0)\\
-\displaystyle{
-\frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^{\tau} - T\_{Sn(k)}^{\tau})
-} (k=1,\ldots,K\_{Sn}-1) \\
-\displaystyle{
-\left[
-\frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-+\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
-\right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^{\tau})
-} (k=K\_{Sn})
-\end{array}
-\right.
 $$
 
 
