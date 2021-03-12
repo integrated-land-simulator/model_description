@@ -409,6 +409,17 @@ $$
 \end{aligned} \right.
 $$
 
+$$
+\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
+ = \left\\{ \begin{aligned}
+ & \-\frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{(k+1/2)}}}
+ \; &&(k = 1, ..., K\_{Sn}-1) \\
+ & \-\left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}} 
+  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
+ \right]^{-1}
+ \; &&(k = K\_{Sn})
+\end{aligned} \right.
+$$
 
 $$
 \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} =
