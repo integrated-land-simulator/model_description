@@ -8,7 +8,17 @@ The time development of the age of the snow is, after Wiscombe and Warren (1980)
 
 $$
 \frac{A\_g^{\tau +1} - A\_g^{\tau}}{\Delta t\_L}
- = \left\{ \exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} \right\} \Bigm/ {\tau\_{age}}
+ = \left\{
+ \exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} 
+ \right\} \Bigm/ {\tau\_{age}}
+$$
+
+$$
+\frac{A\_g^{\tau +1} - A\_g^{\tau}}{\Delta t\_L}
+$$
+
+$$
+\exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} 
 $$
 
 where $f\_{ageT}$ = 5000 and $\tau\_{age}$ = 1 &times; 10^6^. $\tau\_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
