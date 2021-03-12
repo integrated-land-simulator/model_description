@@ -2925,8 +2925,8 @@ In `ENTRY[FWATERL]` (in `SUBROUTINE:[FWASTL]` of lakeic.F), sublimation (freshwa
 
 | Variable     | Variable | Description                   | unit              | value            |
 |:------------ |:-------- |:----------------------------- |:----------------- |:---------------- |
-| $\rho_S$     | rhos     | density of snow               | $\mathrm{g/cm^3}$ | $0.33$           |
-| $\rho_I$     | rhoi     | density of lake ice           | $\mathrm{g/cm^3}$ | $0.9$            |
+| $\rho_S$     | rhos     | density of snow               | $\mathrm{[g/cm^3]}$ | $0.33$           |
+| $\rho_I$     | rhoi     | density of lake ice           | $\mathrm{[g/cm^3]}$ | $0.9$            |
 | $R_{\rho_S}$ | rrs      | Ratio of density (ocean/snow) | $\mathrm{[-]}$    | $\rho_O/\rho_s$  |
 | $R_{\rho_I}$ | rri      | Ratio of density (ocean/ice)  | $\mathrm{[-]}$    | $\rho_O/\rho_I$  |
 | $h_I^{min}$  | himin    | Minimum thickness of ice      | $\mathrm{[cm]}$   | $1.0\times 10^1$ |
