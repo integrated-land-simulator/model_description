@@ -4,22 +4,29 @@
 
 The snow cover fraction, snow water equivalent, snow temperature and snow albedo are calculated here.
 
+Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice albedo is calculated in SUBROUTINE ICEALB in matice.F.
+
+
 ## 8.1 Diagnosis of snow cover fraction
 
-The snow cover fraction is diagnosed with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Tatebe et al., 2019).
+MATSIRO has two ways of calculation of the snow cover fraction, and the user can switch them with the option OPT\_SSNOWD.
+
+### 8.1.1 Case 1: When OPT\_SSNOWD is active
+
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{A4}
+\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1,
 $$
 
 where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
-f(D) = \frac{1}{D\zeta\sqrt{2}} \exp{ \left[ 
+f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{A5}
 $$
@@ -27,7 +34,7 @@ $$
 where
 
 $$
-\lambda = \ln(\mu) - \frac{1}{2}\zeta^2 \tag{A6}
+\lambda = \ln(\mu) - \frac{1}{2}\zeta^2
 $$
 
 and
@@ -38,17 +45,40 @@ $$
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
-$D\_m$ is calculated from $Sn$ and the following equation using Newton-Raphson methods:
+The snow amount $Sn$ is given by 
 
 $$
-Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD. \tag{A9}
+Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD,
 $$
+
+and this equation is rewritten to
+
+$$
+Sn(D\_m) 
+ = \frac{1}{2} \exp\left(\lambda + \frac{\zeta^2}{2} \right) 
+   \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
+ - \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right),
+$$
+
+where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
+
+$D\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
 
 Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
 
 $$
-A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD. \tag{A8}
+A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{D\_m}}{2} \right).
 $$
+
+### 8.1.2 Case 2: When OPT\_SSNOWD is inactive
+
+The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
+
+$$
+Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}),
+$$
+
+where $Sn\_c$ is 100 $\mathrm{kg/m^2}$.
 
 
 ## 8.2 Vertical division of snow layers
@@ -61,7 +91,7 @@ As a standard, the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)} (k=1,2,3)
 
 $$
 \begin{aligned}
-\widetilde{Sn}\_{(1)} &= \left\{
+\widetilde{Sn}\_{(1)} &= \left\\{
 \begin{array}{ll}
  \widetilde{Sn} \\
  0.5\widetilde{Sn}  \\
@@ -73,10 +103,10 @@ $$
  (\widetilde{Sn} \geq 40)
 \end{array}
 \right. \\
-\widetilde{Sn}\_{(2)} &= \left\{
+\widetilde{Sn}\_{(2)} &= \left\\{
 \begin{array}{ll}
  0 \\
- \widetilde{Sn} - \Delta Sn_{(1)} \\
+ \widetilde{Sn} - \Delta Sn\_{(1)} \\
  0.5(\widetilde{Sn} - 20) \\
  40
 \end{array}
@@ -87,7 +117,7 @@ $$
  (\widetilde{Sn} \geq 100)
 \end{array}
 \right. \\
-\widetilde{Sn}\_{(3)} &= \left\{
+\widetilde{Sn}\_{(3)} &= \left\\{
 \begin{array}{ll}
  0 \\
  \widetilde{Sn} - (\Delta Sn\_{(1)} + \Delta Sn\_{(2)})
@@ -103,15 +133,15 @@ $$
 where
 
 $$
- \widetilde{Sn} =  Sn / A_{Sn}
+ \widetilde{Sn} =  Sn / A\_{Sn}
 $$
 
  $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is kg/m^2^.
 
-From the above, it can be clearly seen that the number of snow layers ($K_{Sn}$) is as follows, as a standard:
+From the above, it can be clearly seen that the number of snow layers ($K\_{Sn}$) is as follows, as a standard:
 
 $$
- K_{Sn} = \left\{
+ K\_{Sn} = \left\\{
 \begin{array}{ll}
  0 \;\; (\widetilde{Sn} = 0)\\
  1 \;\; (0< \widetilde{Sn} < 20)\\
@@ -513,11 +543,100 @@ $$
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn_{\max}$ is uniformly assigned the value of 1000 kg/m^2^ as a standard.
 
 
-## 8.7 Snow and ice albedo
 
-### 8.7.1 Snow albedo
+## 8.7 Dust in snow
 
-The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
+The amount of dust on the snow cover and in the snow layers are calculated.
+
+
+### 8.7.1 Dust fall on the snow cover
+
+The dust fall is added to the top layer:
+
+$$
+M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D,
+$$
+
+where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
+
+
+### 8.7.2 Redistribution of dust
+
+The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT).
+
+Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
+
+$$
+Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3),
+$$
+
+where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
+
+When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
+
+$$
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \left\{
+\begin{array}{ll}
+ \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} + \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
+ \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
+\end{array}
+\begin{array}{ll}
+ \; \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
+ \; \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
+\end{array},
+\right.
+$$
+
+where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
+
+When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
+
+$$
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right).
+$$
+
+It leads to 
+
+$$
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-},
+$$
+
+where
+
+$$
+M\_{d(1)}^{+}
+ = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
+ + \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right),
+$$
+
+$$
+M\_{d(1)}^{-}
+ = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right)
+$$
+
+and
+
+$$
+\Delta Sn\_{(1)} = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}.
+$$
+
+The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
+
+$$
+M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
+ = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+}
+ + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
+$$
+
+
+
+## 8.8 Snow and ice albedo
+
+### 8.8.1 Snow albedo
+
+The albedo of the snow is calculated in SUBROUTINE SNWALB in matsnw.F.
+
+It is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
 
 The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
 
@@ -547,7 +666,7 @@ $$
 $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
 
-### 8.7.2 Ice albedo
+### 8.8.2 Ice albedo
 
 The ice sheet albedo, $\alpha\_{b,surf}$, is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
