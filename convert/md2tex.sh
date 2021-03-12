@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 #
 # Test environment
@@ -12,7 +11,7 @@
 dir=./descript
 
 # Get markdown file names to be compiled
-filelist=($(ls ${dir}/*.md | rev | cut -c 4-| rev))
+filelist=$(ls ${dir}/*.md | rev | cut -c 4-| rev)
 echo ${filelist}
 
 # Conversion from markdown to LaTeX
