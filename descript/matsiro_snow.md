@@ -585,28 +585,22 @@ $$
 where
 
 $$
+\begin{aligned}
 M\_{d(1)}^{+}
- = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
+ &= \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right)
  \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right),
-$$
-
-$$
 M\_{d(1)}^{-}
- = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right)
-$$
-
-and
-
-$$
-\Delta Sn\_{(1)} = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}.
+ &= \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right)
+\end{aligned},
+\Delta Sn\_{(1)} 
+ &= Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}.
 $$
 
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 
 $$
 M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
- = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+}
- \+ \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
+ = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+} + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
 $$
 
 
