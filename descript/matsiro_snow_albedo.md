@@ -19,7 +19,7 @@ f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)
 $$
 
 $$
-f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}, T\_{melt} = 273.15 \mathrm{K}.
+f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}.
 $$
 
 $T\_{Sn(1)}$ is the temperature of the first layer of snow.
@@ -33,9 +33,7 @@ r\_{dirt} = \left\\{
 \right.,
 $$
 
-where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$.
-
-When the option OPT\_SNWALB is active, the density of the dirt is considered as
+where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When the option OPT\_SNWALB is active, the density of the dirt is considered as
 
 $$
 r\_{dirt} = \left\\{
