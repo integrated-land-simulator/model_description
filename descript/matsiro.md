@@ -2420,13 +2420,13 @@ This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion 
 
 ### **11.4.1**  Setting the vertical diffusion coefficients
 
-Input
+**Input**
 
 | Meaning                                             | Character | In code | Dimension | Unit |
 | --------------------------------------------------- | --------- | ------- | --------- | ---- |
 | The default value of vertical diffusion coefficient | $K_{V0}$  | AHVL0   | NZ        | -    |
 
-Output
+**Output**
 
 | Meaning                        | Character | In code | Dimension      | Unit |
 | ------------------------------ | --------- | ------- | -------------- | ---- |
@@ -2448,7 +2448,7 @@ It is known that the surface wind and vertical temperature stratification will a
 
 ### 11.4.2 Estimate the diffusion terms of the tracer equations
 
-Input
+**Input**
 
 | Meaning                        | Character | In code | Dimension              | Unit    |
 | ------------------------------ | --------- | ------- | ---------------------- | ------- |
@@ -2456,13 +2456,13 @@ Input
 | Water temperature              | $T$       | TX(1)   | IJLDIM, NLZDIM, NLTDIM | $^{o}C$ |
 | Water depth                    | $h$       | HX      | IJLDIM                 | m       |
 
-Output
+**Output**
 
 | Meaning                                         | Character | In code | Dimension              | Unit      |
 | ----------------------------------------------- | --------- | ------- | ---------------------- | --------- |
 | The vertical component of diffusive tracer flux | $F_{D}$   | ADT     | IJLDIM, NLZDIM, NLTDIM | $^{o}C$/s |
 
-Internal variables
+**Internal variables**
 
 | Meaning                                   | Character | In code | Dimension      | Unit |
 | ----------------------------------------- | --------- | ------- | -------------- | ---- |
@@ -2501,7 +2501,7 @@ The above equations apply to salinity as well.
 
 ### 11.4.3 Time integration of the tracer equations
 
-Input
+**Input**
 
 | Meaning                                          | Character  | In code | Dimension              | Unit      |
 | ------------------------------------------------ | ---------- | ------- | ---------------------- | --------- |
@@ -2514,7 +2514,7 @@ Input
 | Timestep                                         | $\Delta t$ | TS      |                        | s         |
 | Surface-type fraction (lake)                     | $R_{lake}$ | LKFRAC  | IJLDIM                 | -         |
 
-Output
+**Output**
 
 | Meaning               | Character | In code | Dimension | Unit |
 | --------------------- | --------- | ------- | --------- | ---- |
