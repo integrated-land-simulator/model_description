@@ -2412,13 +2412,13 @@ $$
  F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
 $$
 
-# 11 Lake
+# Lake
 
-## 11.4 Physical formulation and process
+## Physical formulation and process
 
 This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion and convection of the lake water. 
 
-### **11.4.1**  Setting the vertical diffusion coefficients
+### Setting the vertical diffusion coefficients
 
 **Input**
 
@@ -2446,7 +2446,7 @@ K_{V}(k)=K_{V0}
 $$
 It is known that the surface wind and vertical temperature stratification will also influence the vertical diffusion coefficients, and they will be considered and added in the future version.
 
-### 11.4.2 Estimate the diffusion terms of the tracer equations
+### Estimate the diffusion terms of the tracer equations
 
 **Input**
 
@@ -2499,7 +2499,7 @@ $$
 
 The above equations apply to salinity as well.
 
-### 11.4.3 Time integration of the tracer equations
+### Time integration of the tracer equations
 
 **Input**
 
@@ -2647,7 +2647,7 @@ C_{sr}(k)=\left\{\begin{matrix}
 $$
 
 
-### 11.4.4 The vertical convection
+### The vertical convection
 
 ENTRY: [OVTURNL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
 
@@ -2675,11 +2675,11 @@ $$
 T(K_{s}, ..., K_{e})=\frac{\sum_{k=K_{s}}^{K_{e}}D(k)T(k)}{\sum_{k=K_{s}}^{K_{e}}D(k)}
 $$
 
-# 12 Snow-fed Wetland
+# Snow-fed Wetland
 
 [#ifdef OPT_SW_STORAGE] (in SUBROUTINE: [MATROF] in matrof.F)
 
-## 12.1 Outline of wetland scheme
+## Outline of wetland scheme
 
 A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
 
@@ -2689,7 +2689,7 @@ With the wetland scheme, when snowmelt occurs, instead of all the generated surf
 
 Fig.12-1 Flowchart of the wetland scheme in the MATSIRO 6
 
-## 12.2 Inflow and outflow of the wetland
+## Inflow and outflow of the wetland
 
 The inflow of the wetland comes from the fraction of the surface runoff, and its amount is determined by the  tunable parameter $\alpha$. The outflow from the wetland is calculated using a time constant $\beta$ and the wetland storage $S$, consequently flowing into the soil surface. Therefore, the update of the wetland storage $S$ at each time step can be represented as:
 
@@ -2707,7 +2707,7 @@ $$
 
 where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
 
-## 12.3 Storage of the surface runoff
+## Storage of the surface runoff
 
 The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
 
@@ -2717,7 +2717,7 @@ $$
 
 where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3). 
 
-## 12.4 Water input of soil surface
+## Water input of soil surface
 
 The outflow from the wetland storage is re-added to the water input of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input $WI_{soil,total}$ of each time step can be represented as:
 
