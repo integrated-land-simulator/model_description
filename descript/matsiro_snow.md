@@ -654,19 +654,19 @@ $T\_{Sn(1)}$ is the temperature of the first layer of snow.
 $r\_{dirt}$ represents the effect of dirt and soot. When the option OPT\_SNWALB is inactive,
 
 $$
-r\_{dirt} = \left\\{
- r\_{dirt,c} \mathrm{(over \; continental \; ice)} \\
- r\_{dirt,0} \mathrm{(elsewhere)}
-\right.,
+r\_{dirt} = \left\\{ \begin{aligned}
+ r\_{dirt,c} \;& \mathrm{(over \; continental \; ice)} \\
+ r\_{dirt,0} \;& \mathrm{(elsewhere)}
+\end{aligned} \right.,
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When this option is active, the density of the dirt is considered as
 
 $$
-r\_{dirt} = \left\\{
- \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \mathrm{(over \; continental \; ice)} \\
- \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \mathrm{(elsewhere)}
-\right.,
+r\_{dirt} = \left\\{ \begin{aligned}
+ \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;& \mathrm{(over \; continental \; ice)} \\
+ \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;& \mathrm{(elsewhere)}
+\end{aligned} \right.,
 $$
 
 where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
