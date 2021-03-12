@@ -423,7 +423,7 @@ $$
 
 
 $$
-\frac{\partial\widetilde{F}\_{Sn\_{(k+1/2)}}{\partial T\_{Sn\_{(k+1)}}}
+\frac{\partial\widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}}
  = \left\\{ \begin{aligned}
  & 0
  \; &&(k = 0) \\
