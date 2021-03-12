@@ -63,7 +63,7 @@ $$
 Sn(D\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
  \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
- - \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right),
+ \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right),
 $$
 
 where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
