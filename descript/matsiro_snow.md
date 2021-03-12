@@ -448,22 +448,7 @@ $$
 $$
 
 
-$$
-c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{\Delta t\_L}
-= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} - \widetilde{F}\_{Sn\_{(k-1/2)}}^{\*}  \\
-= \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
-+\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
- \Delta T\_{Sn\_{(k)}}
-+\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}}
- \Delta T\_{Sn\_{(k+1)}}  \\
-- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
--\frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}}
- \Delta T\_{Sn\_{(k-1)}}
--\frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k)}}}
- \Delta T\_{Sn\_{(k)}}
-$$
-
-and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}}\ (k=1,\ldots,K\_{Sn})$ simultaneous equations with respect to $K_{Sn}$. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
+and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}}\ (k = 1, ..., K\_{Sn})$ simultaneous equations with respect to $K\_{Sn}$. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
 
 
 $$
@@ -475,9 +460,9 @@ $$
 When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 
 $$
- \widetilde{F}\_{3/2}^{\*} =
-\frac{k_{Sn\_{(3/2)}}}{\Delta z_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
-+\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
+\widetilde{F}\_{3/2}^{\*}
+ = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
+ +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
  \Delta T\_{Sn\_{(2)}}
 $$
 
@@ -486,8 +471,9 @@ and solved similarly to case 1 (when there is only one snow layer, the snow temp
 The energy convergence used for melting in the uppermost snow layer is given by:
 
 $$
- \Delta \widetilde{F}\_{conv} = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
-  - c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T_{Sn\_{(1)}}^{\*}}{\Delta t\_L}
+\Delta \widetilde{F}\_{conv} 
+ = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
+ \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -498,7 +484,8 @@ Even if the temperature of the second snow layer and below is higher than $T\_{m
 The heat flux given to the soil through the snow process is
 
 $$
-\Delta F\_{conv}^{\*} = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*},
+\Delta F\_{conv}^{\*} 
+ = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*},
 $$
 
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground.
@@ -506,7 +493,7 @@ where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining whe
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 
 $$
- \Delta F_{c,conv}^{\*} = ( 1 - A_{Sn}) \Delta F_{c,conv}.
+ \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}.
 $$
 
 
@@ -515,7 +502,7 @@ The water flux given to the runoff process through the snow process is then expr
 $$
  Pr\_c^{\*\*} = ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
  Pr\_l^{\*\*} = ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*}
- + P\_{Sn,melt}^{\*},
+ \+ P\_{Sn,melt}^{\*},
 $$
 
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
@@ -533,11 +520,11 @@ $$
 
 $$
  Sn = Sn - Ro\_{gl} \Delta t\_L \\
- \Delta \widetilde{Sn}\_{(K\_{Sn})} = \Delta \widetilde{Sn}\_{(K_{Sn})}
- - Ro\_{gl} / A\_{Sn} \Delta t\_L
+ \Delta \widetilde{Sn}\_{(K\_{Sn})} = \Delta \widetilde{Sn}\_{(K\_{Sn})}
+ \- Ro\_{gl} / A\_{Sn} \Delta t\_L
 $$
 
-where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn_{\max}$ is uniformly assigned the value of 1000 kg/m^2^ as a standard.
+where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
 
 
 
@@ -572,7 +559,18 @@ where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, re
 When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \left\{
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
+ = \left\\{ \begin{aligned}
+ & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
+ \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) 
+ \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
+ & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
+ \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
+\end{aligned} \right.,
+$$
+
+$$
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \left\\{
 \begin{array}{ll}
  \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} + \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
  \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
