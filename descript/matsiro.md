@@ -2702,7 +2702,7 @@ where $R\_{s}$ is surface runoff calculated as a total of $Ro\_{s}$ (saturation 
 $\beta$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
 
 $$
-\beta =max(\beta_{0}(1-min[\sigma_{z}(x),\sigma_{z max}]/\sigma_{z max}), \Delta t)
+\beta =max(\beta_{0}(1-min(\sigma_{z}(x),\sigma_{z max})/\sigma_{z max}), \Delta t)
 $$
 
 where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
