@@ -1,15 +1,33 @@
 ## 8.7 Snow and ice albedo
 
-### 8.7.1 Snow albedo (SUBROUTINE SNWALB)
+### 8.7.1 Snow albedo
 
-The albedo of the snow is calculated in SUBROUTINE SNWALB as a prognostic variable.
+The albedo of the snow is calculated in SUBROUTINE SNWALB in matsnw.F.
 
 The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable. 
 
-The time development of the age of the snow is, after Yang et al. (1997), assumed to be given by the following equation:
+
+The nondimensional age of snow at the time step of ${\tau}$, $A\_g^{\tau}$, is formulated in 
 
 $$
-\frac{A\_g^{\tau+1} - A\_g^{\tau}}{\Delta t\_L} = (f\_{age} + f\_{age}^{10} + r\_{dirt}) / \tau\_{age},
+A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}},
+$$
+
+where
+
+$$
+f\_{alb} = \min\left( 
+ \frac{\alpha\_{vis}^{\tau}-\alpha\_{vis,new}}{\alpha\_{vis,old}-\alpha\_{vis,new}}, 0.999 
+\right).
+$$
+
+$\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here factors for visible band are used. $\alpha\_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha\_{b,old}$ is that of old snow. In default, $\alpha\_{vis,new}$, $\alpha\_{nir,new}$, $\alpha\_{ifr,new}$, $\alpha\_{vis,old}$, $\alpha\_{nir,old}$ and $\alpha\_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
+
+
+The age of snow at the next time step ${\tau+1} is, after Yang et al. (1997), assumed to be given by the following equation:
+
+$$
+\frac{A\_g^{\tau+1} = A\_g^{\tau}} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age},
 $$
 
 where
@@ -45,22 +63,6 @@ $$
 where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
 
 
-The nondimensional age of snow at the time step of ${\tau}$, $A\_g^{\tau}$, is formulated in 
-
-$$
-A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}},
-$$
-
-where
-
-$$
-f\_{alb} = \min\left( 
- \frac{\alpha\_{vis}^{\tau}-\alpha\_{vis,new}}{\alpha\_{vis,old}-\alpha\_{vis,new}}, 0.999 
-\right).
-$$
-
-$\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here factors for visible band are used. $\alpha\_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha\_{b,old}$ is that of old snow. In default, $\alpha\_{vis,new}$, $\alpha\_{nir,new}$, $\alpha\_{ifr,new}$, $\alpha\_{vis,old}$, $\alpha\_{nir,old}$ and $\alpha\_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
-
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
 $$
@@ -78,7 +80,9 @@ $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully re
 
 ### 8.7.2 Ice albedo
 
-The ice sheet albedo, $\alpha\_{b,surf}$, is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
+The albedo of the ice sheet, $\alpha\_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
+
+This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
 $$
 \alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)},
