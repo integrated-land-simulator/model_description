@@ -2800,6 +2800,12 @@ Potential vegetation is defined according to the vegetation types of the Simple 
     Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
 
   -
+    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2015: A Sensitivity Study of a Simple Wetland Scheme for Improvements in the Representation of Surface Hydrology and Decrease of Surface Air Temperature Bias. <span>Journal of Japan Society of Civil Engineers, Ser.B1 (Hydraulic Engineering)</span>, <span>**71(4)**</span>, 955-960.
+
+  -
+    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2017: Impact of Arctic Wetlands on the Climate System: Model Sensitivity Simulations with the MIROC5 AGCM and a Snow-Fed Wetland Scheme. <span> Journal of Hydrometeorology</span>, <span>**18(11)**</span>, 2923-2936.
+    
+  -
     Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
 
   -
