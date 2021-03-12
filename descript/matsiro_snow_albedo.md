@@ -4,6 +4,19 @@
 
 The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
 
+The time development of the age of the snow is, after Yang et al. (1997), assumed to be given by the following equation:
+
+$$
+\frac{A\_g^{\tau+1} - A\_g^{\tau}}{\Delta t\_L} = (f\_{age} + f\_{age}^{10} + r\_{dirt}) / \tau\_{age},
+$$
+
+where
+
+$$
+f\_{age} = exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]}, \\
+\f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}.
+$$
+
 The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
 
 $$
