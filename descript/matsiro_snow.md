@@ -254,8 +254,9 @@ The snow temperature change is updated by
 
 $$
 T\_{Sn\_{(k)}}^{\*\*\*} = \frac{l\_m \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L
- + c\_{pi}(T\_{Sn\_{(k)}}^{\*\*}\Delta \widetilde{Sn}\_{(k)}^{\*\*} + T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L ) }
- {c\_{pi} (\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)},
+ \+ c\_{pi}(T\_{Sn\_{(k)}}^{\*\*}\Delta \widetilde{Sn}\_{(k)}^{\*\*} 
+ \+ T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}
+ {c\_{pi}(\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)},
 $$
 
 and the mass is updated as follows:
