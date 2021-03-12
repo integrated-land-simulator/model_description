@@ -403,7 +403,7 @@ $$
  \; &&(k = 1, ..., K\_{Sn}-1) \\
  & \left[
   \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-  + \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; &&(k = K\_{Sn})
 \end{aligned} \right.
