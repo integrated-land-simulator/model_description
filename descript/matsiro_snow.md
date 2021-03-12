@@ -500,8 +500,9 @@ $$
 The water flux given to the runoff process through the snow process is then expressed as
 
 $$
- Pr\_c^{\*\*} = ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
- Pr\_l^{\*\*} = ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*}
+\begin{aligned}
+ & Pr\_c^{\*\*} &&= ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
+ & Pr\_l^{\*\*} &&= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*}
  \+ P\_{Sn,melt}^{\*},
 $$
 
@@ -569,25 +570,13 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
 \end{aligned} \right.,
 $$
 
-$$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \left\\{
-\begin{array}{ll}
- \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} + \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
- \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
-\end{array}
-\begin{array}{ll}
- \; \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
- \; \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
-\end{array},
-\right.
-$$
-
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
 
 When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right).
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
+ = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right).
 $$
 
 It leads to 
@@ -601,7 +590,7 @@ where
 $$
 M\_{d(1)}^{+}
  = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
- + \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right),
+ \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right),
 $$
 
 $$
@@ -620,7 +609,7 @@ The change in the dust amount in the 3rd layer is determined similarly, and thus
 $$
 M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
  = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+}
- + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
+ \+ \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
 $$
 
 
