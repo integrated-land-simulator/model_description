@@ -328,39 +328,37 @@ with the heat conduction flux $\widetilde{F}\_{Sn}$ given by
 $$
 \widetilde{F}\_{Sn(k+1/2)}
  = \left\\{
- \begin{array}{ll}
- ( F\_{Sn(1/2)} - \Delta F\_{conv})/A\_{Sn} - \Delta F\_{c,conv}
- (k=0)\\
-\displaystyle{
-k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)} - T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
-} (k=1,\ldots,K\_{Sn}-1) \\
-\displaystyle{
- k\_{Sn(k+1/2)} \frac{T\_{Sn(B)} - T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
-}
- (k=K\_{Sn})
-\end{array} \tag{eq238}
-\right.
-$$
-
-$$
-\widetilde{F}\_{Sn(k+1/2)}
- = \left\\{
  \begin{aligned}
   & (F\_{Sn(1/2)} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv} 
-  \;\; &&(k = 0) \\
+  \; &&(k = 0) \\
   & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
-  \;\; &&(k = 1, ..., K\_{Sn}-1) \\
+  \; &&(k = 1, ..., K\_{Sn}-1) \\
   & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
-  \;\; &&(k = K\_{Sn})
+  \; &&(k = K\_{Sn})
  \end{aligned}
 \right.,
 $$
 
 where $k\_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
 
+
 $$
- \Delta z_{Sn(k+1/2)} =
-\left\{
+\Delta z\_{Sn(k+1/2)}
+ = \left\\{
+ \begin{aligned}
+  & 0.5 \Delta \widetilde{Sn}\_{(1)} / \rho\_{Sn} 
+  \; &&(k = 1) \\
+  & 0.5 (\Delta \widetilde{Sn}\_{(k)} + \Delta \widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
+  \; &&(k = 2, ..., K\_{Sn}-1) \\
+  & 0.5 \Delta \widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
+  \; &&(k = K\_{Sn})
+ \end{aligned}
+\right.
+$$
+
+$$
+\Delta z\_{Sn(k+1/2)} =
+ \left\\{
 \begin{array}{ll}
  0.5 \Delta \widetilde{Sn}\_{(1)} / \rho_{Sn}  (k=1)\\
  0.5 (\Delta \widetilde{Sn}\_{(k)}+\Delta \widetilde{Sn}\_{(k+1)}) / \rho_{Sn}
