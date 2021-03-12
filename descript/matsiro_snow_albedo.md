@@ -18,7 +18,7 @@ $$
 $$
 
 $$
-\left{ \exp \left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right] + r\_{dirt} \right}
+\left\{ \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}}-\frac{1}{T\_{Sn(1)}} \right) \right]} + r\_{dirt} \right\}
 $$
 
 $$
