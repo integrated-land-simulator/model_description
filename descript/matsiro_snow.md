@@ -356,24 +356,11 @@ $$
 \right.
 $$
 
-$$
-\Delta z\_{Sn(k+1/2)} =
- \left\\{
-\begin{array}{ll}
- 0.5 \Delta \widetilde{Sn}\_{(1)} / \rho_{Sn}  (k=1)\\
- 0.5 (\Delta \widetilde{Sn}\_{(k)}+\Delta \widetilde{Sn}\_{(k+1)}) / \rho_{Sn}
- (k=2,\ldots,K_{Sn}-1)\\
- 0.5 \Delta \widetilde{Sn}\_{(K_{Sn})} / \rho_{Sn}  (k=K_{Sn})
-\end{array}
-\right.
-$$
+where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
-where $\rho_{Sn}$ is the snow density, assigned the fixed value of 300 kg/m^3^ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
+In [Eq. (238)](#eq238), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
 
-In [Eq. (238)](#eq238), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta
-F_{conv}$), and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F_{c,conv}$. ($\Delta F_{conv}$) is assumed to be given only to the snow-covered portion, while ($\Delta F_{c,conv}$) is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
-
-In the equation for the snow lower boundary flux ($\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$), $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
+In the equation for the snow lower boundary flux $\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$, $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
 
 $$
 \widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}}
@@ -383,34 +370,47 @@ there is assumed to be no convergence at the snow lower boundary, and by putting
 
 
 $$
-\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} =  \widetilde{F}\_{g(1/2)}
+\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)}
 $$
 
 $T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (242)](#eq242), the following is obtained:
 
 $$
-\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} =
-\left[\frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-+\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
-\right]^{-1}
-(T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}) \tag{eq242}
+\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
+ = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
+  +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+ \right]^{-1}
+ (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}) \tag{eq242}
 $$
 
 ### 8.4.2 Case 1: When snowmelt does not occur in the uppermost layer
 
 The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:
 
-
 $$
- \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
-+\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
- \Delta T\_{Sn\_{(k)}}
-+\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}}
- \Delta T\_{Sn\_{(k+1)}}
+\widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} 
+ = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+ + \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
+ + \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
 $$
 
 $$
- \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau} = \left\{
+\widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+ = \left\\{ \begin{aligned}
+ & (F\_{Sn\_{(1/2)}} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv}
+ \; &&(k = 0) \\
+ & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
+ \; &&(k = 1, ..., K\_{Sn}-1) \\
+ & \left[
+  \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
+  + \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+ \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
+ \; &&(k = K\_{Sn})
+\end{aligned} \right.
+$$
+
+$$
+ \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau} = \left\\{
 \begin{array}{ll}
 (F\_{Sn\_{(1/2)}} - \Delta F\_{conv})/A\_{Sn} - \Delta F\_{c,conv} (k=0)\\
 \displaystyle{
