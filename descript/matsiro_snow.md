@@ -515,14 +515,11 @@ In this case, the maximum value is set for the snow water equivalent, and the po
 
 
 $$
- Ro\_{gl} = \max( Sn - Sn\_{\mathrm{max}} ) / \Delta t\_L
-$$
-
-
-$$
- Sn = Sn - Ro\_{gl} \Delta t\_L \\
- \Delta \widetilde{Sn}\_{(K\_{Sn})} = \Delta \widetilde{Sn}\_{(K\_{Sn})}
- \- Ro\_{gl} / A\_{Sn} \Delta t\_L
+\begin{aligned}
+ Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t\_L, \\
+ Sn &= Sn - Ro\_{gl} \Delta t\_L, \\
+ \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t\_L,
+\end{aligned}
 $$
 
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
