@@ -13,8 +13,11 @@ $$
 where
 
 $$
-f\_{age} = exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]}, \\
-\f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}.
+f\_{age} = exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_Sn(1)} \right) \right]},
+$$
+
+$$
+f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \mathrm{s}.
 $$
 
 The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
