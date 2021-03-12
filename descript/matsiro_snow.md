@@ -346,11 +346,11 @@ $$
 \widetilde{F}\_{Sn(k+1/2)}
  = \left\\{
  \begin{aligned}
-  (F\_{Sn(1/2)} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv} 
+  & (F\_{Sn(1/2)} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv} 
   \;\; &(k = 0) \\
-  k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \;\; &(k = 1, ..., K\_{Sn}-1) \\
-  k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \;\; &(k = K\_{Sn})
  \end{aligned}
 \right.,
