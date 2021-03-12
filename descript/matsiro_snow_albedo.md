@@ -27,7 +27,7 @@ $\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\
 The age of snow at the next time step ${\tau+1} is, after Yang et al. (1997), assumed to be given by the following equation:
 
 $$
-\frac{A\_g^{\tau+1} = A\_g^{\tau}} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age},
+A\_g^{\tau+1} = A\_g^{\tau} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age},
 $$
 
 where
