@@ -11,8 +11,8 @@ Tables below show the important arguments of SUBROUTINE MATSNW classified by the
 $$
 \begin{table}[h]
  \begin{tabular}{llll}
- A & B & C & D \hline\hline
- a & b & c & d \hline
+ A & B & C & D \\ \hline\hline
+ a & b & c & d \\ \hline
  \end{tabular}
 \end{table}
 $$
