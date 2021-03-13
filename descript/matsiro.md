@@ -1,14 +1,3 @@
-Description of Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) Land Surface Parameterization
-
-November 10, 2001
-
-Seita Emori<sup>1</sup>
-
-
-Frontier Research System for Global Change
-
-<sup>1</sup> On loan from the National Institute for Environmental Studies
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
