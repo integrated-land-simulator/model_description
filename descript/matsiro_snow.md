@@ -434,7 +434,7 @@ $$
 \end{aligned} \\
 &\begin{aligned}
  a &= b \\
- b &= 1 + v
+ b &= 1 + v * h
 \end{aligned}
 \end{aligned}
 $$
