@@ -56,7 +56,7 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1,
+\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
 $$
 
 where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
@@ -64,19 +64,16 @@ where $D$ is the snow water equivalent depth and $f(D)$ is the probability distr
 $$
 f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
-\right] },
+\right] }, \tag{8-2}
 $$
 
 where
 
 $$
-\lambda = \ln(\mu) - \frac{1}{2}\zeta^2
-$$
-
-and
-
-$$
-\zeta^2 = \ln(1+CV^2).
+\begin{aigned}
+ \lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \\
+ \zeta^2 = \ln(1+CV^2).
+\end{aligned} \tag{8-3}
 $$
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
@@ -228,7 +225,7 @@ $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L
 $$
 
-and the snowmelt is solved as in [eq. (8-1)](#8-1).
+and the snowmelt is solved as in [Eq. (8-1)](#8-1).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 
@@ -244,7 +241,7 @@ $$
 $$
 
 $$
-T\_{Sn\_{(k+1)}}^{\*\*} = T_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t\_L
+T\_{Sn\_{(k+1)}}^{\*\*} = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t\_L
 $$
 
 where $c\_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
@@ -326,7 +323,7 @@ $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by [Eq. (210)](#eq210) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed as described in the section 8.1 and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
 
@@ -336,7 +333,7 @@ $$
 
 ### 8.3.5 Redivision of snow layer and rediagnosis of temperature
 
-When the snow water equivalent is updated, the snow-covered ratio is rediagnosed by [Eq. (210)](#eq210) and the mass of each layer is redivided by [Eq. (212) to (214)](#eq212). The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
+When the snow water equivalent is updated, the snow-covered ratio is rediagnosed as described in the section 8.1 and the mass of each layer is redivided as described in the section 8.2. The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
 
 $$
 T\_{Sn\_{(k)}}^{\mathrm{new}} = \left(
@@ -357,7 +354,7 @@ The prognostic equation of the snow temperature due to snow heat conduction is a
 
 $$
 c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t\_L} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
-\qquad (k=1,\ldots,K\_{Sn}) \tag{eq237}
+\qquad (k=1,\ldots,K\_{Sn})
 $$
 
 with the heat conduction flux $\widetilde{F}\_{Sn}$ given by
@@ -373,7 +370,7 @@ $$
   & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \; &&(k = K\_{Sn})
  \end{aligned}
-\right.,
+\right., \tag{8-2}
 $$
 
 where $k\_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
@@ -395,12 +392,12 @@ $$
 
 where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
-In [Eq. (238)](#eq238), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+In [Eq. (8-2)](#8-2), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
 
 In the equation for the snow lower boundary flux $\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$, $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
 
 $$
-\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}}
+\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}} \tag{8-3}
 $$
 
 there is assumed to be no convergence at the snow lower boundary, and by putting
@@ -410,14 +407,14 @@ $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)}
 $$
 
-$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (242)](#eq242), the following is obtained:
+$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-3)](#8-3), the following is obtained:
 
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
  = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
   +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1}
- (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}) \tag{eq242}
+ (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}})
 $$
 
 ### 8.4.2 Case 1: When snowmelt does not occur in the uppermost layer
