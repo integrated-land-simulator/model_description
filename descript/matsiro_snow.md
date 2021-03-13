@@ -228,7 +228,7 @@ $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L
 $$
 
-and the snowmelt is solved as in [eq. (8-1)](#eq8-1).
+and the snowmelt is solved as in [eq. (8-1)](#8-1).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 
