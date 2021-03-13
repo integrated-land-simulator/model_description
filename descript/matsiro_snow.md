@@ -428,13 +428,10 @@ The implicit method is used to treat the temperature from the uppermost snow lay
 
 $$
 \begin{aligned}
-
 & \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*}
  = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
- \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
-
-\\
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
 
 & \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  = \left\\{ \begin{aligned}
@@ -447,9 +444,7 @@ $$
   \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; && (k = K\_{Sn})
-\end{aligned} \right.
-
-\\
+\end{aligned} \right. \\
 
 & \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
  = \left\\{ \begin{aligned}
@@ -459,9 +454,7 @@ $$
   \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
  \right]^{-1}
  \; &&(k = K\_{Sn})
-\end{aligned} \right.
-
-\\
+\end{aligned} \right. \\
 
 & \frac{\partial\widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}}
  = \left\\{ \begin{aligned}
@@ -470,7 +463,6 @@ $$
  & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
 \end{aligned} \right.
-
 \end{aligned} \tag{8-000}
 $$
 
