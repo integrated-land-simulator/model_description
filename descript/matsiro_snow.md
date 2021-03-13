@@ -70,7 +70,7 @@ $$
 where
 
 $$
-\begin{aigned}
+\begin{aligned}
  \lambda &= \ln(\mu) - \frac{1}{2}\zeta^2, \\
  \zeta^2 &= \ln(1+CV^2).
 \end{aligned} \tag{8-3}
