@@ -70,10 +70,10 @@ $$
 where
 
 $$
-\begin{aligned}
- \lambda &= \ln(\mu) - \frac{1}{2}\zeta^2, \\
- \zeta^2 &= \ln(1+CV^2).
-\end{aligned} \tag{8-3}
+\lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
+$$
+$$
+\zeta^2 &= \ln(1+CV^2). \tag{8-4}
 $$
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
@@ -81,7 +81,7 @@ Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation.
 The snow amount $Sn$ is given by 
 
 $$
-Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD, \tag{8-4}
+Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD, \tag{8-5}
 $$
 
 and this equation is rewritten to
@@ -90,7 +90,7 @@ $$
 Sn(D\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
  \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
- \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right), \tag{8-5}
+ \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right), \tag{8-6}
 $$
 
 where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
@@ -100,7 +100,7 @@ $D\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Ra
 Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
 
 $$
-A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{D\_m}}{2} \right). \tag{8-6}
+A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{D\_m}}{2} \right). \tag{8-7}
 $$
 
 ### 8.1.2 Case 2: When OPT\_SSNOWD is inactive
@@ -108,7 +108,7 @@ $$
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
 
 $$
-Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-7}
+Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
 $$
 
 where $Sn\_c$ is 100 $\mathrm{kg/m^2}$.
@@ -160,13 +160,13 @@ $$
  (\widetilde{Sn} \geq 60)
 \end{array}
 \right.
-\end{aligned} \tag{8-8}
+\end{aligned} \tag{8-9}
 $$
 
 where
 
 $$
- \widetilde{Sn} =  Sn / A\_{Sn} \tag{8-9}
+\widetilde{Sn} =  Sn / A\_{Sn} \tag{8-10}
 $$
 
  $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
@@ -181,7 +181,7 @@ $$
  2 \;\;\; (20 \leq \widetilde{Sn} < 60)\\
  3 \;\;\; (\widetilde{Sn} \geq 60)
 \end{array}
-\right. \tag{8-10}
+\right. \tag{8-11}
 $$
 
 ## 8.3 Calculation of snow water equivalent
@@ -189,7 +189,7 @@ $$
 The prognostic equation of the snow water equivalent is given by
 
 $$
- \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t\_L} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-11}
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t\_L} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
 $$
 
 where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_{Sn}$ is the sublimation flux, $M\_{Sn}$ is the snowmelt, and $Fr\_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
@@ -199,11 +199,11 @@ where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_
 First, by subtracting the sublimation, the snow water equivalent is partially updated:
 
 $$
-Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t\_L \tag{8-12}
+Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t\_L \tag{8-13}
 $$
 
 $$
-\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t\_L \tag{8-13}
+\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t\_L \tag{8-14}
 $$
 
 In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
@@ -213,39 +213,39 @@ In a case where the sublimation is larger than the snow water equivalent in the 
 Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T\_{Sn(k)}^{\*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T\_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T\_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
 
 $$
- \widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ) \tag{8-14}
+\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ) \tag{8-15}
 $$
 
 With regard to the second layer and below, if the temperature is higher than $T\_{melt}$, it is put back to $T\_{melt}$ and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
 
 $$
-T\_{Sn(k)}^{\*\*} = T\_{melt} \tag{8-15}
+T\_{Sn(k)}^{\*\*} = T\_{melt} \tag{8-16}
 $$
 
 $\Delta \widetilde{F}\_{conv}$ is newly defined by
 
 $$
-\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L \tag{8-16}
+\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L \tag{8-17}
 $$
 
-and the snowmelt is solved as in [Eq. (8-14)](#8-14).
+and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 
 $$
-\Delta \widetilde{Sn}\_{(k)}^{\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}} \tag{8-17}
+\Delta \widetilde{Sn}\_{(k)}^{\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}} \tag{8-18}
 $$
 
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}\_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 
 $$
-\Delta \widetilde{F}\_{conv}^{\*} = \Delta \widetilde{F}\_{conv} - l\_m \widetilde{M}\_{Sn\_{(k)}} \tag{8-18}
+\Delta \widetilde{F}\_{conv}^{\*} = \Delta \widetilde{F}\_{conv} - l\_m \widetilde{M}\_{Sn\_{(k)}} \tag{8-19}
 $$
 
 $$
 T\_{Sn\_{(k+1)}}^{\*\*} 
- = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t\_L \tag{8-19}
+ = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t\_L \tag{8-20}
 $$
 
 where $c\_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
@@ -253,13 +253,13 @@ where $c\_{pi}$ is the specific heat of snow (ice). When all of the snow is melt
 The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):
 
 $$
- M\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{M}\_{Sn(k)} A\_{Sn} \tag{8-20}
+ M\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{M}\_{Sn(k)} A\_{Sn} \tag{8-21}
 $$
 
 By subtracting the snowmelt, the snow water equivalent is partially updated:
 
 $$
-Sn^{\*\*} = Sn^{\*} - M\_{Sn} \Delta t\_L \tag{8-21}
+Sn^{\*\*} = Sn^{\*} - M\_{Sn} \Delta t\_L \tag{8-22}
 $$
 
 ### 8.3.3 Freeze of snowmelt water and rainfall in snow
@@ -269,7 +269,7 @@ The freeze of snowmelt water and rainfall in the snow is calculated next. With r
 The liquid water flux at the snow upper boundary in the snow-covered portion is
 
 $$
-\widetilde{F}\_{wSn(1)} = Pr\_c^{\*} + Pr\_l^{\*} + M\_{Sn} / A\_{Sn} \tag{8-22}
+\widetilde{F}\_{wSn(1)} = Pr\_c^{\*} + Pr\_l^{\*} + M\_{Sn} / A\_{Sn} \tag{8-23}
 $$
 
 Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).
@@ -282,7 +282,7 @@ $$
 \frac{c\_{pi}(T\_{melt}-T\_{Sn\_{(k)}}^{\*\*})}{l\_m} \
 \frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} , \
 f\_{Fmax}\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} \
-\right) \tag{8-23}
+\right) \tag{8-24}
 $$
 
 where $F\_{w\_{Sn\_{(k)}}}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f\_{Fmax}$ is assumed to be 0.1 as a standard value.
@@ -293,26 +293,26 @@ $$
 T\_{Sn\_{(k)}}^{\*\*\*} = \frac{l\_m \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L
  \+ c\_{pi}(T\_{Sn\_{(k)}}^{\*\*}\Delta \widetilde{Sn}\_{(k)}^{\*\*} 
  \+ T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}
- {c\_{pi}(\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}, \tag{8-24}
+ {c\_{pi}(\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}, \tag{8-25}
 $$
 
 and the mass is updated as follows:
 
 $$
- \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L. \tag{8-25}
+ \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L. \tag{8-26}
 $$
 
 The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
 
 $$
- Fr\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{Fr}\_{Sn\_{(k)}} A\_{Sn}. \tag{8-26}
+ Fr\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{Fr}\_{Sn\_{(k)}} A\_{Sn}. \tag{8-27}
 $$
 
 
 By adding the amount of freeze, the snow water equivalent is partially updated as follows:
 
 $$
- Sn^{\*\*\*} = Sn^{\*\*} + Fr\_{Sn} \Delta t\_L. \tag{8-27}
+ Sn^{\*\*\*} = Sn^{\*\*} + Fr\_{Sn} \Delta t\_L. \tag{8-28}
 $$
 
 The liquid water that has percolated from the snow to the lower boundary is given to the soil.
@@ -322,7 +322,7 @@ The liquid water that has percolated from the snow to the lower boundary is give
 Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
 
 $$
- Sn^{\tau+1} = Sn^{\*\*\*} + P\_{Sn}^{\*} \Delta t\_L \tag{8-28}
+ Sn^{\tau+1} = Sn^{\*\*\*} + P\_{Sn}^{\*} \Delta t\_L \tag{8-29}
 $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
@@ -332,7 +332,7 @@ When snow is produced by snowfall in a grid where no snow was formerly present, 
 The snowfall is added to the mass of the uppermost layer:
 
 $$
-\Delta \widetilde{Sn}\_{(k)}^{\tau+1} = \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t\_L /A\_{Sn}. \tag{8-29}
+\Delta \widetilde{Sn}\_{(k)}^{\tau+1} = \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t\_L /A\_{Sn}. \tag{8-30}
 $$
 
 ### 8.3.5 Redivision of snow layer and rediagnosis of temperature
@@ -344,7 +344,7 @@ T\_{Sn\_{(k)}}^{\mathrm{new}} = \left(
  \sum\_{l=1}^{K\_{Sn}^{\mathrm{old}}} 
  f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})} T\_{Sn(l)}^{\mathrm{old}} 
  \Delta \widetilde{Sn}\_{(l)}^{\mathrm{old}} A\_{Sn}^{\mathrm{old}} 
-\right) \Bigm/ (\Delta \widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}).
+\right) \Bigm/ (\Delta \widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}). \tag{8-31}
 $$
 
 It should be noted that the variables with the index "old" and "new" are those before and after redivision, respectively. $f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
@@ -358,7 +358,7 @@ The prognostic equation of the snow temperature due to snow heat conduction is a
 
 $$
 c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t\_L} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
-\qquad (k=1,\ldots,K\_{Sn})
+\qquad (k=1,\ldots,K\_{Sn}) \tag{8-32}
 $$
 
 with the heat conduction flux $\widetilde{F}\_{Sn}$ given by
@@ -374,7 +374,7 @@ $$
   & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \; &&(k = K\_{Sn})
  \end{aligned}
-\right., \tag{8-2}
+\right., \tag{8-33}
 $$
 
 where $k\_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
@@ -391,34 +391,34 @@ $$
   & 0.5 \Delta \widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
   \; &&(k = K\_{Sn})
  \end{aligned}
-\right.
+\right. \tag{8-34}
 $$
 
 where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
-In [Eq. (8-2)](#8-2), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
 
 In the equation for the snow lower boundary flux $\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$, $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
 
 $$
-\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}} \tag{8-3}
+\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}} \tag{8-35}
 $$
 
 there is assumed to be no convergence at the snow lower boundary, and by putting
 
 
 $$
-\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)}
+\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)} \tag{8-36}
 $$
 
-$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-3)](#8-3), the following is obtained:
+$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-35)](#8-35), the following is obtained:
 
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
  = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
   +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1}
- (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}})
+ (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}) \tag{8-37}
 $$
 
 ### 8.4.2 Case 1: When snowmelt does not occur in the uppermost layer
@@ -430,6 +430,7 @@ $$
  = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
+\tag{8-38}
 $$
 
 $$
@@ -444,7 +445,7 @@ $$
   \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; &&(k = K\_{Sn})
-\end{aligned} \right.
+\end{aligned} \right. \tag{8-39}
 $$
 
 $$
@@ -456,7 +457,7 @@ $$
   \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
  \right]^{-1}
  \; &&(k = K\_{Sn})
-\end{aligned} \right.
+\end{aligned} \right. \tag{8-40}
 $$
 
 
@@ -467,10 +468,10 @@ $$
  \; &&(k = 0) \\
  & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
-\end{aligned} \right.
+\end{aligned} \right. \tag{8-41}
 $$
 
-and [Eq. (237)](#eq237) is treated as
+and [Eq. (8-32)](#8-32) is treated as
 
 $$
 \begin{aligned}
@@ -482,7 +483,7 @@ $$
  & &&\- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k-1)}}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
-\end{aligned}
+\end{aligned} \tag{8-42}
 $$
 
 
@@ -490,7 +491,7 @@ and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}}\ (k = 1, ...
 
 
 $$
- T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}}
+T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-43}
 $$
 
 ### 8.4.3 Case 2: When snowmelt occurs in the uppermost layer
@@ -501,7 +502,7 @@ $$
 \widetilde{F}\_{3/2}^{\*}
  = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
  +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
- \Delta T\_{Sn\_{(2)}}
+ \Delta T\_{Sn\_{(2)}} \tag{8-44}
 $$
 
 and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
@@ -511,7 +512,7 @@ The energy convergence used for melting in the uppermost snow layer is given by:
 $$
 \Delta \widetilde{F}\_{conv} 
  = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
- \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L}
+ \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L} \tag{8-45}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -524,6 +525,7 @@ The heat flux given to the soil through the snow process is
 $$
 \Delta F\_{conv}^{\*} 
  = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*},
+\tag{8-46}
 $$
 
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground.
