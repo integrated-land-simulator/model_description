@@ -433,7 +433,17 @@ $$
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
 & \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
- = \Lambda
+ = \left\\{ \begin{aligned}
+ & (F\_{Sn\_{(1/2)}} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv}
+ \; && (k = 0) \\
+ & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
+ \; && (k = 1, ..., K\_{Sn}-1) \\
+ & \left[
+  \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
+  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+ \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
+ \; && (k = K\_{Sn})
+\end{aligned} \right. \\
 \end{aligned}
 $$
 
