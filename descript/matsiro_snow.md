@@ -8,51 +8,42 @@ Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice
 
 Tables below show the important arguments of SUBROUTINE MATSNW classified by the statements of "modified", "output" and "input".
 
-
-\begin{table}[h]
- \begin{tabular}{llll}
- A & B & C & D \\
- a & b & c & d
- \end{tabular}
-\end{table}
-
-| Name in code | Variable | Description | Unit |
-|:-------------|:----------------------------|:---------------------------------------|:------------------|
-| GLSNW        | $Sn$                        | Amount of snowfall                     | $\mathrm{kg/m^2}$ |
-
 Modified
-| Name in code | Variable | Description | Unit
-|:-------------|:---------|:------------|:-----
-| GLSNW | $Sn$                        | Amount of snowfall                     | $\mathrm{kg/m^2}$
-| GLTSN | $T\_{Sn(k)} \;\; (k=1,2,3)$ | Snow temperature of the $k$th layer    | $\mathrm{K}$
-| GLASN | $\alpha\_b  \;\; (b=1,2,3)$ | Snow albedo for band $b$               | -
-| GLRSN | $A\_{Sn}$                   | Snow fraction                          | -
-| GLSDA | -                           | Snow accumulation                      | $\mathrm{kg/m^2}$
-| GLSDM | $M\_{Sn}$                   | Accumulation of the snow melt          | $\mathrm{kg/m^2}$
-| WINPC | $P\_{r\_c}$                 | Convective precipitation flux          | $\mathrm{kg/m^2/s}$
-| WINPL | $P\_{r\_l}$                 | Layered precipitation flux             | $\mathrm{kg/m^2/s}$
-| CDST  | $\rho\_{(k)}$               | Dust density in the $k$th layer        | $\mathrm{ppmv}$
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| GLSNW        | $Sn$                        | Amount of snowfall                               | $\mathrm{kg/m^2}$   |
+| GLTSN        | $T\_{Sn(k)} \;\; (k=1,2,3)$ | Snow temperature of the $k$th layer              | $\mathrm{K}$        |
+| GLASN        | $\alpha\_b  \;\; (b=1,2,3)$ | Snow albedo for band $b$                         | -                   |
+| GLRSN        | $A\_{Sn}$                   | Snow fraction                                    | -                   |
+| GLSDA        | -                           | Snow accumulation                                | $\mathrm{kg/m^2}$   |
+| GLSDM        | $M\_{Sn}$                   | Accumulation of the snow melt                    | $\mathrm{kg/m^2}$   |
+| WINPC        | $P\_{r\_c}$                 | Convective precipitation flux                    | $\mathrm{kg/m^2/s}$ |
+| WINPL        | $P\_{r\_l}$                 | Layered precipitation flux                       | $\mathrm{kg/m^2/s}$ |
+| CDST         | $\rho\_{(k)}$               | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     |
 
 Output
-| Name in code | Variable | Description | Unit
-|:-------------|:---------|:------------|:-----
-| GGLACR | $Ro\_{gl}$ | Glacier formation | $\mathrm{kg/m^2/s}$
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| GGLACR       | $Ro\_{gl}$                  | Glacier formation                                | $\mathrm{kg/m^2/s}$ |
 
 Input
-| Name in code | Variable | Description | Unit
-|:-------------|:---------|:------------|:-----
-| SNFAL  | $P\_{Sn}$      | Snow fall                                        | $\mathrm{kg/m^2/s}$
-| SNSUB  | $E\_{Sn}$      | Snow sublimation                                 | $\mathrm{kg/m^2/s}$
-| SNFLXS | $F\_{Sn(1/2)}$ | Snow surface heat flux                           | $\mathrm{W/m^2}$
-| GLG    | $T\_{g(k)}$    | Soil temperature of the $k$th layer              | $\mathrm{T}$
-| GLW    | $w\_{g(k)}$    | Soil moisture                                    | $\mathrm{m^3/m^3}$
-| GLWC   | $w\_c$         | Canopy water                                     | $\mathrm{m}$
-| SNRATC | $A\_{Snc}$     | Canopy snow ratio                                | -
-| DSTFAL | $D$            | Dust fall                                        | $\mathrm{ppmv/s}$
-| GRZSD  | -              | Standard deviation of topography                 | $\mathrm{m}$
-| T2HIST | -              | Annual mean temperature over the latest 30 years | $\mathrm{K}$
-| ILSFC  | -              | Index of the surface condition                   | -
-| ILSOIL | -              | Soil type                                        | -
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| SNFAL        | $P\_{Sn}$                   | Snow fall                                        | $\mathrm{kg/m^2/s}$ |
+| SNSUB        | $E\_{Sn}$                   | Snow sublimation                                 | $\mathrm{kg/m^2/s}$ |
+| SNFLXS       | $F\_{Sn(1/2)}$              | Snow surface heat flux                           | $\mathrm{W/m^2}$    |
+| GLG          | $T\_{g(k)}$                 | Soil temperature of the $k$th layer              | $\mathrm{T}$        |
+| GLW          | $w\_{g(k)}$                 | Soil moisture                                    | $\mathrm{m^3/m^3}$  |
+| GLWC         | $w\_c$                      | Canopy water                                     | $\mathrm{m}$        |
+| SNRATC       | $A\_{Snc}$                  | Canopy snow ratio                                | -                   |
+| DSTFAL       | $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   |
+| GRZSD        | -                           | Standard deviation of topography                 | $\mathrm{m}$        |
+| T2HIST       | -                           | Annual mean temperature over the latest 30 years | $\mathrm{K}$        |
+| ILSFC        | -                           | Index of the surface condition                   | -                   |
+| ILSOIL       | -                           | Soil type                                        | -                   |
 
 
 ## 8.1 Diagnosis of snow cover fraction
