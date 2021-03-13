@@ -681,7 +681,7 @@ f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)
 $$
 
 $$
-f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}. \tag{8-60}
+f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}.
 $$
 
 $T\_{Sn(1)}$ is the temperature of the first layer of snow.
@@ -692,7 +692,7 @@ $$
 r\_{dirt} = \left\\{ \begin{aligned}
  r\_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
  r\_{dirt,0} \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right., \tag{8-61}
+\end{aligned} \right., \tag{8-60}
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When this option is active, the density of the dirt is considered as
@@ -701,7 +701,7 @@ $$
 r\_{dirt} = \left\\{ \begin{aligned}
  \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
  \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right., \tag{8-62}
+\end{aligned} \right., \tag{8-61}
 $$
 
 where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
@@ -709,13 +709,13 @@ where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 an
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
 $$
-\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}), \tag{8-63}
+\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}), \tag{8-62}
 $$
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
 $$
-\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}). \tag{8-64}
+\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}). \tag{8-63}
 $$
 
 $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
@@ -728,7 +728,7 @@ The albedo of the ice sheet, $\alpha\_{b,surf}$, is calculated in ENTRY ICEALB i
 This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
 $$
-\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)}, \tag{8-65}
+\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)}, \tag{8-64}
 $$
 
 where $\alpha\_{b,ice}$ is the land ice albedo without surface water, $\alpha\_{b,wet}$ is the one with surface water, $w\_{surf}$ is the thisness of surfice water and $w^{\*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha\_{vis,ice}$, $\alpha\_{nir,ice}$ and $\alpha\_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha\_{b,wet}$ is set to 0.15 for all bands.
