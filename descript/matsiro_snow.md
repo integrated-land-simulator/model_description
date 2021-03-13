@@ -432,6 +432,17 @@ $$
  = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
+& \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+ = \Lambda
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*}
+ = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
+ \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}} \\
 
 & \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  = \left\\{ \begin{aligned}
