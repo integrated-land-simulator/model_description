@@ -710,8 +710,8 @@ Since the snow-free portion and snow-covered portion are calculated separately, 
 $$
   \widetilde{C_{Es}} = \left\{
   \begin{array}{ll}
-   C_{Es} (h_{soil}q^*(T_s) - q_a > 0 {のとき})\\
-   C_{Hs} (h_{soil}q^*(T_s) - q_a \leq 0 {のとき})
+   C_{Es} (h_{soil}q^*(T_s) - q_a > 0)\\
+   C_{Hs} (h_{soil}q^*(T_s) - q_a \leq 0)
   \end{array}
   \right.
 $$
@@ -1134,8 +1134,8 @@ where $P_{Il}^{c}$ and $P_{Ii}^{c}$ denote the interception in the convective pr
 $$
  f_{int} = \left\{
 \begin{array}{ll}
- LAI  (LAI < 1 {のとき})\\
- 1    (LAI \geq 1 {のとき})
+ LAI  (LAI < 1)\\
+ 1    (LAI \geq 1)
 \end{array}
 \right.
 $$
@@ -1175,8 +1175,7 @@ $$
  D_g(w_c) = D_1 \exp(D_2 w_c)
 $$
 
-$D_1=1.14 \times 10 ^{-11}$ and $D_2=3.7 \times$ 10 ^{3}
-$ are standard values, and the same values are used with respect to the liquid and solid phases.
+$D_1=1.14 \times 10 ^{-11}$ and $D_2=3.7 \times 10^{3}$ are standard values, and the same values are used with respect to the liquid and solid phases.
 
 By subtracting the dripping, the values are updated as follows:
 
