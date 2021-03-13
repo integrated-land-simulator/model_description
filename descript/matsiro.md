@@ -297,9 +297,9 @@ The leaf area index (LAI), vegetation height, etc. are set as vegetation type pa
 Seasonally changing horizontal distributions are loaded as external parameters for LAI, and the values according to land use type are loaded as external parameters for the heights of the canopy top and bottom. When there is snow, only the vegetation above the level of the snow depth is taken into consideration and the type parameters are corrected as follows:
 
 $$
- h = \max( h_0 - D_{Sn}, 0 ) \\
- h_B = \max( h_{B0} - D_{Sn}, 0 ) \\
- LAI = LAI_0 \frac{h-h_B}{h_0-h_{B0}}
+ h   &=& \max( h_0 - D_{Sn}, 0 ) \\
+ h_B &=& \max( h_{B0} - D_{Sn}, 0 ) \\
+ LAI &=& LAI_0 \frac{h-h_B}{h_0-h_{B0}}
 $$
 
 where $h$ is the height of the canopy top (vegetation height), $h_B$ is the height of the canopy bottom (height of clear length),  $LAI$ is the leaf area index, and $h_0$, $h_{B0}$, and $LAI_0$ are the respective values when there is no snow. $D_{Sn}$ is the snow depth. LAI is approximated on the assumption that it is uniformly distributed vertically between the canopy top and bottom.
@@ -324,10 +324,10 @@ With regard to the ice-sheet portion and snow-covered portion, the dependence of
 
 $$
  \alpha_{0(d,b)} = \hat{\alpha}_{0(b)} + ( 1 - \hat{\alpha}_{0(b)} )
-                         \cdot 0.4 ( 1 - \cos \phi_{in(d)} )^5
+                         \cdot 0.4 ( 1 - \cos \psi_{in(d)} )^5
 $$
 
-where $b=1,2$ are wavelength bands; $d=1,2$ are direct and diffuse, respectively; and  $\hat{\alpha}_{0(b)}$ is the value of albedo when the incidence angle is 0 (from directly overhead). The cosine of the incidence angle ! is expressed as
+where $b=1,2$ are wavelength bands; $d=1,2$ are direct and diffuse, respectively; and  $\hat{\alpha}_{0(b)}$ is the value of albedo when the incidence angle is 0 (from directly overhead). The cosine of the incidence angle $\cos\psi_{in(d)}$ is expressed as
 
 $$
  \cos\psi_{in(1)} = \cos\zeta, \ \ \
@@ -357,16 +357,16 @@ Considering the canopy as vertically uniform and making use of several assumptio
 
 
 $$
- \frac{dS^{\downarrow}_d}{dL} = -F \sec\zeta S^{\downarrow}_d \\
- \frac{dS^{\downarrow}_r}{dL} = -F (1-t_{f(b)})d_f S^{\downarrow}_r
+ \frac{dS^{\downarrow}_d}{dL} &=& -F \sec\zeta S^{\downarrow}_d \\
+ \frac{dS^{\downarrow}_r}{dL} &=& -F (1-t_{f(b)})d_f S^{\downarrow}_r
                                   +F t_{f(b)} \sec\zeta S^{\downarrow}_d
                                   +F r_{f(b)} d_f S^{\uparrow}_r \\
- \frac{dS^{\uparrow}_r}{dL}   =  F (1-t_{f(b)})d_f S^{\uparrow}_r
+ \frac{dS^{\uparrow}_r}{dL}   &=&  F (1-t_{f(b)})d_f S^{\uparrow}_r
                                   -F r_{f(b)} ( d_f S^{\downarrow}_r
                                          + \sec\zeta S^{\downarrow}_d ) \\
- S^{\downarrow}_d(0) = S^{top}_d \\
- S^{\downarrow}_r(0) = S^{top}_r \\
- S^{\uparrow}_r(LAI) = \alpha_{0(1,b)}S^{\downarrow}_d(LAI)
+ S^{\downarrow}_d(0) &=& S^{top}_d \\
+ S^{\downarrow}_r(0) &=& S^{top}_r \\
+ S^{\uparrow}_r(LAI) &=& \alpha_{0(1,b)}S^{\downarrow}_d(LAI)
                        + \alpha_{0(2,b)}S^{\downarrow}_r(LAI)
 $$
 
@@ -375,26 +375,26 @@ where  $S^{\downarrow}_d$ is the downward direct insolation; $S^{\uparrow}_r$ an
 These can be solved analytically, giving the following solutions:
 
 $$
- S^{\downarrow}_d(L) = S^{top}_d \exp(-F\cdot L\cdot \sec\zeta) \\
- S^{\downarrow}_r(L) = C_1 e^{a L} + C_2 e^{-a L} + C_3 S^{\downarrow}_d(L) \\
- S^{\uparrow}_r(L)   = A_1 C_1 e^{a L} + A_2 C_2 e^{-a L} + C_4 S^{\downarrow}_d(L)
+ S^{\downarrow}_d(L) &=& S^{top}_d \exp(-F\cdot L\cdot \sec\zeta) \\
+ S^{\downarrow}_r(L) &=& C_1 e^{a L} + C_2 e^{-a L} + C_3 S^{\downarrow}_d(L) \\
+ S^{\uparrow}_r(L)   &=& A_1 C_1 e^{a L} + A_2 C_2 e^{-a L} + C_4 S^{\downarrow}_d(L)
 $$
 
 where
 
 $$
-   a = F d_f [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}  \\
- A_1 = \{ 1 - t_{f(b)} + [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \tag{eq17} \\
- A_2 = \{ 1 - t_{f(b)} - [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \\
- A_3 = (A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+   a &=& F d_f [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}  \\
+ A_1 &=& \{ 1 - t_{f(b)} + [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \tag{eq17} \\
+ A_2 &=& \{ 1 - t_{f(b)} - [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \\
+ A_3 &=& (A_1 - \alpha_{0(2,b)}) e^{ a LAI }
         -(A_2 - \alpha_{0(2,b)}) e^{-a LAI } \\
- C_1 = \{ -(A_2 - \alpha_{0(2,b)}) e^{-a LAI} (S^{top}_r - C_3 S^{top}_d)
-            +[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
- C_2 = \{  (A_1 - \alpha_{0(2,b)}) e^{ a LAI} (S^{top}_r - C_3 S^{top}_d)
-            -[C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
- C_3 = \frac{\sec\zeta[t_{f(b)}\sec\zeta + d_f t_{f(b)}(1-t_{f(b)}) + d_f r_{f(b)}^2]}
+ C_1 &=& \{ -(A_2 - \alpha_{0(2,b)}) e^{-a LAI} (S^{top}_r - C_3 S^{top}_d) \nonumber\\
+          &+&   [C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_2 &=& \{  (A_1 - \alpha_{0(2,b)}) e^{ a LAI} (S^{top}_r - C_3 S^{top}_d) \nonumber\\
+          &-&   [C_3\alpha_{0(2,b)}+\alpha_{0(1,b)}-C_4]S^{\downarrow}_d(LAI)\} / A_3 \\
+ C_3 &=& \frac{\sec\zeta[t_{f(b)}\sec\zeta + d_f t_{f(b)}(1-t_{f(b)}) + d_f r_{f(b)}^2]}
               {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta} \\
- C_4 = \frac{r_{f(b)}(d_f - \sec\zeta)\sec\zeta}
+ C_4 &=& \frac{r_{f(b)}(d_f - \sec\zeta)\sec\zeta}
               {d_f^2[(1-t_{f(b)})^2-r_{f(b)}^2]-\sec^2\zeta}
 $$
 
@@ -408,10 +408,10 @@ $$
 therefore,
 
 $$
- \alpha_{s(2,b)} = \{ A_2 ( A_1 - \alpha_{0(2,b)}) e^{ a LAI }
+ \alpha_{s(2,b)} &=& \{ A_2 ( A_1 - \alpha_{0(2,b)}) e^{ a LAI }
                       - A_1 ( A_2 - \alpha_{0(2,b)}) e^{-a LAI }
                    \} / A_3 \\
- \alpha_{s(1,b)} = - C_3 \alpha_{s(2,b)} + C_4
+ \alpha_{s(1,b)} &=& - C_3 \alpha_{s(2,b)} + C_4
                   + ( A_1 - A_2 ) ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4)
                   e^{- F\cdot LAI\cdot \sec\zeta} / A_3
 $$
@@ -422,14 +422,13 @@ If the canopy transmissivity (${\mathcal{T}}_c$) (specifically, the ratio of inc
 
 
 $$
-  {\mathcal{T}}_{c(2,b)}= \{ ( 1 - A_2 )( A_1 - \alpha_{0(2,b)} )
+  {\mathcal{T}}_{c(2,b)} &=& \{ ( 1 - A_2 )( A_1 - \alpha_{0(2,b)} )
                       - ( 1 - A_1 )( A_2 - \alpha_{0(2,b)} ) \} / A_3 \\
- {\mathcal{T}}_{c(1,b)}= - C_3 {\mathcal{T}}_{c(2,b)}  \\
- +               \{ ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4 )
+ {\mathcal{T}}_{c(1,b)} &=& - C_3 {\mathcal{T}}_{c(2,b)}  \nonumber\\
+ &+&                   \{ ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4 )
                    ( ( 1 - A_1 ) e^{ a LAI }
                    - ( 1 - A_2 ) e^{-a LAI } )  / A_3
-                   + C_3 - C_4 +1 \} e^{- F\cdot LAI\cdot \sec\zeta}
- \\
+                   + C_3 - C_4 +1 \} e^{- F\cdot LAI\cdot \sec\zeta} \nonumber\\
 $$
 
 the following are obtained:
@@ -449,9 +448,9 @@ The leaf albedo $r_f$ and transmissivity $t_f$ are loaded as external parameters
 When the canopy temperature does not exceed 0°C, the canopy water is regarded as snow (ice). In this case, using the snow albedo ($\alpha_{Sn(b)}$) and canopy water ($w_c$), the following assumptions are made:
 
 $$
- r_{f(b)} = ( 1 - f_{cwet} ) r_{f(b)}
+ r_{f(b)} &=& ( 1 - f_{cwet} ) r_{f(b)}
          + f_{cwet} \alpha_{Sn(b)} \\
-  f_{cwet} = {w_c}/w_{c,cap}
+  f_{cwet} &=& {w_c}/w_{c,cap}
 $$
 
 
@@ -486,9 +485,9 @@ $$
 and this is used for the calculation for albedo, etc. mentioned above. ($R^{\downarrow}_{(d,b)}$) is the vegetation-covered ratio in the grid cell. After the albedo, etc. are calculated, the area-weighted mean of the vegetation-covered portion and non- vegetation-covered portion are obtained as
 
 $$
-  \alpha_{s(d,b)} = f_V \alpha_{s(d,b)}
+  \alpha_{s(d,b)} &=& f_V \alpha_{s(d,b)}
                        + ( 1 - f_V ) \alpha_{0(d,b)} \\
-  {\mathcal{T}}_{c(d,b)} = f_V {\mathcal{T}}_{c(d,b)}
+  {\mathcal{T}}_{c(d,b)} &=& f_V {\mathcal{T}}_{c(d,b)}
                        + ( 1 - f_V ) ( 1 - \alpha_{0(d,b)} )
 $$
 
@@ -497,11 +496,11 @@ $$
 Using the surface downward radiation flux  ($R^{\downarrow}_{(d,b)}$) and albedo calculated above, the following radiation fluxes are calculated:
 
 $$
- R^{\downarrow}_S = \sum_{b=1}^2\sum_{d=1}^2 R^{\downarrow}_{(d,b)} \\
- R^{\uparrow}_S = \sum_{b=1}^2\sum_{d=1}^2 \alpha_{s(d,b)} R^{\downarrow}_{(d,b)} \\
- R^{\downarrow}_L = R^{\downarrow}_{(2,3)} \\
- R^{gnd}_S = \sum_{b=1}^2\sum_{d=1}^2 {\mathcal{T}}_{s(d,b)} R^{\downarrow}_{(d,b)} \\
- PAR = \sum_{d=1}^2 R^{\downarrow}_{(d,1)}
+ R^{\downarrow}_S &=& \sum_{b=1}^2\sum_{d=1}^2 R^{\downarrow}_{(d,b)} \\
+ R^{\uparrow}_S &=& \sum_{b=1}^2\sum_{d=1}^2 \alpha_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ R^{\downarrow}_L &=& R^{\downarrow}_{(2,3)} \\
+ R^{gnd}_S &=& \sum_{b=1}^2\sum_{d=1}^2 {\mathcal{T}}_{s(d,b)} R^{\downarrow}_{(d,b)} \\
+ PAR &=& \sum_{d=1}^2 R^{\downarrow}_{(d,1)}
 $$
 
 where $R^{\downarrow}_S$ and $R^{\uparrow}_S$  are the downward and upward shortwave radiation flux, respectively; $R^{\downarrow}_L$ is the downward longwave flux; $R^{gnd}_S$ is the shortwave flux absorbed by the forest floor; and $PAR$ is the downward photosynthesis active radiation (PAR) flux.
@@ -509,9 +508,9 @@ where $R^{\downarrow}_S$ and $R^{\uparrow}_S$  are the downward and upward short
 The canopy transmissivity of shortwave and longwave radiation, and the emissivity of longwave radiation, are then calculated as follows:
 
 $$
- {\mathcal{T}}_{cS} = R^{gnd}_S / ( R^{\downarrow}_S - R^{\uparrow}_S ) \\
- {\mathcal{T}}_{cL} = \exp( - F \cdot LAI \cdot d_f ) \\
- \epsilon = 1 - \alpha_{s(2,3)}
+ {\mathcal{T}}_{cS} &=& R^{gnd}_S / ( R^{\downarrow}_S - R^{\uparrow}_S ) \\
+ {\mathcal{T}}_{cL} &=& \exp( - F \cdot LAI \cdot d_f ) \\
+ \epsilon &=& 1 - \alpha_{s(2,3)}
 $$
 
 # Turbulence parameters (bulk coefficient)
@@ -523,24 +522,24 @@ Next, the turbulence parameter (bulk coefficient) is calculated.
 The calculation of roughness is based on Watanabe (1994). In that study, using the results of a multilayer canopy model by Kondo and Watanabe (1992) as a function form for the roughness of a bulk model best fitting those results, Watanabe (1994) proposed the following:
 
 $$
- \left(\ln \frac{h-d}{z_0}\right)^{-1} =
+ \left(\ln \frac{h-d}{z_0}\right)^{-1} &=&
  \left[ 1 - \exp( -A^+) + \left(-\ln \frac{z_{0s}}{h}\right)^{-1/0.45}
   \exp(-2A^+)\right]^{0.45} \\
- \left(\ln \frac{h-d}{z_T^{\dagger}}\right)^{-1} =
+ \left(\ln \frac{h-d}{z_T^{\dagger}}\right)^{-1} &=&
  \frac{1}{-\ln(z_{Ts}/h)} \left[ \frac{P_1}{P_1 + A^+ \exp({A^+})}\right] ^{P2} \\
  \left(\ln \frac{h-d}{z_0}\right)^{-1} \left(\ln \frac{h-d}{z_T}\right)^{-1}
- = C_T^{\infty} \left[1-\exp(-P_3 A^+)
+ &=& C_T^{\infty} \left[1-\exp(-P_3 A^+)
   + \left(\frac{C_T^0}{C_T^{\infty}}\right)^{1/0.9} \exp(-P_4 A^+)\right]^{0.9} \\
- h-d = h [1-\exp(-A^+)] / {A^+} \\
- A^+ = \frac{c_d LAI}{2k^2} \\
- \frac1{C_T^0} = \ln \frac{h-d}{z_0} \ln \frac{h-d}{z_T^{\dagger}} \\
- C_T^{\infty} = \frac{-1+(1+8F_T)^{1/2}}{2} \\
- P_1 = 0.0115 \left(\frac{z_{Ts}}{h}\right)^{0.1}
+ h-d &=& h [1-\exp(-A^+)] / {A^+} \\
+ A^+ &=& \frac{c_d LAI}{2k^2} \\
+ \frac1{C_T^0} &=& \ln \frac{h-d}{z_0} \ln \frac{h-d}{z_T^{\dagger}} \\
+ C_T^{\infty} &=& \frac{-1+(1+8F_T)^{1/2}}{2} \\
+ P_1 &=& 0.0115 \left(\frac{z_{Ts}}{h}\right)^{0.1}
   \exp\left[5 \left(\frac{z_{Ts}}{h}\right)^{0.22}\right] \\
- P_2 = 0.55 \exp\left[-0.58 \left(\frac{z_{Ts}}{h}\right)^{0.35}\right] \\
- P_3 = [F_T + 0.084 \exp(-15 F_T)]^{0.15} \\
- P_4 = 2 F_T^{1.1} \\
- F_T = c_h / c_d
+ P_2 &=& 0.55 \exp\left[-0.58 \left(\frac{z_{Ts}}{h}\right)^{0.35}\right] \\
+ P_3 &=& [F_T + 0.084 \exp(-15 F_T)]^{0.15} \\
+ P_4 &=& 2 F_T^{1.1} \\
+ F_T &=& c_h / c_d
 $$
 
 
@@ -563,12 +562,12 @@ $c_d$ and $c_h$ are parameters determined by the leaf shape, and are given as ex
 After Watanabe (1994), the bulk coefficient is also calculated using Monin-Obukhov similarity as
 
 $$
- C_M = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
- C_H = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-1}
+ C_M &=& k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
+ C_H &=& k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-1}
              \left[ \ln \frac{z_a-d}{z_T} + \Psi_h(\zeta) \right]^{-1} \\
- C_{Hs} = k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta_g) \right]^{-1}
+ C_{Hs} &=& k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta_g) \right]^{-1}
              \left[ \ln \frac{z_a-d}{z_T^{\dagger}} + \Psi_h(\zeta_g) \right]^{-1} \\
- C_{Hc} = C_H - C_{Hs}
+ C_{Hc} &=& C_H - C_{Hs}
 $$
 
 
@@ -583,8 +582,8 @@ $$
 and the Monin-Obukhov lengths are expressed as:
 
 $$
- L = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg(C_{Hs}(T_s - T_a) + C_{Hc}(T_c - T_a))} \\
- L_s = \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg C_{Hs}(T_s - T_a)}
+ L &=& \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg(C_{Hs}(T_s - T_a) + C_{Hc}(T_c - T_a))} \\
+ L_s &=& \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg C_{Hs}(T_s - T_a)}
 $$
 
 
@@ -609,8 +608,8 @@ This calculation is performed after the calculation of stomatal resistance, desc
 When the stomatal resistance ($r_{st}$)  and ground surface evaporation resistance　($r_{soil}$)  have been solved, the bulk coefficient with respect to vapor is solved as:
 
 $$
- C_{Ec} |V_a| = \left[ (C_{Hc} |V_a|)^{-1} + r_{st} / LAI\right]^{-1} \\
- C_{Es} |V_a| = \left[ (C_{Hs} |V_a|)^{-1} + r_{soil}\right]^{-1}
+ C_{Ec} |V_a| &=& \left[ (C_{Hc} |V_a|)^{-1} + r_{st} / LAI\right]^{-1} \\
+ C_{Es} |V_a| &=& \left[ (C_{Hs} |V_a|)^{-1} + r_{soil}\right]^{-1}
 $$
 
 (Previously, this parameter was solved by converting stomatal resistance, etc. into a decrease of the exchange coefficient via roughness. However, since this approach seems to be problematic, a simpler method had been adopted in its place.)
@@ -700,7 +699,7 @@ V_m / 2
 V_m c_i/ 5
   & \qquad\text{(in case of $C_4$ vegetation)}
 \end{array}
-\right.
+\right. \\
 $$
 
 
@@ -733,10 +732,10 @@ Here, $f_d$  is a constant determined by the vegetation type.
 $V_m$, etc. depend on the temperature and soil moisture, as follows (note that although the temperature dependence differs according to the term in which $V_m$ appears, the value is expressed by the same $V_m$):
 
 $$
- V_m = V_{\max} f_T(T_c) f_w \\
- K_c = 30 \times 2.1^{Q_T} \\
- K_O = 30000 \times 1.2^{Q_T} \\
- S   = 2600 \times 0.57^{Q_T}
+ V_m &=& V_{\max} f_T(T_c) f_w \\
+ K_c &=& 30 \times 2.1^{Q_T} \\
+ K_O &=& 30000 \times 1.2^{Q_T} \\
+ S   &=& 2600 \times 0.57^{Q_T}
 $$
 
 $$
@@ -745,7 +744,7 @@ $$
  2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\} & (\text{when $w_c$ and $w_e$ for $C_3$})\\
  1.8^{Q_T}/\{1 + \exp[s_3(s_4-T_c)]\} & (\text{when $w_s$ is for $C_3$}) \\
  2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}/\{1 + \exp[s_3(s_4-T_c)]\} \\
-                 \;\;  (\text{when $w_c$ and $w_e$ are for $C_4$})\\
+                 \qquad   (\text{when $w_c$ and $w_e$ are for $C_4$})\\
  1.8^{Q_T}                            & (\text{when $w_s$ is for $C_4$}) \\
  2^{Q_T}/\{1 + \exp[s_5(T_c-s_6)]\}   & (\text{when $R_d$})
 \end{array}
@@ -862,8 +861,8 @@ $$
 The ground surface evaporation resistance ($r_{soil}$) and relative humidity of the uppermost soil layer ($h_{soil}$) are calculated as follows:
 
 $$
- r_{soil} = a_1 ( 1 - W_{(1)} ) / ( a_2 + W_{(1)} ) \\
- h_{soil} = \exp \left(\frac{\psi_{(1)} g}{R_{air} T_{g(1)}} \right)
+ r_{soil} &=& a_1 ( 1 - W_{(1)} ) / ( a_2 + W_{(1)} ) \\
+ h_{soil} &=& \exp \left(\frac{\psi_{(1)} g}{R_{air} T_{g(1)}} \right)
 $$
 
 where $W_{(1)} = w_{(1)}/w_{sat(1)}$ is the degree of saturation of the uppermost soil layer, $\psi_{1}$ is the moisture potential of the uppermost soil layer, $g$ is the gravitational acceleration, $R_{air}$ is the gas constant of the air, and $T_{g(1)}$ is the temperature of the uppermost soil layer. $a_1$ and $a_2$ are constants, with $a_1=800$, $a_2=0.2$. as standard values.
@@ -887,11 +886,11 @@ where $\tau_x$ and $\tau_y$  are the momentum fluxes (surface stress) of the zon
 - Sensible heat flux
 
 $$
- H_s = c_p \rho C_{Hs}|V_a| (T_s - (P_s/P_a)^{\kappa}T_a) \tag{eq107}
+ H_s &=& c_p \rho C_{Hs}|V_a| (T_s - (P_s/P_a)^{\kappa}T_a) \tag{eq107}
   \\
- H_c = c_p \rho C_{Hc}|V_a| (T_c - (P_s/P_a)^{\kappa}T_a) \\
- \partial H_s/\partial T_s = c_p \rho C_{Hs}|V_a| \\
- \partial H_c/\partial T_c = c_p \rho C_{Hc}|V_a|
+ H_c &=& c_p \rho C_{Hc}|V_a| (T_c - (P_s/P_a)^{\kappa}T_a) \\
+ \partial H_s/\partial T_s &=& c_p \rho C_{Hs}|V_a| \\
+ \partial H_c/\partial T_c &=& c_p \rho C_{Hc}|V_a|
 $$
 
 where $H_s$ and $H_c$ are the sensible heat flux from the ground surface (forest floor) and canopy (leaf surface), respectively; $\kappa = R_{air} / c_p$ and $R_{air}$are the gas constants of air; and $c_p$ is the specific heat of air.
@@ -899,13 +898,13 @@ where $H_s$ and $H_c$ are the sensible heat flux from the ground surface (forest
 - Bare soil surface (forest floor) evaporation flux
 
 $$
- Et_{(1,1)} = (1-A_{Sn})(1-f_{ice})\cdot
+ Et_{(1,1)} &=& (1-A_{Sn})(1-f_{ice})\cdot
            \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
- Et_{(2,1)} = (1-A_{Sn})f_{ice}\cdot
+ Et_{(2,1)} &=& (1-A_{Sn})f_{ice}\cdot
            \rho \widetilde{C_{Es}}|V_a|(h_{soil}q^*(T_s) - q_a) \\
- \partial Et_{(1,1)}/\partial T_s = (1-A_{Sn})(1-f_{ice})\cdot
+ \partial Et_{(1,1)}/\partial T_s &=& (1-A_{Sn})(1-f_{ice})\cdot
            \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s} \\
- \partial Et_{(2,1)}/\partial T_s = (1-A_{Sn})f_{ice}\cdot
+ \partial Et_{(2,1)}/\partial T_s &=& (1-A_{Sn})f_{ice}\cdot
            \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s}
 $$
 
@@ -929,11 +928,11 @@ $$
 - Transpiration flux
 
 $$
- Et_{(1,2)} = (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|(q^*(T_c) - q_a) \\
- Et_{(2,2)} = 0 \\
- \partial Et_{(1,2)}/\partial T_c =
+ Et_{(1,2)} &=& (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|(q^*(T_c) - q_a) \\
+ Et_{(2,2)} &=& 0 \\
+ \partial Et_{(1,2)}/\partial T_c &=&
   (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|\cdot dq^*/dT|_{T_c} \\
- \partial Et_{(2,2)}/\partial T_c = 0
+ \partial Et_{(2,2)}/\partial T_c &=& 0
 $$
 
 where $Et_{(1,2)}$ and $Et_{(2,2)}$ are transpiration of water and ice, respectively; and $Et_{(2,2)}$ is always 0. $f_{cwet} = w_c / w_{c,cap}$ is the wet fraction of the canopy. When the flux is downward, which is considered to be dew formation on the dry part of the leaf, the bulk coefficient is taken as:
@@ -953,22 +952,22 @@ When      $T_c$ $\geq$ 0 $^{\circ}$ C:
 
 
 $$
- Et_{(1,3)} =
+ Et_{(1,3)} &=&
   f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
- Et_{(2,3)} = 0 \\
- \partial Et_{(1,3)} \partial T_c =
+ Et_{(2,3)} &=& 0 \\
+ \partial Et_{(1,3)} \partial T_c &=&
   f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c} \\
- \partial Et_{(2,3)} \partial T_c = 0
+ \partial Et_{(2,3)} \partial T_c &=& 0
 $$
 
 when  $T_c$ $<$ 0 $^{\circ}$ In case of C:
 
 $$
- Et_{(1,3)} = 0 \\
- Et_{(2,3)} =
+ Et_{(1,3)} &=& 0 \\
+ Et_{(2,3)} &=&
   f_{cwet} \cdot \rho C_{Hc}|V_a|(q^*(T_c) - q_a) \\
- \partial Et_{(1,3)} \partial T_c = 0 \\
- \partial Et_{(2,3)} \partial T_c =
+ \partial Et_{(1,3)} \partial T_c &=& 0 \\
+ \partial Et_{(2,3)} \partial T_c &=&
   f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c}
 $$
 
@@ -977,8 +976,8 @@ where $Et_{(1,3)}$ and $Et_{(2,3)}$ are the evaporation of water and the sublima
 - Snow sublimation flux
 
 $$
- E_{Sn} = A_{Sn}\cdot \rho C_{Hs}|V_a|(q^*(T_s) - q_a) \\
- \partial E_{Sn}/\partial T_s = A_{Sn}\cdot \rho C_{Hs}|V_a|
+ E_{Sn} &=& A_{Sn}\cdot \rho C_{Hs}|V_a|(q^*(T_s) - q_a) \\
+ \partial E_{Sn}/\partial T_s &=& A_{Sn}\cdot \rho C_{Hs}|V_a|
  \cdot dq^*/dT|_{T_s}
 $$
 
@@ -994,8 +993,8 @@ In addition, it should also be noted here that since the snow-free portion and s
 - Heat conduction flux in the snow-free portion
 
 $$
-  F_{g(1/2)} = (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)} (T_{g(1)} - T_s) \\
-  \partial F_{g(1/2)}/\partial T_s =
+  F_{g(1/2)} &=& (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)} (T_{g(1)} - T_s) \\
+  \partial F_{g(1/2)}/\partial T_s &=&
   - (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)}
 $$
 where $F_{g(1/2)}$ is the heat conduction flux, $k_{g(1/2)}$ is the soil heat conductivity, $\Delta z_{g(1/2)}$  is the thickness from the temperature definition point of the uppermost soil layer to the ground surface, and $T_{g(1)}$ is the temperature of the uppermost soil layer.
@@ -1003,9 +1002,9 @@ where $F_{g(1/2)}$ is the heat conduction flux, $k_{g(1/2)}$ is the soil heat co
 - Heat conduction flux in the snow-covered portion　
 
 $$
-  F_{Sn(1/2)} = A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} (T_{Sn(1)} - T_s)
+  F_{Sn(1/2)} &=& A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} (T_{Sn(1)} - T_s)
  \\
-  \partial F_{Sn(1/2)}/\partial T_s =
+  \partial F_{Sn(1/2)}/\partial T_s &=&
   - A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} \tag{eq135}
 $$
 
@@ -1104,7 +1103,7 @@ The part with $pst$ on the right-hand side is where the fluxes calculated [Eq. (
 The differential terms are as follows:
 
 $$
- \frac{\partial \Delta F_s}{\partial T_s} =
+ \frac{\partial \Delta F_s}{\partial T_s} &=&
  \frac{\partial H_s}{\partial T_s}
 +\frac{\partial R^{net}_s}{\partial T_s}
 +l\frac{\partial Et_{(1,1)}}{\partial T_s}
@@ -1112,11 +1111,11 @@ $$
 +    \frac{\partial E_{Sn}}{\partial T_s}\right)
 -\frac{\partial F_{g(1/2)}}{\partial T_s}
 -\frac{\partial F_{Sn(1/2)}}{\partial T_s} \\
- \frac{\partial \Delta F_s}{\partial T_c} =
+ \frac{\partial \Delta F_s}{\partial T_c} &=&
  \frac{\partial R^{net}_s}{\partial T_c} \\
- \frac{\partial \Delta F_c}{\partial T_s} =
+ \frac{\partial \Delta F_c}{\partial T_s} &=&
  \frac{\partial R^{net}_c}{\partial T_s} \\
- \frac{\partial \Delta F_c}{\partial T_c} =
+ \frac{\partial \Delta F_c}{\partial T_c} &=&
  \frac{\partial H_c}{\partial T_c}
 +\frac{\partial R^{net}_c}{\partial T_c}
 +l  \left(\frac{\partial Et_{(1,2)}}{\partial T_c}
@@ -1129,13 +1128,13 @@ where
 
 
 $$
- \frac{\partial R^{net}_s}{\partial T_s} =
+ \frac{\partial R^{net}_s}{\partial T_s} &=&
  \epsilon 4 \sigma T_s^3 \\
- \frac{\partial R^{net}_s}{\partial T_c} =
+ \frac{\partial R^{net}_s}{\partial T_c} &=&
  - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3 \\
- \frac{\partial R^{net}_c}{\partial T_s} =
+ \frac{\partial R^{net}_c}{\partial T_s} &=&
  - ( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_s^3 \\
- \frac{\partial R^{net}_c}{\partial T_c} =
+ \frac{\partial R^{net}_c}{\partial T_c} &=&
   2( 1 - {\mathcal{T}}_{cL} ) \epsilon 4 \sigma T_c^3
 $$
 
@@ -1177,9 +1176,9 @@ Several conditions are set for the solution of the ground surface energy balance
 Due to the instability of temporal calculations, it is possible that large downward latent heat is produced. The conditions are set so that even in such a case, the vapor in the troposphere from the surface is not completely removed; that is,
 
 $$
-  Et_{(i,j)}^{current} > - q_a ( P_s - P_a ) / (g \Delta t)
+  Et_{(i,j)}^{current} &>& - q_a ( P_s - P_a ) / (g \Delta t)
    \ \ \ \ \ (i=1,2 ; j=1,2,3) \\
-  E_{Sn}^{current} > - q_a ( P_s - P_a ) / (g \Delta t)
+  E_{Sn}^{current} &>& - q_a ( P_s - P_a ) / (g \Delta t)
 $$
 
 
@@ -1228,8 +1227,8 @@ Based on the updated canopy temperature, the canopy water is diagnosed in advanc
 $$
  A_{Snc} = \left\{
 \begin{array}{ll}
- 0 (T_c \geq T_{melt})\\
- 1 (T_c <    T_{melt})
+ 0 & (T_c \geq T_{melt})\\
+ 1 & (T_c <    T_{melt})
 \end{array}
 \right.
 $$
@@ -1249,12 +1248,12 @@ Using the updated flux values, the fluxes output into the atmosphere, etc. are c
 
 
 $$
- H = H_s + H_c \\
- E = \sum_{j=1}^3 \sum_{i=1}^2 Et_{(i,j)} + E_{Sn} \\
- R^{\uparrow}_L = {\mathcal{T}}_{cL} \epsilon \sigma T_s^4
+ H &=& H_s + H_c \\
+ E &=& \sum_{j=1}^3 \sum_{i=1}^2 Et_{(i,j)} + E_{Sn} \\
+ R^{\uparrow}_L &=& {\mathcal{T}}_{cL} \epsilon \sigma T_s^4
  + (1 - {\mathcal{T}}_{cL}) \epsilon \sigma T_c^4
  + (1 - \epsilon) R^{\downarrow}_L \\
- T_{sR} = ( R^{\uparrow}_L / \sigma )^{1/4}
+ T_{sR} &=& ( R^{\uparrow}_L / \sigma )^{1/4}
 $$
 
 
@@ -1332,10 +1331,10 @@ Then, if either $w_{cl}$ or $w_{ci}$ become negative in value, it is supplemente
 The precipitation interception and dripping are considered by separating the places of convective precipitation and nonconvective precipitation. The fraction of the convective precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). Stratiform precipitation is also assumed to be uniform.
 
 $$
- P_{Il}^{c}  = f_{int} ( Pr_c / A_c + Pr_l ) \\
- P_{Il}^{nc} = f_{int} Pr_l \\
- P_{Ii}^{c}  = f_{int} ( P_{Snc} / A_c + P_{Snl} ) \\
- P_{Ii}^{nc} = f_{int} P_{Snl}
+ P_{Il}^{c}  &=& f_{int} ( Pr_c / A_c + Pr_l ) \\
+ P_{Il}^{nc} &=& f_{int} Pr_l \\
+ P_{Ii}^{c}  &=& f_{int} ( P_{Snc} / A_c + P_{Snl} ) \\
+ P_{Ii}^{nc} &=& f_{int} P_{Snl}
 $$
 
 where $P_{Il}^{c}$ and $P_{Ii}^{c}$ denote the interception in the convective precipitation area, and $P_{Il}^{nc}$ and $P_{Ii}^{nc}$ denote the interception in the nonconvective precipitation area. $f_{int}$ is the interception efficiency, and is simply given by
@@ -1343,8 +1342,8 @@ where $P_{Il}^{c}$ and $P_{Ii}^{c}$ denote the interception in the convective pr
 $$
  f_{int} = \left\{
 \begin{array}{ll}
- LAI  (LAI < 1)\\
- 1    (LAI \geq 1)
+ LAI  & (LAI < 1)\\
+ 1    & (LAI \geq 1)
 \end{array}
 \right.
 $$
@@ -1353,10 +1352,10 @@ $$
 By adding the intercepted precipitation, the canopy water is further partially updated as follows:
 
 $$
- w_{cl}^{c*} = w_{cl}^*  + P_{Il}^c    \Delta t_L / \rho_w \\
- w_{cl}^{nc*}= w_{cl}^*  + P_{Il}^{nc} \Delta t_L / \rho_w \\
- w_{ci}^{c*} = w_{ci}^*  + P_{Ii}^c    \Delta t_L / \rho_w \\
- w_{ci}^{nc*}= w_{ci}^*  + P_{Ii}^{nc} \Delta t_L / \rho_w
+ w_{cl}^{c*} &=& w_{cl}^*  + P_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc*}&=& w_{cl}^*  + P_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c*} &=& w_{ci}^*  + P_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc*}&=& w_{ci}^*  + P_{Ii}^{nc} \Delta t_L / \rho_w
 $$
 
 ### Dripping of the canopy water
@@ -1364,10 +1363,10 @@ $$
 For dripping, dripping due to the canopy water capacity being exceeded and natural dripping due to gravity are considered, as follows:
 
 $$
- D_l^c     =  \max( w_{cl}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{cl}^{c*}) \\
- D_l^{nc}  =  \max( w_{cl}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{cl}^{nc*}) \\
- D_i^c     =  \max( w_{ci}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{ci}^{c*}) \\
- D_i^{nc}  =  \max( w_{ci}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{ci}^{nc*})
+ D_l^c     &=&  \max( w_{cl}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{cl}^{c*}) \\
+ D_l^{nc}  &=&  \max( w_{cl}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{cl}^{nc*}) \\
+ D_i^c     &=&  \max( w_{ci}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{ci}^{c*}) \\
+ D_i^{nc}  &=&  \max( w_{ci}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{ci}^{nc*})
 $$
 
 where the canopy water capacity ($w_{c,cap}$) is, from the water capacity per unit leaf area ($w_{c\max}$) and LAI, assumed to be
@@ -1389,10 +1388,10 @@ $D_1=1.14 \times 10 ^{-11}$ and $D_2=3.7 \times 10^{3}$ are standard values, and
 By subtracting the dripping, the values are updated as follows:
 
 $$
- w_{cl}^{c**} = w_{cl}^{c*}  - D_{Il}^c    \Delta t_L / \rho_w \\
- w_{cl}^{nc**}= w_{cl}^{nc*} - D_{Il}^{nc} \Delta t_L / \rho_w \\
- w_{ci}^{c**} = w_{ci}^{c*}  - D_{Ii}^c    \Delta t_L / \rho_w \\
- w_{ci}^{nc**}= w_{ci}^{nc*} - D_{Ii}^{nc} \Delta t_L / \rho_w
+ w_{cl}^{c**} &=& w_{cl}^{c*}  - D_{Il}^c    \Delta t_L / \rho_w \\
+ w_{cl}^{nc**}&=& w_{cl}^{nc*} - D_{Il}^{nc} \Delta t_L / \rho_w \\
+ w_{ci}^{c**} &=& w_{ci}^{c*}  - D_{Ii}^c    \Delta t_L / \rho_w \\
+ w_{ci}^{nc**}&=& w_{ci}^{nc*} - D_{Ii}^{nc} \Delta t_L / \rho_w
 $$
 
 
@@ -1401,17 +1400,17 @@ $$
 Moreover, by taking the average of the convective precipitation area and nonconvective precipitation area, the canopy water can be updated as follows:
 
 $$
- w_{cl}^{**} = A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
- w_{ci}^{**} = A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
- w_c^{\tau+1} = w_{cl}^{**} + w_{ci}^{**}
+ w_{cl}^{**} &=& A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
+ w_{ci}^{**} &=& A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
+ w_c^{\tau+1} &=& w_{cl}^{**} + w_{ci}^{**}
 $$
 
 However, if updating of the frozen fraction ($A_{Snc}$) is considered,
 
 
 $$
- w_{cl}^{\tau+1} = w_{c}^{\tau+1} (1-A_{Snc}^{\tau+1}) \\
- w_{ci}^{\tau+1} = w_{c}^{\tau+1} A_{Snc}^{\tau+1}
+ w_{cl}^{\tau+1} &=& w_{c}^{\tau+1} (1-A_{Snc}^{\tau+1}) \\
+ w_{ci}^{\tau+1} &=& w_{c}^{\tau+1} A_{Snc}^{\tau+1}
 $$
 
 
@@ -1430,18 +1429,18 @@ Here, the canopy temperature should be changed due to the latent heat of melting
 The water flux $F_w$ given to the snow or the runoff process after interception by the canopy is respectively expressed with respect to the convective precipitation area and nonconvective precipitation area, and the liquid and solid phases, as follows:
 
 $$
- F_{wl}^{c} = (1-f_{int})( Pr_c / A_c + Pr_l ) + D_{l}^{c} \\
- F_{wl}^{nc} =(1-f_{int}) Pr_l + D_{l}^{nc} \\
- F_{wi}^{c} = (1-f_{int})( P_{Snc} / A_c + P_{Snl} ) + D_{i}^{c} \\
- F_{wi}^{nc} =(1-f_{int}) P_{Snl} + D_{i}^{nc}
+ F_{wl}^{c} &=& (1-f_{int})( Pr_c / A_c + Pr_l ) + D_{l}^{c} \\
+ F_{wl}^{nc} &=&(1-f_{int}) Pr_l + D_{l}^{nc} \\
+ F_{wi}^{c} &=& (1-f_{int})( P_{Snc} / A_c + P_{Snl} ) + D_{i}^{c} \\
+ F_{wi}^{nc} &=&(1-f_{int}) P_{Snl} + D_{i}^{nc}
 $$
 
 For the calculation of runoff, convective rainfall and stratiform rainfall are given separately, while snowfall is consolidated because separation is not necessary, as follows:
 
 $$
- Pr_c^* = Ac ( F_{wl}^{c} - F_{wl}^{nc} ) \\
- Pr_l^* = F_{wl}^{nc} \\
- P_{Sn}^* = A_c F_{wl}^{c} + (1-A_c) F_{wl}^{nc}
+ Pr_c^* &=& Ac ( F_{wl}^{c} - F_{wl}^{nc} ) \\
+ Pr_l^* &=& F_{wl}^{nc} \\
+ P_{Sn}^* &=& A_c F_{wl}^{c} + (1-A_c) F_{wl}^{nc}
 $$
 
 where $Pr_c^*$, $Pr_l^*$, and $P_{Sn}^*$ are the convective precipitation, the stratiform precipitation, and the snowfall after interception by the canopy, respectively.
@@ -1965,7 +1964,7 @@ $\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully r
 
 SUBROUTINE: MATROF in matrof.F.
 
-The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979). 
+The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
 
 ## Outline of TOPMODEL
 
@@ -2197,7 +2196,7 @@ The fraction of the surface saturated area $A_{sat}$ is given by [Eq. (276)](#eq
 With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
 
 $$
-Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat}) 
+Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
  \tag{eq284}
 $$
 
@@ -2343,15 +2342,15 @@ $$
 \left\{
 \begin{array}{ll}
 F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
- (k=0)\\
+ & (k=0)\\
 \displaystyle{
 k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
 }
- (k=1,\ldots,K_{g}-1) \\
+ & (k=1,\ldots,K_{g}-1) \\
 \displaystyle{
 0
 }
- (k=K_{g})
+ & (k=K_{g})
 \end{array}
 \right. \tag{eq291}
 $$
@@ -2405,13 +2404,13 @@ and [Eq. (289)](#eq289) is treated as
 
 $$
 C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
-= F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \\
-= {F}_{g(k+1/2)}^{\tau}
+&=& F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \nonumber\\
+&=& {F}_{g(k+1/2)}^{\tau}
 +\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
  \Delta T_{g(k)}
 +\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
- \Delta T_{g(k+1)}  \\
-- F_{g(k-1/2)}^{\tau}
+ \Delta T_{g(k+1)}  \nonumber\\
+&-& F_{g(k-1/2)}^{\tau}
 -\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
  \Delta T_{g(k-1)}
 -\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
@@ -2446,15 +2445,15 @@ $$
 \left\{
 \begin{array}{ll}
 Pr^{*** } - Et_{(1,1)}
- (k=0)\\
+ & (k=0)\\
 \displaystyle{
 K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
 }
- (k=1,\ldots,K_{g}-1) \\
+ & (k=1,\ldots,K_{g}-1) \\
 \displaystyle{
 0
 }
- (k=K_{g})
+ & (k=K_{g})
 \end{array}
 \right. \tag{eq300}
 $$
@@ -2548,17 +2547,17 @@ and [Eq. (299)](#eq299) is treated as
 
 $$
 \rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
-= F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)}  \\
-= {F}_{w(k+1/2)}^{\tau}
+&=& F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)} \nonumber\\
+&=& {F}_{w(k+1/2)}^{\tau}
 +\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
  \Delta w_{(k)}
 +\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
  \Delta w_{(k+1)}  \\
-- F_{w(k-1/2)}^{\tau}
+&-& F_{w(k-1/2)}^{\tau}
 -\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
  \Delta w_{(k-1)}
 -\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
- \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}
+ \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}  \nonumber
 $$
 
 
@@ -2599,8 +2598,8 @@ The frozen soil moisture and the soil moisture are then updated as follows:
 
 
 $$
-w_{i(k)}^{\tau+1} = w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
-T_{g(k)}^{\tau+1} = T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
+w_{i(k)}^{\tau+1} &=& w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
+T_{g(k)}^{\tau+1} &=& T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
 $$
 
 
@@ -3379,7 +3378,7 @@ $$
 
 ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F)
 
-In the latest version of MATSIRO, a tile treatment of the land surface has been introduced to represent the subgrid fraction of land surface types, so as to partially mimic the behavior at a higher resolution. 
+In the latest version of MATSIRO, a tile treatment of the land surface has been introduced to represent the subgrid fraction of land surface types, so as to partially mimic the behavior at a higher resolution.
 
 Basically, one land surface grid is divided into three tiles in the control run: lake, potential vegetation and cropland. All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
 $$
@@ -3395,13 +3394,13 @@ By default, tile scheme is applied in land surface type, but it can be used for 
 
 ## Lake
 
-The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid. The water temperature and mass are predicted for the surface layer (minimum thickness of 1 m) and four subsurface layers, based on the thermal diffusion and mass conversion, considering vertical overturning, evaporation, precipitation, and in-flow from and outflow to rivers. 
+The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid. The water temperature and mass are predicted for the surface layer (minimum thickness of 1 m) and four subsurface layers, based on the thermal diffusion and mass conversion, considering vertical overturning, evaporation, precipitation, and in-flow from and outflow to rivers.
 
 ## Potential Vegetation and Cropland
 
-Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow. 
+Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow.
 
-Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types. 
+Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
 
 ## Appendix
 
@@ -3452,7 +3451,7 @@ Potential vegetation is defined according to the vegetation types of the Simple 
 
   -
     Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span>**9**</span>, 676–705.
-    
+
   -
     Sellers, P. J., Meeson, B. W., Closs, J., Collatz, J., Corprew, F., Dazlich, D., Hall, F. G., Kerr, Y., Koster, R., Los, S., Mitchell, K., McManus, J., Myers, D., Sun, K.-J, and Try, P.: The ISLSCP Initiative I global datasets: surface boundary conditions and atmospheric forcings for land-atmosphere studies, B. Am. Meteorol. Soc., <span>**77**</span>, 1987–2006, 1996.
 
