@@ -86,45 +86,45 @@ Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a lan
 
 MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by Watanabe (1994), while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with the current AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which now serves as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions in recent years, was ported from SiB2 code.
 
-## 1.1 Structure
+## Structure
 
 MATSIRO is divided into the following two parts: the flux calculation section, and the land surface integration section. Then, each part is divided into the land and lake parts.
 
 In the flux calculation section, the calculations are conducted separately for snow-covered and snow-free potions. For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown below:
 
-	(a) MATLAI: vegetation type parameter (LAI, vegetation height) set
-	(b) MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)
-	(c) MATBLK: calculation of turbulence parameters (bulk coefficients) (momentum and heat)
-	(d) MATRST: calculation of stomatal resistance, bare soil surface evaporation resistance, etc.
-	(e) MATBLQ: calculation of turbulence parameters (bulk coefficients) (vapor)
-	(f) MATFLX: calculation of surface flux
-	(g) MATGHC: calculation of soil heat conductivity
-	(h) MATSHB: solution of energy balance at ground surface and canopy
+(a) MATLAI: vegetation type parameter (LAI, vegetation height) set
+(b) MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)
+(c) MATBLK: calculation of turbulence parameters (bulk coefficients) (momentum and heat)
+(d) MATRST: calculation of stomatal resistance, bare soil surface evaporation resistance, etc.
+(e) MATBLQ: calculation of turbulence parameters (bulk coefficients) (vapor)
+(f) MATFLX: calculation of surface flux
+(g) MATGHC: calculation of soil heat conductivity
+(h) MATSHB: solution of energy balance at ground surface and canopy
 
 Then, fluxes from lake surface are calculated separately for ice-covered and ice-free portions. The following subroutines are called in the order shown below:
 
-	(a) LAKEBC: calculation of lake surface conditions (albedo, roughness, etc.)
-	(b) SFCFLX: calculation of surface flux
-	(c) RADSFC: calculation of radiation flux (downward and upward shortwave radiation)
-	(d) LAKEHB: solution of energy balance at lake surface
+(a) LAKEBC: calculation of lake surface conditions (albedo, roughness, etc.)
+(b) SFCFLX: calculation of surface flux
+(c) RADSFC: calculation of radiation flux (downward and upward shortwave radiation)
+(d) LAKEHB: solution of energy balance at lake surface
 
 
 In the land integration section, the subroutines for various processes are called and land surface prognostic variables are updated. Specifically, the following subroutines are called in the order shown below:
 
-	(a) MATCNW: calculation of canopy water balance
-	(b) MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo
-	(c) MATROF: calculation of runoff
-	(d) MATGND: calculation of soil temperature, soil moisture, and frozen soil
+(a) MATCNW: calculation of canopy water balance
+(b) MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo
+(c) MATROF: calculation of runoff
+(d) MATGND: calculation of soil temperature, soil moisture, and frozen soil
 
 Finally, the lake modules are called and the related prognostic variables are updated.
 
-	(a) SETSCNV: calculation of convergence of shortwave radiation
-	(b) LAKEIC: calculation of lake ice
-	(c) LAKEPO: calculation of lake water and temperature
-	(d) PUTDEFF: sending lake water deficit
+(a) SETSCNV: calculation of convergence of shortwave radiation
+(b) LAKEIC: calculation of lake ice
+(c) LAKEPO: calculation of lake water and temperature
+(d) PUTDEFF: sending lake water deficit
 
 
-## 1.2 Prognostic variables
+## Prognostic variables
 
 MATSIRO has the following internal variables:
 
@@ -153,7 +153,7 @@ The ground surface temperature and canopy temperature are so-called skin tempera
 
 The ground surface temperature and canopy temperature are updated in the flux calculation section. All of the other variables (original prognostic variables) are updated in the land surface integration section.
 
-## 1.3 Input data
+## Input data
 
 The following variables are input in the flux calculation section:
 
@@ -187,7 +187,7 @@ The following variables are input in the land surface integration section:
 | $A_{Snc}$                             | Canopy freezing area ratio          | $\mathrm{[-]}$        |
 
 
-## 1.4 Output data
+## Output data
 
 The following variables are output from the flux calculation section:
 
@@ -220,7 +220,7 @@ The following variable is output from the land surface integration section:
 Runoff is used as an input variable for the river channel network model.
 
 
-## 1.5 External parameters
+## External parameters
 The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are among the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
 
 parameter given by map:
