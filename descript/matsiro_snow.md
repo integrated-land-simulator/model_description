@@ -72,8 +72,9 @@ where
 $$
 \lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
 $$
+
 $$
-\zeta^2 &= \ln(1+CV^2). \tag{8-4}
+\zeta^2 = \ln(1+CV^2). \tag{8-4}
 $$
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
@@ -426,6 +427,19 @@ $$
 The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:
 
 $$
+\begin{aligned}
+&\begin{aligned}
+ a &= b
+ c &= g * k
+\end{aligned}
+&\begin{aligned}
+ a &= b
+ b &= 1 + v
+\end{aligned}
+\end{aligned}
+$$
+
+$$
 \widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} 
  = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
  \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
@@ -533,7 +547,7 @@ where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining whe
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 
 $$
- \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}.
+ \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-47}
 $$
 
 
@@ -541,9 +555,9 @@ The water flux given to the runoff process through the snow process is then expr
 
 $$
 \begin{aligned}
- Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
+ Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*}, \\
  Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
-\end{aligned}
+\end{aligned} \tag{8-48}
 $$
 
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
@@ -559,7 +573,7 @@ $$
  Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t\_L, \\
  Sn &= Sn - Ro\_{gl} \Delta t\_L, \\
  \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t\_L,
-\end{aligned}
+\end{aligned} \tag{8-49}
 $$
 
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
@@ -576,7 +590,7 @@ The amount of dust on the snow cover and in the snow layers are calculated.
 The dust fall is added to the top layer:
 
 $$
-M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D,
+M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-50}
 $$
 
 where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
@@ -589,7 +603,7 @@ The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
 
 $$
-Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3),
+Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-51}
 $$
 
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
@@ -604,7 +618,7 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
  & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
  \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
-\end{aligned} \right.,
+\end{aligned} \right., \tag{8-52}
 $$
 
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
@@ -613,13 +627,13 @@ When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1
 
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
- = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right).
+ = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-53}
 $$
 
 It leads to 
 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-},
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-}, \tag{8-54}
 $$
 
 where
@@ -627,15 +641,16 @@ where
 $$
 M\_{d(1)}^{+}
  = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right)
- \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right),
+ \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
+\tag{8-55}
 $$
 $$
 M\_{d(1)}^{-}
- = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right), 
+ = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-56}
 $$
 $$
 \Delta Sn\_{(1)} 
- = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}.
+ = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-57}
 $$
 
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
