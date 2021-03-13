@@ -429,11 +429,11 @@ The implicit method is used to treat the temperature from the uppermost snow lay
 $$
 \begin{aligned}
 &\begin{aligned}
- a &= b
+ a &= b \\
  c &= g * k
-\end{aligned}
+\end{aligned} \\
 &\begin{aligned}
- a &= b
+ a &= b \\
  b &= 1 + v
 \end{aligned}
 \end{aligned}
