@@ -730,18 +730,24 @@ $$
  V_m = V_{\max} f_T(T_c) f_w \\
  K_c = 30 \times 2.1^{Q_T} \\
  K_O = 30000 \times 1.2^{Q_T} \\
- S   = 2600 \times 0.57^{Q_T} \\
- f_T(T_c) = \left\{
+ S   = 2600 \times 0.57^{Q_T}
+$$
+
+$$
+ f_T(T_c) &=& \left\{
 \begin{array}{ll}
- 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}  (\mathrm{C_3 の w_c, w_e のとき})\\
- 1.8^{Q_T}/\{1 + \exp[s_3(s_4-T_c)]\}  (\mathrm{C_3 の w_s のとき}) \\
- 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}/\{1 + \exp[s_3(s_4-T_c)]\}
-    (\mathrm{C_4 の w_c, w_e のとき})\\
- 1.8^{Q_T}   (\mathrm{C_4 の w_s のとき}) \\
- 2^{Q_T}/\{1 + \exp[s_5(T_c-s_6)]\}   (\mathrm{R_d のとき})
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\} & (\text{when $w_c$ and $w_e$ for $C_3$})\\
+ 1.8^{Q_T}/\{1 + \exp[s_3(s_4-T_c)]\} & (\text{when $w_s$ is for $C_3$}) \\
+ 2.1^{Q_T}/\{1 + \exp[s_1(T_c-s_2)]\}/\{1 + \exp[s_3(s_4-T_c)]\} \\
+                 \;\;  (\text{when $w_c$ and $w_e$ are for $C_4$})\\
+ 1.8^{Q_T}                            & (\text{when $w_s$ is for $C_4$}) \\
+ 2^{Q_T}/\{1 + \exp[s_5(T_c-s_6)]\}   & (\text{when $R_d$})
 \end{array}
-\right. \\
-Q^T = (T_c - 298) / 10
+\right.
+$$
+
+$$
+Q^T &=& (T_c - 298) / 10
 $$
 
 
@@ -929,8 +935,8 @@ where $Et_{(1,2)}$ and $Et_{(2,2)}$ are transpiration of water and ice, respecti
 $$
   \widetilde{C_{Ec}} = \left\{
   \begin{array}{ll}
-   C_{Ec} (q^*(T_c) - q_a > 0 {のとき})\\
-   C_{Hc} (q^*(T_c) - q_a \leq 0 {のとき})
+   C_{Ec} & (q^*(T_c) - q_a > 0)\\
+   C_{Hc} & (q^*(T_c) - q_a \leq 0)
   \end{array}
   \right.
 $$
@@ -1267,16 +1273,15 @@ With regard to canopy water, the liquid phase (intercepted rainfall, dew formati
 $$
  A_{Snc} = \left\{
 \begin{array}{ll}
- 0  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} \geq T_{melt} {のとき})\\
- (1-A_{Sn})  (T_{c(1)} < T_{melt}, \ T_{c(2)} \geq T_{melt} {のとき})\\
- A_{Sn}  (T_{c(1)} \geq T_{melt}, \ T_{c(2)} < T_{melt} {のとき})\\
- 1  (T_{c(1)} < T_{melt}, \ T_{c(2)} < T_{melt} {のとき})
+ 0 & (T_{c(1)} \geq T_{melt}, \ T_{c(2)} \geq T_{melt})\\
+ (1-A_{Sn}) & (T_{c(1)} < T_{melt}, \ T_{c(2)} \geq T_{melt})\\
+ A_{Sn} & (T_{c(1)} \geq T_{melt}, \ T_{c(2)} < T_{melt})\\
+ 1 & (T_{c(1)} < T_{melt}, \ T_{c(2)} < T_{melt})
 \end{array}
 \right.
 $$
 
-where $w_{cl} = w_c ( 1 - A_{Snc})$ and $w_{ci} = w_c A_{Snc}
-$ are the liquid and solid water content of the canopy, respectively.
+where $w_{cl} = w_c ( 1 - A_{Snc})$ and $w_{ci} = w_c A_{Snc}$ are the liquid and solid water content of the canopy, respectively.
 
 For $A_{Snc}$, the value updated in the flux calculation section $A_{Snc}^{\tau+1}$　is given by the coupler, but the value of the previous step $A_{Snc}^{\tau}$ is stored in MATCNW. $\tau$ denotes the time steps. This is solved from the initial values of $T_c$ and $Sn$ at the time of initiating the calculation, and therefore does not become a new prognostic variable.
 
