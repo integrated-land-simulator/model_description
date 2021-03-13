@@ -24,23 +24,23 @@ Modified
 Output
 | Name in code | Variable | Description | Unit
 |:-------------|:---------|:------------|:-----
-| GGLACR | $Ro\_{gl}$ | Glacier formation | $\mathrm{kg/m^2/s}
+| GGLACR | $Ro\_{gl}$ | Glacier formation | $\mathrm{kg/m^2/s}$
 
 Input
 | Name in code | Variable | Description | Unit
 |:-------------|:---------|:------------|:-----
-| SNFAL  | $P\_{Sn}$      | Snow fall                           | $\mathrm{kg/m^2/s}$
-| SNSUB  | $E\_{Sn}$      | Snow sublimation                    | $\mathrm{kg/m^2/s}$
-| SNFLXS | $F\_{Sn(1/2)}$ | Snow surface heat flux              | $\mathrm{W/m^2}$
-| GLG    | $T\_{g(k)}$    | Soil temperature of the $k$th layer | $\mathrm{T}$
-| GLW    | $w\_{g(k)}$    | Soil moisture                       | $\mathrm{m^3/m^3}$
-| GLWC   | $w\_c$         | Canopy water                        | $\mathrm{m}$
-| SNRATC | $A\_{Snc}$     | Canopy snow ratio                   | -
-| DSTFAL | $D$            | Dust fall                           | $\mathrm{ppmv/s}$
-| GRZSD  | -              | Standard deviation of topography    | -
+| SNFAL  | $P\_{Sn}$      | Snow fall                                        | $\mathrm{kg/m^2/s}$
+| SNSUB  | $E\_{Sn}$      | Snow sublimation                                 | $\mathrm{kg/m^2/s}$
+| SNFLXS | $F\_{Sn(1/2)}$ | Snow surface heat flux                           | $\mathrm{W/m^2}$
+| GLG    | $T\_{g(k)}$    | Soil temperature of the $k$th layer              | $\mathrm{T}$
+| GLW    | $w\_{g(k)}$    | Soil moisture                                    | $\mathrm{m^3/m^3}$
+| GLWC   | $w\_c$         | Canopy water                                     | $\mathrm{m}$
+| SNRATC | $A\_{Snc}$     | Canopy snow ratio                                | -
+| DSTFAL | $D$            | Dust fall                                        | $\mathrm{ppmv/s}$
+| GRZSD  | -              | Standard deviation of topography                 | $\mathrm{m}$
 | T2HIST | -              | Annual mean temperature over the latest 30 years | $\mathrm{K}$
-| ILSFC  | -              | Index of the surface condition      | -
-| ILSOIL | -              | Soil type                           | -
+| ILSFC  | -              | Index of the surface condition                   | -
+| ILSOIL | -              | Soil type                                        | -
 
 
 ## 8.1 Diagnosis of snow cover fraction
@@ -64,7 +64,7 @@ where $D$ is the snow water equivalent depth and $f(D)$ is the probability distr
 $$
 f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
-\right] }, \tag{A5}
+\right] },
 $$
 
 where
@@ -76,7 +76,7 @@ $$
 and
 
 $$
-\zeta^2 = \ln(1+CV^2). \tag{A7}
+\zeta^2 = \ln(1+CV^2).
 $$
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
@@ -172,17 +172,17 @@ $$
  \widetilde{Sn} =  Sn / A\_{Sn}
 $$
 
- $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is kg/m^2^.
+ $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
 From the above, it can be clearly seen that the number of snow layers ($K\_{Sn}$) is as follows, as a standard:
 
 $$
  K\_{Sn} = \left\\{
 \begin{array}{ll}
- 0 \;\; (\widetilde{Sn} = 0)\\
- 1 \;\; (0< \widetilde{Sn} < 20)\\
- 2 \;\; (20 \leq \widetilde{Sn} < 60)\\
- 3 \;\; (\widetilde{Sn} \geq 60)
+ 0 \;\;\; (\widetilde{Sn} = 0)\\
+ 1 \;\;\; (0< \widetilde{Sn} < 20)\\
+ 2 \;\;\; (20 \leq \widetilde{Sn} < 60)\\
+ 3 \;\;\; (\widetilde{Sn} \geq 60)
 \end{array}
 \right.
 $$
@@ -213,7 +213,7 @@ In a case where the sublimation is larger than the snow water equivalent in the 
 Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T\_{Sn(k)}^{\*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T\_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T\_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
 
 $$
- \widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ) \tag{eq220}
+ \widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ) \tag{8-1}
 $$
 
 With regard to the second layer and below, if the temperature is higher than $T\_{melt}$, it is put back to $T\_{melt}$ and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
@@ -228,7 +228,7 @@ $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L
 $$
 
-and the snowmelt is solved as in [Eq. (220)](#eq220).
+and the snowmelt is solved as in [eq. (8-1)](#eq8-1).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 
