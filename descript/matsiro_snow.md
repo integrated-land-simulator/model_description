@@ -460,55 +460,7 @@ $$
  & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
 \end{aligned} \right.
-\end{aligned} \tag{8-000}
-$$
-
-
-
-$$
-\widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} 
- = \widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
- \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}} \Delta T\_{Sn\_{(k)}}
- \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}} \Delta T\_{Sn\_{(k+1)}}
-\tag{8-38}
-$$
-
-$$
-\widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
- = \left\\{ \begin{aligned}
- & (F\_{Sn\_{(1/2)}} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv}
- \; &&(k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
- \; &&(k = 1, ..., K\_{Sn}-1) \\
- & \left[
-  \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
- \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
- \; &&(k = K\_{Sn})
-\end{aligned} \right. \tag{8-39}
-$$
-
-$$
-\frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
- = \left\\{ \begin{aligned}
- & \-\frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{(k+1/2)}}}
- \; &&(k = 1, ..., K\_{Sn}-1) \\
- & \-\left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}} 
-  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
- \right]^{-1}
- \; &&(k = K\_{Sn})
-\end{aligned} \right. \tag{8-40}
-$$
-
-
-$$
-\frac{\partial\widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k+1)}}}
- = \left\\{ \begin{aligned}
- & 0
- \; &&(k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
- \; &&(k = 1, ..., K\_{Sn}-1)
-\end{aligned} \right. \tag{8-41}
+\end{aligned} \tag{8-38}
 $$
 
 and [Eq. (8-32)](#8-32) is treated as
@@ -523,7 +475,7 @@ $$
  & &&\- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k-1)}}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
-\end{aligned} \tag{8-42}
+\end{aligned} \tag{8-39}
 $$
 
 
@@ -531,7 +483,7 @@ and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}}\ (k = 1, ...
 
 
 $$
-T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-43}
+T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-40}
 $$
 
 ### 8.4.3 Case 2: When snowmelt occurs in the uppermost layer
@@ -542,7 +494,7 @@ $$
 \widetilde{F}\_{3/2}^{\*}
  = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
  +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
- \Delta T\_{Sn\_{(2)}} \tag{8-44}
+ \Delta T\_{Sn\_{(2)}} \tag{8-41}
 $$
 
 and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
@@ -552,7 +504,7 @@ The energy convergence used for melting in the uppermost snow layer is given by:
 $$
 \Delta \widetilde{F}\_{conv} 
  = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
- \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L} \tag{8-45}
+ \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L} \tag{8-42}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -565,7 +517,7 @@ The heat flux given to the soil through the snow process is
 $$
 \Delta F\_{conv}^{\*} 
  = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*},
-\tag{8-46}
+\tag{8-43}
 $$
 
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground.
@@ -573,7 +525,7 @@ where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining whe
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 
 $$
- \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-47}
+ \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-44}
 $$
 
 
@@ -583,7 +535,7 @@ $$
 \begin{aligned}
  Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*}, \\
  Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
-\end{aligned} \tag{8-48}
+\end{aligned} \tag{8-45}
 $$
 
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
@@ -599,7 +551,7 @@ $$
  Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t\_L, \\
  Sn &= Sn - Ro\_{gl} \Delta t\_L, \\
  \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t\_L,
-\end{aligned} \tag{8-49}
+\end{aligned} \tag{8-46}
 $$
 
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
@@ -616,7 +568,7 @@ The amount of dust on the snow cover and in the snow layers are calculated.
 The dust fall is added to the top layer:
 
 $$
-M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-50}
+M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-47}
 $$
 
 where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
@@ -629,7 +581,7 @@ The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
 
 $$
-Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-51}
+Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
 $$
 
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
@@ -644,7 +596,7 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
  & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
  \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
-\end{aligned} \right., \tag{8-52}
+\end{aligned} \right., \tag{8-49}
 $$
 
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
@@ -653,13 +605,13 @@ When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1
 
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
- = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-53}
+ = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
 $$
 
 It leads to 
 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-}, \tag{8-54}
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-}, \tag{8-51}
 $$
 
 where
@@ -668,22 +620,22 @@ $$
 M\_{d(1)}^{+}
  = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right)
  \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
-\tag{8-55}
+\tag{8-52}
 $$
 $$
 M\_{d(1)}^{-}
- = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-56}
+ = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-53}
 $$
 $$
 \Delta Sn\_{(1)} 
- = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-57}
+ = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-54}
 $$
 
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 
 $$
 M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
- = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+} + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}.
+ = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+} + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}. \tag{8-55}
 $$
 
 
@@ -700,7 +652,7 @@ The albedo of the snow is large in fresh snow, but becomes smaller with the pass
 The nondimensional age of snow at the time step of ${\tau}$, $A\_g^{\tau}$, is formulated in
 
 $$
-A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}},
+A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}}, \tag{8-56}
 $$
 
 where
@@ -708,7 +660,7 @@ where
 $$
 f\_{alb} = \min\left(
  \frac{\alpha\_{vis}^{\tau}-\alpha\_{vis,new}}{\alpha\_{vis,old}-\alpha\_{vis,new}}, 0.999
-\right).
+\right). \tag{8-57}
 $$
 
 $\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha\_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha\_{b,old}$ is that of old snow. In default, $\alpha\_{vis,new}$, $\alpha\_{nir,new}$, $\alpha\_{ifr,new}$, $\alpha\_{vis,old}$, $\alpha\_{nir,old}$ and $\alpha\_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
@@ -717,17 +669,17 @@ $\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\
 The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
 
 $$
-A\_g^{\tau+1} = A\_g^{\tau} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age},
+A\_g^{\tau+1} = A\_g^{\tau} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age}, \tag{8-58}
 $$
 
 where
 
 $$
-f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)}} \right) \right]},
+f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)}} \right) \right]}, \tag{8-59}
 $$
 
 $$
-f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}.
+f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}. \tag{8-60}
 $$
 
 $T\_{Sn(1)}$ is the temperature of the first layer of snow.
@@ -738,7 +690,7 @@ $$
 r\_{dirt} = \left\\{ \begin{aligned}
  r\_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
  r\_{dirt,0} \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right.,
+\end{aligned} \right., \tag{8-61}
 $$
 
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When this option is active, the density of the dirt is considered as
@@ -747,7 +699,7 @@ $$
 r\_{dirt} = \left\\{ \begin{aligned}
  \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
  \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right.,
+\end{aligned} \right., \tag{8-62}
 $$
 
 where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the dirt density of the first layer.
@@ -755,13 +707,13 @@ where $r\_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 an
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 
 $$
-\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}),
+\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}), \tag{8-63}
 $$
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
 $$
-\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}).
+\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}). \tag{8-64}
 $$
 
 $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
@@ -774,7 +726,7 @@ The albedo of the ice sheet, $\alpha\_{b,surf}$, is calculated in ENTRY ICEALB i
 This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
 $$
-\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)},
+\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)}, \tag{8-65}
 $$
 
 where $\alpha\_{b,ice}$ is the land ice albedo without surface water, $\alpha\_{b,wet}$ is the one with surface water, $w\_{surf}$ is the thisness of surfice water and $w^{\*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha\_{vis,ice}$, $\alpha\_{nir,ice}$ and $\alpha\_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha\_{b,wet}$ is set to 0.15 for all bands.
