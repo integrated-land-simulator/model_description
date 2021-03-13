@@ -672,27 +672,33 @@ $$
 \displaystyle{
 V_m \left[ \frac{c_i - \Gamma^*}{c_i + K_c(1+O_2/K_O)}\right]
 }
-   \qquad\mathrm{(in case of C_3 vegetation)}\\
+   & \qquad\text{(in case of $C_3$ vegetation)}\\
  V_m
-  \qquad\mathrm{(in case of C_4 vegetation)}
+   & \qquad\text{(in case of $C_4$ vegetation)}
 \end{array}
 \right. \\
+$$
+
+$$
  w_e = \left\{
 \begin{array}{ll}
 \displaystyle{
 PAR\cdot \epsilon_3 \left[ \frac{c_i-\Gamma^* }{c_i+2\Gamma^*}\right]
 }
-  \qquad\mathrm{(in case of C_3 vegetation)}\\
+  & \qquad\text{(in case of $C_3$ vegetation)}\\
 PAR\cdot \epsilon_4
-  \qquad\mathrm{(in case of C_4 vegetation)}
+  & \qquad\text{(in case of $C_4$ vegetation)}
 \end{array}
 \right. \\
+$$
+
+$$
  w_s = \left\{
 \begin{array}{ll}
 V_m / 2
-  \qquad\mathrm{(in case of C_3 vegetation)}\\
+  & \qquad\text{(in case of $C_3$ vegetation)}\\
 V_m c_i/ 5
-  \qquad\mathrm{(in case of C_4 vegetation)}
+  & \qquad\text{(in case of $C_4$ vegetation)}
 \end{array}
 \right.
 $$
