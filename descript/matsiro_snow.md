@@ -17,8 +17,8 @@ Tables below show the important arguments of SUBROUTINE MATSNW classified by the
 \end{table}
 
 | Name in code | Variable | Description | Unit |
-|:-------------|:---------|:------------|:-----|
-| GLSNW | $Sn$                        | Amount of snowfall                     | $\mathrm{kg/m^2}$ |
+|:-------------|:----------------------------|:---------------------------------------|:------------------|
+| GLSNW        | $Sn$                        | Amount of snowfall                     | $\mathrm{kg/m^2}$ |
 
 Modified
 | Name in code | Variable | Description | Unit
