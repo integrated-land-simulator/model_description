@@ -49,7 +49,7 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### 8.1.1 Case 1: When OPT\_SSNOWD is active
 
-The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Tatebe et al., 2019).
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
@@ -119,6 +119,8 @@ where $Sn\_c$ is 100 $\mathrm{kg/m^2}$.
 
 In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
 
+This process is treated in SUBROUTINE SNWCUT in matsnw.F.
+
 The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
 
 As a standard, the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
@@ -170,7 +172,7 @@ $$
 \widetilde{Sn} =  Sn / A\_{Sn} \tag{8-10}
 $$
 
- $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
+$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
 From the above, it can be clearly seen that the number of snow layers ($K\_{Sn}$) is as follows, as a standard:
 
@@ -412,7 +414,7 @@ $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)} \tag{8-36}
 $$
 
-$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-35)](#8-35), the following is obtained:
+$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
 
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
@@ -560,7 +562,7 @@ where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted f
 
 ## 8.7 Dust in snow
 
-The amount of dust on the snow cover and in the snow layers are calculated.
+The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
 
 
 ### 8.7.1 Dust fall on the snow cover
