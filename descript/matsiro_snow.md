@@ -8,6 +8,14 @@ Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice
 
 Tables below show the important arguments of SUBROUTINE MATSNW classified by the statements of "modified", "output" and "input".
 
+\begin{table}[h]
+ \begin{tabular}{llll}
+ A & B & C & D \hline\hline
+ a & b & c & d \hline
+ \end{tabular}
+\end{table}
+
+
 Modified
 | Name in code | Variable | Description | Unit
 |:-------------|:---------|:------------|:-----
