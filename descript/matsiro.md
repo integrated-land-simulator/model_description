@@ -3610,8 +3610,314 @@ $$
 	F_W(2) =F_W^{EV} - F_W^{PR} - R_{off} + W_S^n + W_I^n
 $$
 
+## Physical formulation and process
 
-# 12 Wetland
+This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion and convection of the lake water. 
+
+### Setting the vertical diffusion coefficients
+
+**Input**
+
+| Meaning                                             | Character | In code | Dimension | Unit |
+| --------------------------------------------------- | --------- | ------- | --------- | ---- |
+| The default value of vertical diffusion coefficient | $K_{V0}$  | AHVL0   | NZ        | -    |
+
+**Output**
+
+| Meaning                        | Character | In code | Dimension      | Unit |
+| ------------------------------ | --------- | ------- | -------------- | ---- |
+| Vertical diffusion coefficient | $K_{V}$   | AHVL    | IJLDIM, NLZDIM | -    |
+
+ENTRY: [VDIFFL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+
+In this part, the vertical diffusion coefficients are first determined for each lake layer.
+
+In the current version of MATSIRO 6, the diffusive flux of tracer follows Fick’s law. In Fick’s first law, the vertical diffusive tracer flux $J$ of unit time is:
+$$
+J=K_{V}\frac{\partial T}{\partial z}
+$$
+where $T$ represents temperature (temperature is used as an example here, this equation also applies to salinity), and $K_{V}$ represents the diffusion coefficient, and $z$ represents the vertical distance. The vertical diffusion coefficients for all lake layers are set as the default value, which is $K_{V0}$=1. Therefore, the vertical diffusion coefficient $K_{V0}$ of each layer is simply set as:
+$$
+K_{V}(k)=K_{V0}
+$$
+It is known that the surface wind and vertical temperature stratification will also influence the vertical diffusion coefficients, and they will be considered and added in the future version.
+
+### Estimate the diffusion terms of the tracer equations
+
+**Input**
+
+| Meaning                        | Character | In code | Dimension              | Unit    |
+| ------------------------------ | --------- | ------- | ---------------------- | ------- |
+| Vertical diffusion coefficient | $K_{V}$   | AHVL    | IJLDIM, NLZDIM         | -       |
+| Water temperature              | $T$       | TX(1)   | IJLDIM, NLZDIM, NLTDIM | $^{o}C$ |
+| Water depth                    | $h$       | HX      | IJLDIM                 | m       |
+
+**Output**
+
+| Meaning                                         | Character | In code | Dimension              | Unit      |
+| ----------------------------------------------- | --------- | ------- | ---------------------- | --------- |
+| The vertical component of diffusive tracer flux | $F_{D}$   | ADT     | IJLDIM, NLZDIM, NLTDIM | $^{o}C$/s |
+
+**Internal variables**
+
+| Meaning                                   | Character | In code | Dimension      | Unit |
+| ----------------------------------------- | --------- | ------- | -------------- | ---- |
+| The water depth excluding the first layer | $h'$      | HZBOT   | IJLDIM         | m    |
+| Depth of each lake layer                  | $D$       | DZ      | IJLDIM, NLZDIM | cm   |
+
+ENTRY: [FLXTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+
+This part introduces the calculation of the vertical diffusive tracer flux. Temperature is shown here as an example, and the tracer equation of salinity is identical.
+
+The thickness of each lake layer is first calculated. The water column is divided into 5 layers (k=2, 3, 4, 5, 6) in the current version, and the k=1 and k=7 represent the top surface and the bottom surface of the water column, respectively. The layer of the water column is shown in Fig. 11-1.
+
+![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/43f6deab3e569cb94e669b0439b01897a260d33d/descript/Lake_11-1.pdf) 
+
+Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{1}$, and $D_{1}$ is set to 100 cm. Therefore, the thickness of the first layer can be described as:
+$$
+D(2)=D_{1}
+$$
+The thicknesses of the other layers (k=3, 4, 5, 6) are calculated based on the ratio of the remaining thickness of the water column. The ratio ($S(k)$) of layer 3 to 6 are 0.1, 0.1. 0.2, and 0.6, respectively. Therefore, using $h$ to represent the total depth of the water column, and the thickness of the remaining water column ($h’$) excluding the top layer is presented by:
+$$
+h'=h-D_{1}
+$$
+and thickness ($D(k)$) of the remaining layer (k=3, 4, 5, 6) can be represented as:
+$$
+D(k)=S(k)h'
+$$
+Therefore, the thermal change of the k-th layer by vertical diffusion can be represented as the flux difference between upper layer $J_{k-1, k}$ and lower layer $J_{k, k+1}$:
+$$
+F_{D}(k)=J_{k-1,k}-J_{k,k+1}=K_{V}(k)\frac{T(k-1)-T(k)}{\frac{D(k-1)+D(k)}{2}}-K_{V}(k+1)\frac{T(k)-T(k+1)}{\frac{D(k)+D(k+1)}{2}}
+$$
+
+
+The above equations apply to salinity as well.
+
+### Time integration of the tracer equations
+
+**Input**
+
+| Meaning                                          | Character  | In code | Dimension              | Unit      |
+| ------------------------------------------------ | ---------- | ------- | ---------------------- | --------- |
+| The vertical component of  diffusive tracer flux | $F_{D}$    | ADT     | IJLDIM, NLZDIM, NLTDIM | $^{o}C$/s |
+| Minimum depth of the lake                        | $h_{min}$  | HXMIN   | IJLDIM, NLZDIM         | m         |
+| Heat flux                                        | $F_{T}$    | FT (1)  | IJLDIM                 | $^{o}C$/s |
+| Freshwater flux                                  | $F_{W}$    | FT(2)   | IJLDIM                 | cm/s      |
+| Absorbed shortwave solar radiation               | $S_{r}$    | SWABS   | IJLDIM                 |           |
+| Salt flux                                        | $F_{S}$    | FS      | IJLDIM                 |           |
+| Timestep                                         | $\Delta t$ | TS      |                        | s         |
+| Surface-type fraction (lake)                     | $R_{lake}$ | LKFRAC  | IJLDIM                 | -         |
+
+**Output**
+
+| Meaning               | Character | In code | Dimension | Unit |
+| --------------------- | --------- | ------- | --------- | ---- |
+| Lake water deficiency | $V_{D}$   | XHD     | IJLDIM    | cm   |
+
+ENTRY: [SLVTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+
+This part introduces the update of water temperature and salinity of each layer due to the diffusion, freshwater flux, and absorption of solar radiation.
+
+Heat diffusion is first considered. According to Fick’s second law, the temperature (salinity as well) change of k-th layer follows:
+$$
+\frac{\partial T}{\partial t}=K_{V}(k)\frac{\partial^2 T}{\partial z^2}
+$$
+where $z$ is the vertical distance. The equation is implicitly (backward-in-time) integrated, and obtains:
+$$
+\frac{T^{n+1}(k)-T^{n}(k)}{\Delta t}=\frac{K_{V}(k)\frac{T^{n+1}(k-1)-T^{n+1}(k)}{\frac{D(k-1)+D(k)}{2}}-K_{V}(k+1)\frac{T^{n+1}(k)-T^{n+1}(k+1)}{\frac{D(k)+D(k+1)}{2}}}{D(k)}
+$$
+The Tridiagonal Matrix Algorithm (also known as the Thomas Algorithm) is used to solve the equation, the following equation is constructed:
+$$
+A_{A}(k)F_{D}(k-1)+A_{B}(k)F_{D}(k)+A_{C}(k)F_{D}(k+1)=F_{D}(k)
+$$
+where
+$$
+A_{A}(k)=-\frac{K_{V}(k)}{\frac{D(k-1)+D(k)}{2}}\Delta t
+$$
+
+$$
+A_{C}(k)=-\frac{K_{V}(k+1)}{\frac{D(k)+D(k+1)}{2}}\Delta t
+$$
+
+$$
+A_{B}(k)=D(k)-A_{A}(k)-A_{C}(k)
+$$
+
+Then, the new coefficient of the Tridiagonal Matrix Algorithm can be constructed:
+$$
+A_{c}'(k)=\left\{\begin{matrix}
+\frac{A_{C}}{A_{B}}, k=2\\\frac{A_{C}}{A_{B}-A_{A}(k)A_{C}'(k-1)}, k=3, 4, 5, 6
+\end{matrix}\right.
+$$
+
+$$
+A_{D}'(k)=\left\{\begin{matrix}
+\frac{F_{D}(k)}{A_{B}(k)}, k=2\\\frac{F_{D}(k)-A_{A}(k)A_{D}'(k-1)}{A_{B}-A_{A}(k)A_{C}'(k-1)}, k=3, 4, 5, 6
+\end{matrix}\right.
+$$
+
+Then, the vertical diffusion term can be obtained:
+$$
+F_{D}(k)=\left\{\begin{matrix}
+A_{D}'(k), k=6\\A_{D}'(k)-A_{C}'(k)F_{D}(k+1), k=2, 3, 4, 5 
+\end{matrix}\right.
+$$
+
+
+The water temperature of each layer is updated as:
+$$
+T_{k}=T(k)+F_{D}(k)\Delta t
+$$
+After solving diffusive changes of tracers, the effect of heat, salinity, and freshwater fluxes at the lake surface is taken into account. Since the height of the water column changes with the freshwater flux, tracers at each layer should be re-estimated. It worth noting that a minimum depth threshold $h\_{min}$ is set, which means the lake depth can not be lower than this value. When surface freshwater flux $F_{W}$ (positive upward, i.e., the lake level is lowered when $F_{W}$ > 0) is imposed, and the change of the water column for each time step can be represented as: 
+$$
+h_{D}=-F_{W}\Delta t
+$$
+and the lake water deficiency (when lake depth $h$ is smaller than the minimum threshold $h_{min}$) can be represented as:
+$$
+V_{D}=max(h_{min}-h-h_{D}, 0)\times R_{lake}
+$$
+where $R_{lake}$ is the lake fraction of the grid. Therefore, the change of the lake depth is finalized as:
+$$
+h_{D}=max(h_{D}, h_{min}-h)
+$$
+and the lake depth is updated:
+$$
+h=h+h_{D}
+$$
+
+
+Due to the added freshwater, the depth of each lake layer has been changed, so the water temperature of each layer is updated as well. The update of depth and water temperature starts from the bottom layer. When $h_{D}$ > 0, the bottom of the k-th layer in the z coordinate is raised by:
+$$
+\Delta z_{B}^{k}=(1-\sum_{l=2}^{k}S(k))h_{D}
+$$
+where $S(k)$ is the vertical depth proportion of the k-th layer, and its top is raised by:
+$$
+\Delta z_{T}^{k}=(1-\sum_{l=2}^{k-1}S(k))h_{D}
+$$
+where the following equation holds:
+$$
+\Delta z_{k}^{T}=\Delta z_{k-1}^{B}
+$$
+Therefore, the temperature of the k-th (k=3, 4, 5, 6) layer becomes:
+$$
+T(k)=\frac{T(k)D(k)-T(k)\Delta z_{k}^{B}+T(k-1)\Delta z_{k}^{T}}{D(k)}
+$$
+The temperature of the first layer (k=2) becomes:
+$$
+T(2)=\frac{T(2)D(2)-T(2)\Delta z_{2}^{B}+T(2)\Delta z_{2}^{T}+F_{T}\Delta t}{D(2)}
+$$
+where $F_{T}$ is the heat flux of the freshwater added to the lake, and for salinity, the salinity flux is $F_{S}$.
+
+When $h_{D}$ < 0, on the other hand, the bottom of the k-th level is lowered by $\Delta z_{k}^{B}$, and its top is lowered by $\Delta z_{k}^{T}$. In this case, the above tracer equations for the k-th layer (k=3, 4, 5, 6) and the first layer (k=2) become:
+$$
+T(k)=\frac{T(k)D(k)-T(k)\Delta z_{k}^{T}+T(k+1)\Delta z_{k}^{B}}{D(k)}
+$$
+
+
+and
+$$
+T(2)=\frac{T(2)D(2)-T(2)\Delta z_{2}^{T}+T(3)\Delta z_{2}^{B}+F_{T}\Delta t}{D(2)}
+$$
+Finally, the absorption of solar radiation is considered. The temperature of each layer is updated as:
+$$
+T(k)=T(k)+\frac{S_{r}\times C_{sr}(k)}{D(k)\rho _{0}C_{P0}}\Delta t
+$$
+where $S_{r}$ represents the solar radiation, and $C_{sr}$ represents the absorption proportion of each layer. $ρ_{0}$ and $C_{p0}$ are density and specific heat capacity of water, and their values are set as 1 g/cm3 and 3.99×107 erg/g/K, respectively. $C_{sr}$ is calculated based on the depth of each layer, the transitivity $T_{rs}(k)$ at depth $D_{t}(k)$ can be represented as:
+$$
+T_{rs}=R_{r}\times e^{-\frac{D_{t}(k)}{z_{1}}}+(1-R_{r})\times e^{-\frac{D_{t}(k)}{z_{2}}}
+$$
+where $R_{r}$, $z_{1}$, and $z_{2}$ are three parameters, and their values are 0.58, 35, and 2300, respectively. 
+
+$D_{t}(k)$ represent the total depth of the bottom of k-th layer:
+$$
+D_{t}(k)=\sum_{l=2}^{k}D(k)
+$$
+Therefore, $C_{sr}$ can be represented as:
+$$
+C_{sr}(k)=\left\{\begin{matrix}
+1-T_{rs}(k), k=2\\T_{rs}(k-1)-T_{rs}(k), k=3, 4, 5 
+\\ 1-\sum_{l=2}^{5}C_{sr}(k), k=6
+\end{matrix}\right.
+$$
+
+
+### The vertical convection
+
+ENTRY: [OVTURNL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+
+This part introduced the vertical convection of the water between different layers.
+
+A classical, still widely used method-convective adjustment, which unstable water column is artificially homogenized with conserving heat and salt. MATSIRO 6 employs the convective adjustment for the standard choice, but its algorithm is not the pairwise adjustment. It is summarized as follows:
+
+(1)  Set the index $K_{s}$=2 (the first layer), indicating the start level of the convective adjustment, and set the index $K_{e}$=3 (the second layer), indicating the level where instability is currently judged.
+
+(2)  Compare potential density ($ρ$) of the ($K_{e}$-1)-th and $K_{e}$-th layers. If instability ($ρ_{Ke-1}$> $ρ_{Ke}$) is found, go to step 3, and if instability is not found, go to step 4.
+
+(3)  Mix the water column between the $K_{s}$-th layer and $K_{e}$-th layer. Increase $K_{e}$ by 1, and if the (new) $K_{e}$ is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with the new $K_{e}$.
+
+(4)  Set $K_{s}$=$K_{e}$, and increase $K_{e}$by 1.  Increase $K_{e}$by 1, and if the (new) $K_{e}$is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with new $K_{s}$and $K_{e}$.
+
+The water density is calculated by:
+$$
+\rho =999.842594+6.793952\times 10^{-2}\times T-9.095290\times 10^{-3}\times T^{2}+1.001685\times 
+      10^{-4}\times T^{3} -1.120083\times 10^{-6}\times T^{4}+6.536332\times 10^{-9}\times T^{5}
+$$
+
+
+where $T$ represents temperature. When instability happens, the water column between the $Ks$ layer and $K_{e}$ will convect and mix, and the water temperature of these layers will be identical and are updated as:
+$$
+T(K_{s}, ..., K_{e})=\frac{\sum_{k=K_{s}}^{K_{e}}D(k)T(k)}{\sum_{k=K_{s}}^{K_{e}}D(k)}
+$$
+
+# Snow-fed Wetland
+
+[#ifdef OPT_SW_STORAGE] (in SUBROUTINE: [MATROF] in matrof.F)
+
+## Outline of wetland scheme
+
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
+
+With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
+
+![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/43f6deab3e569cb94e669b0439b01897a260d33d/descript/Wetland_12-1.pdf) 
+
+## Inflow and outflow of the wetland
+
+The inflow of the wetland comes from the fraction of the surface runoff, and its amount is determined by the  tunable parameter $\alpha$. The outflow from the wetland is calculated using a time constant $\beta$ and the wetland storage $S$, consequently flowing into the soil surface. Therefore, the update of the wetland storage $S$ at each time step can be represented as:
+
+$$
+\frac{S^{\tau +1}-S^{\tau }}{\Delta t}=-\frac{S}{\beta}+(1-\alpha )R_{s}
+$$
+
+where $R\_{s}$ is surface runoff calculated as a total of $Ro\_{s}$ (saturation excess runoff), $Ro\_{i}$ (infiltration excess runoff), and $Ro\_{o}$ (overflow of the uppermost soil layer); $\tau$ is time; and $\alpha$ and $\beta$ are parameters related to the inflow and outflow of the wetland storage, respectively.
+
+$\beta$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
+
+$$
+\beta =max(\beta_{0}(1-min(\sigma_{z}(x),\sigma_{z max})/\sigma_{z max}), \Delta t)
+$$
+
+where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
+
+## Storage of the surface runoff
+
+The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
+
+$$
+Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
+$$
+
+where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3). 
+
+## Water input of soil surface
+
+The outflow from the wetland storage is re-added to the water input of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input $WI_{soil,total}$ of each time step can be represented as:
+
+$$
+WI_{soil,total}=WI_{soil,original}+\frac{S}{\beta }\Delta t
+$$
+
+where $WI\_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\beta$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
 
 
 
@@ -3686,6 +3992,12 @@ Potential vegetation is defined according to the vegetation types of the Simple 
 
   -
     Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
+    
+  -
+    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2015: A Sensitivity Study of a Simple Wetland Scheme for Improvements in the Representation of Surface Hydrology and Decrease of Surface Air Temperature Bias. <span>Journal of Japan Society of Civil Engineers, Ser.B1 (Hydraulic Engineering)</span>, <span>**71(4)**</span>, 955-960.
+
+  -
+    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2017: Impact of Arctic Wetlands on the Climate System: Model Sensitivity Simulations with the MIROC5 AGCM and a Snow-Fed Wetland Scheme. <span> Journal of Hydrometeorology</span>, <span>**18(11)**</span>, 2923-2936.
 
   -
     Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
