@@ -40,6 +40,29 @@
     - [7.2.3 Dripping of the canopy water](#723-dripping-of-the-canopy-water)
     - [7.2.4 Updating and melting of canopy water](#724-updating-and-melting-of-canopy-water)
   - [7.3 Fluxes given to the soil, snow, and runoff process](#73-fluxes-given-to-the-soil-snow-and-runoff-process)
+- [8 Snow](#8-snow)
+  - [8.1 Diagnosis of snow cover fraction](#81-diagnosis-of-snow-cover-fraction)
+    - [8.1.1 Case 1: When OPT_SSNOWD is active](#811-case-1-when-opt_ssnowd-is-active)
+    - [8.1.2 Case 2: When OPT_SSNOWD is inactive](#812-case-2-when-opt-ssnowd-is-inactive)
+  - [8.2 Vertical division of snow layers](#82-vertical-division-of-snow-layers)
+  - [8.3 Calculation of snow water equivalent](#83-calculation-of-snow-water-equivalent)
+    - [8.3.1 Sublimation of snow](#831-sublimation-of-snow)
+    - [8.3.2 Snowmelt](#832-snowmelt)
+    - [8.3.3 Freeze of snowmelt water and rainfall in snow](#833-freeze-of-snowmelt-water-and-rainfall-in-snow)
+    - [8.3.4 Snowfall](#834-snowfall)
+    - [8.3.5 Redivision of snow layer and rediagnosis of temperature](#835-redivision-of-snow-layer-and-rediagnosis-of-temperature)
+  - [8.4 Calculation of snow heat conduction](#84-calculation-of-snow-heat-conduction)
+    - [8.4.1 Snow heat conduction equations](#841-snow-heat-conduction-equations)
+    - [8.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#842-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
+    - [8.4.3 Case 2: When snowmelt occurs in the upper most layer](#843-case-2-when-snowmelt-occurs-in-the-upper-most-layer)
+  - [8.5 Fluxes given to the soil or the runoff process](#85-fluxes-given-to-the-soil-or-the-runoff-process)
+  - [8.6 Glacier formation](#86-glacier-formation)
+  - [8.7 Dust in snow](#87-dust-in-snow)
+    - [8.7.1 Dust fall on the snow cover](#871-dust-fall-on-snow-ice-cover)
+    - [8.7.2 Redistribution of dust](#872-redistribution-of-dust)
+  - [8.8 Albedo of snow and ice](#88-albedo-of-snow-and-ice)
+    - [8.8.1 Albedo of snow](#881-albedo-of-snow)
+    - [8.8.2 Albedo of ice](#882-albedo-of-ice)
 - [9 Runoff](#9-runoff)
   - [9.1 Outline of TOPMODEL](#91-outline-of-topmodel)
   - [9.2 Application of TOPMODEL assuming simplified topography](#92-application-of-topmodel-assuming-simplified-topography)
@@ -1439,418 +1462,508 @@ $$
 
 where $l_m$is the latent heat of melting.
 
-# 8 Snow
 
- The snow water equivalent, snow temperature, and snow albedo are calculated here.
 
-## 8.1 Diagnosis of snow-covered ratio
+# Snow
 
-When the amount of snow is small, the snow in the subgrid cells is considered. The snow-covered ratio $A_{Sn}$ is given as a unique function of the snow water content ($Sn_c$) by
+The snow cover fraction, snow water equivalent, snow temperature and snow albedo are calculated here.
+
+Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice albedo is calculated in SUBROUTINE ICEALB in matice.F.
+
+Tables below show the important arguments of SUBROUTINE MATSNW classified by the statements of "modified", "output" and "input".
+
+Modified
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| GLSNW        | $Sn$                        | Amount of snowfall                               | $\mathrm{kg/m^2}$   |
+| GLTSN        | $T_{Sn(k)} \;\; (k=1,2,3)$ | Snow temperature of the $k$th layer              | $\mathrm{K}$        |
+| GLASN        | $\alpha_b  \;\; (b=1,2,3)$ | Snow albedo for band $b$                         | -                   |
+| GLRSN        | $A_{Sn}$                   | Snow fraction                                    | -                   |
+| GLSDA        | -                           | Snow accumulation                                | $\mathrm{kg/m^2}$   |
+| GLSDM        | $M_{Sn}$                   | Accumulation of the snow melt                    | $\mathrm{kg/m^2}$   |
+| WINPC        | $P_{r_c}$                 | Convective precipitation flux                    | $\mathrm{kg/m^2/s}$ |
+| WINPL        | $P_{r_l}$                 | Layered precipitation flux                       | $\mathrm{kg/m^2/s}$ |
+| CDST         | $\rho_{(k)}$               | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     |
+
+Output
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| GGLACR       | $Ro_{gl}$                  | Glacier formation                                | $\mathrm{kg/m^2/s}$ |
+
+Input
+
+| Name in code | Variable                    | Description                                      | Unit                |
+|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
+| SNFAL        | $P_{Sn}$                   | Snow fall                                        | $\mathrm{kg/m^2/s}$ |
+| SNSUB        | $E_{Sn}$                   | Snow sublimation                                 | $\mathrm{kg/m^2/s}$ |
+| SNFLXS       | $F_{Sn(1/2)}$              | Snow surface heat flux                           | $\mathrm{W/m^2}$    |
+| GLG          | $T_{g(k)}$                 | Soil temperature of the $k$th layer              | $\mathrm{T}$        |
+| GLW          | $w_{g(k)}$                 | Soil moisture                                    | $\mathrm{m^3/m^3}$  |
+| GLWC         | $w_c$                      | Canopy water                                     | $\mathrm{m}$        |
+| SNRATC       | $A_{Snc}$                  | Canopy snow ratio                                | -                   |
+| DSTFAL       | $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   |
+| GRZSD        | -                           | Standard deviation of topography                 | $\mathrm{m}$        |
+| T2HIST       | -                           | Annual mean temperature over the latest 30 years | $\mathrm{K}$        |
+| ILSFC        | -                           | Index of the surface condition                   | -                   |
+| ILSOIL       | -                           | Soil type                                        | -                   |
+
+
+## Diagnosis of snow cover fraction
+
+MATSIRO has two ways of calculation of the snow cover fraction, and the user can switch them with the option OPT_SSNOWD.
+
+### Case 1: When OPT_SSNOWD is active
+
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
+
+The snow cover fraction is formulated for accumulation and ablation seasons separately.
+For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
+For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
- A_{Sn} = \min(Sn/Sn_{c}, 1)^{1/2} \tag{eq210}
+\int_0^{D_m} f(D)dD + \int_{D_m}^\infty f(D)dD = 1, \tag{8-1}
 $$
 
-$Sn_c$= 100 \[kg/m<sup>2</sup>\] is a standard value.
-
-In actuality, various factors can be considered to affect the snow-covered ratio, such as differences in topography, the time of snowfall or snow melting, etc. With regard to this point, introduction the Subgrid Snow Distribution (SSNOWD) model proposed by Liston (personal communication) is being studied.
-
-$A_{Sn}$ is referred to at the beginning of the flux calculation section, and the various fluxes calculated there are used for the area-weighted mean as follows:
+where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
- \overline{F} = (1-A_{Sn}) F_{(1)} + A_{Sn} F_{(2)}
-$$
-
-where $F_{(1)}$ and $F_{(2)}$  are fluxes at the snow-free portion and snow-covered portion, respectively. In actuality, this operation is performed through the flux coupler.
-
-## 8.2 Vertical division of snow layers
-
-In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
-
-The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
-
-As a standard, the mass of each layer $\Delta \widetilde{Sn}_{(k)} (k=1,2,3)$ is determined as follows ($k=1$ is the uppermost layer):
-
-$$
- \Delta \widetilde{Sn}_{(1)} = \left\{
-\begin{array}{ll}
- \widetilde{Sn}  (\widetilde{Sn} < 20) \\
- 0.5\widetilde{Sn}  (20 \leq \widetilde{Sn} < 40) \\
- 20  (\widetilde{Sn} \geq 40)
-\end{array} \tag{eq212}
-\right. \\
- \Delta \widetilde{Sn}_{(2)} = \left\{
-\begin{array}{ll}
- 0  (\widetilde{Sn} < 20) \\
- \widetilde{Sn} - \Delta Sn_{(1)}  (20 \leq \widetilde{Sn} < 60)\\
- 0.5(\widetilde{Sn}-20)  (60 \leq \widetilde{Sn} < 100) \\
- 40  (\widetilde{Sn} \geq 100)
-\end{array}
-\right.  \\
- \Delta \widetilde{Sn}_{(3)} = \left\{
-\begin{array}{ll}
- 0  (\widetilde{Sn} < 60) \\
- \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)}) (\widetilde{Sn} \geq 60)
-\end{array}
-\right.
+f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[
+ -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2
+\right] }, \tag{8-2}
 $$
 
 where
 
 $$
- \widetilde{Sn} =  Sn / A_{Sn}
+\lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
 $$
 
- $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta \widetilde{Sn}_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is kg/m<sup>2</sup>.
+$$
+\zeta^2 = \ln(1+CV^2). \tag{8-4}
+$$
+
+Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$.
+
+The snow amount $Sn$ is given by
+
+$$
+Sn(D_m) = \int_0^{D_m} 0[f(D)]dD + \int_{D_m}^\infty (D-D_m)[f(D)]dD, \tag{8-5}
+$$
+
+and this equation is rewritten to
+
+$$
+Sn(D_m)
+ = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
+ \mathrm{erfc} \left( \frac{z_{D_m}-\xi}{\sqrt{2}} \right)
+ - \frac{1}{2} D_m \mathrm{erfc} \left( \frac{z_{D_m}}{\sqrt{2}} \right), \tag{8-6}
+$$
+
+where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z_{D_m}$ is the value of $z$ when $D = D_m$ and $\mathrm{erfc}$ is the complementary error function.
+
+$D_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD_ITR in ssnowd.F).
+
+Then, the snow cover fraction $A_{Sn}(D_m)$ is calculated by
+
+$$
+A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z_{D_m}}{2} \right). \tag{8-7}
+$$
+
+### Case 2: When OPT_SSNOWD is inactive
+
+The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
+
+$$
+Sn(D_m) = \min(\sqrt{Sn/Sn_c}), \tag{8-8}
+$$
+
+where $Sn_c$ is 100 $\mathrm{kg/m^2}$.
+
+
+## Vertical division of snow layers
+
+In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
+
+This process is treated in SUBROUTINE SNWCUT in matsnw.F.
+
+The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
+
+As a standard, the mass of each layer ($\Delta {\widetilde{Sn}}_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
+
+$$
+\begin{aligned}
+\widetilde{Sn}_{(1)} &= \left\{
+\begin{array}{ll}
+ \widetilde{Sn} \\
+ 0.5\widetilde{Sn}  \\
+ 20
+\end{array}
+\begin{array}{ll}
+ (\widetilde{Sn} < 20) \\
+ (20 \leq \widetilde{Sn} < 40) \\
+ (\widetilde{Sn} \geq 40)
+\end{array}
+\right. \\
+\widetilde{Sn}_{(2)} &= \left\{
+\begin{array}{ll}
+ 0 \\
+ \widetilde{Sn} - \Delta Sn_{(1)} \\
+ 0.5(\widetilde{Sn} - 20) \\
+ 40
+\end{array}
+\begin{array}{ll}
+ (\widetilde{Sn} < 20) \\
+ (20 \leq \widetilde{Sn} < 60) \\
+ (60 \leq \widetilde{Sn} < 100) \\
+ (\widetilde{Sn} \geq 100)
+\end{array}
+\right. \\
+\widetilde{Sn}_{(3)} &= \left\{
+\begin{array}{ll}
+ 0 \\
+ \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)})
+\end{array}
+\begin{array}{ll}
+ (\widetilde{Sn} < 60) \\
+ (\widetilde{Sn} \geq 60)
+\end{array}
+\right.
+\end{aligned} \tag{8-9}
+$$
+
+where
+
+$$
+\widetilde{Sn} =  Sn / A_{Sn} \tag{8-10}
+$$
+
+$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
 From the above, it can be clearly seen that the number of snow layers ($K_{Sn}$) is as follows, as a standard:
 
 $$
  K_{Sn} = \left\{
 \begin{array}{ll}
- 0  (\widetilde{Sn} = 0)\\
- 1  (0< \widetilde{Sn} < 20)\\
- 2  (20 \leq \widetilde{Sn} < 60)\\
- 3  (\widetilde{Sn} \geq 60)
+ 0 \;\;\; (\widetilde{Sn} = 0)\\
+ 1 \;\;\; (0< \widetilde{Sn} < 20)\\
+ 2 \;\;\; (20 \leq \widetilde{Sn} < 60)\\
+ 3 \;\;\; (\widetilde{Sn} \geq 60)
 \end{array}
-\right.
+\right. \tag{8-11}
 $$
 
-## 8.3 Calculation of snow water equivalent
+## Calculation of snow water equivalent
 
 The prognostic equation of the snow water equivalent is given by
 
 $$
- \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^* - E_{Sn} - M_{Sn} + Fr_{Sn}
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^{*} - E_{Sn} - M_{Sn} + Fr_{Sn} \tag{8-12}
 $$
 
-where $P_{Sn}^*$ is the snowfall flux after interception by the canopy, $E_{Sn}$ is the sublimation flux, $M_{Sn}$ is the snowmelt, and $Fr_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
+where $P_{Sn}^{*}$ is the snowfall flux after interception by the canopy, $E_{Sn}$ is the sublimation flux, $M_{Sn}$ is the snowmelt, and $Fr_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 
-### 8.3.1 Sublimation of snow
+### Sublimation of snow
 
 First, by subtracting the sublimation, the snow water equivalent is partially updated:
 
 $$
- Sn^* = Sn^{\tau} - E_{Sn} \Delta t_L \\
- \Delta \widetilde{Sn}_{(1)}^* = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L
+Sn^{*} = Sn^{\tau} - E_{Sn} \Delta t_L \tag{8-13}
+$$
+
+$$
+\Delta \widetilde{Sn}_{(1)}^{*} = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L \tag{8-14}
 $$
 
 In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
 
-### 8.3.2 Snowmelt
+### Snowmelt
 
-Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T_{Sn(k)}^*$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T_{melt} = 0^{\circ}$ C, the temperature of the uppermost layer is fixed at $T_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
+Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T_{Sn(k)}^{*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
 
 $$
- \widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^*/\Delta t_L ) \tag{eq220}
+\widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^{*}/\Delta t_L ) \tag{8-15}
 $$
 
 With regard to the second layer and below, if the temperature is higher than $T_{melt}$, it is put back to $T_{melt}$ and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
 
 $$
- T_{Sn(k)}^{**} = T_{melt}
+T_{Sn(k)}^{**} = T_{melt} \tag{8-16}
 $$
 
 $\Delta \widetilde{F}_{conv}$ is newly defined by
 
 $$
- \Delta \widetilde{F}_{conv} = ( T_{Sn(k)}^* - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^*/\Delta t_L
+\Delta \widetilde{F}_{conv} = ( T_{Sn_{(k)}}^{*} - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^{*}/\Delta t_L \tag{8-17}
 $$
 
-and the snowmelt is solved as in [Eq. (220)](#eq220).
+and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 
 $$
- \Delta \widetilde{Sn}_{(k)}^{**} = \Delta \widetilde{Sn}_{(k)}^{*}
- - \widetilde{M}_{Sn(k)}
+\Delta \widetilde{Sn}_{(k)}^{**} = \Delta \widetilde{Sn}_{(k)}^{*} - \widetilde{M}_{Sn_{(k)}} \tag{8-18}
 $$
 
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 
 $$
- \Delta \widetilde{F}_{conv}^* = \Delta \widetilde{F}_{conv} - l_m \widetilde{M}_{Sn(k)}
+\Delta \widetilde{F}_{conv}^{*} = \Delta \widetilde{F}_{conv} - l_m \widetilde{M}_{Sn_{(k)}} \tag{8-19}
 $$
 
-
 $$
- T_{Sn(k+1)}^{**} = T_{Sn(k+1)}^{*} + \Delta \widetilde{F}_{conv}^* / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^*) \Delta t_L
+T_{Sn_{(k+1)}}^{**}
+ = T_{Sn_{(k+1)}}^{*} + \Delta \widetilde{F}_{conv}^{*} / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^{*}) \Delta t_L \tag{8-20}
 $$
 
-where $c_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}_{conv}^*$ is given to the soil.
+where $c_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}_{conv}^{*}$ is given to the soil.
 
 The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):
 
 $$
- M_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{M}_{Sn(k)} A_{Sn}
+ M_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{M}_{Sn(k)} A_{Sn} \tag{8-21}
 $$
 
 By subtracting the snowmelt, the snow water equivalent is partially updated:
 
 $$
- Sn^{**} = Sn^{*} - M_{Sn} \Delta t_L
+Sn^{**} = Sn^{*} - M_{Sn} \Delta t_L \tag{8-22}
 $$
 
-### 8.3.3 Freeze of snowmelt water and rainfall in snow
+### Freeze of snowmelt water and rainfall in snow
 
 The freeze of snowmelt water and rainfall in the snow is calculated next. With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer. The retention of liquid water content in the snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.
 
 The liquid water flux at the snow upper boundary in the snow-covered portion is
 
 $$
- \widetilde{F}_{wSn(1)} = Pr_c^* + Pr_l^* + M_{Sn} / A_{Sn}
+\widetilde{F}_{wSn(1)} = Pr_c^{*} + Pr_l^{*} + M_{Sn} / A_{Sn} \tag{8-23}
 $$
 
 Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).
 
-It is reasonable to assume the temperature of the snowmelt water as 0°C, and the temperature of rainfall on the snow is also assumed to be 0°C for convenience. The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0°C, any additional water is assumed to be unable to freeze and to percolate to the layer below. In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer$\widetilde{Fr}_{Sn(k)}$ is solved by
+It is reasonable to assume the temperature of the snowmelt water as 0 $^\circ\mathrm{C}$, and the temperature of rainfall on the snow is also assumed to be 0 $^\circ\mathrm{C}$ for convenience. The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0 $^\circ\mathrm{C}$, any additional water is assumed to be unable to freeze and to percolate to the layer below. In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer$\widetilde{Fr}_{Sn(k)}$ is solved by
 
 $$
- \widetilde{Fr}_{Sn(k)} = \min\left( \widetilde{F}_{wSn(k)}, \
-\frac{c_{pi}(T_{melt}-T_{Sn(k)}^{**})}{l_m}
+\widetilde{Fr}_{Sn_{(k)}} = \min\left(
+\widetilde{F}_{w_{Sn_{(k)}}}, \
+\frac{c_{pi}(T_{melt}-T_{Sn_{(k)}}^{**})}{l_m} \
 \frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} , \
-f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \right)
+f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \
+\right) \tag{8-24}
 $$
 
-where  $F_{w_{Sn}(k)}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F} _ { wSn(k) }$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. The standard value of the $f_{Fmax}$ is assumed to be 0.1 as a standard value.
+where $F_{w_{Sn_{(k)}}}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F}_{w_{Sn_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f_{Fmax}$ is assumed to be 0.1 as a standard value.
 
 The snow temperature change is updated by
 
 $$
- T_{Sn(k)}^{*** } = \frac{l_m \widetilde{Fr}_{Sn(k)}\Delta t_L
-   +c_{pi}(T_{Sn(k)}^{**}\Delta \widetilde{Sn}_{(k)}^{**} + T_{melt} \widetilde{Fr}_{Sn(k)}\Delta t_L ) }
-  {c_{pi} (\Delta \widetilde{Sn}_ { (k) }^{** } + \widetilde{Fr}_{Sn(k)}\Delta t_L)}
+T_{Sn_{(k)}}^{***} = \frac{l_m \widetilde{Fr}_{Sn_{(k)}}\Delta t_L
+ + c_{pi}(T_{Sn_{(k)}}^{**}\Delta \widetilde{Sn}_{(k)}^{**}
+ + T_{melt} \widetilde{Fr}_{Sn_{(k)}}\Delta t_L)}
+ {c_{pi}(\Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L)}, \tag{8-25}
 $$
-
 
 and the mass is updated as follows:
 
 $$
- \Delta \widetilde{Sn}_ {(k)}^{*** } = \Delta \widetilde{Sn}_{(k)}^{** } + \widetilde{Fr}_{Sn(k)}\Delta t_L
+ \Delta \widetilde{Sn}_{(k)}^{***} = \Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L. \tag{8-26}
 $$
-
 
 The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
 
 $$
- Fr_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{Fr}_ {Sn(k)} A_{Sn}
+ Fr_{Sn} = \sum_{k=1}^{K_{Sn}} \widetilde{Fr}_{Sn_{(k)}} A_{Sn}. \tag{8-27}
 $$
 
 
-By adding the amount of freeze, the snow water equivalent is partially updated:
+By adding the amount of freeze, the snow water equivalent is partially updated as follows:
 
 $$
- Sn^{*** } = Sn^{**} + Fr_{Sn} \Delta t_L
+ Sn^{***} = Sn^{**} + Fr_{Sn} \Delta t_L. \tag{8-28}
 $$
 
 The liquid water that has percolated from the snow to the lower boundary is given to the soil.
 
-### 8.3.4 Snowfall
+### Snowfall
 
 Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
 
 $$
- Sn^{\tau+1} = Sn^{*** } + P_{Sn}^* \Delta t_L
+ Sn^{\tau+1} = Sn^{***} + P_{Sn}^{*} \Delta t_L \tag{8-29}
 $$
 
-However, when the temperature of the uppermost soil layer is 0°C or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
+However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A_{Sn}$) is newly diagnosed by [Eq. (210)](#eq210) and the snow temperature ($T_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A_{Sn}$) is newly diagnosed as described in the section 8.1 and the snow temperature ($T_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
 
 $$
- \Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{ * * * } + P_{Sn}^* \Delta t_L /A_{Sn}
+\Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{***} + P_{Sn}^{*} \Delta t_L /A_{Sn}. \tag{8-30}
 $$
 
-### 8.3.5 Redivision of snow layer and rediagnosis of temperature
+### Redivision of snow layer and rediagnosis of temperature
 
-When the snow water equivalent is updated, the snow-covered ratio is rediagnosed by [Eq. (210)](#eq210) and the mass of each layer is redivided by [Eq. (212) to (214)](#eq212). The temperature in each redivided layer is rediagnosed so that the energy is conserved, as follows:
+When the snow water equivalent is updated, the snow-covered ratio is rediagnosed as described in the section 8.1 and the mass of each layer is redivided as described in the section 8.2. The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
 
 $$
- T_{Sn(k)}^{new} = \left(\sum_{l=1}^{K_{Sn}^{old}} f_{(l^{old}\in k^{new})} T_{Sn(l)}^{old} \Delta \widetilde{Sn}_{(l)}^{old} A_{Sn}^{old} \right)
-\Bigm/ (\Delta \widetilde{Sn}_{(k)}^{new} A_{Sn}^{new})
+T_{Sn_{(k)}}^{\mathrm{new}} = \left(
+ \sum_{l=1}^{K_{Sn}^{\mathrm{old}}}
+ f_{(l^{\mathrm{old}}\in k^{\mathrm{new}})} T_{Sn(l)}^{\mathrm{old}}
+ \Delta \widetilde{Sn}_{(l)}^{\mathrm{old}} A_{Sn}^{\mathrm{old}}
+\right) \Bigm/ (\Delta \widetilde{Sn}_{(k)}^{\mathrm{new}} A_{Sn}^{\mathrm{new}}). \tag{8-31}
 $$
 
+It should be noted that the variables with the index "old" and "new" are those before and after redivision, respectively. $f_{(l^{\mathrm{old}}\in k^{\mathrm{new}})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
 
-It should be noted that the variables with the index *old* and *new* are those before and after redivision, respectively. $f_{(l^{old}\in k^{new})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
 
-## 8.4 Calculation of snow heat conduction
+## Calculation of snow heat conduction
 
-### 8.4.1 Snow heat conduction equations
+### Snow heat conduction equations
 
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 
 $$
-c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^* - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
-\qquad (k=1,\ldots,K_{Sn}) \tag{eq237}
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^{*} - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
+\qquad (k=1,\ldots,K_{Sn}) \tag{8-32}
 $$
 
 with the heat conduction flux $\widetilde{F}_{Sn}$ given by
 
 $$
- \widetilde{F}_{Sn(k+1/2)} =
-\left\{
-\begin{array}{ll}
-( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
- (k=0)\\
-\displaystyle{
-k_{Sn(k+1/2)} \frac{T_{Sn(k+1)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
-}
- (k=1,\ldots,K_{Sn}-1) \\
-\displaystyle{
-k_{Sn(k+1/2)} \frac{T_{Sn(B)} - T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
-}
- (k=K_{Sn})
-\end{array} \tag{eq238}
-\right.
+\widetilde{F}_{Sn(k+1/2)}
+ = \left\{
+ \begin{aligned}
+  & (F_{Sn(1/2)} - \Delta F_{conv}) / A_{Sn} - \Delta F_{c,conv}
+  \; &&(k = 0) \\
+  & k_{Sn(k+1/2)} \frac{T_{Sn(k+1)}-T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+  \; &&(k = 1, ..., K_{Sn}-1) \\
+  & k_{Sn(k+1/2)} \frac{T_{Sn(B)}-T_{Sn(k)}}{\Delta z_{Sn(k+1/2)}}
+  \; &&(k = K_{Sn})
+ \end{aligned}
+\right., \tag{8-33}
 $$
 
 where $k_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $\Delta z_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
 
-$$
- \Delta z_{Sn(k+1/2)} =
-\left\{
-\begin{array}{ll}
- 0.5 \Delta \widetilde{Sn}_{(1)} / \rho_{Sn}  (k=1)\\
- 0.5 (\Delta \widetilde{Sn}_{(k)}+\Delta \widetilde{Sn}_{(k+1)}) / \rho_{Sn}
- (k=2,\ldots,K_{Sn}-1)\\
- 0.5 \Delta \widetilde{Sn}_{(K_{Sn})} / \rho_{Sn}  (k=K_{Sn})
-\end{array}
-\right.
-$$
-
-where $\rho_{Sn}$ is the snow density, assigned the fixed value of 300 kg/m<sup>3</sup> as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
-
-In [Eq. (238)](#eq238), the snow upper boundary flux $\widetilde{F}_ {Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta
-F_{conv}$), and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F_{c,conv}$. ($\Delta F_{conv}$) is assumed to be given only to the snow-covered portion, while ($\Delta F_{c,conv}$) is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
-
-In the equation for the snow lower boundary flux ($\widetilde{F}_ {Sn(K_{Sn}+1/2)}$), $T_{Sn(B)}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
 
 $$
-\widetilde{F}_ {g(1/2)} = k_{g(1/2)} \frac{T_{g(1)}-T_{Sn(B)}}{\Delta z_{g(1/2)}}
+\Delta z_{Sn(k+1/2)}
+ = \left\{
+ \begin{aligned}
+  & 0.5 \Delta \widetilde{Sn}_{(1)} / \rho_{Sn}
+  \; &&(k = 1) \\
+  & 0.5 (\Delta \widetilde{Sn}_{(k)} + \Delta \widetilde{Sn}_{(k+1)}) / \rho_{Sn}
+  \; &&(k = 2, ..., K_{Sn}-1) \\
+  & 0.5 \Delta \widetilde{Sn}_{(K_{Sn})} / \rho_{Sn}
+  \; &&(k = K_{Sn})
+ \end{aligned}
+\right. \tag{8-34}
+$$
+
+where $\rho_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
+
+In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F_{c,conv}$. $\Delta F_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+
+In the equation for the snow lower boundary flux $\widetilde{F}_{Sn_{(K_{Sn}+1/2)}}$, $T_{Sn_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
+
+$$
+\widetilde{F}_{g(1/2)} = k_{g(1/2)} \frac{T_{g(1)}-T_{Sn_{(B)}}}{\Delta z_{g(1/2)}} \tag{8-35}
 $$
 
 there is assumed to be no convergence at the snow lower boundary, and by putting
 
 
 $$
-\widetilde{F}_{Sn(K_{Sn}+1/2)} =  \widetilde{F}_{g(1/2)}
+\widetilde{F}_{Sn_{(K_{Sn}+1/2)}} = \widetilde{F}_{g(1/2)} \tag{8-36}
 $$
 
-$T_{Sn(B)}$ is solved. When this is substituted into [Eq. (242)](#eq242), the following is obtained:
+$T_{Sn_{(B)}}$ is solved. When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
 
 $$
-\widetilde{F}_{Sn(K_{Sn}+1/2)} =
-\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
-+\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
-\right]^{-1}
-(T_{g(1)} - T_{Sn(K_{Sn})}) \tag{eq242}
+\widetilde{F}_{Sn_{(K_{Sn}+1/2)}}
+ = \left[ \frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
+  +\frac{\Delta z_{Sn_{(K_{Sn}+1/2)}}}{k_{Sn_{(K_{Sn}+1/2)}}}
+ \right]^{-1}
+ (T_{g(1)} - T_{Sn_{(K_{Sn})}}) \tag{8-37}
 $$
 
-### 8.4.2 Case 1: When snowmelt does not occur in the uppermost layer
+### Case 1: When snowmelt does not occur in the uppermost layer
 
 The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:
 
-
 $$
- \widetilde{F}_ {Sn(k+1/2)}^* = \widetilde{F}_{Sn(k+1/2)}^{\tau}
-+\frac{\partial \widetilde{F}_ {Sn(k+1/2)}}{\partial T_{Sn(k)}}
- \Delta T_{Sn(k)}
-+\frac{\partial \widetilde{F}_ {Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
- \Delta T_{Sn(k+1)}
-$$
-
-
-$$
- \widetilde{F}_{Sn(k+1/2)}^{\tau} =
-\left\{
-\begin{array}{ll}
-( F_{Sn(1/2)} - \Delta F_{conv})/A_{Sn} - \Delta F_{c,conv}
- (k=0)\\
-\displaystyle{
-\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}} (T_{Sn(k+1)}^{\tau} - T_{Sn(k)}^{\tau})
-}
- (k=1,\ldots,K_{Sn}-1) \\
-\displaystyle{
-\left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
-+\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
-\right]^{-1}
-(T_{g(1)} - T_{Sn(K_{Sn})}^{\tau})
-}
- (k=K_{Sn})
-\end{array}
-\right.
-$$
-
-
-$$
- \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}} =
-\left\{
-\begin{array}{ll}
-\displaystyle{
-- \frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
-}
- (k=1,\ldots,K_{Sn}-1) \\
-\displaystyle{
-- \left[\frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
-+\frac{\Delta z_{Sn(K_{Sn}+1/2)}}{k_{Sn(K_{Sn}+1/2)}}
-\right]^{-1}
-}
- (k=K_{Sn})
-\end{array}
-\right.
+\begin{aligned}
+\widetilde{F}_{Sn_{(k+1/2)}}^{*}
+ &= \widetilde{F}_{Sn_{(k+1/2)}}^{\tau}
+ + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k)}}} \Delta T_{Sn_{(k)}}
+ + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k+1)}}} \Delta T_{Sn_{(k+1)}}, \\
+\widetilde{F}_{Sn_{(k+1/2)}}^{\tau}
+ &= \left\{ \begin{aligned}
+ & (F_{Sn_{(1/2)}} - \Delta F_{conv}) / A_{Sn} - \Delta F_{c,conv}
+ \; && (k = 0) \\
+ & \frac{k_{Sn_{(k+1/2)}}}{\Delta z_{Sn(k+1/2)}} (T_{Sn(k+1)}^\tau - T_{Sn(k)}^\tau)
+ \; && (k = 1, ..., K_{Sn}-1) \\
+ & \left[
+  \frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
+  + \frac{\Delta z_{Sn_{(K_{Sn}+1/2)}}}{k_{Sn_{(K_{Sn}+1/2)}}}
+ \right]^{-1} (T_{g(1)} - T_{Sn_{(K_{Sn})}}^\tau)
+ \; && (k = K_{Sn})
+\end{aligned} \right., \\
+\frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k)}}}
+ &= \left\{ \begin{aligned}
+ & -\frac{k_{Sn_{(k+1/2)}}}{\Delta z_{Sn_{(k+1/2)}}}
+ \; &&(k = 1, ..., K_{Sn}-1) \\
+ & -\left[ \frac{\Delta z_{g(1/2)}}{k_{g(1/2)}}
+  + \frac{\Delta z_{Sn_{(K_{Sn}+1/2)}}}{k_{Sn_{(K_{Sn}+1/2}}}
+ \right]^{-1}
+ \; &&(k = K_{Sn})
+\end{aligned} \right., \\
+\frac{\partial\widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k+1)}}}
+ &= \left\{ \begin{aligned}
+ & 0
+ \; &&(k = 0) \\
+ & \frac{k_{Sn_{(k+1/2)}}}{\Delta z_{Sn_{k+1/2)}}}
+ \; &&(k = 1, ..., K_{Sn}-1)
+\end{aligned} \right.
+\end{aligned} \tag{8-38}
 $$
 
+and [Eq. (8-32)](#8-32) is treated as
 
 $$
- \frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}} =
-\left\{
-\begin{array}{ll}
-0  \ \quad \qquad \qquad \qquad \qquad (k=0) \\
-\displaystyle{
-\frac{k_{Sn(k+1/2)}}{\Delta z_{Sn(k+1/2)}}
-}
-   \ \quad \qquad \qquad \qquad \qquad (k=1,\ldots,K_{Sn}-1)
-\end{array}
-\right.
+\begin{aligned}
+ c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{\Delta T_{Sn_{(k)}}}{\Delta t_L}
+ &= &&\widetilde{F}_{Sn_{(k+1/2)}}^{*} - \widetilde{F}_{Sn_{(k-1/2)}}^{*} \\
+ &= &&\widetilde{F}_{Sn_{(k+1/2)}}^{\tau}
+  + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k)}}}   \Delta T_{Sn_{(k)}}
+  + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k+1)}}} \Delta T_{Sn_{(k+1)}} \\
+ & &&- \widetilde{F}_{Sn_{(k-1/2)}}^{\tau}
+  - \frac{\partial \widetilde{F}_{Sn_{(k-1/2)}}}{\partial T_{Sn_{(k-1)}}} \Delta T_{Sn_{(k-1)}}
+  - \frac{\partial \widetilde{F}_{Sn_{(k-1/2)}}}{\partial T_{Sn_{(k)}}}   \Delta T_{Sn_{(k)}}
+\end{aligned} \tag{8-39}
 $$
 
 
-and [Eq. (237)](#eq237) is treated as
-
-$$
-c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{\Delta T_{Sn(k)}}{\Delta t_L}
-= \widetilde{F}_{Sn(k+1/2)}^* - \widetilde{F}_{Sn(k-1/2)}^*  \\
-= \widetilde{F}_{Sn(k+1/2)}^{\tau}
-+\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k)}}
- \Delta T_{Sn(k)}
-+\frac{\partial \widetilde{F}_{Sn(k+1/2)}}{\partial T_{Sn(k+1)}}
- \Delta T_{Sn(k+1)}  \\
-- \widetilde{F}_{Sn(k-1/2)}^{\tau}
--\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
- \Delta T_{Sn(k-1)}
--\frac{\partial \widetilde{F}_{Sn(k-1/2)}}{\partial T_{Sn(k-1)}}
- \Delta T_{Sn(k)}
-$$
-
-and solved by the LU factorization method as $\Delta T_{Sn(k)}\ (k=1,\ldots,K_{Sn})$ simultaneous equations with respect to $K_{Sn}$. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
+and solved by the LU factorization method as $\Delta T_{Sn_{(k)}}\ (k = 1, ..., K_{Sn})$ simultaneous equations with respect to $K_{Sn}$. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
 
 
 $$
- T_{Sn(k)}^* = T_{Sn(k)}^{\tau} + \Delta T_{Sn(k)}
+T_{Sn_{(k)}}^{*} = T_{Sn_{(k)}}^{\tau} + \Delta T_{Sn_{(k)}} \tag{8-40}
 $$
 
-6.4.3 Case 2: When snowmelt occurs in the uppermost layer
+### Case 2: When snowmelt occurs in the uppermost layer
 
-When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0°C. The flux from the second snow layer to the uppermost snow layer is then expressed as
+When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 
 $$
- \widetilde{F}_{3/2}^{*} =
-\frac{k_{Sn(3/2)}}{\Delta z_{Sn(3/2)}} (T_{Sn(2)}^{\tau} - T_{melt})
-+\frac{\partial \widetilde{F}_{Sn(3/2)}}{\partial T_{Sn(2)}}
- \Delta T_{Sn(2)}
+\widetilde{F}_{3/2}^{*}
+ = \frac{k_{Sn_{(3/2)}}}{\Delta z_{Sn_{(3/2)}}} (T_{Sn_{(2)}}^{\tau} - T_{melt})
+ +\frac{\partial \widetilde{F}_{Sn_{(3/2)}}}{\partial T_{Sn_{(2)}}}
+ \Delta T_{Sn_{(2)}} \tag{8-41}
 $$
 
 and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
@@ -1858,1602 +1971,231 @@ and solved similarly to case 1 (when there is only one snow layer, the snow temp
 The energy convergence used for melting in the uppermost snow layer is given by:
 
 $$
- \Delta \widetilde{F}_{conv} = (\widetilde{F}_{3/2}^{*} - \widetilde{F}_{1/2})
-  - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn(1)}^*}{\Delta t_L}
+\Delta \widetilde{F}_{conv}
+ = (\widetilde{F}_{3/2}^{*} - \widetilde{F}_{1/2})
+ - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn_{(1)}}^{*}}{\Delta t_L} \tag{8-42}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
 
-## 8.5 Glacier formation
 
-In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
-
-
-$$
- Ro_{gl} = \max( Sn - Sn_{\max} ) / \Delta t_L
-$$
-
-
-$$
- Sn = Sn - Ro_{gl} \Delta t_L \\
- \Delta \widetilde{Sn}_{(K_{Sn})} = \Delta \widetilde{Sn}_{(K_{Sn})}
- - Ro_{gl} / A_{Sn} \Delta t_L
-$$
-
-where $Ro_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn_{\max}$ is uniformly assigned the value of 1000 kg/m<sup>2</sup> as a standard.
-
-## 8.6 Fluxes given to the soil or the runoff process
+## Fluxes given to the soil or the runoff process
 
 The heat flux given to the soil through the snow process is
 
 $$
-\Delta F_{conv}^* = A_{Sn} ( \Delta \widetilde{F}_{conv}^* - \widetilde{F}_{Sn_{K_{Sn}}} ) - l_m P_{Sn,melt}^*
+\Delta F_{conv}^{*}
+ = A_{Sn} (\Delta\widetilde{F}_{conv}^{*} - \widetilde{F}_{Sn_{K_{Sn}}}) - l_m P_{Sn,melt}^{*},
+\tag{8-43}
 $$
 
-where $\Delta \widetilde{F}_{conv}^*$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}_{Sn_{K_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P_{Sn,melt}^*$ is the snowfall that melts immediately when it reaches the ground.
+where $\Delta\widetilde{F}_{conv}^{*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}_{Sn_{K_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P_{Sn,melt}^{*}$ is the snowfall that melts immediately when it reaches the ground.
 
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 
 $$
- \Delta F_{c,conv}^* = ( 1 - A_{Sn}) \Delta F_{c,conv}
+ \Delta F_{c,conv}^{*} = (1 - A_{Sn}) \Delta F_{c,conv}. \tag{8-44}
 $$
 
 
 The water flux given to the runoff process through the snow process is then expressed as
 
 $$
- Pr_c^{**} = ( 1 - A_{Sn} ) Pr_c^{*} \\
- Pr_l^{**} = ( 1 - A_{Sn} ) Pr_l^{*} + A_{Sn} \widetilde{F}_{wSn}^*
- + P_{Sn,melt}^*
+\begin{aligned}
+ Pr_c^{**} &= ( 1 - A_{Sn} ) Pr_c^{*}, \\
+ Pr_l^{**} &= ( 1 - A_{Sn} ) Pr_l^{*} + A_{Sn} \widetilde{F}_{wSn}^{*} + P_{Sn,melt}^{*},
+\end{aligned} \tag{8-45}
+$$
+
+where $\widetilde{F}_{wSn}^{*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
+
+
+## Glacier formation
+
+In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
+
+
+$$
+\begin{aligned}
+ Ro_{gl} &= \max(Sn - Sn_{\mathrm{max}}, 0) / \Delta t_L, \\
+ Sn &= Sn - Ro_{gl} \Delta t_L, \\
+ \Delta \widetilde{Sn}_{(K_{Sn})} &= \Delta \widetilde{Sn}_{(K_{Sn})} - Ro_{gl} / A_{Sn} \Delta t_L,
+\end{aligned} \tag{8-46}
+$$
+
+where $Ro_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
+
+
+
+## Dust in snow
+
+The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
+
+
+### Dust fall on the snow cover
+
+The dust fall is added to the top layer:
+
+$$
+M_{d(1)}^{\tau+1} = M_{d(1)}^{\tau} + D, \tag{8-47}
+$$
+
+where $M_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
+
+
+### Redistribution of dust
+
+The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT).
+
+Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}_{(k)}$ is calculated in
+
+$$
+Sn^{\tau+1/2}_{(k)} = Sn^{\tau}_{(k)} A_{Sn}^{\tau} / A_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
+$$
+
+where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
+
+When $Sn^{\tau+1}_{(1)} > Sn^{\tau+1/2}_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
+
+$$
+M_{d(1)}^{\tau+1} - M_{d(1)}^{\tau}
+ = \left\{ \begin{aligned}
+ & \rho_{d(2)} Sn^{\tau+1/2}_{(2)}
+ + \rho_{d(3)} \left( Sn^{\tau+1}_{(1)} - Sn^{\tau+1/2}_{(1)} - Sn^{\tau+1/2}_{(2)} \right)
+ \; && \left( Sn^{\tau+1}_{(1)} - Sn^{\tau+1/2}_{(1)} > Sn^{\tau+1/2}_{(2)} \right) \\
+ & \rho_{d(2)} \left( Sn^{\tau+1}_{(1)} - Sn^{\tau+1/2}_{(1)} \right)
+ \; && \left( Sn^{\tau+1}_{(1)} - Sn^{\tau+1/2}_{(1)} \leq Sn^{\tau+1/2}_{(2)} \right)
+\end{aligned} \right., \tag{8-49}
+$$
+
+where $\rho_{d(k)}$ is the density of dust in the $k$th layer.
+
+When $Sn^{\tau+1}_{(1)} \leq Sn^{\tau+1/2}_{(1)}$, the amount of dust in the 1st layer decreases, and thus
+
+$$
+M_{d(1)}^{\tau+1} - M_{d(1)}^{\tau}
+ = -\rho_{d(1)} \left( Sn^{\tau+1/2}_{(1)} - Sn^{\tau+1}_{(1)} \right). \tag{8-50}
+$$
+
+It leads to
+
+$$
+M_{d(1)}^{\tau+1} - M_{d(1)}^{\tau} = \Delta M_{d(1)}^{+} - \Delta M_{d(1)}^{-}, \tag{8-51}
+$$
+
+where
+
+$$
+M_{d(1)}^{+}
+ = \rho_{d(2)} \min\left( \max\left( \Delta Sn_{(1)}, 0 \right), Sn_{(2)}^{\tau+1/2} \right)
+ + \rho_{d(3)} \max\left( \max\left( \Delta Sn_{(1)}, 0 \right) - Sn_{(2)}^{\tau+1/2}, 0 \right),
+\tag{8-52}
+$$
+$$
+M_{d(1)}^{-}
+ = \rho_{d(1)} \max\left( -\Delta Sn_{(1)}, 0 \right),  \tag{8-53}
+$$
+$$
+\Delta Sn_{(1)}
+ = Sn_{(1)}^{\tau+1} - Sn_{(1)}^{\tau+1/2}. \tag{8-54}
+$$
+
+The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
+
+$$
+M_{d(2)}^{\tau+1} - M_{d(2)}^{\tau}
+ = \Delta M_{d(1)}^{-} - \Delta M_{d(1)}^{+} + \Delta M_{d(3)}^{-} - \Delta M_{d(3)}^{+}. \tag{8-55}
 $$
 
 
 
-where $\widetilde{F}_{wSn}^*$  is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
+## Albedo of snow and ice
 
-## 8.7 Calculation of snow albedo
+### Albedo of snow
+
+The albedo of the snow is calculated in SUBROUTINE SNWALB in matsnw.F.
 
 The albedo of the snow is large in fresh snow, but becomes smaller with the passage of time due to compaction and changes in properties as well as soilage. In order to take these effects into consideration, the albedo of the snow is treated as a prognostic variable.
 
-The time development of the age of the snow is, after Wiscombe and Warren (1980), assumed to be given by the following equation:
+
+The nondimensional age of snow at the time step of ${\tau}$, $A_g^{\tau}$, is formulated in
 
 $$
- \frac {A_{g}^{\tau +1} - A_{g}^{\tau}}{\Delta t_L}
- = \left\{
-\exp \left[ f_{ageT} \left( \frac{1}{T_{melt}}-\frac{1}{T_{Sn(1)}}\right) \right]
-  + r_{dirt} \right\} \Bigm/ {\tau_{age}}
+A_g^{\tau} = \frac{f_{alb}}{1-f_{alb}}, \tag{8-56}
 $$
 
-where $f_{ageT}$ = 5000 and $\tau_{age}$ = 1 x 10<sup>6</sup>. $\tau_{age}$ is a parameter related to soilage which is given the value of 0.01 on the ice sheet and 0.3 elsewhere.
-
-Using this, the albedo of the snow is solved by
-
+where
 
 $$
- \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{new} + \frac{A_g^{\tau+1}}{1+A_g^{\tau+1}} (\alpha_{Sn(b)}^{old} - \alpha_{Sn(b)}^{new}) \qquad (b=1,2,3)
+f_{alb} = \min\left(
+ \frac{\alpha_{vis}^{\tau}-\alpha_{vis,new}}{\alpha_{vis,old}-\alpha_{vis,new}}, 0.999
+\right). \tag{8-57}
 $$
 
+$\alpha_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha_{b,old}$ is that of old snow. In default, $\alpha_{vis,new}$, $\alpha_{nir,new}$, $\alpha_{ifr,new}$, $\alpha_{vis,old}$, $\alpha_{nir,old}$ and $\alpha_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
-where $A_g^{\tau}$ is solved beforehand by calculating back from the prognostic variable $\alpha_{Sn(1)}^{\tau}$ using the same equation.
+
+The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
+
+$$
+A_g^{\tau+1} = A_g^{\tau} + (f_{age} + f_{age}^{10} + r_{dirt})\Delta t_L / \tau_{age}, \tag{8-58}
+$$
+
+where
+
+$$
+f_{age} = \exp{\left[ f_{ageT} \left( \frac{1}{T_{melt}} - \frac{1}{T_{Sn(1)}} \right) \right]}, \tag{8-59}
+$$
+
+$$
+f_{ageT} = 5000, \;\; \tau_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T_{melt} = 273.15 \;\mathrm{K}.
+$$
+
+$T_{Sn(1)}$ is the temperature of the first layer of snow.
+
+$r_{dirt}$ represents the effect of dirt and soot. When the option OPT_SNWALB is inactive,
+
+$$
+r_{dirt} = \left\{ \begin{aligned}
+ r_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
+ r_{dirt,0} \;\;& \mathrm{(elsewhere)}
+\end{aligned} \right., \tag{8-60}
+$$
+
+where $r_{dirt,c} = 0.01$ and $r_{dirt,0} = 0.3$. When this option is active, the density of the dirt is considered as
+
+$$
+r_{dirt} = \left\{ \begin{aligned}
+ \min(r_{dirt,c} + r_{dirt,s}\rho_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
+ \min(r_{dirt,0} + r_{dirt,s}\rho_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
+\end{aligned} \right., \tag{8-61}
+$$
+
+where $r_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho_{d(1)}$ is the dirt density of the first layer.
+
+Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha_b^{\tau+1}$, is solved by
+
+$$
+\alpha_b^{\tau+1} = \alpha_{b,new}^{\tau+1} + \frac{A_g^{\tau+1}}{1+A_g^{\tau+1}} (\alpha_{b,old}-\alpha_{b,new}), \tag{8-62}
+$$
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
 $$
- \alpha_{Sn(b)}^{\tau+1} = \alpha_{Sn(b)}^{\tau+1}
-+ \min\left( \frac{P_{Sn}^* \Delta t_L}{\Delta{Sn_c}}, 1 \right) (\alpha_{Sn(b)}^{new} - \alpha_{Sn(b)}^{\tau+1}) \qquad (b=1,2,3)
+\alpha_b^{\tau+1} = \alpha_b^{\tau+1} + \min\left( \frac{P_{Sn}^{*} \Delta t_L}{\Delta Sn_c}, 1 \right) (\alpha_{b,new} - \alpha_b^{\tau+1}). \tag{8-63}
 $$
 
-$\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+$\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
-# Runoff
 
-SUBROUTINE: MATROF in matrof.F.
+### Albedo of ice
 
-The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
+The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
 
-## Outline of TOPMODEL
+This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
-In TOPMODEL, the horizontal distribution of a water table along the slope in a catchment basin is considered. The downward groundwater flow at a certain point on the slope is assumed to be equal to the accumulated groundwater recharge in the upper part of the slope above that point (quasi-equilibrium assumption). Then, the groundwater flow must be greater in the lower part of the slope. Under another assumption described later, for the groundwater flow to be greater, the water table needs to be shallow. Thus, the distribution is derived such that the lower the slope, the shallower the water table. When the mean water table is shallower than a certain level, the water table rises to the ground surface at an area lower than a certain point in the slope to form a saturated area. In this way, TOPMODEL is characterized by the mean water table, the size of the saturated area, and the groundwater flow velocity, which are important concepts for estimating the runoff, being physically connected in a coherent manner.
-
-TOPMODEL contains the following major assumptions:
-
-1.  The soil saturation hydraulic conductivity is attenuated toward the depth of the soil in the manner of an exponential function.
-
-2.  The gradient of the water table is in close agreement locally with the gradient of the slope.
-
-3.  The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.
-
-The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).
-
-Assumption 1 can be expressed as
-
-$$
-K_s(z) = K_0 \exp (-f z)
-\tag{eq261}
-$$
-
-where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface, and $f$ is the attenuation coefficient.
-
-When the depth of the water table at a certain point $i$  is designated as $z_i$, the downward groundwater flux on the slope at that point $q_i$ is
-$$
-q_i = \int_{z_i}^Z K_s(z) dz \cdot \tan\beta
-   = \frac{K_0}{f}  \tan\beta [\exp(-f z_i) - \exp(-f Z)] \tag{eq262}
-$$
-
-
-where $\beta$ is the gradient of the slope, and assumption 2 is applied here. $Z$ is the depth of the impervious surface; normally, however, $Z$ is assumed to be sufficiently deep compared with $\frac1f$, so the term $\exp(-f Z)$ is omitted. Moreover, since the slope direction soil moisture flux in the unsaturated zone above the water table is small, it is ignored.
-
-If the groundwater recharge rate $R$ is assumed to be horizontally uniform, assumption 3 is expressed as
-
-$$
-a R = \frac{K_0}{f} \tan\beta \exp(-f z_i)
-\tag{eq263}
-$$
-
-where $a$ is the total upstream area (per unit contour line length at point $i$ with respect to point $i$.
-
-When this is solved for $z_i$, the following is obtained:
-$$
-z_i = -\frac{1}{f} \ln \left( \frac{faR}{K_0 \tan \beta}\right)  \tag{eq264}
-$$
-
-The averaged water table depth $\overline{z}$ in domain $A$ is
-
-
-$$
-\overline{z} = \frac1{A}\int_{A} z_i dA
-  = - \Lambda - \frac1{f} \ln R  \tag{eq265}
-$$
-
-
-$$
-\Lambda \equiv
-  \frac1{A}\int_{A} \ln \left( \frac{fa}{K_0 \tan \beta}\right) dA  \tag{eq266}
-$$
-
-
-The recharge rate $R$ can then be expressed as a function of the mean water table depth $\overline{z}$ as follows:
-
-
-$$
-R = \exp (-f \overline{z} -\Lambda)  \tag{eq267}
-$$
-
-Under assumption 3, this is exclusively the groundwater runoff discharged from domain $A$.
-
-Next, if $R$ is substituted into [Eq. (264)](#eq264) , the following relationship of $z_i$ and $\overline{z}$ is obtained:
-
-$$
- z_i = \overline{z} - \frac{1}{f} \left[
-\ln \left( \frac{fa}{K_0 \tan \beta}\right) - \Lambda
-\right]  \tag{eq268}
-$$
-
-The domain that satisfies $z_i \leq 0$ is the surface saturated area.
-
-## Application of TOPMODEL assuming simplified topography
-
-Normally, when TOPMODEL is used, detailed topographical data on the target area is required. Here, however, the average shape of the slope in a grid cell is roughly estimated from the data on the average inclination and the standard deviation of the altitude in the grid (this estimation method is temporary at this stage, and further study is required).
-
-The topography in the grid cell is represented by the slope with uniform gradient $\beta_s$ and the distance from the ridge to valley $L_s$.
-
-$L_s$ is estimated using the standard deviation of altitude ($\sigma_z$) as follows:
-
-
-$$
-L_s = \frac{2\sqrt{3} \sigma_z}{\tan\beta_s}
-\tag{eq269}
-$$
-
-
-where $2\sqrt{3}\sigma_z$ is the altitude difference between the ridge and valley in serrate topography such that the standard deviation of altitude is $\sigma_z$.
-
-The x-axis is taken from the ridge toward the valley on the horizontal surface. Then, the total upstream area at point $x$ is $x$, and [Eq. (264)](#eq264) becomes
-
-$$
-z(x) = - \frac{1}{f} \ln \left( \frac{fxR}{K_0 \tan \beta_s}\right)
-\tag{eq270}
-$$
-
-where depth of $z^"$ is 2m. Using this, from [Eq. (265)](#eq265) the mean water table is
-
-$$
-\overline{z} = \frac 1{L_s}\int_0^{L_s} z(x) dx
- = - \frac1{f}\left[
- \ln \left( \frac{f L_s R}{K_0 \tan\beta_s}\right) -1
-\right]
-\tag{eq271}
-$$
-
-
-from [Eq. (267)](#eq267) the groundwater recharge rate is
-
-$$
-R = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) \tag{eq272}
-$$
-
-and from [Eq. (268)](#eq268), the relationship between the water table at point $x$ and the mean water table is
-
-$$
-z(x) = \overline{z} - \frac{1}{f}\left(
-\ln \frac{x}{L_s} + 1
-\right)
-\tag{eq273}
-$$
-
-
-If $z(x) \leq 0$ is solved for $x$, the following are obtained:
-
-$$
-x \geq x_0
-\tag{eq274}
-$$
-
-
-$$
-x_0 = L_s \exp(f\overline{z}-1)
-\tag{eq275}
-$$
-
-
-Therefore, the fraction of the saturated area is solved as
-
-
-$$
-A_{sat} = \frac{L_s - x_0}{L_s} = 1 - \exp(f\overline{z}-1) \tag{eq276}
-$$
-
-
-However, when $A_{sat} \geq 0$ and $\overline{z} > \frac1f$, no saturated area exists.
-
-## Calculation of runoff
-
-Four types of runoff mechanisms are considered, and the total of the runoffs $Ro$ by each mechanism is assumed to be the total runoff from the grid cell:
-
-$$
-Ro = Ro_s + Ro_i + Ro_o + Ro_b
-\tag{eq277}
-$$
-
-where $Ro_s$ is the saturation excess runoff (Dunne runoff), $Ro_i$ is the infiltration excess runoff (Horton runoff), and $Ro_o$ is the overflow of the uppermost soil layer, these three being classified as the surface runoff; and $Ro_b$ is the groundwater runoff.
-
-However, when taking snow-fed wetland into account (Nitta et al., 2017), part of the surface water will be stored in a surface tank and runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Please refer to Wetland section for the details.
-
-### Estimation of mean water table depth
-
-The soil moisture is examined from the lowest soil layer. A layer is assumed to be the $k_{WT}$th layer when it becomes unsaturated for the first time, the mean water table depth  ($\overline{z}$) is estimated by:
-
-$$
-\overline{z} = z_{g(k_{WT}-\frac1 2)} - \psi_{k_{WT}}
-\tag{eq279}
-$$
-
-This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium). Under saturation condition that $\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the upper boundary of soil layer.
-
-When $\overline{z} > z_{g(k_{WT}-\frac{1}2)}$, in case $k_{WT}$ is the lowest layer, the water table is assumed to not exist; when $k_{WT}$ isn't the lowest layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and the above equation is applied.
-
-When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface.
-
-### Calculation of groundwater runoff
-
-From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In the latest version of MATSIRO,  Hirabayashi (2004) changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
-$$
-K_{s0}=\exp (z^"f)K_0 E_p
-$$
-where $z^"$ is the depth of 2m, $E_p$ denotes the effect of macropore on groundwater runoff. It's also worth noting that the value of $\frac1f$ has changed from 0.6 to 0.33 in current version of MATSIRO. Therefore, calculation of groundwater runoff will become:
-$$
-Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}\exp(1-f \overline{z})
-\tag{eq280}
-$$
-
-However, when a frozen soil surface exists under the water table, referring to the case of not omitting the term $\exp(-fZ)$ in [Eq. (262)](#eq262), it is assumed that
-
-$$
-Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}
-  [ \exp(1-f \overline{z}) - \exp(1-f z_f) ]
-  \tag{eq281}
-$$
-
-$z_f$ is the depth of frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, the other relations are not changed here for the sake of simplification.
-
-When there is an unfrozen layer under the frozen soil surface and a water table exists, the groundwater runoff from there is added by a similar calculation.
-
-The water content from the groundwater runoff is removed from the $k_{WT}$th soil layer:
-
-$$
-Ro_{(k_{WT})} = Ro_b
-\tag{eq282}
-$$
-
-where $Ro_{(k)}$ denotes the runoff flux from the $k_{WT}$th soil layer.
-
-### Calculation of surface runoff
-
-All of the rainfall that falls on the surface saturated area runs off as is (saturation excess runoff):
-
-$$
-Ro_s = (Pr_c^{**} + Pr_l^{**}) A_{sat}
-\tag{eq283}
-$$
-
-The fraction of the surface saturated area $A_{sat}$ is given by [Eq. (276)](#eq276). Here, the correlation between the rainfall distribution of the subgrid and topography is ignored.
-
-With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
-
-$$
-Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
- \tag{eq284}
-$$
-
-$$
-Ro_i^{nc} = \max( Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
- \tag{eq285}
-$$
-
-$$
-Ro_i = A_c Ro_i^c + ( 1 - A_c ) Ro_i^{nc}
- \tag{eq286}
-$$
-
-where $Ro_i^c$ and $Ro_i^{nc}$ are $Ro_i$ in the convective precipitation area and nonconvective precipitation area, respectively; and $K_{s(1)}$ is the saturation hydraulic conductivity in the uppermost soil layer.
-
-The overflow of the uppermost soil layer, allowing a small amount of ponding  $w_{str}$ (1 mm as a standard value), is assumed to be
-
-$$
-Ro_o = \frac{\max(w_{(1)} - w_{sat(1)} - w_{str}, 0) \rho_w \Delta z_{g(1)}}{\Delta t_L}
- \tag{eq287}
-$$
-
-This portion is subtracted from the uppermost soil layer later, and therefore should be remembered as the runoff from the uppermost layer, as follows.
-
-$$
-Ro_{(1)} = Ro_{(1)} + Ro_o
- \tag{eq288}
-$$
-
-When calculating surface runoff $R_s$, glacial runoff $Ro_{gl}$ should also be considered. Then the $R_s$ calculated by MATSIRO will be:
-$$
-Rs=Ro+Ro_{gl}-Ro_b=Ro_s + Ro_i + Ro_o + Ro_{gl}
- \tag{eq289}
-$$
-When snow-fed wetlands scheme is considered:
-$$
-Rs=(Ro_s + Ro_i + Ro_o)\alpha + Ro_{gl}
- \tag{eq290}
-$$
-
-here $\alpha$ determines the inflow rate into surface tank and is specified in Wetland section.
-
-## Water flux given to soil
-
-The water flux given to the soil through the runoff process is
-
-$$
-P_r^{***} = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
- \tag{eq293}
-$$
-
-## Appendix
-
-### Output variables
-
-| Variable   | Description                                             | Code   | Dimension      | Units      |
-| ---------- | ------------------------------------------------------- | ------ | -------------- | ---------- |
-| $Ro$       | Total runoffs                                           | RUNOFF | IJLDIM, KRVMAX | $kg/m^2/s$ |
-| $Ro_{(k)}$ | Runoff flux from the $k$ th soil layer                  | RUNOFL | IJLDIM, KWMAX  | $kg/m^2/s$ |
-| $P_r$      | Water flux given to the soil through the runoff process | WINPT  | IJLDIM         | $kg/m^2/s$ |
-
-### Input variables
-
-| Variable        | Description            | Code   | Dimension     | Units        |
-| --------------- | ---------------------- | ------ | ------------- | ------------ |
-| $Pr_c$          | Convective rainfall    | WINPC  | IJLDIM        | $kg/m^2/s$   |
-| $Pr_l$          | Nonconvective rainfall | WINPL  | IJLDIM        | $kg/m^2/s$   |
-| $M_{sn}$        | Snow melt              | SNMLT  | IJLDIM        | $(kg/m^2/s)$ |
-| $T_{g(k)}$      | Soil temperature       | GLG    | IJLDIM, KGMAX | $K$          |
-| $w_{(k)}$       | Soil moisture          | GLW    | IJLDIM, KWMAX | $m^3/m^3$    |
-| $\theta_{i(k)}$ | Soil ice               | GLFRS  | IJLDIM, KWMAX | $m^3/m^3$    |
-| ($Ro_{gl}$)     | Glacier formation      | GLACR  | IJLDIM        | $(kg/m^2/s)$ |
-| $\Delta t$      | Time step              | DELT   | -             | $s$          |
-| $X_s$           | Surface condition      | ILSFC  | IJLDIM        | -            |
-| -               | Soil type              | ILSOIL | IJLDIM        | -            |
-
-### Internal work variables
-
-| Variable     | Description                                             | Code   | Dimension     | Units      |
-| ------------ | ------------------------------------------------------- | ------ | ------------- | ---------- |
-| $Ro_s$       | Saturation excess runoff                                | RUNOFS | IJLDIM        | $kg/m^2/s$ |
-| $Ro_i$       | Infiltration excess runoff                              | RUNOFI | IJLDIM        | $kg/m^2/s$ |
-| $Ro_o$       | Surface storage overflow                                | RUNOFO | IJLDIM        | $kg/m^2/s$ |
-| $Ro_b$       | Base runoff                                             | RUNOFB | IJLDIM        | $kg/m^2/s$ |
-| $R_s$        | Surface runoff (CMIP5)                                  | SRUNOF | IJLDIM        | $kg/m^2/s$ |
-| $w_{sat(k)}$ | Saturated soil moisture                                 | GWS    | IJLDIM, KWMAX | $m^3/m^3$  |
-| $K_{s(k)}$   | Saturated hydrological conductivity from each layer     | -      | IJLDIM, KWMAX | $m/s$      |
-| $K_0$        | Saturation hydraulic conductivity at the ground surface | DFWS   | IJLDIM        | $m/s$      |
-| $K_{s0}$     | Saturation hydraulic conductivity at the depth of 2m    | DFWST  | IJLDIM        | $m/s$      |
-| $\psi_{(k)}$ | Matric potential                                        | GPSI   | IJLDIM, KWMAX | $m$        |
-| -            | d(PSI)/d(W)                                             | DPDW   | IJLDIM, KWMAX |            |
-| $z(x)$       | Water table depth                                       | WTABD  | IJLDIM        | $m$        |
-| $A_{sat}$    | Surface saturation fraction                             | ASSAT  | IJLDIM        | -          |
-| $z_f$        | Frost table level                                       | KFTAB  | IJLDIM        | $m$        |
-| -            | Water table level                                       | KWTAB  | IJLDIM        | $m$        |
-| -            | Flag for saturation                                     | ISAT   | IJLDIM        | -          |
-
-### Internal parameters
-
-| PARAMETER    | Description                                       | Code   | Dimension | Initial values | Units |
-| ------------ | ------------------------------------------------- | ------ | --------- | -------------- | ----- |
-| $tan\beta_s$ | Tangent of mean surface slope                     | GRTANS | IJLDIM    | -              | -     |
-| $L_s$        | Mean length of surface slope                      | GRLENS | IJLDIM    | -              | $m$   |
-| $\alpha$     | Inflow rate into surface tank                     | FRACSR | IJLDIM    | -              | -     |
-| $\tau$       | Outflow rate from surface tank                    | TAUSS  | IJLDIM    | -              | -     |
-| $\frac1f$    | Critical water table depth                        | WTCRIT | -         | 0.333          | -     |
-| $S$          | Surface water storage                             | SFCSTR | -         | 0.001          | -     |
-| -            | Maximum water table depth                         | WTBMAX | -         | -              | $m$   |
-| -            | Epsilon for soil moisture                         | EPSGW  | -         | 0.001          | -     |
-| $A_{cum}$    | Convective storm area for runoff                  | FRACCR | -         | 0.1            | $m^2$ |
-| $E_p$        | Effect of macropore on base-runoff                | EFFMP  | -         | 1              | -     |
-| $z^"$        | Ground depth for groundwater runoff calculatation | -      | -         | 2              | m     |
-
-
-# Soil
-
-The soil temperature, the soil moisture, and the frozen soil are calculated next.
-
-## Calculation of soil heat conduction
-
-### Soil heat conduction equations
-
-The prognostic equation for the soil temperature by soil heat conduction is
-
-$$
-C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
-\qquad (k=1,\ldots,K_{g}) \tag{eq289}
-$$
-
-with $C_{g(k)}$ , the soil heat capacity, defined by
-
-$$
- C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
-$$
-
-where $c_{g(k)}$ is the specific heat of the soil, and is given as a parameter for each soil type; $c_{pw}$ is the specific heat of the water; $w_{(k)}$ is the soil moisture (volumetric moisture content); and $\Delta z_{g(k)}$  is the thickness of the $k$ th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.
-
-The heat conduction flux $F_{g}$ is given by
-
-
-$$
- F_{g(k+1/2)} =
-\left\{
-\begin{array}{ll}
-F_{g(1/2)} - \Delta F_{conv}^* - \Delta F_{c,conv}^*
- & (k=0)\\
-\displaystyle{
-k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
-}
- & (k=1,\ldots,K_{g}-1) \\
-\displaystyle{
-0
-}
- & (k=K_{g})
-\end{array}
-\right. \tag{eq291}
-$$
-
-with $k_{g(k+1/2)}$, the soil heat conductivity, expressed as
-
-$$
- k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
-$$
-
-where $k_{g0(k+1/2)}$ is the heat conductivity when the soil moisture is 0, and $f_{kg}=6$ and $w_{kg}=0.25$  are constants.
-
-$\Delta z_{g(k+1/2)}$ is the thickness between the soil temperature definition points of the $k+1$th layer and the $k+1$th layer (when $k=0$, the thickness between the uppermost layer temperature definition point and the soil upper boundary; when $k=K_g$, the thickness between the lowest layer temperature definition point and the soil lower boundary).
-
-In [Eq. (291)](#eq291), the value given to the soil upper boundary condition ($F_{g(1/2)}$) is the value obtained at the time of solving the ground surface energy balance, with the addition of the energy convergence at the snow lower boundary (including the heat conduction flux at the snow lower boundary) as well as the allotment to the snow-free portion of the energy correction term due to phase change of the canopy water. The flux takes an upward (positive) direction, so when the amount of convergence is added it has a negative sign. The soil lower boundary condition $F_{g(K_g+1/2)}$ is assumed to be zero flux.
-
-### Solution of heat conduction equations
-
-These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for $k=1,\ldots,K_g-1$, the heat conduction flux is expressed as
-
-
-$$
-  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
-+\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
- \Delta T_{g(k)}
-+\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
- \Delta T_{g(k+1)}
-$$
-
-
-$$
-  F_{g(k+1/2)}^{\tau} =
-\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
-$$
-
-
-$$
- \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
-- \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
-$$
-
-
-$$
- \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
-\frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
-$$
-
-
-and [Eq. (289)](#eq289) is treated as
-
-
-$$
-C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
-&=& F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \nonumber\\
-&=& {F}_{g(k+1/2)}^{\tau}
-+\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k)}}
- \Delta T_{g(k)}
-+\frac{\partial F_{g(k+1/2)}}{\partial T_{g(k+1)}}
- \Delta T_{g(k+1)}  \nonumber\\
-&-& F_{g(k-1/2)}^{\tau}
--\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
- \Delta T_{g(k-1)}
--\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
- \Delta T_{g(k)}
-$$
-
-and solved by the LU factorization method as $K_{g}$  simultaneous equations with respect to $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:
-
-$$
- T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
-$$
-
-The soil temperature is partially updated by the above equation. By this, as well as through correction of the phase change in the soil moisture mentioned later, the soil temperature is completely updated.
-
-## Calculation of soil moisture movement
-
-### Soil moisture movement equations
-
-The equation for soil moisture movement (Richards equation) is given by
-
-$$
-\rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
-\frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
-\qquad (k=1,\ldots,K_{g}) \tag{eq299}
-$$
-
-The soil moisture flux $F_{w}$ is given by
-
-
-$$
- F_{w(k+1/2)} =
-\left\{
-\begin{array}{ll}
-Pr^{*** } - Et_{(1,1)}
- & (k=0)\\
-\displaystyle{
-K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \right)
-}
- & (k=1,\ldots,K_{g}-1) \\
-\displaystyle{
-0
-}
- & (k=K_{g})
-\end{array}
-\right. \tag{eq300}
-$$
-
-in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
-
-$$
- K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
-$$
-
-where $K_{s(k+1/2)}$ is the saturation hydraulic conductivity and $b_{(k)}$ is the index of the moisture potential curve, which are given as external parameters for each soil type. $W_{(k)}$ is the degree of saturation considered excluding the frozen soil moisture, given by
-
-$$
- W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
-$$
-
-
-
-where $w_{sat(k)}$  is the porosity of the soil, which is also given as a parameter for each soil type. $f_i$ is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by
-
-$$
- f_i = \left(1- W_{i(k)}\right)
-       \left(1- W_{i(k+1)}\right)
-$$
-
-where $W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})$.
-
-The soil moisture potential $\psi$ is given as follows from Clapp and Hornberger:
-
-
-$$
- \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
-$$
-
-where $\psi_{s(k)}$ is given as an external parameter for each soil type.
-
-In [Eq. (299)](#eq299), $S_{w(k)}$ is a source term which, considering the root uptake and the runoff, is given by
-
-$$
- S_{w(k)} = - F_{root(k)} - Ro_{(k)}
-$$
-
-
-In [Eq. 300](#eq300), the soil upper boundary condition $F_{w(1/2)}$ is the difference between the moisture flux through the runoff process ($P^{*** }$) and　the evaporation flux from the soil ($Et_{(1,1)}$). Separately from this, the sublimation flux portion is subtracted from the frozen soil moisture of the uppermost layer before calculation of the soil moisture movement:
-
-$$
- w_{i(k)}^{\tau} = w_{i(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})\\
- w_{(k)}^{\tau} = w_{(k)}^{\tau} - Et_{(2,1)} \Delta t_L /(\rho \Delta z_{g(1)})
-$$
-
-### Solution of soil moisture movement equations
-
-These equations are solved by using the implicit method for the soil moisture from the uppermost layer to the lowest layer. For $k=1,\ldots,K_g-1$, the soil moisture flux is
-
-
-$$
-  F_{w(k+1/2)}^{\tau+1} = F_{w(k+1/2)}^{\tau}
-+\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}}
- \Delta w_{(k)}
-+\frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}}
- \Delta w_{(k+1)}
-$$
-
-
-$$
-  F_{w(k+1/2)}^{\tau} =
-K_{(k+1/2)} \left(\frac{\psi_{(k+1)}^{\tau} - \psi_{(k)}^{\tau}}{\Delta z_{g(k+1/2)}} - 1 \right)
-$$
-
-
-$$
- \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k)}} =
-- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
-\left[
--b_{(k)} \frac{\psi_{s(k)}}{w_{sat(k)}-w_{i(k)}}W_{(k)}^{-b(k)-1}
-\right]
-$$
-
-
-$$
- \frac{\partial {F}_{w(k+1/2)}}{\partial w_{(k+1)}} =
- \frac{K_{(k+1/2)}}{\Delta z_{g(k+1/2)}}
-\left[
--b_{(k)} \frac{\psi_{s(k+1)}}{w_{sat(k+1)}-w_{i(k+1)}}W_{(k+1)}^{-b(k)-1}
-\right]
-$$
-
-
-and [Eq. (299)](#eq299) is treated as
-
-
-$$
-\rho_w \Delta z_{g(k)} \frac{\Delta w_{(k)}}{\Delta t_L}
-&=& F_{w(k+1/2)}^{\tau+1} - {F}_{w(k-1/2)}^{\tau+1} + S_{w(k)} \Delta z_{g(k)} \nonumber\\
-&=& {F}_{w(k+1/2)}^{\tau}
-+\frac{\partial F_{w(k+1/2)}}{\partial w_{(k)}}
- \Delta w_{(k)}
-+\frac{\partial F_{w(k+1/2)}}{\partial w_{(k+1)}}
- \Delta w_{(k+1)}  \\
-&-& F_{w(k-1/2)}^{\tau}
--\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
- \Delta w_{(k-1)}
--\frac{\partial F_{w(k-1/2)}}{\partial w_{(k-1)}}
- \Delta w_{(k)} + S_{w(k)} \Delta z_{g(k)}  \nonumber
-$$
-
-
-and solved by the LU factorization method as $K_g$ simultaneous equations with respect to $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions.
-
-The soil moisture is updated by
-
-$$
- w_{(k)}^{\tau+1} = w_{(k)}^{\tau} + \Delta w_{(k)}
-$$
-
-As a result of this calculation, if a part appears where the soil moisture become supersaturated, it is adjusted in the vertical direction to eliminate supersaturation. The reason why such a supersaturated portion is not considered as runoff is that this supersaturation is artificially produced because the vertical movement of the soil moisture is solved without saturation data. First, from the second soil layer downwards, the supersaturated portion of the soil moisture is given to the layer below. Next, from the lowest soil layer upwards, the supersaturated portion of the soil moisture is given to the next layer up. With this operation, when the soil moisture is large enough, a saturated layer around the lowest soil layer is formed and the water table of Eq. (278) can be defined.
-
-## Phase change of soil moisture
-
-As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than $T_{melt}=0degC$, or when the temperature in the layer containing solid water is higher than $T_{melt}$, the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the $k$th layer is assumed to be $\Delta w_{i(k)}$,
-
-when $T_{g(k)}^*<T_{melt}$ and $w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}>0$ (frozen):
-
-$$
-\Delta w_{i(k)} = \min\left(
-\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
-w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}
-\right)
-$$
-
-when $T_{g(k)}^*>T_{melt}$ and $w_{i(k)}^{\tau}>0$ (melting):
-
-
-$$
-\Delta w_{i(k)} = \max\left(
-\frac{C_{g(k)}(T_{melt}-T_{g(k)}^*)}{l_m \rho_w \Delta z_{g(k)}}, \
--w_{i(k)}^{\tau}
-\right)
-$$
-
-The frozen soil moisture and the soil moisture are then updated as follows:
-
-
-$$
-w_{i(k)}^{\tau+1} &=& w_{i(k)}^{\tau} + \Delta w_{i(k)} \\
-T_{g(k)}^{\tau+1} &=& T_{g(k)}^* + l_m \rho_w \Delta z_{g(k)} \Delta w_{i(k)} / C_{g(k)}
-$$
-
-
-### Ice sheet process
-
-When the land cover type is ice sheet, if the soil temperature exceeds $T_{melt}$, it is returned to $T_{melt}$:
-
-
-$$
- T_{g(k)}^{\tau+1} = \min( T_{g(k)}^*, \ T_{melt} )
-$$
-
-
-The rate of change of the ice sheet *F<sub>ice</sub>* is then diagnosed as
-
-$$
- F_{ice} = - Et_{(2,1)} - \frac{C_{g(k)}\max(T_{g(k)}^* - T_{melt},\ 0)}{l_m \Delta t_L}
-$$
-
-# Lake
-Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
-
-Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{°C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and Hasumi (2015).
-
-Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
-
-Minimum depth of lake is given in `matdrv.F` as $10 \times 10^2 \mathrm{[cm]}$, hence any lakes cannot be disappeared even in severe conditions.
-
-## Calculation of lake surface conditions
-
-In `ENTRY[LAKEBC]` (in `SUBROUTINE:[LSFBCS]` of lakesf.F) lake surface albedo, roughness, and heat flux are calculated. They are calculated supposing ice-free conditions, then modified. While the albedo of snow is a pronostic variable, the lake surface albedo considering with ice and snow above is a diagnostic variable. The aging effect of the snow is  differently treated. These methods are actually same with an old version of COCO-OGCM. The newest version of COCO, which is going to be coupled to MIROC7-AOGCM, has been applied a melt pond scheme a snow aging scheme which is basically the same with the treatment in the current land surface (Komuro, the GCM meeting on 22nd Feb, 2021).
-
-- Output variables
-
-| Variable                        | Variable in source code | Description                | Units                |
-|:--------------------------------|:------------------------|:---------------------------|:---------------------|
-| $α_{Lk}$                        | GRALB                   | Lake surface albedo        | $\mathrm{[-]}$       |
-| $z_{Lk0}$                       | GRZ0                    | Lake surface roughness     | $\mathrm{[m]}$       |
-| $G$                             | FOGFLX                  | Heat flux                  | $\mathrm{[W/m^2]}$   |
-| $\frac{\partial G}{\partial T}$ | DFGT                    | Heat diffusion coefficient | $\mathrm{[W/m^2/K]}$ |
-
-- Input variables
-
-| Variable            | Variable in source codes | Description            | unit                |
-|:------------------- |:------------------------ |:---------------------- |:------------------- |
-| $T_s$               | GRTS                     | surface temperature    | $\mathrm{[K]}$      |
-| $T_b$               | GRTB                     | ice base temperature   | $\mathrm{[K]}$      |
-| $Ic$                | GRICE                    | lake ice amount        | $\mathrm{[kg/m^2]}$ |
-| $SnLk$              | GRSNW                    | snow amount            | $\mathrm{[kg/m^2]}$ |
-| $R_{IcLk}$          | GRICR                    | lake ice concentration | $\mathrm{[-]}$      |
-| $u_a$               | GDUA                     | u surface wind         | $\mathrm{[m/s]}$    |
-| $v_a$               | GDVA                     | v surface wind         | $\mathrm{[m/s]}$    |
-| $\mathrm{cos}\zeta$ | RCOSZ                    | cos(solar zenith)      | $\mathrm{[-]}$      |
-
-First, let us consider the lake albedo. The lake level $\alpha_{Lk(d,b)}$, $b=1,2,3$ represent the visible, near-infrared, and infrared wavelength bands, respectively. Also, $d=1,2$ represents direct and scattered light, respectively. The albedo for the visible bands are calculated in `SUBROUTINE:[LAKEALB]`, supposing ice-free conditions. The albedo for near-infrared is set to same as the visible one. The albedo for infrared is uniformly set to a constant value.
-
-When lake ice is present, the albedo is modified to take into account the ice concentration.
-
-$$
-	{\alpha_{Lk}'} = \alpha_{Lk} + (\alpha_{IcLk}-\alpha_{Lk}) R_{IcLk}
-$$
-
-where $\alpha_{IcLk}$ is the lake ice albedo, and $R_{IcLk}$ is the lake ice concentation, respectively. In addition, we want to consider the albedo change due to snow cover. Assuming that the snow albedo depends on the skin temperature, we can calculate a function $F$ below.
-
-$$
-	F(T_s) = \frac{T_s-T_m^{min}}{T_m^{max}-T_m^{min}} \quad,\quad (0 \le F(T_s)\le 1)
-$$
-
-where $T_s$ is the skin temperature, and $T_m^{min}$ and $T_m^{max}$ are the minimum and the minimum temperature for the albedo change, respectively.
-
-Then, the albedo can be modified by
-
-$$
-	{\alpha_{Lk}''} = \alpha_{Lk(1,b)} + (\alpha_{SnLk(2,b)}-\alpha_{SnLk(1,b)})F(T_s)
-$$
-
-$$
-	\alpha_{Lk} = {\alpha_{Lk}'} +(\alpha_{Lk}''-\alpha_{Lk}')R_{SnLk}
-$$
-
-where the $\alpha_{SnLk(d,b)}$ is the snow albedo covering the lake, and $R_{SnLk}$ is the snow coverage, respectively.
-
-Second, let us consider the lake surface roughness. The roughnesses of for momentum, heat and vapor are calculated in `SUBROUTINE:[LAKEZ0F]`, based on Miller et al. (1992), same with COCO-OGCM (Hasumi 2015), supposing the ice-free conditions, then modified.
-
-When lake ice is present, each roughness is modified to take into account the lake ice concentration ($R_{IcLk}$)
-
-$$
-	{z_{Lk0}'} = z_{Lk0} + (R_{IcLk} -z_{Lk0}) R_{IcLk}
-$$
-
-where $z_{Lk0}$ is surface roughness.
-
-Then, taking into account the snow coverage ($R_{SnLk})$, we can express it as
-
-$$
-	{z_{Lk0}} = {z_{Lk0}'} + (R_{SnLk} - {z_{Lk0}'}) R_{SnLk}
-$$
-
-Third, the heat flux is considered with the temperature differences between the snow surface and the ice bottom, because the difference should be zero in the ice-free conditions.
-
-If the lake ice exists, the heat diffusion coefficient is described as
-
-$$
-	\Big(\frac{\partial G}{\partial T}\Big) _{ IcLk }  = \frac{ D_{IcLk}}{R_{IcLk}}
-$$
-
-where $D_{IcLk}$ is the coefficient of lake ice.
-
-If the snow exists, the heat diffusion coefficient of snow covered area is
-
-$$
-	\Big(\frac{\partial G}{\partial T}\Big)_{SnLk}  =  \frac{D_{IcLk}D_{SnLk}}{D_{IcLk}R_{SnLk}+D_{SnLk}R_{IcLk}}
-$$
-
-where $D_{SnLk}$ is the coefficient of snow.
-
-Therefore, the net heat diffusion coefficient is finally
-$$
-	\frac{\partial G}{\partial T} = \Big(\frac{\partial G}{\partial T} \Big)_{IcLk} (1-R_{SnLk}) + \Big(\frac{\partial G}{\partial T}\Big)_{SnLk} R_{SnLk}
-$$
-
-The temperature differences between the snow surface ($T_S$) and the ice bottom ($T_B$) is saved as heat flux($G$).
-
-$$
-	G = \frac{\partial G}{\partial T} (T_B-T_S)
-$$
-
-
-### Calculation of lake surface albedo
-
-Contents of `SUBROUTINE:[LAKEALB]` is the same with `SUBROUTINE [SEAALB]` (in p-sfc.md). For lake surface level albedo $\alpha_{Lk,L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
-
-Using the solar zenith angle at latitude $\zeta$ ($\mathrm{cos}\zeta$), the albedo for direct light is presented by
-
-$$
-	\alpha_{Lk,L(1)} = e^{(C_3A^* + C_2) A^* +C_1}
-$$
-
-where $A = \mathrm{min}(\mathrm{max}(\mathrm{cos}\zeta,0.03459),0.961)$, and $C_1, C_2, C_3$ is $-0.7479, -4.677039, 1.583171$ respectively.
-
-On the other hand, the albedo for scattered light is uniformly set to a constant parameter.
-
-$$
-	\alpha_{Lk,L(2)} = 0.06
-$$
-
-### Lake surface roughness
-
-Contents of `SUBROUTINE:[LAKEZ0F]` is the same with `SUBROUTINE:[SEAZ0F]` (of pgocn.F).
-
-The roughness variation of the lake surface is determined by the friction velocity $u^\star$.
-
-$$
-u^{\star} = \sqrt{C_{M_0} ({u_a}^2  +{v_a}^2)}
-$$
-
-We perform successive approximation calculation of ${C_{M_0}}$, because $F_u,F_v,F_\theta,F_q$ are required.
-
-$$
-	z_{Lk0,M} = z_{0,M_0} + z_{0,M_R} + \frac{z_{0,M_R} {u^\star }^2 }{g} + \frac{z_{0,M_S}\nu }{u^\star}
-$$
-
-$$
-	z_{Lk0,H} = z_{0,H_0} + z_{0,H_R} + \frac{z_{0,H_R} {u^\star }^2 }{g} + \frac{z_{0,H_S}\nu }{u^\star}
-$$
-
-$$
-	z_{Lk0,E} = z_{0,E_0} + z_{0,E_R} + \frac{z_{0,E_R} {u^\star }^2 }{g} + \frac{z_{0,E_S}\nu }{u^\star}
-$$
-
-where, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere, $z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat and vapor, and
-$z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base of them, and $z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$ are rough factor for them, and $z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$ are smooth factor for them, respectively.
-
-## Solution of energy balance at lake surface
-
-In `SUBROUTINE:[LAKEHB]` (of lakesf.F), the energy balance at lake surface is solved.
-
-- Output variables
-
-| Variable       | Variable in source code | Description        |
-|:-------------- |:----------------------- |:------------------ |
-| $W_{free/ice}$ | WFLUXS                  | surface water flux |
-| $LW^\uparrow$  | RFLXLU                  | upward long wave   |
-| $F$            | SFLXBL                  | flux balance       |
-
-- Input variables
-
-| Variable                          | Variable in source code | Description                   |
-|:--------------------------------- |:----------------------- |:----------------------------- |
-| $\frac{\partial H}{\partial T_s}$ | DTFDS                   | sensible heat flux coefficent |
-| $\frac{\partial E}{\partial T_s}$ | DQFDS                   | latent heat flux coefficient  |
-| $\frac{\partial G}{\partial T_s}$ | DGFDS                   | surface heat flux coefficient |
-| $SW^\downarrow$                   | RFLXSD                  | downward SW radiation         |
-| $SW^\uparrow$                     | RFLXLU                  | upward SW radiation           |
-| $LW^\downarrow$                   | RFLXLD                  | downward LW radiation         |
-| $\alpha_{Lk}$                     | GRALBL                  | lake surface albedo           |
-| $R_{IcLk}$                        | GRICR                   | lake ice concentration        |
-
-*The comments for some variables say "soil", but this is because the program was adapted from a land surface scheme, and has no particular meaning.*
-
-Downward radiative fluxes are not directly dependent on the condition of the lake surface, and their observed values are simply specified to drive the model. Shotwave emission from the lake surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha_{Lk,SW}$ be the lake surface albedo for shortwave radiation. The upward shortwave radiative flux ($SW^\uparrow$) is represented by
-
-$$
-	SW^\uparrow = - \alpha_{Lk,SW} SW^\downarrow
-$$
-
-where $SW^\downarrow$ is the downward shortwave radiation flux, and $\alpha_{Lk,SW}$ is lake surface albedo for shortwave radiation in the ice-free area, respectively. On the other hand, the upward longwave radiative flux has both reflection of the incoming flux and emission from the lake surface. Let $\alpha_{Lk}$ be the lake surface albedo for longwave radiation and $\epsilon$ be emissivity of the lake surface relative to the black body radiation. The upward shortwave radiative flux is represented by
-
-$$
-	LW^\uparrow = - \alpha_{Lk} LW^\downarrow + \epsilon \sigma T_s ^4
-$$
-
-where $\sigma$ is the Stefan-Boltzmann constant, and $T_s$ is surface temprature, respectively. If lake ice exists, snow or lake ice temperature is considered by fractions. When radiative equilibrium is assumed, emissivity becomes identical to co-albedo:
-
-$$
-	\epsilon = 1 - \alpha_{Lk}
-$$
-
-The net surface flux is presented by
-
-$$
-	F^*=H + (1-\alpha_{Lk})\sigma T_s^4 + \alpha_{Lk} LW^\uparrow - LW^\downarrow +SW^\uparrow - SW^\downarrow		
-$$
-
-The heat flux into the lake surface is presented, with the surface heat flux ($G$) calculated in `SUBROUTINE:[SFCFLX]` (in matdrv.F).
-
-$$
-	G^* = G - F^*
-$$
-
-where $G^* $ is the net incoming flux (the opposite direction with $F^* $).
-
-The temperature derivative term is
-
-$$
-	\frac{\partial G^*}{\partial T_s} = \frac{\partial G}{\partial T_s}+\frac{\partial H}{\partial T_s}+\frac{\partial R}{\partial T_s}
-$$
-
-When the lake ice exists, the sublimation flux ($l_sE$) is considered
-
-$$
-	G_{IcLk} = G^* - l_s E
-$$
-
-The temperature derivative term is
-
-$$
-	\frac{\partial G_{IcLk}}{\partial T_s}=\frac{\partial G^*}{\partial T_s} + l_s\frac{\partial E}{\partial T_s}
-$$
-
-Finally, we can update the skin temperature with the lake ice concentration with $\Delta T_s=G_{IcLk} ( \frac{\partial G_{IcLk}}{\partial T_s})^{-1}$
-
-$$
-	T_s = T_s +R_{IcLk} \Delta T_s
-$$
-
-Then, the sensible heat flux ($E_{IcLk}$) and latent heat flux ($E_{IcLk}$) on the lake ice is updated.
-
-$$
-	E_{IcLk} = E + \frac{\partial E}{\partial T_s}\Delta T_s
-$$
-
-$$
-	H_{IcLk} = H + \frac{\partial H}{\partial T_s}\Delta T_s
-$$
-
-When the lake ice does not existed, otherwise, the evaporation flux ($l_cE$)is added to the net flux.
-
-$$
-	G_{freeLk}=F^* + l_cE
-$$
-
-Finally each flux is updated.
-
-For the sensible heat flux ($H$), the temperature change on the lake ice is considered.
-
-$$
-	H=H+ R_{IcLk}  H_{IcLk}
-$$
-
-where $H_{IcLk}$ is the sensible heat flux on the lake ice. Then, the heat used for the temperature change is saved as:
-
-$$
-	F = R_{IcLk} H_{IcLk}
-$$
-
-For the upward longwave radiative flux ($LW^\uparrow$), the temperature change on the lake ice is considered.
-
-$$
-	LW^\uparrow=LW^\uparrow +  4\frac{\sigma}{T_s}R_{IcLk}  \Delta T_s
-$$
-
-For the surface heat flux, the lake ice concentration is considered.
-
-$$
-	G=(1-R_{IcLk})G_{freeLk} + R_{IcLk}G_{IcLk}
-$$
-
-For the latent heat flux, the lake ice  concentration is considered.
-
-$$
-	E=(1-R_{IcLk})E + R_{IcLk}E_{IcLk}
-$$
-
-Each term above are saved as freshwater flux.
-
-$$
-	W_{freeLk} = (1-R_{IcLk}) E
-$$
-
-$$
-	W_{IcLk} = R_{IcLk} E_{IcLk}
-$$
-
-## Calculation of lake ice
-
-In this section, the lake ice calculation is described. There are three prognostic variables in the lake ice model described herein: lake ice concentration $A_I$, which is area fraction of a grid covered by lake ice and takes a value between zero and unity; mean lake ice thickness $h_I$ over ice-covered part of a grid; mean snow depth $h_S$ over lake ice. Horizontal flow of ice is not considered in the lake parts, differently from the COCO-OGCM. Let us consider here a case that the model is integrated from the n-th time level to the (n+1)-th time level. $A_I$, $h_I$ and $h_S$ are incrementally modified.
-
-The model also calculates temperature at snow top (lake ice top when there is no snow cover) $T_I$, which is a diagnostic variable. Density of lake ice ($\rho_I$) and snow $(\rho_S)$ are assumed to be constant Lake ice is assumed to have nonzero salinity, and its value $S_I$ is assumed to be a constant parameter.
-
-### Calculation of heat flux and growth rate
-
-In `ENTRY:[FIHEATL]` (in `SUBROUTINE:[FIHSTL]` of lakeic.F), heat flux in lake ice and its growth rate is calculated.
-
-
-- Output variables
-
-| Variable | Variable in source code | Description                            | unit              |
-|:-------- |:----------------------- |:-------------------------------------- |:----------------- |
-| $W_{AO}$ | WAO                     | Lake ice growth rate in ice-free area  | $\mathrm{[cm/s]}$ |
-| $W_{AS}$ | WAS                     | snow growth rate due to heat inbalance | $\mathrm{[cm/s]}$ |
-| $W_{IO}$ | WIO                     | basal growth rate of lake ice          | $\mathrm{[cm/s]}$ |
-
-- Input variables
-
-| Variable   | Variable in source code | Description                                                                                        | unit                                    |
-|:---------- |:----------------------- |:-------------------------------------------------------------------------------------------------- |:--------------------------------------- |
-| $A_I$      | A                       | lake ice concentration                                                                             | $\mathrm{[-]}$                          |
-| $Q_{AI}$   | QAI                     | air-ice heat flux multiplied by the factor of lake ice concentration                               | $\mathrm{[-]}$                          |
-| $Q_{IO}$   | QIO                     | vertical heat flux through lake ice and snow                                                       | $\mathrm{[W/m^2]}$                      |
-| $SW^A$     | SWABS                   | Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied | $\mathrm{[W/m^2]}$                      |
-| $T, S$     | T(NLTDIM)               | Lake temperature  / Salinity                                                                       | $\mathrm{[^o C/m^2]}$/ $\mathrm{[psu]}$ |
-| $\Delta t$ | TS                      | time step                                                                                          | $\mathrm{[s]}$                          |
-
-- Internal works
-
-| Variable   | Variable in source code | Description               | unit                   |
-|:---------- |:----------------------- |:------------------------- |:---------------------- |
-| $\Delta T$ | TDEV                    | freezing point depression | $\mathrm{[^o C]}$      |
-| $W_{FZ}$   | WFRZ                    | lake ice growth rate      | $\mathrm{[cm e.w./s]}$ |
-
-Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f= −0.0543 S$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
-
-Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of lake ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
-
-Surface heat flux is separately calculated for each of air-lake and air-ice interfaces in one grid.
-
-The skin temperature of lake ice $T_I$ is determined such That
-
-$$
-	Q_{AI} = Q_{IO}
-$$
-
-is satisfied, where $Q_{IO}$ is corresponding to $G+SW^\downarrow$ and $Q_{AI}$ is corresponding to $G_{IcLk} - W_{IcLk}$. However, When the estimated $T_I$ exceeds the melting point of lake ice $T_m$ (which is set to 0 ◦C for convenience), $T_I$ is reset to $T_m$ and $Q_{AI}$ and $Q_{IO}$ are re-estimated by using it. The heat imbalance between $Q_{AI}$ and $Q_{IO}$ is consumed to melt snow (lake ice when there is no snow cover). Snow growth rate due to this heat imbalance is estimated by
-
-$$
-	W_{AS} = \frac{Q_{AI}-Q_{IO}}{\rho L_f}
-$$
-
-where $\rho_O$ is density of lakewater and $L_f$ is the latent heat of fusion (the same value is applied to snow and lake ice). This growth rate is expressed as a change of equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is weighted by lake ice concentration.
-
-Although it is assumed that $T(2) = T_f$ when lake ice exists, $T_1$ could deviated from $T_f$ due to a change of salinity or other factors. Such deviation should be adjusted by forming or melting lake ice. Under a temperature deviation of the top layer of lake,
-
-$$
-	\Delta T = T(k=2) - T_f S(k=2)
-$$
-
-lake ice growth rate necessary to compensate it in the single time step is given by
-
-$$
-	W_{FZ} = - \frac{C_{po} \Delta T \Delta z_1}{L_f \Delta t}
-$$
-
-where $C_{po}$ is the heat capacity of lake water and $\Delta z_1=100 \mathrm{cm}$ is the thickness of the lake model's top level (uniformly set to constant in case of the current lake model.) This growth rate is estimated at all grids, irrespective of lake ice existence, for a technical reason. As described below, this growth rate first estimates negative ice volume for ice-free grids, but the same heat flux calculation procedure as for ice-covered grids finally results in the correct heat flux to force the lake. Basal growth rate of lake ice is given by
-
-$$
-	W_{IO} = A_I W_{FZ} + \frac{Q_{IO}}{\rho_OL_f}
-$$
-
-where $W_{IO}$ is weighted by lake ice concentration.
-
-Lake ice formation could also occur in the ice-free area. Let us define $Q_{AO}$ by
-
-$$
-	Q_{AO} = (1-A_{I}) [Q-(1-\alpha_{Lk,SW})SW^\downarrow]
-$$
-
-i.e., air-lake heat flux except for shortwave, multiplied by the factor of the fraction of ice-free area. Here, $Q$ is  air-ice heat flux. Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied, is represented by
-
-$$
-	SW^A = (1-A_I)(1-\alpha_{Lk,SW}) SW^\downarrow
-$$
-
-Lake ice growth rate in ice-free area is calculated by
-
-$$
-	W_{AO} = (1-A_I)W_{FZ} + \frac{Q_{AO}+I(k=2) SW^A}{\rho_O L_f}
-$$
-
-where $I(k=2)$ denotes the fraction of $SW^A$ absorbed by the lake model's top level, which is calculate in `SUBROUTINE:[SVTSETL]` of lakepo.F.
-
-Finally, the heat flux for freshwater is
-
-$$
-	G_{lake} = \Delta z_1 \frac{\Delta T }{\Delta t}
-$$
-
-### Sublimation and freshwater flux for lake
-
-In `ENTRY[FWATERL]` (in `SUBROUTINE:[FWASTL]` of lakeic.F), sublimation (freshwater) flux, which is practically come from the land ice runoff, is calculated or prescribed over lake ice cover.
-
-- Output variables (Prognostic variables)
-
-| Variable | Variable | Description    |    unit             |
-|:-------- |:-------- |:------------------ |:--------------- |
-| $A_I'$   | AX       | lake ice fraction  | $\mathrm{[-]}$  |
-| $h_I'$   | HIX      | lake ice thickness | $\mathrm{[cm]}$ |
-| $h_S'$   | HSX      | snow depth         | $\mathrm{[cm]}$ |
-
-- Input variables
-
-| Variable   | Variable | Description                     | unit            |
-|:---------- |:-------- |:------------------------------- |:--------------- |
-| $F_W^{EV}$ | WEV      | latent heat flux of evaporation | $\mathrm{cm/s}$ |
-| $F_W^{SB}$ | WSB      | latent heat flux of sublimation | $\mathrm{cm/s}$ |
-| $S_{off}$  | SOFF     | overflow snow flux              | $\mathrm{cm/s}$ |
-
-- Parameters
-
-| Variable     | Variable | Description                   | unit              | value            |
-|:------------ |:-------- |:----------------------------- |:----------------- |:---------------- |
-| $\rho_S$     | rhos     | density of snow               | $\mathrm{[g/cm^3]}$ | $0.33$           |
-| $\rho_I$     | rhoi     | density of lake ice           | $\mathrm{[g/cm^3]}$ | $0.9$            |
-| $R_{\rho_S}$ | rrs      | Ratio of density (ocean/snow) | $\mathrm{[-]}$    | $\rho_O/\rho_s$  |
-| $R_{\rho_I}$ | rri      | Ratio of density (ocean/ice)  | $\mathrm{[-]}$    | $\rho_O/\rho_I$  |
-| $h_I^{min}$  | himin    | Minimum thickness of ice      | $\mathrm{[cm]}$   | $1.0\times 10^1$ |
-
-The flux is first consumed to reduce snow thickness in n-th time step:
-
-$$
-	h_S' = h_S^n -  \frac{\rho_O  F_W^{SB}\Delta t}{\rho_S A_I^n}
-$$
-
-If $h_S'$ becomes less than zero, it is reset to zero.  Then, the melted snow flux is added to $F_W^{SB}$. $F_W^{SB}$ is redefined by
-
-$$
-	F_W^{SB}{'} = F_W^{SB} + \frac{\rho_S A_I^n (h_S' - h_S^n)}{\rho_O\Delta t}
-$$
-
-Where there no remains snow, but $F_W^{SB}{'}$ is not zero, The remain flux is consumed to reduce lake ice thickness:
-
-$$
-	h_I' = h_I^n - \frac{\rho_O F_W^{SB}{'} \Delta t }{\rho_I A_I^n}
-$$
-
-If $h_I'$ becomes less than $h_I^{min}$, it is reset to zero. Then,  the melted iceflux is added to $F_W^{SB}{'}$. $F_W^{SB}{'}$ is redefined by
-
-$$
-	F_W^{SB}{''} = F_W^{SB}{'} - A_I^n \frac{\rho_S (h_I^n-h_I')}{\rho_O\Delta t}
-$$
-
-Finally, nonzero $F_W^{SB}{''}$ is consumed to reduce lake ice concentration:
-
-$$
-	A_I' = A_I^n - \frac{R_{\rho_I}F_W^{SB}{''} \Delta t }{h_I^{min}}
-$$
-
-if $A_I'$ becomes less then 0, it is reset to zero. Even if $A_I'$ becomes less than $A_I^{min}$, on the other hand, it is not adjusted here. If $A_I'$ is adjusted to zero, it means that the sublimation flux is not used up by eliminating snow and lake ice.
-
-The remaining part is consumed to reduce lake water, so the evaporation flux $F_W^{EV}$ is modified as
-
-$$
-	F_W^{EV} = F_W^{EV} + F_W^{SB} + \frac{(A_I'-A_I^n) h_I^{min}}{R_{\rho_I}\Delta t}
-$$
-
-The later two terms cancel out if the adjustment does not take place.
-
-If there is no lake ice, evaporation flux is just as
-
-$$
-	F_W^{EV}{'} = F_W^{EV} + F_W^{SB}
-$$
-
-The adjusted evaporation flux is saved
-
-$$
-	\Delta F_W^{EV} = F_W^{EV}{'} -	F_W^{EV}
-$$
-
-When sublimation flux is consumed to reduce lake ice amount, salt contained in lake ice has to be added to the remaining lake ice or the underlying water. Otherwise, total salt of the ice-lake system is not cosereved. Here, it is added to underlying water, and the way of this adjustment is described later. Note that lake ice tends to gradually drain high salinity water contained in brine pockets in reality. Thus, such an adjustment is not very unreasonable. When $A_I'$ is adjusted to zero, on the other hand, the remaining sublimation flux is consumed to reduce lake water. In this case, difference between the latent heat of sublimation and evaporation has to be adjusted, which is also described later.
-
-If the ice and/or snow is too thick, they are converted to snow flux. Here, the overflow snow flux $S_{off}$ is added to ${F_W^{SN}}$
-
-$$
-	F_W^{SN} = F_W^{SN} + S_{off}
-$$
-
-$S_{off}$ is actually calculated in `SUBROUTINE[MATDRV]` (of matdrv.F), then handed to `ENTRY:[FWATER]`.
-
-### Updating lake ice fraction
-
-- Input variables
-
-| Variable | Variable in source code | Description                       | unit              |
-|:-------- |:----------------------- |:--------------------------------- |:----------------- |
-| $h_I$    | HIX                     | Thickness of lake ice a           | $\mathrm{[cm]}$   |
-| $W_{AO}$ | WAO                     | snow growth rate in ice-free area | $\mathrm{[cm/s]}$ |
-
-In `ENTRY:[PCMPCTL]` (in `SUBROUTINE:[CMPSTL]` of lakeic.F), the lake ice fraction is updated, using the lake ice thickness ($h_I$) and the growth (retreat) rate in ice-free area ($W_{AO}$):
-
-$$
-	{A_I^{n+1}} = {A_I'} +\frac{\rho_O }{\rho_I h_I \phi W_{AO}\Delta t}
-$$
-
-If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ becomes smaller than zero, it is reset to zero.
-
-### Growth and Melting
-
-In `ENTRY:[PTHICKL]` (in `SUBROUTINE:[OTHKSTL]` of lakeic.F), the lake ice growth and melting are calculated. The variables in the (n+1)-th time level are finally determined here.
-
-- Variables
-
-| Variable                | Variable in source code | Description                                |
-|:----------------------- |:----------------------- |:------------------------------------------ |
-| $A_I^{n+1}$             | AX                      | lake ice fraction                          |
-| $V_I$                   | AXHIX                   | lake ice volume                            |
-| $V_S, V_S', V_S^{ \**}$   | AXHSX                   | lake snow volume                           |
-| $V_I^{n+1}$             | AXHIXN                  | lake ice volume                            |
-| $V_S^{n+1}$             | AXHSXN                  | lake snow volume                           |
-| $h_I'$                  | HIX                     | lake ice thickness                         |
-| $h_S'$                  | HSX                     | Snow depth                                 |
-| $h_S^n$                 | HSZ                     | Snow depth                                 |
-| $h_I^n$                 | HIZ                     | lake ice thickness                         |
-| $W_{AS}$                | WAS                     | snow growth rate due to heat imbalance     |
-| $W_{AI}$                | WAI                     | lake ice growth rate due to heat imbalance |
-| $W_{res}$               | WRES                    | Reduced heat flux                          |
-| $W_{IO}$                | WIO                     | basal growth rate of lake ice              |
-| $F_W^{SN}, {F_W^{SN}}'$ | SNOW                    | snow fall flux                             |
-| $W_{AO}$                | WAO                     | Lake ice growth rate in ice-free area      |
-| $F_W^{PR}$              | PREC                    | precipitation flux                         |
-| $L_e$                   | EVAP                    | latent heat flux of evaporation            |
-| --                      | SUBI                    | latent heat flux of sublimation            |
-| $A_I'$                  | AZ                      | Lake ice concentration                     |
-| $H_{lake}$              | FT                      | lake heat flux                             |
-| $\Delta t$              | TS                      | time step                                  |
-| --                      | ROFF                    | --                                         |
-| --                      | ADJLAT                  | --                                         |
-| --                      | FS                      | --                                         |
-
-The lake ice volume ($V_I'$) and snow volume ($V_S'$) before the snow and ice growth are presented by
-
-$$
-	V_I' = A_I' h_I^n
-$$
-
-$$
-	V_S' = A_I' h_S^n
-$$
-
-From here, let us consider the contribution of snowfall and freshwater fluxes to the growth.
-
-Changes of snow depth due to snow fall (freshwater) flux ($F_W^{SN}$) (expressed by negative values to be consistent with other freshwater flux components) is first taken into account. $F_W^{SN}$ is not weighted by lake ice concentration or ice-free area are fraction, as snowfall take place for both regions.
-
-If the newly predicted (in `ENTRY:[PCMPCTL]`) lake ice concentration ($A_I^{n+1}$) is zero, the amount of snow existed before the growth is added to the snowfall flux.
-
-$$
-	{F_W^{SN}}' = F_W^{SN} + \frac{\rho_S V_S'}{\rho_O \Delta t}
-$$
-
-Snow depth and amount is set to zero:
-
-$$
-	h_S'=0, \quad V_S^{ \**} = 0
-$$
-
-Otherwise, snowfall accumulates over the ice covered region. Snow depth is modified by
-
-$$
-	h_S^* = \frac{V_S'}{A_I^{n+1}} + \frac{\rho_O F_W^{SN}\Delta t}{\rho_S}
-$$
-
-And the snow amount is also modified by
-
-$$
-	V_S^* = A_I^{n+1} h_S^*
-$$
-
-The snowfall flux is reduced by that amount:
-
-$$
-	{F_W^{SN}}' = (1-A_I^{n+1}) F_W^{SN}
-$$
-
-Then, the snowfall flux is put together with the precipitation flux.
-
-$$
-	F_W^{PR} = F_W^{PR} + {F_W^{SN}}'
-$$
-
-When the lake ice is not existed ($A_I^{n+1}=0$), the snow amount grown above is converted to ice. Growth rate of the lake ice is presented by:
-
-$$
- W_{AI}^* =   \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
-$$
-
-When the lake ice existed, if the snow growth rate
-$$
-	W_{AS}^* = W_{AS} +  \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
-$$
-
-is positive, the energy is used for the snow growing. Otherwise, $W_{AS}^*$ is assumed to reduce the lake ice.
-
-$$
-	W_{AI}^* = W_{AS}^*
-$$
-
-and deficient flux is come from the snow amount changes.
-
-$$
-	W_{AS}^* = - \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
-$$
-
-Then, the snow depth is modified with the accumulation.
-
-$$
-	h_S^{ \**} = \frac{V_S^{\*}+ \rho_O W_{AS} \Delta t}{\rho_S {A_I^{n+1}}}
 $$
-
-if $h_S'$ is less than 0, it is reset to zero.
-
-Freshwater flux for ice growth is also considered. When the lake ice is not existed, the flux is just handed to the lake surface.
-
-$$
-	W_{IO}^* = W_{IO} + W_{AI}^*
-$$
-
-When the lake ice exists ($A_I^{n+1}>0$), if the ice growth rate
-
-$$
-	W_{AI}^* = W_{AI} + \frac{V_I^{\*}}{R_{\rho_I \Delta t}}
-$$
-
-is negative, the flux is handed to the lake surface.
-
-$$
-		W_{IO}^* = W_{IO} + W_{AI}^*
-$$
-
-and deficient flux is come from the lake amount changes.
-
-$$
-	W_{AI}^* = - \frac{V_I^{\*}}{R_{\rho_I \Delta t}}
-$$
-
-The amount of the ice is then updated,
-
-$$
-	V_I^* = V_I' + \frac{\rho_O W_{AI}\Delta t}{\rho_I}
-$$
-
-Then, the snow amount in the new time step (n+1) is,
-
-$$
-	V_S^{n+1} = A_I^{n+1} h_S^{ \**}
-$$
-
-For the ice amount,
-
-$$
-	V_I^{n+1} = V_I^* + \frac{\rho_O (W_{IO}+W_{AO})\Delta t}{\rho_I}
-$$
-
-If $V_I^{n+1}$ is equal or less than 0, lake ice fraction is set to zero (A_I^{n+1}=0) and its thickness is set to $h_I^{min}$. Otherwise,
-
-$$
-	h_I^{ *** } = \frac{V_I^{n+1}}{A^*}
-$$
-
-If $h_I^{*** }$ is smaller than $h_I^{min}$, it is set to $h_I^{min}$ and the lake ice concentration is adjusted.
-
-$$
-	A_I^{n+1} = \frac{V_I^{n+1}}{h_I^{min}}
-$$
-
-If the $A_I^{n+1}$ is less than $A_I^{min}$, it is set to 0. If the $A_I^{n+1}$ is larger than $A_I^{max}=1$, it is set to $A_I^{max}$.
-
-Let us consider the case of the ice is very thick.  Here, the remained volume, which is not covered by ice is considered.
-
-$$
-	V_a^{free} = (A_{max}-A_{min})h_I^{min}
-$$
-
-$$
-	V^{free} = (A_{max}-A_I^{n+1})h_I^{*** }
-$$
-
-If $V^{free}>V_a^{free}$, the ice thickness is increased, by adding $V^{free}$
-
-$$
-	h_I^{*** } = V^{free} + \frac{A_I^{n+1} h_I^{m+1}}{A_I^{max}}
-$$
-
-The deficient water is come from the snow. The snow depth is now updated
-
-$$
-	h_S^{\ *** } = A_I^{n+1}\frac{h_S^{\ *** }}{A_{max}-\frac{V_a^{free}}{h_I^{\ *** }}}
-$$
-
-Finally, check if the snow is under water.
-
-$$
-	h_S^{n+1} = \mathrm{min}(h_S^{\ *** }, \frac{\rho_O-\rho_I}{\rho_S}h_I^{\ *** })
-$$
-
-and the ice thickness is also updated.
-
-$$
-	h_I^{n+1} = h_I^{\ *** } + \frac{\rho_S}{\rho_I} (h_S^{\ *** }-h_S^{n+1})
-$$
-
-The growth rate of the lake ice is
-
-$$
-	W_I^n = \frac{\rho_S A_I^{n+1}h_I^{n+1} - V_I'}{\rho_I \Delta t}
+\alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{*}} \right)}, \tag{8-64}
 $$
-
-$$
-	W_I^{n+1} = \frac{\rho_S A_I^{n+1}h_I^{n+1} - V_I^{n+1}}{\rho_I \Delta t}
-$$
-
-The growth rate of the snow is
-
-$$
-	W_S^n =  \frac{\rho_S A_I^{n+1}h_S^{n+1} - V_S'}{\rho_S \Delta t}
-$$
-
-
-$$
-	W_S^{n+1} =  \frac{\rho_S A_I^{n+1}h_S^{n+1} - V_S^{n+1}}{\rho_S \Delta t}
-$$
-
-The sublimation flux $F_S$ is
-
-$$
-	F_S = S_I(W_I-F_W^{SB}{''})
-$$
-
-The freshwater flux ($F_W(1)$) is
-
-$$
-	F_W(1) = - F_W(1) + \frac{L_f}{C_p} \Big(W_I^{n+1}+W_S^{n+1}-Sn + \Delta F_W^{EV}\Big)
-$$
-
-The salinity flux ($F_W(2)$) is
-
-$$
-	F_W(2) =F_W^{EV} - F_W^{PR} - R_{off} + W_S^n + W_I^n
-$$
-
-
-# 12 Wetland
-
-
-
-# Tile scheme
-
-ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F)
-
-In the latest version of MATSIRO, a tile treatment of the land surface has been introduced to represent the subgrid fraction of land surface types, so as to partially mimic the behavior at a higher resolution.
-
-Basically, one land surface grid is divided into three tiles in the control run: lake, potential vegetation and cropland. All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
-$$
-F=F_{lake}f_{lake}+\sum_{i=1}^nF_if_i(1-f_{lake})
-$$
-
-$$
-\sum_{i=1}^nf_i=1
-$$
-where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, respectively.
-
-By default, tile scheme is applied in land surface type, but it can be used for multiple purposes.
-
-## Lake
-
-The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid. The water temperature and mass are predicted for the surface layer (minimum thickness of 1 m) and four subsurface layers, based on the thermal diffusion and mass conversion, considering vertical overturning, evaporation, precipitation, and in-flow from and outflow to rivers.
-
-## Potential Vegetation and Cropland
-
-Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow.
-
-Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
-
-## Appendix
-
-### Output variables
-
-| Variable     | Description                                                  | Code   | Dimension     | Units |
-| ------------ | ------------------------------------------------------------ | ------ | ------------- | ----- |
-| $F$          | Fluxes at the land surface                                   | MATFLX | -             | -     |
-| $F_{lake}$   | Fluxes at the land surface of lake                           | -      | IJLDIM        | -     |
-| $F_i(i=1,2)$ | Fluxes at the land surface of potential vegetation and cropland | -      | IJLDIM,MULTCY | -     |
-
-### Parameters
-
-
-| PARAMETER    | Description                                            | Code    | Dimension     | Initial values | Units |
-| ------------ | ------------------------------------------------------ | ------- | ------------- | -------------- | ----- |
-| $f_{lake}$   | Fractional weight of lake                              | LKFRAC  | IJLDIM        | -              | -     |
-| $f_i(i=1,2)$ | Fractional weight of potential vegetation and cropland | SFFRAC1 | IJLDIM,MULTCY | -              | -     |
-
-
-# References
-  -
-    Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
-
-  -
-    Beven, K. J., and M. J. Kirkby, 1979: A physically based variable contributing area model of basin hydrology, <span>Hydrol. Sci. Bull.</span>, <span>**24**</span>, 43–69.
-
-  -
-    Clapp, R. B., and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. <span>Water Resour. Res.</span>, <span>**14**</span>, 601–604.
-
-  -
-    Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. <span>Plant Cell Environ.</span>, <span>**13**</span>, 219–225.
-
-  -
-    Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. <span>Agric. For. Meteor.</span>, <span>**54**</span>, 107–136.
-
-  -
-    Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled Photosynthesis-Stomatal Conductance Model for leaves of TERM00000 plants. <span>Aust. J. Plant. Physiol.</span>, <span>**19**</span>, 519–538.
-
-  -
-    Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic TERM00001 fixation in leaves of TERM00002 species. <span>Planta</span>, <span>**149**</span>, 78–90.
-
-  -
-    Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
-
-  -
-    Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
-
-  -
-    Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span>**9**</span>, 676–705.
-
-  -
-    Sellers, P. J., Meeson, B. W., Closs, J., Collatz, J., Corprew, F., Dazlich, D., Hall, F. G., Kerr, Y., Koster, R., Los, S., Mitchell, K., McManus, J., Myers, D., Sun, K.-J, and Try, P.: The ISLSCP Initiative I global datasets: surface boundary conditions and atmospheric forcings for land-atmosphere studies, B. Am. Meteorol. Soc., <span>**77**</span>, 1987–2006, 1996.
-
-  -
-    Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity. 2, A scaled model of storm runoff production. <span>Water Resour. Res</span>, <span>**23**</span>, 2266–2278.
-
-  -
-    Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. <span>J. Climate</span>, <span>**10**</span>, 118–137.
-
-  -
-    Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. <span>Boundary-Layer Met.</span>, <span>**70**</span>, 13–35.
-
-  -
-    Wiscombe, W. J., and S. G. Warren, 1980: A model for the spectral albedo of snow. I. Pure snow. <span>J. Atmos. Sci.</span>, <span>**37**</span>, 2712–2733.
-
-  -
-    Hirabayashi, Y., Global analysis on long term variations of extreme river discharge, The University of Tokyo, Doctoral degree thesis, 2004
 
-  -
-    渡辺力・大谷義一, 1995: キャノピー層内の日射量分布の近似計算法. <span>農業気象</span>, <span>**51**</span>, 57–60.
+where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,wet}$ is the one with surface water, $w_{surf}$ is the thisness of surfice water and $w^{*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha_{vis,ice}$, $\alpha_{nir,ice}$ and $\alpha_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha_{b,wet}$ is set to 0.15 for all bands.
