@@ -3671,7 +3671,7 @@ This part introduces the calculation of the vertical diffusive tracer flux. Temp
 
 The thickness of each lake layer is first calculated. The water column is divided into 5 layers (k=2, 3, 4, 5, 6) in the current version, and the k=1 and k=7 represent the top surface and the bottom surface of the water column, respectively. The layer of the water column is shown in Fig. 11-1.
 
-![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/43f6deab3e569cb94e669b0439b01897a260d33d/descript/Lake_11-1.pdf) 
+![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Lake_11-1.eps) 
 
 Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{1}$, and $D_{1}$ is set to 100 cm. Therefore, the thickness of the first layer can be described as:
 $$
@@ -3879,7 +3879,7 @@ A snow-fed wetland scheme, in which snowmelt can be stored with consideration of
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
-![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/43f6deab3e569cb94e669b0439b01897a260d33d/descript/Wetland_12-1.pdf) 
+![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Wetland_12-1.eps) 
 
 ## Inflow and outflow of the wetland
 
