@@ -1589,7 +1589,11 @@ This process is treated in SUBROUTINE SNWCUT in matsnw.F.
 
 The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
 
+<<<<<<< HEAD
 As a standard, the mass of each layer ($\Delta {\widetilde{Sn}}_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
+=======
+As a standard, the mass of each layer $\Delta \widetilde{Sn}_{(k)} (k=1,2,3)$ is determined as follows ($k=1$ is the uppermost layer):
+>>>>>>> master
 
 $$
 \begin{aligned}
@@ -1625,8 +1629,13 @@ $$
  \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)})
 \end{array}
 \begin{array}{ll}
+<<<<<<< HEAD
  (\widetilde{Sn} < 60) \\
  (\widetilde{Sn} \geq 60)
+=======
+ 0  (\widetilde{Sn} < 60) \\
+ \widetilde{Sn} - (\Delta Sn_{(1)} + \Delta Sn_{(2)}) (\widetilde{Sn} \geq 60)
+>>>>>>> master
 \end{array}
 \right.
 \end{aligned} \tag{8-9}
@@ -1754,7 +1763,11 @@ f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \
 \right) \tag{8-24}
 $$
 
+<<<<<<< HEAD
 where $F_{w_{Sn_{(k)}}}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F}_{w_{Sn_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f_{Fmax}$ is assumed to be 0.1 as a standard value.
+=======
+where  $F_{w_{Sn}(k)}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F} _ { wSn(k) }$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. The standard value of the $f_{Fmax}$ is assumed to be 0.1 as a standard value.
+>>>>>>> master
 
 The snow temperature change is updated by
 
@@ -1865,7 +1878,12 @@ $$
 
 where $\rho_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
+<<<<<<< HEAD
 In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F_{c,conv}$. $\Delta F_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+=======
+In [Eq. (238)](#eq238), the snow upper boundary flux $\widetilde{F}_ {Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta
+F_{conv}$), and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F_{c,conv}$. ($\Delta F_{conv}$) is assumed to be given only to the snow-covered portion, while ($\Delta F_{c,conv}$) is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+>>>>>>> master
 
 In the equation for the snow lower boundary flux $\widetilde{F}_{Sn_{(K_{Sn}+1/2)}}$, $T_{Sn_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
 
@@ -2099,13 +2117,25 @@ $$
  = Sn_{(1)}^{\tau+1} - Sn_{(1)}^{\tau+1/2}. \tag{8-54}
 $$
 
+<<<<<<< HEAD
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
+=======
+$\Delta {Sn_c}$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+
+# Runoff
+
+SUBROUTINE: MATROF in matrof.F.
+>>>>>>> master
 
 $$
 M_{d(2)}^{\tau+1} - M_{d(2)}^{\tau}
  = \Delta M_{d(1)}^{-} - \Delta M_{d(1)}^{+} + \Delta M_{d(3)}^{-} - \Delta M_{d(3)}^{+}. \tag{8-55}
 $$
 
+<<<<<<< HEAD
+=======
+## Outline of TOPMODEL
+>>>>>>> master
 
 
 ## Albedo of snow and ice
@@ -2120,58 +2150,102 @@ The albedo of the snow is large in fresh snow, but becomes smaller with the pass
 The nondimensional age of snow at the time step of ${\tau}$, $A_g^{\tau}$, is formulated in
 
 $$
+<<<<<<< HEAD
 A_g^{\tau} = \frac{f_{alb}}{1-f_{alb}}, \tag{8-56}
 $$
 
 where
-
+=======
+K_s(z) = K_0 \exp (-f z)
+\tag{eq261}
 $$
+
+where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface, and $f$ is the attenuation coefficient.
+>>>>>>> master
+
+When the depth of the water table at a certain point $i$  is designated as $z_i$, the downward groundwater flux on the slope at that point $q_i$ is
+$$
+<<<<<<< HEAD
 f_{alb} = \min\left(
  \frac{\alpha_{vis}^{\tau}-\alpha_{vis,new}}{\alpha_{vis,old}-\alpha_{vis,new}}, 0.999
 \right). \tag{8-57}
+=======
+q_i = \int_{z_i}^Z K_s(z) dz \cdot \tan\beta
+   = \frac{K_0}{f}  \tan\beta [\exp(-f z_i) - \exp(-f Z)] \tag{eq262}
+>>>>>>> master
 $$
 
 $\alpha_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha_{b,old}$ is that of old snow. In default, $\alpha_{vis,new}$, $\alpha_{nir,new}$, $\alpha_{ifr,new}$, $\alpha_{vis,old}$, $\alpha_{nir,old}$ and $\alpha_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
+<<<<<<< HEAD
+=======
+where $\beta$ is the gradient of the slope, and assumption 2 is applied here. $Z$ is the depth of the impervious surface; normally, however, $Z$ is assumed to be sufficiently deep compared with $\frac1f$, so the term $\exp(-f Z)$ is omitted. Moreover, since the slope direction soil moisture flux in the unsaturated zone above the water table is small, it is ignored.
+>>>>>>> master
 
 The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
 
 $$
+<<<<<<< HEAD
 A_g^{\tau+1} = A_g^{\tau} + (f_{age} + f_{age}^{10} + r_{dirt})\Delta t_L / \tau_{age}, \tag{8-58}
 $$
 
 where
+=======
+a R = \frac{K_0}{f} \tan\beta \exp(-f z_i)
+\tag{eq263}
+$$
+
+where $a$ is the total upstream area (per unit contour line length at point $i$ with respect to point $i$.
+>>>>>>> master
 
 $$
+<<<<<<< HEAD
 f_{age} = \exp{\left[ f_{ageT} \left( \frac{1}{T_{melt}} - \frac{1}{T_{Sn(1)}} \right) \right]}, \tag{8-59}
 $$
 
 $$
 f_{ageT} = 5000, \;\; \tau_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T_{melt} = 273.15 \;\mathrm{K}.
 $$
+=======
+z_i = -\frac{1}{f} \ln \left( \frac{faR}{K_0 \tan \beta}\right)  \tag{eq264}
+$$
+
+The averaged water table depth $\overline{z}$ in domain $A$ is
+>>>>>>> master
 
 $T_{Sn(1)}$ is the temperature of the first layer of snow.
 
 $r_{dirt}$ represents the effect of dirt and soot. When the option OPT_SNWALB is inactive,
 
 $$
+<<<<<<< HEAD
 r_{dirt} = \left\{ \begin{aligned}
  r_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
  r_{dirt,0} \;\;& \mathrm{(elsewhere)}
 \end{aligned} \right., \tag{8-60}
+=======
+\overline{z} = \frac1{A}\int_{A} z_i dA
+  = - \Lambda - \frac1{f} \ln R  \tag{eq265}
+>>>>>>> master
 $$
 
 where $r_{dirt,c} = 0.01$ and $r_{dirt,0} = 0.3$. When this option is active, the density of the dirt is considered as
 
 $$
+<<<<<<< HEAD
 r_{dirt} = \left\{ \begin{aligned}
  \min(r_{dirt,c} + r_{dirt,s}\rho_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
  \min(r_{dirt,0} + r_{dirt,s}\rho_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
 \end{aligned} \right., \tag{8-61}
+=======
+\Lambda \equiv
+  \frac1{A}\int_{A} \ln \left( \frac{fa}{K_0 \tan \beta}\right) dA  \tag{eq266}
+>>>>>>> master
 $$
 
 where $r_{dirt,s}$ is the dirt factor for slope with a constant value of 0.1 and $\rho_{d(1)}$ is the dirt density of the first layer.
 
+<<<<<<< HEAD
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha_b^{\tau+1}$, is solved by
 
 $$
@@ -2179,12 +2253,30 @@ $$
 $$
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
+=======
+The recharge rate $R$ can then be expressed as a function of the mean water table depth $\overline{z}$ as follows:
+
+
+$$
+R = \exp (-f \overline{z} -\Lambda)  \tag{eq267}
+$$
+
+Under assumption 3, this is exclusively the groundwater runoff discharged from domain $A$.
+
+Next, if $R$ is substituted into [Eq. (264)](#eq264) , the following relationship of $z_i$ and $\overline{z}$ is obtained:
+>>>>>>> master
 
 $$
 \alpha_b^{\tau+1} = \alpha_b^{\tau+1} + \min\left( \frac{P_{Sn}^{*} \Delta t_L}{\Delta Sn_c}, 1 \right) (\alpha_{b,new} - \alpha_b^{\tau+1}). \tag{8-63}
 $$
 
+<<<<<<< HEAD
 $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
+=======
+The domain that satisfies $z_i \leq 0$ is the surface saturated area.
+
+## Application of TOPMODEL assuming simplified topography
+>>>>>>> master
 
 
 ### Albedo of ice
@@ -2194,12 +2286,18 @@ The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in
 This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
 $$
+<<<<<<< HEAD
 \alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{*}} \right)}, \tag{8-64}
+=======
+L_s = \frac{2\sqrt{3} \sigma_z}{\tan\beta_s}
+\tag{eq269}
+>>>>>>> master
 $$
 
 where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,wet}$ is the one with surface water, $w_{surf}$ is the thisness of surfice water and $w^{*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha_{vis,ice}$, $\alpha_{nir,ice}$ and $\alpha_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha_{b,wet}$ is set to 0.15 for all bands.
 
 
+<<<<<<< HEAD
 # Runoff
 
 SUBROUTINE: MATROF in matrof.F.
@@ -2312,6 +2410,17 @@ $$
 
 where depth of $z^"$ is 2m. Using this, from [Eq. (265)](#eq265) the mean water table is
 
+=======
+The x-axis is taken from the ridge toward the valley on the horizontal surface. Then, the total upstream area at point $x$ is $x$, and [Eq. (264)](#eq264) becomes
+
+$$
+z(x) = - \frac{1}{f} \ln \left( \frac{fxR}{K_0 \tan \beta_s}\right)
+\tag{eq270}
+$$
+
+where depth of $z^"$ is 2m. Using this, from [Eq. (265)](#eq265) the mean water table is
+
+>>>>>>> master
 $$
 \overline{z} = \frac 1{L_s}\int_0^{L_s} z(x) dx
  = - \frac1{f}\left[
