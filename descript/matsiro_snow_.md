@@ -30,7 +30,7 @@
 
 
 
-# 8. Snow
+# Snow
 
 The snow cover fraction, snow water equivalent, snow temperature and snow albedo are calculated here.
 
@@ -76,11 +76,11 @@ Input
 | ILSOIL       | -                           | Soil type                                        | -                   |
 
 
-## 8.1 Diagnosis of snow cover fraction
+## Diagnosis of snow cover fraction
 
 MATSIRO has two ways of calculation of the snow cover fraction, and the user can switch them with the option OPT_SSNOWD.
 
-### 8.1.1 Case 1: When OPT_SSNOWD is active
+### Case 1: When OPT_SSNOWD is active
 
 The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
@@ -137,7 +137,7 @@ $$
 A_{Sn}(D_m) = 1 - \int_0^{D_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z_{D_m}}{2} \right). \tag{8-7}
 $$
 
-### 8.1.2 Case 2: When OPT_SSNOWD is inactive
+### Case 2: When OPT_SSNOWD is inactive
 
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
 
@@ -148,7 +148,7 @@ $$
 where $Sn_c$ is 100 $\mathrm{kg/m^2}$.
 
 
-## 8.2 Vertical division of snow layers
+## Vertical division of snow layers
 
 In order to express the vertical distribution of the snow temperature, when the snow water equivalent is large, the snow is divided into multiple layers and the temperature is defined in each layer. The number of snow layers can be varied, with the number of layers increasing as the snow water equivalent becomes larger. A minimum of one layer and a maximum of three layers are set as a standard.
 
@@ -220,7 +220,7 @@ $$
 \right. \tag{8-11}
 $$
 
-## 8.3 Calculation of snow water equivalent
+## Calculation of snow water equivalent
 
 The prognostic equation of the snow water equivalent is given by
 
@@ -230,7 +230,7 @@ $$
 
 where $P_{Sn}^{*}$ is the snowfall flux after interception by the canopy, $E_{Sn}$ is the sublimation flux, $M_{Sn}$ is the snowmelt, and $Fr_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 
-### 8.3.1 Sublimation of snow
+### Sublimation of snow
 
 First, by subtracting the sublimation, the snow water equivalent is partially updated:
 
@@ -244,7 +244,7 @@ $$
 
 In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
 
-### 8.3.2 Snowmelt
+### Snowmelt
 
 Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T_{Sn(k)}^{*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
 
@@ -298,7 +298,7 @@ $$
 Sn^{**} = Sn^{*} - M_{Sn} \Delta t_L \tag{8-22}
 $$
 
-### 8.3.3 Freeze of snowmelt water and rainfall in snow
+### Freeze of snowmelt water and rainfall in snow
 
 The freeze of snowmelt water and rainfall in the snow is calculated next. With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer. The retention of liquid water content in the snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.
 
@@ -353,7 +353,7 @@ $$
 
 The liquid water that has percolated from the snow to the lower boundary is given to the soil.
 
-### 8.3.4 Snowfall
+### Snowfall
 
 Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
 
@@ -371,7 +371,7 @@ $$
 \Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{***} + P_{Sn}^{*} \Delta t_L /A_{Sn}. \tag{8-30}
 $$
 
-### 8.3.5 Redivision of snow layer and rediagnosis of temperature
+### Redivision of snow layer and rediagnosis of temperature
 
 When the snow water equivalent is updated, the snow-covered ratio is rediagnosed as described in the section 8.1 and the mass of each layer is redivided as described in the section 8.2. The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
 
@@ -386,9 +386,9 @@ $$
 It should be noted that the variables with the index "old" and "new" are those before and after redivision, respectively. $f_{(l^{\mathrm{old}}\in k^{\mathrm{new}})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
 
 
-## 8.4 Calculation of snow heat conduction
+## Calculation of snow heat conduction
 
-### 8.4.1 Snow heat conduction equations
+### Snow heat conduction equations
 
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 
@@ -457,7 +457,7 @@ $$
  (T_{g(1)} - T_{Sn_{(K_{Sn})}}) \tag{8-37}
 $$
 
-### 8.4.2 Case 1: When snowmelt does not occur in the uppermost layer
+### Case 1: When snowmelt does not occur in the uppermost layer
 
 The implicit method is used to treat the temperature from the uppermost snow layer to the lowest snow layer, as follows:
 
@@ -521,7 +521,7 @@ $$
 T_{Sn_{(k)}}^{*} = T_{Sn_{(k)}}^{\tau} + \Delta T_{Sn_{(k)}} \tag{8-40}
 $$
 
-### 8.4.3 Case 2: When snowmelt occurs in the uppermost layer
+### Case 2: When snowmelt occurs in the uppermost layer
 
 When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 
@@ -545,7 +545,7 @@ $$
 Even if the temperature of the second snow layer and below is higher than $T_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
 
 
-## 8.5 Fluxes given to the soil or the runoff process
+## Fluxes given to the soil or the runoff process
 
 The heat flux given to the soil through the snow process is
 
@@ -576,7 +576,7 @@ $$
 where $\widetilde{F}_{wSn}^{*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
 
-## 8.6 Glacier formation
+## Glacier formation
 
 In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
 
@@ -593,12 +593,12 @@ where $Ro_{gl}$ is the glacier runoff. The mass of this portion is subtracted fr
 
 
 
-## 8.7 Dust in snow
+## Dust in snow
 
 The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
 
 
-### 8.7.1 Dust fall on the snow cover
+### Dust fall on the snow cover
 
 The dust fall is added to the top layer:
 
@@ -609,7 +609,7 @@ $$
 where $M_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
 
 
-### 8.7.2 Redistribution of dust
+### Redistribution of dust
 
 The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT).
 
@@ -675,9 +675,9 @@ $$
 
 
 
-## 8.8 Albedo of snow and ice
+## Albedo of snow and ice
 
-### 8.8.1 Albedo of snow
+### Albedo of snow
 
 The albedo of the snow is calculated in SUBROUTINE SNWALB in matsnw.F.
 
@@ -754,7 +754,7 @@ $$
 $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
 
-### 8.8.2 Albedo of ice
+### Albedo of ice
 
 The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
 
