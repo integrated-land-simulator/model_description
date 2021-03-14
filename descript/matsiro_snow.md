@@ -515,7 +515,7 @@ $$
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
 
 
-## 8.5 Fluxes given to the soil or the runoff process
+## 8.5 Calculation of fluxes given to the soil or the runoff process
 
 The heat flux given to the soil through the snow process is
 
