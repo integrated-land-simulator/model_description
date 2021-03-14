@@ -1,5 +1,35 @@
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
+<!-- code_chunk_output -->
+
+- [8 Snow](#8-snow)
+  - [8.1 Diagnosis of snow cover fraction](#81-diagnosis-of-snow-cover-fraction)
+    - [8.1.1 Case 1: When OPT_SSNOWD is active](#811-case-1-when-opt_ssnowd-is-active)
+    - [8.1.2 Case 2: When OPT_SSNOWD is inactive](#812-case-2-when-opt-ssnowd-is-inactive)
+  - [8.2 Vertical division of snow layers](#82-vertical-division-of-snow-layers)
+  - [8.3 Calculation of snow water equivalent](#83-calculation-of-snow-water-equivalent)
+    - [8.3.1 Sublimation of snow](#831-sublimation-of-snow)
+    - [8.3.2 Snowmelt](#832-snowmelt)
+    - [8.3.3 Freeze of snowmelt water and rainfall in snow](#833-freeze-of-snowmelt-water-and-rainfall-in-snow)
+    - [8.3.4 Snowfall](#834-snowfall)
+    - [8.3.5 Redivision of snow layer and rediagnosis of temperature](#835-redivision-of-snow-layer-and-rediagnosis-of-temperature)
+  - [8.4 Calculation of snow heat conduction](#84-calculation-of-snow-heat-conduction)
+    - [8.4.1 Snow heat conduction equations](#841-snow-heat-conduction-equations)
+    - [8.4.2 Case 1: When snowmelt does not occur in the uppermost layer](#842-case-1-when-snowmelt-does-not-occur-in-the-uppermost-layer)
+    - [8.4.3 Case 2: When snowmelt occurs in the upper most layer](#843-case-2-when-snowmelt-occurs-in-the-upper-most-layer)
+  - [8.5 Fluxes given to the soil or the runoff process](#85-fluxes-given-to-the-soil-or-the-runoff-process)
+  - [8.6 Glacier formation](#86-glacier-formation)
+  - [8.7 Dust in snow](#87-dust-in-snow)
+    - [8.7.1 Dust fall on the snow cover](#871-dust-fall-on-snow-ice-cover)
+    - [8.7.2 Redistribution of dust](#872-redistribution-of-dust)
+  - [8.8 Albedo of snow and ice](#88-albedo-of-snow-and-ice)
+    - [8.8.1 Albedo of snow](#881-albedo-of-snow)
+    - [8.8.2 Albedo of ice](#882-albedo-of-ice)
+
+<!-- /code_chunk_output -->
+
+
+
 # 8. Snow
 
 The snow cover fraction, snow water equivalent, snow temperature and snow albedo are calculated here.
@@ -645,9 +675,9 @@ $$
 
 
 
-## 8.8 Snow and ice albedo
+## 8.8 Albedo of snow and ice
 
-### 8.8.1 Snow albedo
+### 8.8.1 Albedo of snow
 
 The albedo of the snow is calculated in SUBROUTINE SNWALB in matsnw.F.
 
@@ -724,7 +754,7 @@ $$
 $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
 
-### 8.8.2 Ice albedo
+### 8.8.2 Albedo of ice
 
 The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
 
