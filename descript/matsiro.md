@@ -155,22 +155,44 @@ Finally, the lake modules are called and the related prognostic variables are up
 
 ## Prognostic variables
 
-MATSIRO has the following internal variables:
+MATSIRO has the following prognostic variables for each tile:
 
 | Variable                                | Description                                             | Units                |
 |:----------------------------------------|:--------------------------------------------------------|:---------------------|
-| $T_{s(l)}$        $(l=1,2)$             | surface temperature                                     | $\mathrm{[K]}$       |
+| $T_{s(l)}$        $(l=1,2)$             | Surface temperature                                     | $\mathrm{[K]}$       |
 | $T_{c(l)}$        $(l=1,2)$             | Canopy temperature                                      | $\mathrm{[K]}$       |
 | $T_{g(k)}$        $(k=1,\ldots,K_g)$    | Soil temperature                                        | $\mathrm{[K]}$       |
-| $w_{(k)}$         $(k=1,\ldots,K_g)$    | soil moisture content                                   | $\mathrm{[m^3/m^3]}$ |
+| $w_{(k)}$         $(k=1,\ldots,K_g)$    | Soil moisture content                                   | $\mathrm{[m^3/m^3]}$ |
 | $w_{i(k)}$        $(k=1,\ldots,K_g)$    | Frozen soil moisture content                            | $\mathrm{[m^3/m^3]}$ |
 | $w_c$                                   | Water content in the canopy                             | $\mathrm{[m]}$       |
-| $Sn$                                    | amount of snowfall                                      | $\mathrm{[kg/m^2]}$  |
-| $T_{Sn(k)}$       $(k=1,\ldots,K_{Sn})$ | snow temperature                                        | $\mathrm{[K]}$       |
-| $\alpha_{Sn(b)}$  $(b=1,2,3)$           | snow albedo                                             | $\mathrm{[-]}$       |
+| $Sn$                                    | Snow water equivalent                                   | $\mathrm{[kg/m^2]}$  |
+| $T_{Sn(k)}$       $(k=1,\ldots,K_{Sn})$ | Snow temperature                                        | $\mathrm{[K]}$       |
+| $\alpha_{Sn(b)}$  $(b=1,2,3)$           | Snow albedo                                             | $\mathrm{[-]}$       |
+| $A_{Sn}$                                | Snow cover fraction                                     | $\mathrm{[-]}$       |
+| $\mu$                                   | Accumulated snowfall                                    | $\mathrm{[kg/m^2]}$  |
+| $D_m$                                   | Accumulated snowmelt                                    | $\mathrm{[kg/m^2]}$  |
+| $R_{sn}$                                | Reset flag for snow accumulation or ablation season     | $\mathrm{[-]}$       |
+| $I_{sn}$                                | Snow index                                              | $\mathrm{[-]}$       |
+| $A_{L}$                                 | Land cover fraction                                     | $\mathrm{[-]}$       |
+| $T_{hist}$                              | Long-term mean temperature                              | $\mathrm{[K]}$       |
+| $M_d$                                   | Dust density in snow                                    | $\mathrm{[ppmw]}$    |
+| $M_d$                                   | Dust density in snow (mass)                             | $\mathrm{[ppmw]}$    |
+| $\alpha_{ice(b)}$                       | Ice albedo                                              | $\mathrm{[-]}$       |
+
+
+
+The lake part has the following prognostic variables:
+
+
+| Variable                                | Description                                             | Units                |
+|:----------------------------------------|:--------------------------------------------------------|:---------------------|
+| $T$                                     | Lake temperature                                        | $\mathrm{[^o C]}$   |
+| $S$                                     | Lake salinity                                           | $\mathrm{[PSU]}$     |
+| $T_I$                                   | Lake ice surface temperature                            | $\mathrm{[^o C]}$   |
 | $A_I$                                   | Lake ice concentration                                  | $\mathrm{[-]}$       |
 | $h_I$                                   | Mean lake ice thickness over ice-covered part of a grid | $\mathrm{[cm]}$      |
 | $h_S$                                   | Mean snow depth over lake ice                           | $\mathrm{[cm]}$      |
+| $h$                                     | Lake level                                              | $\mathrm{[cm]}$      |
 
 where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared , and infrared wavelengths, respectively.
 
@@ -214,6 +236,8 @@ The following variables are input in the land surface integration section:
 | $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                   | $\mathrm{[kg/m^2/s]}$ |
 | $LAI$                                 | leaf area index                     | $\mathrm{[m^2/m^2]}$  |
 | $A_{Snc}$                             | Canopy freezing area ratio          | $\mathrm{[-]}$        |
+| $D_{dust}$                            | Dust deposition flux                | $\mathrm{[kg/m^2/s]}$ |
+| $D_{BC}$                              | Black carbon deposition flux        | $\mathrm{[kg/m^2/s]}$ |
 
 
 ## Output data
