@@ -2908,7 +2908,7 @@ $$
 # Lake
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{°C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and Hasumi (2015).
+Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and Hasumi (2015).
 
 Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
 
@@ -2922,7 +2922,7 @@ In `ENTRY[LAKEBC]` (in `SUBROUTINE:[LSFBCS]` of lakesf.F) lake surface albedo, r
 
 | Variable                        | Variable in source code | Description                | Units                |
 |:--------------------------------|:------------------------|:---------------------------|:---------------------|
-| $α_{Lk}$                        | GRALB                   | Lake surface albedo        | $\mathrm{[-]}$       |
+| $\alpha_{Lk}$                   | GRALB                   | Lake surface albedo        | $\mathrm{[-]}$       |
 | $z_{Lk0}$                       | GRZ0                    | Lake surface roughness     | $\mathrm{[m]}$       |
 | $G$                             | FOGFLX                  | Heat flux                  | $\mathrm{[W/m^2]}$   |
 | $\frac{\partial G}{\partial T}$ | DFGT                    | Heat diffusion coefficient | $\mathrm{[W/m^2/K]}$ |
@@ -3237,7 +3237,7 @@ In `ENTRY:[FIHEATL]` (in `SUBROUTINE:[FIHSTL]` of lakeic.F), heat flux in lake i
 | $\Delta T$ | TDEV                    | freezing point depression | $\mathrm{[^o C]}$      |
 | $W_{FZ}$   | WFRZ                    | lake ice growth rate      | $\mathrm{[cm e.w./s]}$ |
 
-Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f= −0.0543 S$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
+Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f=-0.0543 S$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
 
 Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of lake ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
 
@@ -3722,7 +3722,7 @@ Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{
 $$
 D(2)=D_{1}
 $$
-The thicknesses of the other layers (k=3, 4, 5, 6) are calculated based on the ratio of the remaining thickness of the water column. The ratio ($S(k)$) of layer 3 to 6 are 0.1, 0.1. 0.2, and 0.6, respectively. Therefore, using $h$ to represent the total depth of the water column, and the thickness of the remaining water column ($h’$) excluding the top layer is presented by:
+The thicknesses of the other layers (k=3, 4, 5, 6) are calculated based on the ratio of the remaining thickness of the water column. The ratio ($S(k)$) of layer 3 to 6 are 0.1, 0.1. 0.2, and 0.6, respectively. Therefore, using $h$ to represent the total depth of the water column, and the thickness of the remaining water column ($h'$) excluding the top layer is presented by:
 $$
 h'=h-D_{1}
 $$
@@ -3867,7 +3867,7 @@ Finally, the absorption of solar radiation is considered. The temperature of eac
 $$
 T(k)=T(k)+\frac{S_{r}\times C_{sr}(k)}{D(k)\rho _{0}C_{P0}}\Delta t
 $$
-where $S_{r}$ represents the solar radiation, and $C_{sr}$ represents the absorption proportion of each layer. $ρ_{0}$ and $C_{p0}$ are density and specific heat capacity of water, and their values are set as 1 g/cm3 and 3.99×107 erg/g/K, respectively. $C_{sr}$ is calculated based on the depth of each layer, the transitivity $T_{rs}(k)$ at depth $D_{t}(k)$ can be represented as:
+where $S_{r}$ represents the solar radiation, and $C_{sr}$ represents the absorption proportion of each layer. $\rho_{0}$ and $C_{p0}$ are density and specific heat capacity of water, and their values are set as 1 g/cm3 and 3.99×107 erg/g/K, respectively. $C_{sr}$ is calculated based on the depth of each layer, the transitivity $T_{rs}(k)$ at depth $D_{t}(k)$ can be represented as:
 $$
 T_{rs}=R_{r}\times e^{-\frac{D_{t}(k)}{z_{1}}}+(1-R_{r})\times e^{-\frac{D_{t}(k)}{z_{2}}}
 $$
@@ -3896,7 +3896,7 @@ A classical, still widely used method-convective adjustment, which unstable wate
 
 (1)  Set the index $K_{s}$=2 (the first layer), indicating the start level of the convective adjustment, and set the index $K_{e}$=3 (the second layer), indicating the level where instability is currently judged.
 
-(2)  Compare potential density ($ρ$) of the ($K_{e}$-1)-th and $K_{e}$-th layers. If instability ($ρ_{Ke-1}$> $ρ_{Ke}$) is found, go to step 3, and if instability is not found, go to step 4.
+(2)  Compare potential density ($\rho$) of the ($K_{e}$-1)-th and $K_{e}$-th layers. If instability ($\rho_{Ke-1}$> $\rho_{Ke}$) is found, go to step 3, and if instability is not found, go to step 4.
 
 (3)  Mix the water column between the $K_{s}$-th layer and $K_{e}$-th layer. Increase $K_{e}$ by 1, and if the (new) $K_{e}$ is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with the new $K_{e}$.
 
