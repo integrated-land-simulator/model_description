@@ -851,7 +851,7 @@ $$
 $$
 
 
-where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^* (T_c)$ is the mole fraction of water vapor in the stomata. $e^* $ denotes the molar fraction of saturated vapor.
+where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^* (T_c)$ is the mole fraction of water vapor in the stomata. $e^*$ denotes the molar fraction of saturated vapor.
 
 Assuming that the vapor flux from the inside of the stoma to the leaf surface is equal to the vapor flux from the leaf surface to the atmosphere (i.e., that there is no convergence and divergence of vapor at the leaf surface),
 
