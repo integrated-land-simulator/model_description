@@ -117,6 +117,15 @@
 <!-- /code_chunk_output -->
 
 
+
+# Acknowledgements {-}
+acknowledgements
+
+
+
+\pagebreak
+
+
 # Introduction
 
 In the flux calculation section, the calculations are conducted separately for snow-covered and snow-free potions. For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown below:
@@ -150,7 +159,7 @@ Finally, the lake modules are called and the related prognostic variables are up
 (a) SETSCNV: calculation of convergence of shortwave radiation
 (b) LAKEIC: calculation of lake ice
 (c) LAKEPO: calculation of lake water and temperature
-(d) PUTDEFF: sending lake water deficit
+(d) PUTDEFF: sending a lake water deficit for the lakes whose water levels are below the lower limit
 
 
 ## Prognostic variables
@@ -164,7 +173,7 @@ MATSIRO has the following prognostic variables for each tile:
 | $T_{g(k)}$        $(k=1,\ldots,K_g)$    | Soil temperature                                        | $\mathrm{[K]}$       |
 | $w_{(k)}$         $(k=1,\ldots,K_g)$    | Soil moisture content                                   | $\mathrm{[m^3/m^3]}$ |
 | $w_{i(k)}$        $(k=1,\ldots,K_g)$    | Frozen soil moisture content                            | $\mathrm{[m^3/m^3]}$ |
-| $w_c$                                   | Water content in the canopy                             | $\mathrm{[m]}$       |
+| $w_c$                                   | Water content on the canopy                             | $\mathrm{[m]}$       |
 | $Sn$                                    | Snow water equivalent                                   | $\mathrm{[kg/m^2]}$  |
 | $T_{Sn(k)}$       $(k=1,\ldots,K_{Sn})$ | Snow temperature                                        | $\mathrm{[K]}$       |
 | $\alpha_{Sn(b)}$  $(b=1,2,3)$           | Snow albedo                                             | $\mathrm{[-]}$       |
@@ -175,49 +184,46 @@ MATSIRO has the following prognostic variables for each tile:
 | $I_{sn}$                                | Snow index                                              | $\mathrm{[-]}$       |
 | $A_{L}$                                 | Land cover fraction                                     | $\mathrm{[-]}$       |
 | $T_{hist}$                              | Long-term mean temperature                              | $\mathrm{[K]}$       |
-| $M_d$                                   | Dust density in snow                                    | $\mathrm{[ppmw]}$    |
-| $M_d$                                   | Dust density in snow (mass)                             | $\mathrm{[ppmw]}$    |
+| $\rho_d$                                | Dust density in snow                                    | $\mathrm{[ppmw]}$    |
+| $\rho_d$                                | Dust density in snow (mass)                             | $\mathrm{[ppmw]}$    |
 | $\alpha_{ice(b)}$                       | Ice albedo                                              | $\mathrm{[-]}$       |
 
 
+where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
 
-The lake part has the following prognostic variables:
-
-
-| Variable                                | Description                                             | Units                |
-|:----------------------------------------|:--------------------------------------------------------|:---------------------|
-| $T$                                     | Lake temperature                                        | $\mathrm{[^o C]}$   |
-| $S$                                     | Lake salinity                                           | $\mathrm{[PSU]}$     |
-| $T_I$                                   | Lake ice surface temperature                            | $\mathrm{[^o C]}$   |
-| $A_I$                                   | Lake ice concentration                                  | $\mathrm{[-]}$       |
-| $h_I$                                   | Mean lake ice thickness over ice-covered part of a grid | $\mathrm{[cm]}$      |
-| $h_S$                                   | Mean snow depth over lake ice                           | $\mathrm{[cm]}$      |
-| $h$                                     | Lake level                                              | $\mathrm{[cm]}$      |
-
-where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared , and infrared wavelengths, respectively.
-
-As a standard, the soil has six layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, 200, and 1000 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same.
-
-The number of snow layers is variable, increasing with the increase of snow water equivalent. As a standard, the maximum number is three layers.
+As the default setting, the soil has six layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, 200, and 1000 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same. The maximum number of snow layer is three by default, while the number is diagnosed from snow water equivalent. As the default setting, the maximum number is three layers.
 
 The ground surface temperature and canopy temperature are so-called skin temperatures whose heat capacity is zero; however, they take the form of prognostic variables. (The current calculation method depends on the values of the preceding step because the stability, etc. assessed by the values of the preceding step are used. If the stability, etc. were to be assessed by updated values and calculation iterated to the point of convergence, perfect diagnostic variables would be obtained that would not depend on the values of the preceding step.) The other variables are all prognostic variables that always require the values of the preceding step.
 
 The ground surface temperature and canopy temperature are updated in the flux calculation section. All of the other variables (original prognostic variables) are updated in the land surface integration section.
 
+
+The lake part has the following prognostic variables:
+
+
+| Variable   | Description                                             | Units                  |
+|:-----------|:--------------------------------------------------------|:-----------------------|
+| $T$        | Lake temperature                                        | $\mathrm{[^{\circ}C]}$ |
+| $S$        | Lake salinity                                           | $\mathrm{[PSU]}$       |
+| $T_I$      | Lake ice surface temperature                            | $\mathrm{[^{\circ}C]}$ |
+| $A_I$      | Lake ice concentration                                  | $\mathrm{[-]}$         |
+| $h_I$      | Mean lake ice thickness over ice-covered part of a grid | $\mathrm{[cm]}$        |
+| $h_S$      | Mean snow depth over lake ice                           | $\mathrm{[cm]}$        |
+| $h$        | Lake level                                              | $\mathrm{[cm]}$        |
+
 ## Input data
 
 The following variables are input in the flux calculation section:
 
-| Variable                                    | Description                                            | Units              |  |
-|:--------------------------------------------|:-------------------------------------------------------|:-------------------|:-|
-| $u_a$                                       | Atmospheric 1st layer east-west wind                   | $\mathrm{[m/s]}$   |  |
-| $v_a$                                       | First layer of atmospheric north-south wind            | $\mathrm{[m/s]}$   |  |
-| $T_a$                                       | Atmospheric 1st layer temperature                      | $\mathrm{[K]}$     |  |
-| $q_a$                                       | Specific humidity in the first layer of the atmosphere | $\mathrm{[kg/kg]}$ |  |
-| $P_a$                                       | Atmospheric 1st layer pressure                         | $\mathrm{[Pa]}$    |  |
-| $P_s$                                       | surface pressure                                       | $\mathrm{[Pa]}$    |  |
-| $R^{\downarrow}_{(d,b)}$  $(d=1,2;b=1,2,3)$ | Surface downward radiation flux                        | $\mathrm{[W/m^2]}$ |  |
-| $\cos\zeta$                                 | cosine of the solar zenith angle                       | $\mathrm{[-]}$     |  |
+| Variable                                    | Description                                            | Units              |
+|:--------------------------------------------|:-------------------------------------------------------|:-------------------|
+| $u_a$                                       | Atmospheric 1st layer east-west wind                   | $\mathrm{[m/s]}$   |
+| $v_a$                                       | Atmospheric 1st layer north-south wind                 | $\mathrm{[m/s]}$   |
+| $T_a$                                       | Atmospheric 1st layer temperature                      | $\mathrm{[K]}$     |
+| $q_a$                                       | Atmospheric 1st layer specific humidity                | $\mathrm{[kg/kg]}$ |
+| $P_a$                                       | Atmospheric 1st layer pressure                         | $\mathrm{[Pa]}$    |
+| $P_s$                                       | Surface pressure                                       | $\mathrm{[Pa]}$    |
+| $R^{\downarrow}_{(d,b)}$  $(d=1,2;b=1,2,3)$ | Surface downward radiation flux                        | $\mathrm{[W/m^2]}$ |
 
 where $d=1,2$ denotes direct and diffuse, respectively; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
 
@@ -226,15 +232,15 @@ The following variables are input in the land surface integration section:
 | Variable                              | Description                         | Units                 |
 |:--------------------------------------|:------------------------------------|:----------------------|
 | $Pr_{c}$                              | Convective rainfall flux            | $\mathrm{[kg/m^2/s]}$ |
-| $Pr_{l}$                              | Layered Rainfall Flux               | $\mathrm{[kg/m^2/s]}$ |
+| $Pr_{l}$                              | Large-scale Rainfall flux           | $\mathrm{[kg/m^2/s]}$ |
 | $P_{Snc}$                             | Convective snowfall flux            | $\mathrm{[kg/m^2/s]}$ |
-| $P_{Snl}$                             | Layered Snowfall Flux               | $\mathrm{[kg/m^2/s]}$ |
-| $F_{g(1/2)}$                          | Surface Heat Transfer Flux          | $\mathrm{[W/m^2]}$    |
-| $F_{Sn(1/2)}$                         | Heat Transfer Flux for Snow Surface | $\mathrm{[W/m^2]}$    |
-| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration components       | $\mathrm{[kg/m^2/s]}$ |
-| $\Delta F_{conv}$                     | surface energy convergence          | $\mathrm{[W/m^2]}$    |
-| $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                   | $\mathrm{[kg/m^2/s]}$ |
-| $LAI$                                 | leaf area index                     | $\mathrm{[m^2/m^2]}$  |
+| $P_{Snl}$                             | Large-scale snowfall flux           | $\mathrm{[kg/m^2/s]}$ |
+| $F_{g(1/2)}$                          | Surface heat transfer flux          | $\mathrm{[W/m^2]}$    |
+| $F_{Sn(1/2)}$                         | Heat transfer flux for snow surface | $\mathrm{[W/m^2]}$    |
+| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration                  | $\mathrm{[kg/m^2/s]}$ |
+| $\Delta F_{conv}$                     | Surface energy convergence          | $\mathrm{[W/m^2]}$    |
+| $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root water uptake                   | $\mathrm{[kg/m^2/s]}$ |
+| $LAI$                                 | Leaf area index                     | $\mathrm{[m^2/m^2]}$  |
 | $A_{Snc}$                             | Canopy freezing area ratio          | $\mathrm{[-]}$        |
 | $D_{dust}$                            | Dust deposition flux                | $\mathrm{[kg/m^2/s]}$ |
 | $D_{BC}$                              | Black carbon deposition flux        | $\mathrm{[kg/m^2/s]}$ |
@@ -246,17 +252,17 @@ The following variables are output from the flux calculation section:
 
 | Variable                              | Description                           | Units                 |
 |:--------------------------------------|:--------------------------------------|:----------------------|
-| $\tau_x$                              | surface-to-west wind stress           | $\mathrm{[N/m^2]}$    |
-| $\tau_y$                              | surface-to-south wind stress          | $\mathrm{[N/m^2]}$    |
-| $H$                                   | surface sensible heat flux            | $\mathrm{[W/m^2]}$    |
-| $E$                                   | Surface Water Vapor Flux              | $\mathrm{[kg/m^2/s]}$ |
-| $R^{\uparrow}_S$                      | Upward Bound Shortwave Radiation Flux | $\mathrm{[W/m^2]}$    |
-| $R^{\uparrow}_L$                      | Upward Bound Longwave Radiation Flux  | $\mathrm{[W/m^2]}$    |
-| $\alpha_{s(b)}$    $(b=1,2,3)$        | surface albedo                        | $\mathrm{[-]}$        |
-| $T_{sR}$                              | surface radiation temperature         | [K]                   |
-| $F_{g(1/2)}$                          | Surface Heat Transfer Flux            | $\mathrm{[W/m^2]}$    |
-| $F_{Sn(1/2)}$                         | Heat Transfer Flux for Snow Surface   | $\mathrm{[W/m^2]}$    |
-| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration components         | $\mathrm{[kg/m^2/s]}$ |
+| $\tau_x$                              | Surface-to-west wind stress           | $\mathrm{[N/m^2]}$    |
+| $\tau_y$                              | Surface-to-south wind stress          | $\mathrm{[N/m^2]}$    |
+| $H$                                   | Sensible heat flux                    | $\mathrm{[W/m^2]}$    |
+| $E$                                   | Latent heat flux                      | $\mathrm{[kg/m^2/s]}$ |
+| $R^{\uparrow}_S$                      | Upward shortwave radiation flux       | $\mathrm{[W/m^2]}$    |
+| $R^{\uparrow}_L$                      | Upward longwave radiation flux        | $\mathrm{[W/m^2]}$    |
+| $\alpha_{s(b)}$    $(b=1,2,3)$        | Surface albedo                        | $\mathrm{[-]}$        |
+| $T_{sR}$                              | Surface radiation temperature         | [K]                   |
+| $F_{g(1/2)}$                          | Surface heat transfer flux            | $\mathrm{[W/m^2]}$    |
+| $F_{Sn(1/2)}$                         | Heat transfer flux for snow surface   | $\mathrm{[W/m^2]}$    |
+| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration                    | $\mathrm{[kg/m^2/s]}$ |
 | $\Delta F_{conv}$                     | surface energy convergence            | $\mathrm{[W/m^2]}$    |
 | $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                     | $\mathrm{[kg/m^2/s]}$ |
 | $LAI$                                 | leaf area index                       | $\mathrm{[m^2/m^2]}$  |
@@ -266,9 +272,9 @@ where  $i=1,2$  denotes liquid and solid evapotranspiration, respectively; and $
 
 The following variable is output from the land surface integration section:
 
-| Header0 | Header1 | Header2             |
-|:--------|:--------|:--------------------|
-| $Ro$    | runoff  | [kg/m$^2$/s\\blind} |
+| Variable | Description | Units                 |
+|:---------|:------------|:----------------------|
+| $Ro$     | runoff      | $\mathrm{[kg/m^2/s]}$ |
 
 Runoff is used as an input variable for the river channel network model.
 
@@ -311,36 +317,36 @@ The types of external parameters given by map are as follows:
 
 The types of external parameters given by table for each land cover type are as follows:
 
-| Variable                                       | Description                                                                    | Units                 |
-|:-----------------------------------------------|:-------------------------------------------------------------------------------|:----------------------|
-| $h_0$                                          | vegetation height                                                              | $\mathrm{[m]}$        |
-| $h_{B0}$                                       | Height of the bottom of the canopy                                             | $\mathrm{[m]}$        |
-| $r_{f(b)}$                  ($b$=1,2)          | Reflectivity of individual leaves                                              | $\mathrm{[-]}$        |
-| $t_{f(b)}$                  ($b$=1,2)          | Transmittance of individual leaves                                             | $\mathrm{[-]}$        |
-| $f_{root(k)}$               ($k=1,\ldots,K_g$) | Percentage of root presence                                                    | $\mathrm{[-]}$        |
-| $c_d$                                          | Momentum exchange coefficient between the individual leaves and the atmosphere | $\mathrm{[-]}$        |
-| $c_h$                                          | Heat Exchange Coefficient between individual leaves and the atmosphere         | $\mathrm{[-]}$        |
-| $f_V$                                          | vegetation coverage                                                            | $\mathrm{[-]}$        |
-| $V_{\max}$                                     | Rubisco Reaction Capacity                                                      | $\mathrm{[m/s]}$      |
-| $m$                                            | $A_n$-$g_s$ Slope of the relationship                                          | $\mathrm{[-]}$        |
-| $b$                                            | $A_n$-$g_s$ relationship intercepts                                            | $\mathrm{[m/s]}$      |
-| $\epsilon_3$, $\epsilon_4$                     | Photosynthetic efficiency per photon                                           | $\mathrm{[m/s/moll]}$ |
-| $\theta_{ce}$                                  | Coupling factor between     $w_c$ and $w_e$                                    | $\mathrm{[-]}$        |
-| $\theta_{ps}$                                  | Coupling factor between     $w_p$ and $w_s$                                    | $\mathrm{[-]}$        |
-| $f_d$                                          | respiratory coefficient                                                        | $\mathrm{[-]}$        |
-| $s_2$                                          | Critical temperature of high temperature suppression                           | $\mathrm{[K]}$        |
-| $s_4$                                          | Critical temperature of cryogenic suppression                                  | $\mathrm{[K]}$        |
+| Variable                                | Description                                                                    | Units                 |
+|:----------------------------------------|:-------------------------------------------------------------------------------|:----------------------|
+| $h_0$                                   | vegetation height                                                              | $\mathrm{[m]}$        |
+| $h_{B0}$                                | Height of the bottom of the canopy                                             | $\mathrm{[m]}$        |
+| $r_{f(b)}$           ($b$=1,2)          | Reflectivity of individual leaves                                              | $\mathrm{[-]}$        |
+| $t_{f(b)}$           ($b$=1,2)          | Transmittance of individual leaves                                             | $\mathrm{[-]}$        |
+| $f_{root(k)}$        ($k=1,\ldots,K_g$) | Percentage of root presence                                                    | $\mathrm{[-]}$        |
+| $c_d$                                   | Momentum exchange coefficient between the individual leaves and the atmosphere | $\mathrm{[-]}$        |
+| $c_h$                                   | Heat exchange coefficient between individual leaves and the atmosphere         | $\mathrm{[-]}$        |
+| $f_V$                                   | Vegetation coverage                                                            | $\mathrm{[-]}$        |
+| $V_{\max}$                              | Rubisco reaction capacity                                                      | $\mathrm{[m/s]}$      |
+| $m$                                     | $A_n$-$g_s$ slope of the relationship                                          | $\mathrm{[-]}$        |
+| $b$                                     | $A_n$-$g_s$ relationship intercepts                                            | $\mathrm{[m/s]}$      |
+| $\epsilon_3$, $\epsilon_4$              | Photosynthetic efficiency per photon                                           | $\mathrm{[m/s/moll]}$ |
+| $\theta_{ce}$                           | Coupling factor between     $w_c$ and $w_e$                                    | $\mathrm{[-]}$        |
+| $\theta_{ps}$                           | Coupling factor between     $w_p$ and $w_s$                                    | $\mathrm{[-]}$        |
+| $f_d$                                   | Respiratory coefficient                                                        | $\mathrm{[-]}$        |
+| $s_2$                                   | Critical temperature of high temperature suppression                           | $\mathrm{[K]}$        |
+| $s_4$                                   | Critical temperature of cryogenic suppression                                  | $\mathrm{[K]}$        |
 
 The types of external parameters given by table for each soil type are as follows:
 
-| Header0                           | Header1                                | Header2            |
+| Variable                          | Description                            | Units              |
 |:----------------------------------|:---------------------------------------|:-------------------|
-| $c_{g(k)}$     ($k=1,\ldots,K_g$) | Specific Heat of Soil                  | $\mathrm{[J/m^3]}$ |
-| $k_{g(k)}$     ($k=1,\ldots,K_g$) | Thermal Conductivity of Soil           | $\mathrm{[W/m/K]}$ |
-| $w_{sat(k)}$   ($k=1,\ldots,K_g$) | Soil Porosity                          | [m$^3$/m$^3$]      |
-| $K_{s(k)}$     ($k=1,\ldots,K_g$) | Saturated Permeability of Soil         | $\mathrm{[m/s]}$   |
-| $\psi_{s(k)}$  ($k=1,\ldots,K_g$) | Soil Saturation Moisture Potential     | $\mathrm{[m]}$     |
-| $b_{(k)}$      ($k=1,\ldots,K_g$) | Index of Soil Moisture Potential Curve | $\mathrm{[-]}$     |
+| $c_{g(k)}$     ($k=1,\ldots,K_g$) | Specific heat of soil                  | $\mathrm{[J/m^3]}$ |
+| $k_{g(k)}$     ($k=1,\ldots,K_g$) | Thermal conductivity of soil           | $\mathrm{[W/m/K]}$ |
+| $w_{sat(k)}$   ($k=1,\ldots,K_g$) | Soil porosity                          | [m$^3$/m$^3$]      |
+| $K_{s(k)}$     ($k=1,\ldots,K_g$) | Saturated permeability of soil         | $\mathrm{[m/s]}$   |
+| $\psi_{s(k)}$  ($k=1,\ldots,K_g$) | Soil saturation moisture potential     | $\mathrm{[m]}$     |
+| $b_{(k)}$      ($k=1,\ldots,K_g$) | Index of soil moisture potential curve | $\mathrm{[-]}$     |
 
 
 # Vegetation type parameters
@@ -2859,7 +2865,7 @@ As a result of this calculation, if a part appears where the soil moisture becom
 
 ## Phase change of soil moisture
 
-As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than $T_{melt}=0degC$, or when the temperature in the layer containing solid water is higher than $T_{melt}$, the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the $k$th layer is assumed to be $\Delta w_{i(k)}$,
+As a result of calculating the soil heat conductivity, when the temperature in the layer containing liquid water is lower than $T_{melt}=0 ^{\circ}$C, or when the temperature in the layer containing solid water is higher than $T_{melt}$, the phase change of the soil moisture is calculated. If the amount of freeze (adjustment portion) of the soil moisture in the $k$th layer is assumed to be $\Delta w_{i(k)}$,
 
 when $T_{g(k)}^*<T_{melt}$ and $w_{(k)}^{\tau+1}-w_{i(k)}^{\tau}>0$ (frozen):
 
