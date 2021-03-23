@@ -1,3 +1,9 @@
+---
+reference-section-title:
+        - References
+bibliography:
+        - reference.bib
+---
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=true} -->
 
@@ -404,7 +410,7 @@ $$
 
 ## Calculation of canopy albedo and transmissivity
 
-The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by Watanabe and Ohtani (1995).
+The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by @Watanabe1995-je.
 
 Considering the canopy as vertically uniform and making use of several assumptions for simplification, the transfer equations of insolation within the canopy and the boundary condition are expressed as
 
@@ -572,7 +578,7 @@ Next, the turbulence parameter (bulk coefficient) is calculated.
 
 ## Calculation of roughness with respect to momentum and heat
 
-The calculation of roughness is based on Watanabe (1994). In that study, using the results of a multilayer canopy model by Kondo and Watanabe (1992) as a function form for the roughness of a bulk model best fitting those results, Watanabe (1994) proposed the following:
+The calculation of roughness is based on @Watanabe1994-sx. In that study, using the results of a multilayer canopy model by @Kondo1992-ut as a function form for the roughness of a bulk model best fitting those results, @Watanabe1994-sx proposed the following:
 
 $$
  \left(\ln \frac{h-d}{z_0}\right)^{-1} &=&
@@ -612,7 +618,7 @@ $c_d$ and $c_h$ are parameters determined by the leaf shape, and are given as ex
 
 ## Calculation of bulk coefficient with respect to momentum and heat
 
-After Watanabe (1994), the bulk coefficient is also calculated using Monin-Obukhov similarity as
+After @Watanabe1994-sx, the bulk coefficient is also calculated using Monin-Obukhov similarity as
 
 $$
  C_M &=& k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
@@ -640,7 +646,7 @@ $$
 $$
 
 
-where $\Theta_0$ =300K; $|V_a|$ is the absolute value of the surface wind speed; $k$ is the Karman constant; $g$ is the gravitational acceleration; and $T_a,$T_c$ and $T_s$ are the temperature of the troposphere, canopy (leaf surface), and ground surface (forest floor), respectively.
+where $\Theta_0$ =300K; $|V_a|$ is the absolute value of the surface wind speed; $k$ is the Karman constant; $g$ is the gravitational acceleration; and $T_a, T_c$ and $T_s$ are the temperature of the troposphere, canopy (leaf surface), and ground surface (forest floor), respectively.
 
 Since the bulk coefficient is necessary for calculation of the Monin-Obukhov length, and the Monin-Obukhov length is necessary for calculation of the bulk coefficient, the calculation is iterated (twice as a standard) with a neutral bulk coefficient as the initial value.
 
@@ -671,13 +677,13 @@ In addition, when there is no stomatal resistance, etc. (such as evaporation fro
 
 # Stomatal resistance
 
-For the calculation of stomatal resistance, a photosynthesis-stomatal model based on Farquhar et al. (1980), Ball (1988), and Collatz et al. (1990, 1991, 1992) is used. The code of SiB2 (Sellers et al., 1996) is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.
+For the calculation of stomatal resistance, a photosynthesis-stomatal model based on @Farquhar1980-dm, @Ball1988-jh, and Collatz et al. [-@Collatz1990-pw;-@Collatz1991-lz;-@Collatz1992-hc] is used. The code of SiB2 [@Sellers1996-xi] is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.
 
 ## Calculation of soil moisture stress factor
 
 Soil moisture stress with respect to transpiration is solved. By solving the soil moisture stress factor in each soil layer, and weighting with the root distribution in each layer, the stress factor of the overall soil is calculated.
 
-Referring to SiB2 (Sellers et al., 1996), the soil moisture stress in each layer is evaluated by the following equation:
+Referring to SiB2 [@Sellers1996-xi], the soil moisture stress in each layer is evaluated by the following equation:
 
 $$
  f_{w(k)} = [ 1 + \exp( 0.02 (\psi_{cr} - \psi_{k}) ) ]^{-1}
@@ -703,7 +709,7 @@ Note that $\sum_{k=1}^{K_g} f_{rootup(k)} = 1$ here.
 
 ## Calculation of amount of photosynthesis
 
-The amount of photosynthesis is calculated after SiB2 (Sellers et al., 1996).
+The amount of photosynthesis is calculated after SiB2 [@Sellers1996-xi].
 
 The amount of photosynthesis is considered to be regulated by the following three upper limits:
 
@@ -713,7 +719,7 @@ $$
 $$
 
 
-where $w_c is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).
+where $w_c is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation [@Collatz1991-lz;@Collatz1992-hc].
 
 The respective magnitudes are estimated as follows:
 
@@ -836,7 +842,7 @@ This parameter is expressed as $A_n$ hereafter.
 
 ## Calculation of stomatal resistance (2)
 
-The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of Ball (1988) as follows:
+The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of @Ball1988-jh as follows:
 
 $$
  g_s = m \frac {A_n}{c_s} h_s + b f_w \tag{eq93}
@@ -1430,7 +1436,7 @@ $$
 
 $W_{c\max}$ is set at 0.2 mm as a standard value, and the same value is used with respect to the liquid and solid phases.
 
-The natural dripping due to gravity $D_g$ is, after Rutter et al. (1975), assumed to be
+The natural dripping due to gravity $D_g$ is, after @Rutter1975-bg, assumed to be
 
 $$
  D_g(w_c) = D_1 \exp(D_2 w_c)
@@ -2180,7 +2186,7 @@ $$
 $\alpha_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha_{b,old}$ is that of old snow. In default, $\alpha_{vis,new}$, $\alpha_{nir,new}$, $\alpha_{ifr,new}$, $\alpha_{vis,old}$, $\alpha_{nir,old}$ and $\alpha_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
 
-The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
+The age of snow at the next time step ${\tau+1}$ is, after @Yang1997-va, assumed to be given by the following equation:
 
 $$
 A_g^{\tau+1} = A_g^{\tau} + (f_{age} + f_{age}^{10} + r_{dirt})\Delta t_L / \tau_{age}, \tag{8-58}
@@ -2250,7 +2256,7 @@ where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,
 
 SUBROUTINE: MATROF in matrof.F.
 
-The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
+The surface runoff and groundwater runoff are solved using a simplified TOPMODEL [@Beven1979-ia].
 
 ## Outline of TOPMODEL
 
@@ -2264,7 +2270,7 @@ TOPMODEL contains the following major assumptions:
 
 3.  The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.
 
-The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).
+The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL [@Sivapalan1987-dq;@Stieglitz1997-sk].
 
 Assumption 1 can be expressed as
 
@@ -2744,7 +2750,7 @@ K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \rig
 \right. \tag{eq300}
 $$
 
-in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
+in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to @Clapp1978-vf, is expressed as
 
 $$
  K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
@@ -2908,7 +2914,7 @@ $$
 # Lake
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and Hasumi (2015).
+Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and @Hasumi2015-fs.
 
 Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
 
@@ -2968,7 +2974,7 @@ $$
 
 where the $\alpha_{SnLk(d,b)}$ is the snow albedo covering the lake, and $R_{SnLk}$ is the snow coverage, respectively.
 
-Second, let us consider the lake surface roughness. The roughnesses of for momentum, heat and vapor are calculated in `SUBROUTINE:[LAKEZ0F]`, based on Miller et al. (1992), same with COCO-OGCM (Hasumi 2015), supposing the ice-free conditions, then modified.
+Second, let us consider the lake surface roughness. The roughnesses of for momentum, heat and vapor are calculated in `SUBROUTINE:[LAKEZ0F]`, based on @Miller1992-gi, same with COCO-OGCM [@Hasumi2015-fs], supposing the ice-free conditions, then modified.
 
 When lake ice is present, each roughness is modified to take into account the lake ice concentration ($R_{IcLk}$)
 
@@ -4018,7 +4024,7 @@ The surface heat and water fluxes over lakes have been calculated as one of the 
 
 Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow.
 
-Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
+Potential vegetation is defined according to the vegetation types of the SiB2 [@Sellers1996-ye] scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
 
 ## Appendix
 
@@ -4040,59 +4046,4 @@ Potential vegetation is defined according to the vegetation types of the Simple 
 
 
 # References
-  -
-    Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
 
-  -
-    Beven, K. J., and M. J. Kirkby, 1979: A physically based variable contributing area model of basin hydrology, <span>Hydrol. Sci. Bull.</span>, <span>**24**</span>, 43–69.
-
-  -
-    Clapp, R. B., and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. <span>Water Resour. Res.</span>, <span>**14**</span>, 601–604.
-
-  -
-    Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. <span>Plant Cell Environ.</span>, <span>**13**</span>, 219–225.
-
-  -
-    Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. <span>Agric. For. Meteor.</span>, <span>**54**</span>, 107–136.
-
-  -
-    Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled Photosynthesis-Stomatal Conductance Model for leaves of TERM00000 plants. <span>Aust. J. Plant. Physiol.</span>, <span>**19**</span>, 519–538.
-
-  -
-    Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic TERM00001 fixation in leaves of TERM00002 species. <span>Planta</span>, <span>**149**</span>, 78–90.
-
-  -
-    Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
-    
-  -
-    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2015: A Sensitivity Study of a Simple Wetland Scheme for Improvements in the Representation of Surface Hydrology and Decrease of Surface Air Temperature Bias. <span>Journal of Japan Society of Civil Engineers, Ser.B1 (Hydraulic Engineering)</span>, <span>**71(4)**</span>, 955-960.
-
-  -
-    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2017: Impact of Arctic Wetlands on the Climate System: Model Sensitivity Simulations with the MIROC5 AGCM and a Snow-Fed Wetland Scheme. <span> Journal of Hydrometeorology</span>, <span>**18(11)**</span>, 2923-2936.
-
-  -
-    Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
-
-  -
-    Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span>**9**</span>, 676–705.
-
-  -
-    Sellers, P. J., Meeson, B. W., Closs, J., Collatz, J., Corprew, F., Dazlich, D., Hall, F. G., Kerr, Y., Koster, R., Los, S., Mitchell, K., McManus, J., Myers, D., Sun, K.-J, and Try, P.: The ISLSCP Initiative I global datasets: surface boundary conditions and atmospheric forcings for land-atmosphere studies, B. Am. Meteorol. Soc., <span>**77**</span>, 1987–2006, 1996.
-
-  -
-    Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity. 2, A scaled model of storm runoff production. <span>Water Resour. Res</span>, <span>**23**</span>, 2266–2278.
-
-  -
-    Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. <span>J. Climate</span>, <span>**10**</span>, 118–137.
-
-  -
-    Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. <span>Boundary-Layer Met.</span>, <span>**70**</span>, 13–35.
-
-  -
-    Wiscombe, W. J., and S. G. Warren, 1980: A model for the spectral albedo of snow. I. Pure snow. <span>J. Atmos. Sci.</span>, <span>**37**</span>, 2712–2733.
-
-  -
-    Hirabayashi, Y., Global analysis on long term variations of extreme river discharge, The University of Tokyo, Doctoral degree thesis, 2004
-
-  -
-    渡辺力・大谷義一, 1995: キャノピー層内の日射量分布の近似計算法. <span>農業気象</span>, <span>**51**</span>, 57–60.

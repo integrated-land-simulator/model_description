@@ -20,9 +20,10 @@ do
 	sed -e s/'\\('/'$'/g ${name}.md | \
 	sed -e s/'\\)'/'$'/g | \
         sed -e '/code_chunk_output/,/code_chunk_output/d' | \
+        sed -e '/# References/d' | \
 	sed -e s/'\[\(.*\)\](\(#.*\))'/'\[\]\(\2\)'/g >tmp.md
 
-	pandoc -t latex tmp.md| \
+	pandoc -t latex --natbib --bibliography descript/reference.bib tmp.md| \
 	sed -e s/'\\\['/'\\begin\{eqnarray\}'/g | \
 	sed -e s/'\\\]'/'\\end\{eqnarray\}'/g | \
   sed -e s/'\\toprule'/'\\toprule\\relax'/g | \
