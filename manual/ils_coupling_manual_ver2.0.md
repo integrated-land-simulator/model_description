@@ -58,11 +58,11 @@ date: 2021/03/30
       - [Preprocessing log](#preprocessing-log)
       - [Time integration log](#time-integration-log)
       - [Finalization log](#finalization-log)
-  - [ICI log](#ici-log)
-    - [Configration file read log](#configration-file-read-log)
-    - [Component setting log](#component-setting-log)
-    - [Interpolation table log](#interpolation-table-log)
-    - [Received data monitor log](#received-data-monitor-log)
+    - [ICI log](#ici-log)
+      - [Configration file read log](#configration-file-read-log)
+      - [Component setting log](#component-setting-log)
+      - [Interpolation table log](#interpolation-table-log)
+      - [Received data monitor log](#received-data-monitor-log)
   - [Classification of the error](#classification-of-the-error)
   - [Case where the coupler detected an error](#case-where-the-coupler-detected-an-error)
   - [Case where the program does not finish](#case-where-the-program-does-not-finish)
@@ -1100,7 +1100,7 @@ exchange is also output in the finalization log.
 
 ![alt log_finalize](fig_cpl/log_finalize.png)*Finalize log*
 
-## ICI log
+### ICI log
 
 The file name of the log output by ICI is
 \"COMPONENT_NAME.log.PE?????\". This log is always output. The log is
@@ -1108,7 +1108,7 @@ divided into four parts: configuration file read information, component
 information, interpolation table information, and received data
 information. Each of these is explained below.
 
-### Configration file read log
+#### Configration file read log
 
 An example of the configuration file read log is listed in the next list. The
 information set in the num_ici section of the configuration file is
@@ -1155,7 +1155,7 @@ was read correctly, check this part.
          flag  = SNP
 ```
 
-### Component setting log
+#### Component setting log
 
 An example of the component setting log is listed in the list below. mod_def_grid
 part outputs the grid information such as grid name, grid size and range
@@ -1234,7 +1234,7 @@ settings are correct.
           is OK     :  T
 ```
 
-### Interpolation table log
+#### Interpolation table log
 
 An example of the interpolation table setting log is listed in the list below. The
 interpolation table setting is an error-prone stage. If an error occurs,
@@ -1294,7 +1294,7 @@ check whether the value output in the log is valid or not.
       my coef ?  F F
 ```
 
-### Received data monitor log
+#### Received data monitor log
 
 An example of the received data monitor log is listed in the next list. If the value of
 the received data is not appropriate, this log will be examined to find
