@@ -1,7 +1,3 @@
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=true} -->
-
-<!-- code_chunk_output -->
-
 ---
 author:
 - Yoshimura Lab. Univ. of Tokyo
