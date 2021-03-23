@@ -1,14 +1,9 @@
 ---
 author:
 - Yoshimura Lab. Univ. of Tokyo
-bibliography:
-- coupler.bib
 date: 2021/03/30
 title: |
-  ILS Coupling Interface\
-  　User's Guide\
-  　\
-  　Version 2.0\
+  ILS Coupling Interface User's Guide Version 2.0
 --- 
 
 
@@ -19,62 +14,62 @@ title: |
     - [Model requirements for coupling](#model-requirements-for-coupling)
     - [Coupling pattern](#coupling-pattern)
     - [Data exchange](#data-exchange)
-- [# Preparation](#-preparation)
-  - [## Grid index table](#-grid-index-table)
-  - [## Mapping table](#-mapping-table)
-  - [## Configuration file](#-configuration-file)
-- [# How to use the API subroutines](#-how-to-use-the-api-subroutines)
-  - [## Overview of their usage](#-overview-of-their-usage)
-  - [## Initialization](#-initialization)
+- [Preparation](#preparation)
+  - [Grid index table](#grid-index-table)
+  - [Mapping table](#mapping-table)
+  - [Configuration file](#configuration-file)
+- [How to use the API subroutines](#how-to-use-the-api-subroutines)
+  - [Overview of their usage](#overview-of-their-usage)
+  - [Initialization](#initialization)
     - [Overview of initialization](#overview-of-initialization)
     - [Initialize ICI](#initialize-ici)
     - [Get MPI information](#get-mpi-information)
     - [Set grid index](#set-grid-index)
     - [Set interpolation table](#set-interpolation-table)
-  - [## Processing before time integration](#-processing-before-time-integration)
+  - [Processing before time integration](#processing-before-time-integration)
     - [Overview of preprecessing](#overview-of-preprecessing)
     - [Exchange of various information](#exchange-of-various-information)
     - [Set initial time](#set-initial-time)
     - [Exchange of initial data](#exchange-of-initial-data)
     - [Initial value Put](#initial-value-put)
-  - [## Time integration](#-time-integration)
+  - [Time integration](#time-integration)
     - [Overview of time integration](#overview-of-time-integration)
     - [Setting of current time and $\Delta{T}$](#setting-of-current-time-and-deltat)
     - [Obtaining the data](#obtaining-the-data)
     - [Putting the data](#putting-the-data)
-  - [## Ending process](#-ending-process)
+  - [Ending process](#ending-process)
   - [Other main routines](#other-main-routines)
     - [Get MPI information](#get-mpi-information-1)
     - [Configuration information acquisition routine](#configuration-information-acquisition-routine)
     - [Log output routine](#log-output-routine)
     - [Execution information acquisition routine](#execution-information-acquisition-routine)
-- [# Implementation of coupling code](#-implementation-of-coupling-code)
-  - [## Overview of implementation](#-overview-of-implementation)
-  - [## From initialization to setting the grid index](#-from-initialization-to-setting-the-grid-index)
-  - [## Interpolation table setting](#-interpolation-table-setting)
-  - [## Getting initial data](#-getting-initial-data)
-  - [## Coupling code in the time step loop](#-coupling-code-in-the-time-step-loop)
-  - [## Code for finalize](#-code-for-finalize)
-- [# When you encounter an error](#-when-you-encounter-an-error)
-  - [## First of all](#-first-of-all)
-  - [## Log files](#-log-files)
+- [Implementation of coupling code](#implementation-of-coupling-code)
+  - [Overview of implementation](#overview-of-implementation)
+  - [From initialization to setting the grid index](#from-initialization-to-setting-the-grid-index)
+  - [Interpolation table setting](#interpolation-table-setting)
+  - [Getting initial data](#getting-initial-data)
+  - [Coupling code in the time step loop](#coupling-code-in-the-time-step-loop)
+  - [Code for finalize](#code-for-finalize)
+- [When you encounter an error](#when-you-encounter-an-error)
+  - [First of all](#first-of-all)
+  - [Log files](#log-files)
     - [Jcup log](#jcup-log)
       - [Initialization log](#initialization-log)
       - [Preprocessing log](#preprocessing-log)
       - [Time integration log](#time-integration-log)
       - [Finalization log](#finalization-log)
-  - [## ICI log](#-ici-log)
+  - [ICI log](#ici-log)
     - [Configration file read log](#configration-file-read-log)
     - [Component setting log](#component-setting-log)
     - [Interpolation table log](#interpolation-table-log)
     - [Received data monitor log](#received-data-monitor-log)
-  - [## Classification of the error](#-classification-of-the-error)
-  - [## Case where the coupler detected an error](#-case-where-the-coupler-detected-an-error)
-  - [## Case where the program does not finish](#-case-where-the-program-does-not-finish)
-  - [## Case where a runtime error occurred](#-case-where-a-runtime-error-occurred)
-  - [## Cases with anomalies in the data](#-cases-with-anomalies-in-the-data)
-- [# References](#-references)
-  - [## APIs of ICI](#-apis-of-ici)
+  - [Classification of the error](#classification-of-the-error)
+  - [Case where the coupler detected an error](#case-where-the-coupler-detected-an-error)
+  - [Case where the program does not finish](#case-where-the-program-does-not-finish)
+  - [Case where a runtime error occurred](#case-where-a-runtime-error-occurred)
+  - [Cases with anomalies in the data](#cases-with-anomalies-in-the-data)
+- [References](#references)
+  - [APIs of ICI](#apis-of-ici)
     - [Initialization APIs](#initialization-apis)
     - [APIs in the time integration loop](#apis-in-the-time-integration-loop)
     - [Finalize API](#finalize-api)
@@ -83,7 +78,7 @@ title: |
       - [APIs for sending/receiving values](#apis-for-sendingreceiving-values)
       - [Configuration query APIs](#configuration-query-apis)
       - [Execution information query API](#execution-information-query-api)
-  - [# Revision history](#-revision-history)
+   - [Revision history](#revision-history)
 
 
 # Introduction to coupled simulation
@@ -172,10 +167,7 @@ Time steps other than the data exchange time do not need to be constant.
 
 
 # Preparation
-===========
-
 ## Grid index table
-----------------
 
 Which region (MPI process) of the target component to which all grid
 point data are exchanged is determined by the grid point index assigned
@@ -194,7 +186,6 @@ One component can have a plurality of grids, and the number of grid
 points and the grid point index of each grid can be set independently.
 
 ## Mapping table
--------------
 
 An ICI does not depend on the grid structure and can flexibly couple the
 models whose grid does not change over time. However, for this purpose,
@@ -223,7 +214,6 @@ ici_set_interpolation_table to be described later.
 ```
 
 ## Configuration file
-------------------
 
 ICI uses configuration files and API subroutines to define its behavior.
 The default file name of the configuration file is \"couplig.conf\".
@@ -334,10 +324,8 @@ exchanged. A sample of the configuration file is shown in the list below.
 ```
 
 # How to use the API subroutines
-==============================
 
 ## Overview of their usage
------------------------
 
 To implement ICI routines into a model component, pass the path to the
 ICI library and module files, and use the API module ici_api. The ICI
@@ -346,8 +334,6 @@ data processing before time integration, data processing during time
 integration, and termination.
 
 ## Initialization
---------------
-
 ### Overview of initialization
 
 A typical usage of the ICI API during initialization is as follows figure. The
@@ -363,7 +349,7 @@ end the configuration with ici_end_grid_def. and notify ICI of the end
 of the configuration with ici_end_grid_def. Finally, the mapping table
 is set with ici_set_interpolation_table.
 
-![alt initialization_process](fig_cpl/initialization_process.png)*Tpycal use of the ICI API in initial configuration*
+![alt initialization_process](fig_cpl/initialization_process.png)*Typical use of the ICI API in initial configuration*
 
 ### Initialize ICI
 
@@ -446,7 +432,6 @@ above results are shown in the next table.
 <br>
 
 ## Processing before time integration
-----------------------------------
 
 ### Overview of preprecessing
 
@@ -489,7 +474,6 @@ ici_put_data_vec, and the arguments are the data name and data (one
 variable for the scalar data and two variables for the vector data).
 
 ## Time integration
-----------------
 
 ### Overview of time integration
 
@@ -538,7 +522,7 @@ thus it is not necessary for the user to make a call determination
 according to the step.
 
 ## Ending process
---------------
+
 
 Finally, ici_finalize is called at the end of the coupling. The argument
 is_exchange_data is a flag for sending/receiving the last step data
@@ -547,8 +531,7 @@ to the time integration step algorithm. Here, \"is_call_finalize\" is a
 flag indicating whether to call the MPI termination routine MPI_finalize
 internally.
 
-Other main routines
--------------------
+## Other main routines
 
 ### Get MPI information
 
@@ -576,10 +559,8 @@ Here, ici_is_coupled is a function that returns whether the component
 specified by the argument comp_name is currently running (coupled).
 
 # Implementation of coupling code
-===============================
 
 ## Overview of implementation
---------------------------
 
 In this chapter, the procedure for implementing the coupling code is
 explained based on a concrete example. The example we will refer to is
@@ -587,7 +568,6 @@ MASTSIRO, where the code for coupling is implemented in
 mod_driver_matsiro.f90 and mod_io.f90 under the ILS/src/adm directory.
 
 ## From initialization to setting the grid index
----------------------------------------------
 
 The coupling code from initialization to grid index setting is shown in
 the next list. ici_split_world and ici_set_my_world are used to get and set the
@@ -662,7 +642,6 @@ through ici_def_grid and finally finish setting with ici_end_grid_def.
 ```
 
 ## Interpolation table setting
----------------------------
 
 The interpolation table setting program is implemented in the subroutine
 set_interpolation_table. The code for set_interpolation_table is shown
@@ -776,7 +755,6 @@ subroutine set_interpolation_table(rid)
 ```
 
 ## Getting initial data
---------------------
 
 After the subroutine set_interpolation_table is called, ici_init_time is
 called to set the initial time. Next, the initial data is retrieved in
@@ -832,7 +810,6 @@ subroutine get_bnd ( &
 ```
 
 ## Coupling code in the time step loop
------------------------------------
 
 The time step loop is implemented in the main program
 driver_matsiro.f90. The code of main program is shown in the next list. The time
@@ -1025,16 +1002,13 @@ subroutine get_met ( &
 ```
 
 ## Code for finalize
------------------
 
 The coupling finalization subroutine ici_finalize is called at the end
 of the main program.
 
 # When you encounter an error
-===========================
 
 ## First of all
-------------
 
 When you encounter an error, the first thing to do is to turn on the
 coupler log output. Specifically, in the coupler_config section of the
@@ -1057,7 +1031,6 @@ remove the comments from the setting with log output.
 ```
 
 ## Log files
----------
 
 ICI outputs two types of log files. \"COMPONENT_NAME.log.PE?????\" files
 output by ICI and \"COMPONENT_NAME.coupling.log.PE?????\" files output
@@ -1126,7 +1099,6 @@ exchange is also output in the finalization log.
 ![alt log_finalize](fig_cpl/log_finalize.png)*Finalize log*
 
 ## ICI log
--------
 
 The file name of the log output by ICI is
 \"COMPONENT_NAME.log.PE?????\". This log is always output. The log is
@@ -1354,9 +1326,8 @@ out which data is wrong and to what extent.
 ```
 
 ## Classification of the error
----------------------------
 
-Errors can be classified into the following three levels.
+Errors can be classified into the following four levels.
 
 -   The coupler outputs an error log and aborts.
 
@@ -1385,7 +1356,6 @@ Errors can be classified into the following three levels.
 These cases will be discussed in detail in the following sections.
 
 ## Case where the coupler detected an error
-----------------------------------------
 
 In this case, the program works correctly and detects the error
 correctly. The most common error is an inconsistency between the
@@ -1441,11 +1411,9 @@ any case, the conditions for outputting messages are limited, so the
 user should be able to find bugs by carefully tracing the logs.
 
 ## Case where the program does not finish
---------------------------------------
 
-The program may not be terminated due to a deadlock or communication
-wait in MPI communication. In this case, kill the program and check the
-log.
+The program may not be finished due to a deadlock or communication
+wait in MPI communication. In this case, kill the job and check log files.
 
 It is in the interpolation table setting section that communication
 problems are most likely to occur. The figure below shows an example of an inappropriate
@@ -1462,7 +1430,6 @@ identify the line where the program stops.
 ![alt inappropriate_call](fig_cpl/inappropriate_call.png)*Example of inappropriate routine calls*
 
 ## Case where a runtime error occurred
------------------------------------
 
 ICI(and Jcup) is a software that has been well tested in ILS, and
 empirically, there are not many cases of runtime errors within ICI. The
@@ -1488,7 +1455,6 @@ following are two cases where runtime errors may occur within ICI.
     overflow.
 
 ## Cases with anomalies in the data
---------------------------------
 
 This case can be divided into two types where there is an abnormality
 for all data and the case where there is an abnormality only for
@@ -1553,10 +1519,8 @@ if (data_tag > 10000) then ! vector data
 ```
 
 # References
-==========
 
 ## APIs of ICI
------------
 
 ### Initialization APIs
 
@@ -1822,7 +1786,6 @@ is the name of the target component.
 
 
 # Revision history
-----------------
 
 |  Version  | Date         | Description of Changes
 |  ---------|--------------|------------------------------
