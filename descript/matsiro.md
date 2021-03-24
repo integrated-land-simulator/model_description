@@ -190,7 +190,7 @@ MATSIRO has the following prognostic variables for each tile:
 Table: Prognostic variables
 
 
-where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
+where $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
 
 As the default setting, the soil has six layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, 200, and 1000 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same. The maximum number of snow layer is three by default, while the number is diagnosed from snow water equivalent. As the default setting, the maximum number is three layers.
 
@@ -286,7 +286,7 @@ Runoff is used as an input variable for the river channel network model.
 
 
 ## External parameters
-The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are among the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
+The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
 
 parameter given by map:
 
