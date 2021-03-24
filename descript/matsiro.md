@@ -187,6 +187,7 @@ MATSIRO has the following prognostic variables for each tile:
 | $\rho_d$                                | Dust density in snow                                    | $\mathrm{[ppmw]}$    |
 | $\rho_d$                                | Dust density in snow (mass)                             | $\mathrm{[ppmw]}$    |
 | $\alpha_{ice(b)}$                       | Ice albedo                                              | $\mathrm{[-]}$       |
+Table: Prognostic variables
 
 
 where e $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is the vertical layer number of the soil or snow (the uppermost layer is 1, with the number increasing as the layer becomes deeper);  $K_g$ is the number of soil layers; $K_{Sn}$ is the number of snow layers; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
@@ -210,6 +211,7 @@ The lake part has the following prognostic variables:
 | $h_I$      | Mean lake ice thickness over ice-covered part of a grid | $\mathrm{[cm]}$        |
 | $h_S$      | Mean snow depth over lake ice                           | $\mathrm{[cm]}$        |
 | $h$        | Lake level                                              | $\mathrm{[cm]}$        |
+Table: Prognostic variables for the lake scheme
 
 ## Input data
 
@@ -224,6 +226,7 @@ The following variables are input in the flux calculation section:
 | $P_a$                                       | Atmospheric 1st layer pressure                         | $\mathrm{[Pa]}$    |
 | $P_s$                                       | Surface pressure                                       | $\mathrm{[Pa]}$    |
 | $R^{\downarrow}_{(d,b)}$  $(d=1,2;b=1,2,3)$ | Surface downward radiation flux                        | $\mathrm{[W/m^2]}$ |
+Table: Input data for land flux calculation
 
 where $d=1,2$ denotes direct and diffuse, respectively; and $b=1,2,3$ denotes the bands of visible, near infrared, and infrared wavelengths, respectively.
 
@@ -244,6 +247,7 @@ The following variables are input in the land surface integration section:
 | $A_{Snc}$                             | Canopy freezing area ratio          | $\mathrm{[-]}$        |
 | $D_{dust}$                            | Dust deposition flux                | $\mathrm{[kg/m^2/s]}$ |
 | $D_{BC}$                              | Black carbon deposition flux        | $\mathrm{[kg/m^2/s]}$ |
+Table: Input data for land integration section
 
 
 ## Output data
@@ -267,6 +271,7 @@ The following variables are output from the flux calculation section:
 | $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                     | $\mathrm{[kg/m^2/s]}$ |
 | $LAI$                                 | leaf area index                       | $\mathrm{[m^2/m^2]}$  |
 | $A_{Snc}$                             | Canopy freezing area ratio            | $\mathrm{[-]}$        |
+Table: Output data from the flux calculation section
 
 where  $i=1,2$  denotes liquid and solid evapotranspiration, respectively; and $j=1,2,3$ denotes evaporation from the bare soil surface (forest floor), transpiration, and canopy water evaporation, respectively. Other indexes are the same as described earlier.
 
@@ -275,6 +280,7 @@ The following variable is output from the land surface integration section:
 | Variable | Description | Units                 |
 |:---------|:------------|:----------------------|
 | $Ro$     | runoff      | $\mathrm{[kg/m^2/s]}$ |
+Table: Output data
 
 Runoff is used as an input variable for the river channel network model.
 
@@ -313,6 +319,7 @@ The types of external parameters given by map are as follows:
 | $\alpha_{0(b)}$  $(b=1,2,3)$ | Ground surface (forest floor) albedo | constant            | $\mathrm{[-]}$       |
 | $\tan\beta_{s}$              | Tangent of the mean surface slope    | constant            | $\mathrm{[-]}$       |
 | $\sigma_z$                   | elevation standard deviation         | constant            | $\mathrm{[m]}$       |
+Table: External parameters given by maps
 
 
 The types of external parameters given by table for each land cover type are as follows:
@@ -336,6 +343,7 @@ The types of external parameters given by table for each land cover type are as 
 | $f_d$                                   | Respiratory coefficient                                                        | $\mathrm{[-]}$        |
 | $s_2$                                   | Critical temperature of high temperature suppression                           | $\mathrm{[K]}$        |
 | $s_4$                                   | Critical temperature of cryogenic suppression                                  | $\mathrm{[K]}$        |
+Table: External parameters given by tables
 
 The types of external parameters given by table for each soil type are as follows:
 
@@ -347,6 +355,7 @@ The types of external parameters given by table for each soil type are as follow
 | $K_{s(k)}$     ($k=1,\ldots,K_g$) | Saturated permeability of soil         | $\mathrm{[m/s]}$   |
 | $\psi_{s(k)}$  ($k=1,\ldots,K_g$) | Soil saturation moisture potential     | $\mathrm{[m]}$     |
 | $b_{(k)}$      ($k=1,\ldots,K_g$) | Index of soil moisture potential curve | $\mathrm{[-]}$     |
+Table: External parameters given by tables
 
 
 # Vegetation type parameters
@@ -3663,7 +3672,7 @@ $$
 
 ## Physical formulation and process
 
-This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion and convection of the lake water. 
+This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion and convection of the lake water.
 
 ### Setting the vertical diffusion coefficients
 
@@ -3722,7 +3731,7 @@ This part introduces the calculation of the vertical diffusive tracer flux. Temp
 
 The thickness of each lake layer is first calculated. The water column is divided into 5 layers (k=2, 3, 4, 5, 6) in the current version, and the k=1 and k=7 represent the top surface and the bottom surface of the water column, respectively. The layer of the water column is shown in Fig. 11-1.
 
-![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Lake_11-1.eps) 
+![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Lake_11-1.eps)
 
 Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{1}$, and $D_{1}$ is set to 100 cm. Therefore, the thickness of the first layer can be described as:
 $$
@@ -3810,7 +3819,7 @@ $$
 Then, the vertical diffusion term can be obtained:
 $$
 F_{D}(k)=\left\{\begin{matrix}
-A_{D}'(k), k=6\\A_{D}'(k)-A_{C}'(k)F_{D}(k+1), k=2, 3, 4, 5 
+A_{D}'(k), k=6\\A_{D}'(k)-A_{C}'(k)F_{D}(k+1), k=2, 3, 4, 5
 \end{matrix}\right.
 $$
 
@@ -3819,7 +3828,7 @@ The water temperature of each layer is updated as:
 $$
 T_{k}=T(k)+F_{D}(k)\Delta t
 $$
-After solving diffusive changes of tracers, the effect of heat, salinity, and freshwater fluxes at the lake surface is taken into account. Since the height of the water column changes with the freshwater flux, tracers at each layer should be re-estimated. It worth noting that a minimum depth threshold $h\_{min}$ is set, which means the lake depth can not be lower than this value. When surface freshwater flux $F_{W}$ (positive upward, i.e., the lake level is lowered when $F_{W}$ > 0) is imposed, and the change of the water column for each time step can be represented as: 
+After solving diffusive changes of tracers, the effect of heat, salinity, and freshwater fluxes at the lake surface is taken into account. Since the height of the water column changes with the freshwater flux, tracers at each layer should be re-estimated. It worth noting that a minimum depth threshold $h\_{min}$ is set, which means the lake depth can not be lower than this value. When surface freshwater flux $F_{W}$ (positive upward, i.e., the lake level is lowered when $F_{W}$ > 0) is imposed, and the change of the water column for each time step can be represented as:
 $$
 h_{D}=-F_{W}\Delta t
 $$
@@ -3877,7 +3886,7 @@ where $S_{r}$ represents the solar radiation, and $C_{sr}$ represents the absorp
 $$
 T_{rs}=R_{r}\times e^{-\frac{D_{t}(k)}{z_{1}}}+(1-R_{r})\times e^{-\frac{D_{t}(k)}{z_{2}}}
 $$
-where $R_{r}$, $z_{1}$, and $z_{2}$ are three parameters, and their values are 0.58, 35, and 2300, respectively. 
+where $R_{r}$, $z_{1}$, and $z_{2}$ are three parameters, and their values are 0.58, 35, and 2300, respectively.
 
 $D_{t}(k)$ represent the total depth of the bottom of k-th layer:
 $$
@@ -3886,7 +3895,7 @@ $$
 Therefore, $C_{sr}$ can be represented as:
 $$
 C_{sr}(k)=\left\{\begin{matrix}
-1-T_{rs}(k), k=2\\T_{rs}(k-1)-T_{rs}(k), k=3, 4, 5 
+1-T_{rs}(k), k=2\\T_{rs}(k-1)-T_{rs}(k), k=3, 4, 5
 \\ 1-\sum_{l=2}^{5}C_{sr}(k), k=6
 \end{matrix}\right.
 $$
@@ -3910,7 +3919,7 @@ A classical, still widely used method-convective adjustment, which unstable wate
 
 The water density is calculated by:
 $$
-\rho =999.842594+6.793952\times 10^{-2}\times T-9.095290\times 10^{-3}\times T^{2}+1.001685\times 
+\rho =999.842594+6.793952\times 10^{-2}\times T-9.095290\times 10^{-3}\times T^{2}+1.001685\times
       10^{-4}\times T^{3} -1.120083\times 10^{-6}\times T^{4}+6.536332\times 10^{-9}\times T^{5}
 $$
 
@@ -3952,11 +3961,11 @@ Finally, $R_{out}$ is added to runoff from land and given to the river.
 
 ## Outline of wetland scheme
 
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
-![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Wetland_12-1.eps) 
+![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Wetland_12-1.eps)
 
 ## Inflow and outflow of the wetland
 
@@ -3978,13 +3987,13 @@ where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the st
 
 ## Storage of the surface runoff
 
-The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
+The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:
 
 $$
 Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
 $$
 
-where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3). 
+where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3).
 
 ## Water input of soil surface
 
@@ -4069,7 +4078,7 @@ Potential vegetation is defined according to the vegetation types of the Simple 
 
   -
     Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
-    
+
   -
     Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2015: A Sensitivity Study of a Simple Wetland Scheme for Improvements in the Representation of Surface Hydrology and Decrease of Surface Air Temperature Bias. <span>Journal of Japan Society of Civil Engineers, Ser.B1 (Hydraulic Engineering)</span>, <span>**71(4)**</span>, 955-960.
 
