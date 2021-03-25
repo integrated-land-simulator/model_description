@@ -158,7 +158,7 @@ MATSIRO has the following prognostic variables for each tile:
 
 | Variable                                | Description                                             | Units                |
 |:----------------------------------------|:--------------------------------------------------------|:---------------------|
-| $T_{s(l)}$        $(l=1,2)$             | Surface temperature                                     | $\mathrm{[K]}$       |
+| $T_{s(l)}$        $(l=1,2)$             | Ground surface temperature                              | $\mathrm{[K]}$       |
 | $T_{c(l)}$        $(l=1,2)$             | Canopy temperature                                      | $\mathrm{[K]}$       |
 | $T_{g(k)}$        $(k=1,\ldots,K_g)$    | Soil temperature                                        | $\mathrm{[K]}$       |
 | $w_{(k)}$         $(k=1,\ldots,K_g)$    | Soil moisture content                                   | $\mathrm{[m^3/m^3]}$ |
@@ -287,13 +287,14 @@ $$
 parameter given by a table:
 
 $$
- \psi(I),I = I_L (i,j)
+ \psi(I),
 $$
-
+$$
+ I = I_L (i,j)
+$$
 or
-
 $$
- \psi(I),I = I_S (i,j),
+ I = I_S (i,j)
 $$
 
 where $(i,j)$ are indexes of the grid horizontal location, $I_L$ is the land use type, and $I_S$ is the soil type.
