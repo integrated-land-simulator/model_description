@@ -1567,7 +1567,7 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### Case 1: When OPT_SSNOWD is active
 
-The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by @Liston2004-kr, with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc [Nitta2014-ct;Tatebe2019-ow].
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately.
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
@@ -1595,7 +1595,7 @@ $$
 \zeta^2 = \ln(1+CV^2). \tag{8-4}
 $$
 
-Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$.
+Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of @Krinner2005-xa, in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$.
 
 The snow amount $Sn$ is given by
 
@@ -2243,7 +2243,7 @@ $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully ret
 
 The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
 
-This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
+This is expressed in a following function of the water content above the ice according to @Bougamont2005-pd:
 
 $$
 \alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{*}} \right)}, \tag{8-64}
@@ -2443,7 +2443,7 @@ When there is a frozen soil surface in the middle of the soil, estimation of the
 
 ### Calculation of groundwater runoff
 
-From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In the latest version of MATSIRO,  Hirabayashi (2004) changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
+From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In the latest version of MATSIRO,  @Hirabayashi2004-mw changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
 $$
 K_{s0}=\exp (z^"f)K_0 E_p
 $$
