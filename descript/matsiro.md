@@ -117,49 +117,39 @@
 <!-- /code_chunk_output -->
 
 
-
-# Acknowledgements {-}
-acknowledgements
-
-
-
-\pagebreak
-
-
 # Introduction
 
 In the flux calculation section, the calculations are conducted separately for snow-covered and snow-free potions. For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown below:
 
 (a) MATLAI: vegetation type parameter (LAI, vegetation height) set
 (b) MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)
-(c) MATBLK: calculation of turbulence parameters (bulk coefficients) (momentum and heat)
+(c) MATBLK: calculation of turbulence parameters (bulk coefficients)
 (d) MATRST: calculation of stomatal resistance, bare soil surface evaporation resistance, etc.
-(e) MATBLQ: calculation of turbulence parameters (bulk coefficients) (vapor)
-(f) MATFLX: calculation of surface flux
-(g) MATGHC: calculation of soil heat conductivity
-(h) MATSHB: solution of energy balance at ground surface and canopy
+(e) MATFLX: calculation of surface flux
+(f) MATGHC: calculation of ground heat conduction
+(g) MATSHB: solution of surface heat balance
 
 Then, fluxes from lake surface are calculated separately for ice-covered and ice-free portions. The following subroutines are called in the order shown below:
 
-(a) LAKEBC: calculation of lake surface conditions (albedo, roughness, etc.)
-(b) SFCFLX: calculation of surface flux
-(c) RADSFC: calculation of radiation flux (downward and upward shortwave radiation)
-(d) LAKEHB: solution of energy balance at lake surface
+(h) LAKEBC: calculation of lake surface conditions (albedo, roughness, etc.)
+(i) SFCFLX: calculation of surface flux
+(j) RADSFC: calculation of radiation flux (downward and upward shortwave radiation)
+(k) LAKEHB: solution of energy balance at lake surface
 
 
 In the land integration section, the subroutines for various processes are called and land surface prognostic variables are updated. Specifically, the following subroutines are called in the order shown below:
 
-(a) MATCNW: calculation of canopy water balance
-(b) MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo
-(c) MATROF: calculation of runoff
-(d) MATGND: calculation of soil temperature, soil moisture, and frozen soil
+(l) MATCNW: calculation of canopy water balance
+(m) MATSNW: calculation of snow water equivalent, snow temperature, and snow albedo
+(n) MATROF: calculation of runoff
+(o) MATGND: calculation of soil temperature, soil moisture, and frozen soil
 
 Finally, the lake modules are called and the related prognostic variables are updated.
 
-(a) SETSCNV: calculation of convergence of shortwave radiation
-(b) LAKEIC: calculation of lake ice
-(c) LAKEPO: calculation of lake water and temperature
-(d) PUTDEFF: sending a lake water deficit for the lakes whose water levels are below the lower limit
+(p) SETSCNV: calculation of convergence of shortwave radiation
+(q) LAKEIC: calculation of lake ice
+(r) LAKEPO: calculation of lake water and temperature
+(s) PUTDEFF: sending a lake water deficit for the lakes whose water levels are below the lower limit
 
 
 ## Prognostic variables
@@ -288,13 +278,13 @@ Runoff is used as an input variable for the river channel network model.
 ## External parameters
 The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
 
-parameter given by map:
+parameter given by a map:
 
 $$
  \phi(i,j)
 $$
 
-parameter given by table:
+parameter given by a table:
 
 $$
  \psi(I),I = I_L (i,j)
@@ -309,7 +299,7 @@ $$
 where $(i,j)$ are indexes of the grid horizontal location, $I_L$ is the land use type, and $I_S$ is the soil type.
 
 
-The types of external parameters given by map are as follows:
+The types of external parameters $\phi$ given by map are as follows:
 
 | Variable                     | Description                          | Temporal resolution | Units                |
 |:-----------------------------|:-------------------------------------|:--------------------|:---------------------|
@@ -322,14 +312,14 @@ The types of external parameters given by map are as follows:
 Table: External parameters given by maps
 
 
-The types of external parameters given by table for each land cover type are as follows:
+The types of external parameters $\psi$ given by table for each land cover type are as follows:
 
 | Variable                                | Description                                                                    | Units                 |
 |:----------------------------------------|:-------------------------------------------------------------------------------|:----------------------|
 | $h_0$                                   | vegetation height                                                              | $\mathrm{[m]}$        |
 | $h_{B0}$                                | Height of the bottom of the canopy                                             | $\mathrm{[m]}$        |
-| $r_{f(b)}$           ($b$=1,2)          | Reflectivity of individual leaves                                              | $\mathrm{[-]}$        |
-| $t_{f(b)}$           ($b$=1,2)          | Transmittance of individual leaves                                             | $\mathrm{[-]}$        |
+| $r_{f(b)}$           ($b$=1,2)          | Leaf albedo                                                                    | $\mathrm{[-]}$        |
+| $t_{f(b)}$           ($b$=1,2)          | Leaf transmissivity                                                            | $\mathrm{[-]}$        |
 | $f_{root(k)}$        ($k=1,\ldots,K_g$) | Percentage of root presence                                                    | $\mathrm{[-]}$        |
 | $c_d$                                   | Momentum exchange coefficient between the individual leaves and the atmosphere | $\mathrm{[-]}$        |
 | $c_h$                                   | Heat exchange coefficient between individual leaves and the atmosphere         | $\mathrm{[-]}$        |
@@ -345,7 +335,7 @@ The types of external parameters given by table for each land cover type are as 
 | $s_4$                                   | Critical temperature of cryogenic suppression                                  | $\mathrm{[K]}$        |
 Table: External parameters given by tables
 
-The types of external parameters given by table for each soil type are as follows:
+The types of external parameters $\psi$ given by table for each soil type are as follows:
 
 | Variable                          | Description                            | Units              |
 |:----------------------------------|:---------------------------------------|:-------------------|
