@@ -217,8 +217,8 @@ The following variables are input in the flux calculation section:
 
 | Variable                                    | Description                                            | Units              |
 |:--------------------------------------------|:-------------------------------------------------------|:-------------------|
-| $u_a$                                       | Atmospheric 1st layer east-west wind                   | $\mathrm{[m/s]}$   |
-| $v_a$                                       | Atmospheric 1st layer north-south wind                 | $\mathrm{[m/s]}$   |
+| $u_a$                                       | Atmospheric 1st layer eastward wind                    | $\mathrm{[m/s]}$   |
+| $v_a$                                       | Atmospheric 1st layer northward wind                   | $\mathrm{[m/s]}$   |
 | $T_a$                                       | Atmospheric 1st layer temperature                      | $\mathrm{[K]}$     |
 | $q_a$                                       | Atmospheric 1st layer specific humidity                | $\mathrm{[kg/kg]}$ |
 | $P_a$                                       | Atmospheric 1st layer pressure                         | $\mathrm{[Pa]}$    |
@@ -254,8 +254,8 @@ The following variables are output from the flux calculation section:
 
 | Variable                              | Description                           | Units                 |
 |:--------------------------------------|:--------------------------------------|:----------------------|
-| $\tau_x$                              | Surface-to-west wind stress           | $\mathrm{[N/m^2]}$    |
-| $\tau_y$                              | Surface-to-south wind stress          | $\mathrm{[N/m^2]}$    |
+| $\tau_x$                              | Surface eastward wind stress          | $\mathrm{[N/m^2]}$    |
+| $\tau_y$                              | Surface northward wind stress         | $\mathrm{[N/m^2]}$    |
 | $H$                                   | Sensible heat flux                    | $\mathrm{[W/m^2]}$    |
 | $E$                                   | Latent heat flux                      | $\mathrm{[kg/m^2/s]}$ |
 | $R^{\uparrow}_S$                      | Upward shortwave radiation flux       | $\mathrm{[W/m^2]}$    |
