@@ -1581,7 +1581,7 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### Case 1: When OPT_SSNOWD is active
 
-The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by @Liston2004-kr, with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc [Nitta2014-ct;Tatebe2019-ow].
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by @Liston2004-kr, with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc [@Nitta2014-ct;@Tatebe2019-ow].
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately.
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
@@ -2438,7 +2438,7 @@ $$
 
 where $Ro_s$ is the saturation excess runoff (Dunne runoff), $Ro_i$ is the infiltration excess runoff (Horton runoff), and $Ro_o$ is the overflow of the uppermost soil layer, these three being classified as the surface runoff; and $Ro_b$ is the groundwater runoff.
 
-However, when taking snow-fed wetland into account (Nitta et al., 2017), part of the surface water will be stored in a surface tank and runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Please refer to Wetland section for the details.
+However, when taking snow-fed wetland into account [@Nitta2017-hz], part of the surface water will be stored in a surface tank and runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Please refer to Wetland section for the details.
 
 ### Estimation of mean water table depth
 
@@ -3966,7 +3966,7 @@ Finally, $R_{out}$ is added to runoff from land and given to the river.
 
 ## Outline of wetland scheme
 
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt [@Nitta2017-hz] (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
@@ -3988,7 +3988,7 @@ $$
 \beta =max(\beta_{0}(1-min(\sigma_{z}(x),\sigma_{z max})/\sigma_{z max}), \Delta t)
 $$
 
-where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively [@Nitta2015-ob].
 
 ## Storage of the surface runoff
 
