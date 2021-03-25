@@ -4,10 +4,11 @@
 <!-- code_chunk_output -->
 
 1. [Introduction](#introduction)
-    1. [Prognostic variables](#prognostic-variables)
-    2. [Input data](#input-data)
-    3. [Output data](#output-data)
-    4. [External parameters](#external-parameters)
+    1. [Structure](#structure)
+    2. [Prognostic variables](#prognostic-variables)
+    3. [Input data](#input-data)
+    4. [Output data](#output-data)
+    5. [External parameters](#external-parameters)
 2. [Vegetation type parameters](#vegetation-type-parameters)
 3. [Radiation parameters](#radiation-parameters)
     1. [Calculation of ground surface (forest floor) albedo](#calculation-of-ground-surface-forest-floor-albedo)
@@ -119,7 +120,14 @@
 
 # Introduction
 
-In the flux calculation section, the calculations are conducted separately for snow-covered and snow-free potions. For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown below:
+Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land surface parameterization formulated for application the atmospheric general circulation model developed by the Center for Climate System Research at the University of Tokyo and the National Institute for Environmental Studies (CCSR/NIES AGCM), as well as to other global climate models. It has been designed to be primarily used for integral climate calculations such as those involving long time scales from one month to several hundred years coupled with the atmospheric model at grid resolutions of tens of kilometers or more. The main objective in its development was to represent all of the important water and energy circulation processes between land and atmosphere as fully and accurately as possible (i.e., advanced treatment) in such time and spatial scales, while modeling them as simply as possible (i.e., minimal treatment) so as to allow the results to be easily interpreted.
+
+MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by Watanabe (1994), while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with the current AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which now serves as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions in recent years, was ported from SiB2 code.
+
+
+## Structure
+
+MATSIRO consists of flux calculation section and land integration section. In the flux calculation section, the calculations are conducted separately for snow-covered and snow-free potions. For each snow-free portion ($l=1$) and snow-covered portion ($l=2$), the subroutines for various processes are called, the fluxes are calculated, and the ground surface temperature and canopy temperature are updated. Specifically, the following subroutines are called in the order shown below:
 
 (a) MATLAI: vegetation type parameter (LAI, vegetation height) set
 (b) MATRAD: calculation of radiation parameters (albedo, vegetation transmissivity, etc.)
