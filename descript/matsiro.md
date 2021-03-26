@@ -1,6 +1,4 @@
 ---
-reference-section-title:
-        - References
 bibliography:
         - reference.bib
 ---
