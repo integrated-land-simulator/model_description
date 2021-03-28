@@ -2602,6 +2602,8 @@ P_r^{***} = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
  \tag{eq293}
 $$
 
+If the wetland scheme is active for the grid, the outflow of the wetland should also be added in this equation (see Eq. 12.4).
+
 # Soil
 
 The soil temperature, the soil moisture, and the frozen soil are calculated next.
