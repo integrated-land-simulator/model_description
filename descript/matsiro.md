@@ -2922,7 +2922,7 @@ $$
 # Lake
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM and Hasumi (2015).
+Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM[@Tatebe2019-ow] and Hasumi (2015).
 
 Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
 
@@ -3030,7 +3030,7 @@ $$
 
 ### Calculation of lake surface albedo
 
-Contents of `SUBROUTINE:[LAKEALB]` is the same with `SUBROUTINE [SEAALB]` (in p-sfc.md). For lake surface level albedo $\alpha_{Lk,L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
+Contents of `SUBROUTINE:[LAKEALB]` is the same with `SUBROUTINE [SEAALB]` (in p-sfc.F). For lake surface level albedo $\alpha_{Lk,L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
 
 Using the solar zenith angle at latitude $\zeta$ ($\mathrm{cos}\zeta$), the albedo for direct light is presented by
 
@@ -3099,6 +3099,7 @@ In `SUBROUTINE:[LAKEHB]` (of lakesf.F), the energy balance at lake surface is so
 | $R_{IcLk}$                        | GRICR                   | lake ice concentration        |
 
 *The comments for some variables say "soil", but this is because the program was adapted from a land surface scheme, and has no particular meaning.*
+
 
 Downward radiative fluxes are not directly dependent on the condition of the lake surface, and their observed values are simply specified to drive the model. Shotwave emission from the lake surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha_{Lk,SW}$ be the lake surface albedo for shortwave radiation. The upward shortwave radiative flux ($SW^\uparrow$) is represented by
 
