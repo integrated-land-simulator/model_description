@@ -1,4 +1,3 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=true} -->
 
 <!-- code_chunk_output -->
@@ -2259,12 +2258,69 @@ $$
 
 where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,wet}$ is the one with surface water, $w_{surf}$ is the thisness of surfice water and $w^{*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha_{vis,ice}$, $\alpha_{nir,ice}$ and $\alpha_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha_{b,wet}$ is set to 0.15 for all bands.
 
-
 # Runoff
 
-SUBROUTINE: MATROF in matrof.F.
+The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979). The calculation of runoff are solved in SUBROUTINE: MATROF in matrof.F, and the related variables and parameters are introduced as follows:
 
-The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
+- Output variables
+
+| Variable   | Description                                             | Code   | Units      |
+| ---------- | ------------------------------------------------------- | ------ | ---------- |
+| $Ro$       | Total runoffs                                           | RUNOFF | $kg/m^2/s$ |
+| $Ro_{(k)}$ | Runoff flux from the $k$ th soil layer                  | RUNOFL | $kg/m^2/s$ |
+| $P_r$      | Water flux given to the soil through the runoff process | WINPT  | $kg/m^2/s$ |
+
+- Input variables
+
+| Variable        | Description            | Code   | Units        |
+| --------------- | ---------------------- | ------ | ------------ |
+| $Pr_c$          | Convective rainfall    | WINPC  | $kg/m^2/s$   |
+| $Pr_l$          | Nonconvective rainfall | WINPL  | $kg/m^2/s$   |
+| $M_{sn}$        | Snow melt              | SNMLT  | $(kg/m^2/s)$ |
+| $T_{g(k)}$      | Soil temperature       | GLG    | $K$          |
+| $w_{(k)}$       | Soil moisture          | GLW    | $m^3/m^3$    |
+| $\theta_{i(k)}$ | Soil ice               | GLFRS  | $m^3/m^3$    |
+| ($Ro_{gl}$)     | Glacier formation      | GLACR  | $(kg/m^2/s)$ |
+| $\Delta t$      | Time step              | DELT   | $s$          |
+| $X_s$           | Surface condition      | ILSFC  | -            |
+| -               | Soil type              | ILSOIL | -            |
+
+- Internal work variables
+
+| Variable     | Description                                             | Code   | Units      |
+| ------------ | ------------------------------------------------------- | ------ | ---------- |
+| $Ro_s$       | Saturation excess runoff                                | RUNOFS | $kg/m^2/s$ |
+| $Ro_i$       | Infiltration excess runoff                              | RUNOFI | $kg/m^2/s$ |
+| $Ro_o$       | Surface storage overflow                                | RUNOFO | $kg/m^2/s$ |
+| $Ro_b$       | Base runoff                                             | RUNOFB | $kg/m^2/s$ |
+| $R_s$        | Surface runoff (CMIP5)                                  | SRUNOF | $kg/m^2/s$ |
+| $w_{sat(k)}$ | Saturated soil moisture                                 | GWS    | $m^3/m^3$  |
+| $K_{s(k)}$   | Saturated hydrological conductivity from each layer     | -      | $m/s$      |
+| $K_0$        | Saturation hydraulic conductivity at the ground surface | DFWS   | $m/s$      |
+| $K_{s0}$     | Saturation hydraulic conductivity at the depth of 2m    | DFWST  | $m/s$      |
+| $\psi_{(k)}$ | Matric potential                                        | GPSI   | $m$        |
+| -            | d(PSI)/d(W)                                             | DPDW   |            |
+| $z(x)$       | Water table depth                                       | WTABD  | $m$        |
+| $A_{sat}$    | Surface saturation fraction                             | ASSAT  | -          |
+| $z_f$        | Frost table level                                       | KFTAB  | $m$        |
+| -            | Water table level                                       | KWTAB  | $m$        |
+| -            | Flag for saturation                                     | ISAT   | -          |
+
+- Internal parameters
+
+| PARAMETER    | Description                                       | Code   | Initial values | Units |
+| ------------ | ------------------------------------------------- | ------ | -------------- | ----- |
+| $tan\beta_s$ | Tangent of mean surface slope                     | GRTANS | -              | -     |
+| $L_s$        | Mean length of surface slope                      | GRLENS | -              | $m$   |
+| $\alpha$     | Inflow rate into surface tank                     | FRACSR | -              | -     |
+| $\tau$       | Outflow rate from surface tank                    | TAUSS  | -              | -     |
+| $\frac1f$    | Critical water table depth                        | WTCRIT | 0.333          | -     |
+| $S$          | Surface water storage                             | SFCSTR | 0.001          | -     |
+| -            | Maximum water table depth                         | WTBMAX | -              | $m$   |
+| -            | Epsilon for soil moisture                         | EPSGW  | 0.001          | -     |
+| $A_{cum}$    | Convective storm area for runoff                  | FRACCR | 0.1            | $m^2$ |
+| $E_p$        | Effect of macropore on base-runoff                | EFFMP  | 1              | -     |
+| $z^"$        | Ground depth for groundwater runoff calculatation | -      | 2              | m     |
 
 ## Outline of TOPMODEL
 
@@ -2272,22 +2328,20 @@ In TOPMODEL, the horizontal distribution of a water table along the slope in a c
 
 TOPMODEL contains the following major assumptions:
 
-1.  The soil saturation hydraulic conductivity is attenuated toward the depth of the soil in the manner of an exponential function.
-
-2.  The gradient of the water table is in close agreement locally with the gradient of the slope.
-
+1.  The soil saturation hydraulic conductivity attenuates exponentially as the soil depth increase;
+2.  The gradient of the water table is considered to be locally the same as that of the slope;
 3.  The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.
 
 The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).
 
-Assumption 1 can be expressed as
+The first assumption can be expressed as
 
 $$
 K_s(z) = K_0 \exp (-f z)
 \tag{eq261}
 $$
 
-where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface, and $f$ is the attenuation coefficient.
+where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface which differs among different soil types, and $f$ is the attenuation coefficient. 
 
 When the depth of the water table at a certain point $i$  is designated as $z_i$, the downward groundwater flux on the slope at that point $q_i$ is
 $$
@@ -2295,10 +2349,9 @@ q_i = \int_{z_i}^Z K_s(z) dz \cdot \tan\beta
    = \frac{K_0}{f}  \tan\beta [\exp(-f z_i) - \exp(-f Z)] \tag{eq262}
 $$
 
+where $\beta$ is the gradient of the slope because of the second assumption. $Z$ is the depth of the impervious surface. Normally, however, the term $\exp(-f Z)$ can be ignored because $Z$ is assumed to be sufficiently large compared with $\frac1f$. Moreover, the slope direction soil moisture flux in the unsaturated zone above the water table is small and thus also ignored.
 
-where $\beta$ is the gradient of the slope, and assumption 2 is applied here. $Z$ is the depth of the impervious surface; normally, however, $Z$ is assumed to be sufficiently deep compared with $\frac1f$, so the term $\exp(-f Z)$ is omitted. Moreover, since the slope direction soil moisture flux in the unsaturated zone above the water table is small, it is ignored.
-
-If the groundwater recharge rate $R$ is assumed to be horizontally uniform, assumption 3 is expressed as
+If the groundwater recharge rate $R$ is assumed to be horizontally uniform, with the third assumption, the above equation is expressed as:
 
 $$
 a R = \frac{K_0}{f} \tan\beta \exp(-f z_i)
@@ -2312,7 +2365,7 @@ $$
 z_i = -\frac{1}{f} \ln \left( \frac{faR}{K_0 \tan \beta}\right)  \tag{eq264}
 $$
 
-The averaged water table depth $\overline{z}$ in domain $A$ is
+The averaged water table depth $\overline{z}$ in domain $A$ is described below, while the grid averaged water table depth will be mentioned in section 9.3.1:
 
 
 $$
@@ -2327,14 +2380,14 @@ $$
 $$
 
 
-The recharge rate $R$ can then be expressed as a function of the mean water table depth $\overline{z}$ as follows:
+Therefore, the recharge rate $R$ can then be expressed as a function of the mean water table depth $\overline{z}$ as follows:
 
 
 $$
 R = \exp (-f \overline{z} -\Lambda)  \tag{eq267}
 $$
 
-Under assumption 3, this is exclusively the groundwater runoff discharged from domain $A$.
+Under the third assumption, this is all of the groundwater runoff discharged from domain $A$.
 
 Next, if $R$ is substituted into [Eq. (264)](#eq264) , the following relationship of $z_i$ and $\overline{z}$ is obtained:
 
@@ -2348,7 +2401,7 @@ The domain that satisfies $z_i \leq 0$ is the surface saturated area.
 
 ## Application of TOPMODEL assuming simplified topography
 
-Normally, when TOPMODEL is used, detailed topographical data on the target area is required. Here, however, the average shape of the slope in a grid cell is roughly estimated from the data on the average inclination and the standard deviation of the altitude in the grid (this estimation method is temporary at this stage, and further study is required).
+Normally, when TOPMODEL is used, detailed topographical data on the target area is required. Here, however, the average shape of the slope in a grid cell is roughly estimated from the average inclination and the standard deviation of the altitude in the grid (this estimation method is temporary at this stage, and further study is required).
 
 The topography in the grid cell is represented by the slope with uniform gradient $\beta_s$ and the distance from the ridge to valley $L_s$.
 
@@ -2370,7 +2423,7 @@ z(x) = - \frac{1}{f} \ln \left( \frac{fxR}{K_0 \tan \beta_s}\right)
 \tag{eq270}
 $$
 
-where depth of $z^"$ is 2m. Using this, from [Eq. (265)](#eq265) the mean water table is
+Using this, from [Eq. (265)](#eq265) the grid average water table depth is
 
 $$
 \overline{z} = \frac 1{L_s}\int_0^{L_s} z(x) dx
@@ -2387,7 +2440,7 @@ $$
 R = \frac{K_0 \tan\beta_s}{f L_s}\exp(1-f \overline{z}) \tag{eq272}
 $$
 
-and from [Eq. (268)](#eq268), the relationship between the water table at point $x$ and the mean water table is
+and from [Eq. (268)](#eq268), the relationship between the water table depth at point $x$ and the grid average water table depth is
 
 $$
 z(x) = \overline{z} - \frac{1}{f}\left(
@@ -2430,38 +2483,52 @@ Ro = Ro_s + Ro_i + Ro_o + Ro_b
 \tag{eq277}
 $$
 
-where $Ro_s$ is the saturation excess runoff (Dunne runoff), $Ro_i$ is the infiltration excess runoff (Horton runoff), and $Ro_o$ is the overflow of the uppermost soil layer, these three being classified as the surface runoff; and $Ro_b$ is the groundwater runoff.
+where $Ro_s$ is the saturation excess runoff (Dunne runoff), $Ro_i$ is the infiltration excess runoff (Horton runoff), $Ro_o$ is the overflow of the uppermost soil layer, and $Ro_b$ is the groundwater runoff. The first three types are classified as the surface runoff.
 
-However, when taking snow-fed wetland into account (Nitta et al., 2017), part of the surface water will be stored in a surface tank and runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Please refer to Wetland section for the details.
+The surface runoff $R_s$ calculated by MATSIRO will be:
+$$
+Rs=Ro-Ro_b=Ro_s + Ro_i + Ro_o
+ \tag{eq289}
+$$
+However, when taking snow-fed wetland into account (Nitta et al., 2017), part of the surface runoff $R_s$ will be stored in the surface storage and part of runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Then surface runoff $R_s$ will become:
+$$
+Rs=(Ro_s + Ro_i + Ro_o)\alpha
+ \tag{eq290}
+$$
 
-### Estimation of mean water table depth
+here $\alpha$ determines the inflow rate into surface tank and is specified in Wetland section. Please refer to Eq.12.3 for more details.
 
-The soil moisture is examined from the lowest soil layer. A layer is assumed to be the $k_{WT}$th layer when it becomes unsaturated for the first time, the mean water table depth  ($\overline{z}$) is estimated by:
+### Estimation of grid average water table depth
 
+The grid average water table is considered to exist in the lowest unsaturated layer, which is expressed as $k_{WT}$. The grid average water table depth ($\overline{z}$) is estimated by:
 $$
 \overline{z} = z_{g(k_{WT}-\frac1 2)} - \psi_{k_{WT}}
 \tag{eq279}
 $$
 
-This is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, and the soil moisture distribution as being in the equilibrium state underneath (i.e., the state in which gravity and the capillary force are in equilibrium). Under saturation condition that $\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the upper boundary of soil layer.
+where $\psi_{k_{WT}}$ is the matric potential in the $k_{WT}$th soil layer. 
 
-When $\overline{z} > z_{g(k_{WT}-\frac{1}2)}$, in case $k_{WT}$ is the lowest layer, the water table is assumed to not exist; when $k_{WT}$ isn't the lowest layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and the above equation is applied.
+The above equation is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, which denotes that soil moisture distribution reaches equilibrium state (i.e., the state in which gravity and the capillary force are in equilibrium). 
 
-When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface.
+Under saturation condition that $\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the depth shallower than the upper boundary of soil layer.
+
+When $\overline{z} > z_{g(k_{WT}+\frac{1}2)}$, i.e., average  water table depth is deeper than the lower boundary of $k_{WT}$th layer, in case $k_{WT}$ is the lowest soil layer, the water table is assumed to not exist; when $k_{WT}$ is not the lowest soil layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and water table will generate at $z_{g(k_{WT}+\frac{1}2)}$.
+
+When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface. 
 
 ### Calculation of groundwater runoff
 
-From the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In the latest version of MATSIRO,  Hirabayashi (2004) changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
+Because of the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In MATSIRO6,  Hirabayashi (2004) changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
 $$
 K_{s0}=\exp (z^"f)K_0 E_p
 $$
-where $z^"$ is the depth of 2m, $E_p$ denotes the effect of macropore on groundwater runoff. It's also worth noting that the value of $\frac1f$ has changed from 0.6 to 0.33 in current version of MATSIRO. Therefore, calculation of groundwater runoff will become:
+where $z^"$ is the depth of 2m, $E_p$ denotes the effect of macropore on groundwater runoff. It is also worth noting that the value of $\frac1f$ has changed from 0.6 to 0.33 in MATSIRO6. Therefore, calculation of groundwater runoff will become:
 $$
 Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}\exp(1-f \overline{z})
 \tag{eq280}
 $$
 
-However, when a frozen soil surface exists under the water table, referring to the case of not omitting the term $\exp(-fZ)$ in [Eq. (262)](#eq262), it is assumed that
+However, when a frozen soil surface exists under the water table, referring to the case with the term $\exp(-fZ)$ in [Eq. (262)](#eq262), it is assumed that
 
 $$
 Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}
@@ -2469,7 +2536,7 @@ Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}
   \tag{eq281}
 $$
 
-$z_f$ is the depth of frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, the other relations are not changed here for the sake of simplification.
+where $z_f$ is the depth of frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, they are not changed here for the sake of simplification. 
 
 When there is an unfrozen layer under the frozen soil surface and a water table exists, the groundwater runoff from there is added by a similar calculation.
 
@@ -2496,7 +2563,7 @@ The fraction of the surface saturated area $A_{sat}$ is given by [Eq. (276)](#eq
 With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
 
 $$
-Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
+Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat}) 
  \tag{eq284}
 $$
 
@@ -2526,19 +2593,6 @@ Ro_{(1)} = Ro_{(1)} + Ro_o
  \tag{eq288}
 $$
 
-When calculating surface runoff $R_s$, glacial runoff $Ro_{gl}$ should also be considered. Then the $R_s$ calculated by MATSIRO will be:
-$$
-Rs=Ro+Ro_{gl}-Ro_b=Ro_s + Ro_i + Ro_o + Ro_{gl}
- \tag{eq289}
-$$
-When snow-fed wetlands scheme is considered:
-$$
-Rs=(Ro_s + Ro_i + Ro_o)\alpha + Ro_{gl}
- \tag{eq290}
-$$
-
-here $\alpha$ determines the inflow rate into surface tank and is specified in Wetland section.
-
 ## Water flux given to soil
 
 The water flux given to the soil through the runoff process is
@@ -2547,69 +2601,6 @@ $$
 P_r^{***} = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
  \tag{eq293}
 $$
-
-## Appendix
-
-### Output variables
-
-| Variable   | Description                                             | Code   | Dimension      | Units      |
-| ---------- | ------------------------------------------------------- | ------ | -------------- | ---------- |
-| $Ro$       | Total runoffs                                           | RUNOFF | IJLDIM, KRVMAX | $kg/m^2/s$ |
-| $Ro_{(k)}$ | Runoff flux from the $k$ th soil layer                  | RUNOFL | IJLDIM, KWMAX  | $kg/m^2/s$ |
-| $P_r$      | Water flux given to the soil through the runoff process | WINPT  | IJLDIM         | $kg/m^2/s$ |
-
-### Input variables
-
-| Variable        | Description            | Code   | Dimension     | Units        |
-| --------------- | ---------------------- | ------ | ------------- | ------------ |
-| $Pr_c$          | Convective rainfall    | WINPC  | IJLDIM        | $kg/m^2/s$   |
-| $Pr_l$          | Nonconvective rainfall | WINPL  | IJLDIM        | $kg/m^2/s$   |
-| $M_{sn}$        | Snow melt              | SNMLT  | IJLDIM        | $(kg/m^2/s)$ |
-| $T_{g(k)}$      | Soil temperature       | GLG    | IJLDIM, KGMAX | $K$          |
-| $w_{(k)}$       | Soil moisture          | GLW    | IJLDIM, KWMAX | $m^3/m^3$    |
-| $\theta_{i(k)}$ | Soil ice               | GLFRS  | IJLDIM, KWMAX | $m^3/m^3$    |
-| ($Ro_{gl}$)     | Glacier formation      | GLACR  | IJLDIM        | $(kg/m^2/s)$ |
-| $\Delta t$      | Time step              | DELT   | -             | $s$          |
-| $X_s$           | Surface condition      | ILSFC  | IJLDIM        | -            |
-| -               | Soil type              | ILSOIL | IJLDIM        | -            |
-
-### Internal work variables
-
-| Variable     | Description                                             | Code   | Dimension     | Units      |
-| ------------ | ------------------------------------------------------- | ------ | ------------- | ---------- |
-| $Ro_s$       | Saturation excess runoff                                | RUNOFS | IJLDIM        | $kg/m^2/s$ |
-| $Ro_i$       | Infiltration excess runoff                              | RUNOFI | IJLDIM        | $kg/m^2/s$ |
-| $Ro_o$       | Surface storage overflow                                | RUNOFO | IJLDIM        | $kg/m^2/s$ |
-| $Ro_b$       | Base runoff                                             | RUNOFB | IJLDIM        | $kg/m^2/s$ |
-| $R_s$        | Surface runoff (CMIP5)                                  | SRUNOF | IJLDIM        | $kg/m^2/s$ |
-| $w_{sat(k)}$ | Saturated soil moisture                                 | GWS    | IJLDIM, KWMAX | $m^3/m^3$  |
-| $K_{s(k)}$   | Saturated hydrological conductivity from each layer     | -      | IJLDIM, KWMAX | $m/s$      |
-| $K_0$        | Saturation hydraulic conductivity at the ground surface | DFWS   | IJLDIM        | $m/s$      |
-| $K_{s0}$     | Saturation hydraulic conductivity at the depth of 2m    | DFWST  | IJLDIM        | $m/s$      |
-| $\psi_{(k)}$ | Matric potential                                        | GPSI   | IJLDIM, KWMAX | $m$        |
-| -            | d(PSI)/d(W)                                             | DPDW   | IJLDIM, KWMAX |            |
-| $z(x)$       | Water table depth                                       | WTABD  | IJLDIM        | $m$        |
-| $A_{sat}$    | Surface saturation fraction                             | ASSAT  | IJLDIM        | -          |
-| $z_f$        | Frost table level                                       | KFTAB  | IJLDIM        | $m$        |
-| -            | Water table level                                       | KWTAB  | IJLDIM        | $m$        |
-| -            | Flag for saturation                                     | ISAT   | IJLDIM        | -          |
-
-### Internal parameters
-
-| PARAMETER    | Description                                       | Code   | Dimension | Initial values | Units |
-| ------------ | ------------------------------------------------- | ------ | --------- | -------------- | ----- |
-| $tan\beta_s$ | Tangent of mean surface slope                     | GRTANS | IJLDIM    | -              | -     |
-| $L_s$        | Mean length of surface slope                      | GRLENS | IJLDIM    | -              | $m$   |
-| $\alpha$     | Inflow rate into surface tank                     | FRACSR | IJLDIM    | -              | -     |
-| $\tau$       | Outflow rate from surface tank                    | TAUSS  | IJLDIM    | -              | -     |
-| $\frac1f$    | Critical water table depth                        | WTCRIT | -         | 0.333          | -     |
-| $S$          | Surface water storage                             | SFCSTR | -         | 0.001          | -     |
-| -            | Maximum water table depth                         | WTBMAX | -         | -              | $m$   |
-| -            | Epsilon for soil moisture                         | EPSGW  | -         | 0.001          | -     |
-| $A_{cum}$    | Convective storm area for runoff                  | FRACCR | -         | 0.1            | $m^2$ |
-| $E_p$        | Effect of macropore on base-runoff                | EFFMP  | -         | 1              | -     |
-| $z^"$        | Ground depth for groundwater runoff calculatation | -      | -         | 2              | m     |
-
 
 # Soil
 
@@ -4004,15 +3995,34 @@ $$
 
 where $WI\_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\beta$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
 
-
-
 # Tile scheme
 
-ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F)
+MATSIRO employs a tile treatment of the land surface to represent the subgrid land surface types, so as to partially mimic the behavior at a higher resolution. The tile scheme is demonstrated in ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F), and the variables and parameters are introduced as follows:
 
-In the latest version of MATSIRO, a tile treatment of the land surface has been introduced to represent the subgrid fraction of land surface types, so as to partially mimic the behavior at a higher resolution.
+- Output variables
 
-Basically, one land surface grid is divided into three tiles in the control run: lake, potential vegetation and cropland. All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
+| Variable     | Description                                                  | Code   | Units |
+| ------------ | ------------------------------------------------------------ | ------ | ----- |
+| $F$          | Fluxes at the land surface                                   | MATFLX | -     |
+| $F_{lake}$   | Fluxes at the land surface of lake                           | -      | -     |
+| $F_i(i=1,2)$ | Fluxes at the land surface of potential vegetation and cropland | -      | -     |
+
+- Parameters
+
+
+| PARAMETER    | Description                                            | Code    | Initial values | Units |
+| ------------ | ------------------------------------------------------ | ------- | -------------- | ----- |
+| $f_{lake}$   | Fractional weight of lake                              | LKFRAC  | -              | -     |
+| $f_i(i=1,2)$ | Fractional weight of potential vegetation and cropland | SFFRAC1 | -              | -     |
+
+Basically, one land surface grid is divided into three tiles in the control run — lake, potential vegetation and cropland:
+
+1. There are snow-covered and snow-free fractions in each tile;
+2. The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid;
+3. Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow;
+4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
+
+All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
 $$
 F=F_{lake}f_{lake}+\sum_{i=1}^nF_if_i(1-f_{lake})
 $$
@@ -4020,38 +4030,10 @@ $$
 $$
 \sum_{i=1}^nf_i=1
 $$
-where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, respectively.
+
+where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, respectively. The sum of fractions from 3 types of tile always equals 1.
 
 By default, tile scheme is applied in land surface type, but it can be used for multiple purposes.
-
-## Lake
-
-The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid. The water temperature and mass are predicted for the surface layer (minimum thickness of 1 m) and four subsurface layers, based on the thermal diffusion and mass conversion, considering vertical overturning, evaporation, precipitation, and in-flow from and outflow to rivers.
-
-## Potential Vegetation and Cropland
-
-Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow.
-
-Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
-
-## Appendix
-
-### Output variables
-
-| Variable     | Description                                                  | Code   | Dimension     | Units |
-| ------------ | ------------------------------------------------------------ | ------ | ------------- | ----- |
-| $F$          | Fluxes at the land surface                                   | MATFLX | -             | -     |
-| $F_{lake}$   | Fluxes at the land surface of lake                           | -      | IJLDIM        | -     |
-| $F_i(i=1,2)$ | Fluxes at the land surface of potential vegetation and cropland | -      | IJLDIM,MULTCY | -     |
-
-### Parameters
-
-
-| PARAMETER    | Description                                            | Code    | Dimension     | Initial values | Units |
-| ------------ | ------------------------------------------------------ | ------- | ------------- | -------------- | ----- |
-| $f_{lake}$   | Fractional weight of lake                              | LKFRAC  | IJLDIM        | -              | -     |
-| $f_i(i=1,2)$ | Fractional weight of potential vegetation and cropland | SFFRAC1 | IJLDIM,MULTCY | -              | -     |
-
 
 # References
   -
