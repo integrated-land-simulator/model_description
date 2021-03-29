@@ -488,7 +488,7 @@ $$
 When the temperature of the uppermost snow layer solved in case 1 is higher than 0 $^\circ\mathrm{C}$, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 $$
 \widetilde{F}\_{3/2}^{\*}
- = \frac{k\_{Sn\_{(3/2)}}}{z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
+ = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
  +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
  \Delta T\_{Sn\_{(2)}} \tag{8-41}
 $$
@@ -595,59 +595,59 @@ where $M\_{d\_m(k)}$ and $M\_{d\_w(k)}$ are the amount of DBC on the $k$th snow 
 The amount of DBC in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$. 
 Also, in this section, $\rho\_{d(k)}$ represents $\rho\_{d\_m(k)}$ and $\rho\_{d\_w(k)}$, the density of dust and black carbon calculated using ${M\_d}\_m$ and ${M\_d}\_w$, respectively.
 
-Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
+The snow mass of $k$th layer after updating of snow mass and before snow layer recutting $\Delta Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
-Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
+\Delta Sn^{\tau+1/2}\_{(k)} = \Delta Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
 $$
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
 
-When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
+When $\Delta Sn^{\tau+1}\_{(1)} > \Delta Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
-Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
- & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
- \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
+ & \rho\_{d(2)} \Delta Sn^{\tau+1/2}\_{(2)} 
+ \+ \rho\_{d(3)} \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(2)} \right) \\
  & \hspace{36mm}
- \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
- & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right) \\
+ \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} > \Delta Sn^{\tau+1/2}\_{(2)} \right) \\
+ & \rho\_{d(2)} \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} \right) \\
  & \hspace{36mm}
- \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
+ \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} \leq \Delta Sn^{\tau+1/2}\_{(2)} \right)
 \end{aligned} \right., \tag{8-49}
 $$
 where $\rho\_{d(k)}$ is the density of DBC in the $k$th layer.
 
-When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer decreases, and thus
+When $\Delta Sn^{\tau+1}\_{(1)} \leq \Delta Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer decreases, and thus
 $$
-Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
- = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
+ = -\rho\_{d(1)} \left( \Delta Sn^{\tau+1/2}\_{(1)} - \Delta Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
 $$
 
 It leads to 
 $$
-Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau} = \Delta Md\_{(1)}^{+} - \Delta Md\_{(1)}^{-}, \tag{8-51}
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = M\_{d(1)}^{+} - M\_{d(1)}^{-}, \tag{8-51}
 $$
 where
 $$
 \begin{aligned}
-Md\_{(1)}^{+}
- = &\rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
- & \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
+M\_{d(1)}^{+}
+ = &\rho\_{d(2)} \min\left( \max\left( Sn^+\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
+ & \+ \rho\_{d(3)} \max\left( \max\left( Sn^+\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
 \end{aligned}
 \tag{8-52}
 $$
 $$
-Md\_{(1)}^{-}
- = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-53}
+M\_{d(1)}^{-}
+ = \rho\_{d(1)} \max\left( -Sn^+\_{(1)}, 0 \right),  \tag{8-53}
 $$
 $$
-\Delta Sn\_{(1)} 
+Sn^+\_{(1)} 
  = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-54}
 $$
 
 The change in the amount of DBC in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 $$
-Md\_{(2)}^{\tau+1} - Md\_{(2)}^{\tau} 
- = \Delta Md\_{(1)}^{-} - \Delta Md\_{(1)}^{+} + \Delta Md\_{(3)}^{-} - \Delta Md\_{(3)}^{+}. \tag{8-55}
+M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
+ = M\_{d(1)}^{-} - M\_{d(1)}^{+} + M\_{d(3)}^{-} - M\_{d(3)}^{+}. \tag{8-55}
 $$
 
 Finally, the density of DBC on the $k$th snow layer $\rho\_{d(k)}$ is updated by
