@@ -213,48 +213,47 @@ $$
 $$
 where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_{Sn}$ is the sublimation flux, $M\_{Sn}$ is the snowmelt, and $Fr\_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 
+[TODO] 上の章で定義しているのでここでは不要かもしれませんが，各章内で完結するようにしておいた方が読む人には親切かと思うので，ここでτとtLについて加えてもよいかもしれません。
+
 ### Sublimation of snow
 
-First, by subtracting the sublimation, the snow water equivalent is partially updated:
+First, by subtracting the sublimation, the snow water equivalent is updated:
 
 $$
-Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t \tag{8-13}
+Sn^{\*} = Sn^{\tau} - E\_{Sn}, \Delta t \tag{8-13}
+$$
+$$
+\widetilde{Sn}\_{(1)}^{\*} =  \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t. \tag{8-14}
 $$
 
-$$
-\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t \tag{8-14}
-$$
-
-In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
+In a case where the sublimation is larger than the snow water equivalent in the uppermost snow layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
 
 ### Snowmelt
 
-Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T\_{Sn(k)}^{\*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T\_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T\_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
+Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T\_{Sn(k)}^{\*}$.
+When the snow temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T\_{melt} = 0 ^\circ\mathrm{C}$, the calculation of snow heat conduction is performed again with the fixed snow temperature of the uppermost snow layer at $T\_{melt}$.
+In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost snow layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost snow layer is
 
 $$
-\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ) \tag{8-15}
+\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ). \tag{8-15}
 $$
 
-With regard to the second layer and below, if the temperature is higher than $T\_{melt}$, it is put back to $T\_{melt}$ and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
+With regard to the second snow layer and below, if the estimated snow temperature is higher than $T\_{melt}$, it is adjusted to $T\_{melt}$ and the desidual energy from the adjustment is applied to the snowmelt. That is, it is assumed to be
 
 $$
-T\_{Sn(k)}^{\*\*} = T\_{melt} \tag{8-16}
+T\_{Sn(k)}^{\*\*} = T\_{melt}. \tag{8-16}
 $$
 
 $\Delta \widetilde{F}\_{conv}$ is newly defined by
-
 $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L \tag{8-17}
 $$
-
 and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
 By subtracting the snowmelt, the mass of each layer is updated:
-
 $$
-\Delta \widetilde{Sn}\_{(k)}^{\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}} \tag{8-18}
+\Delta \widetilde{Sn}\_{(k)}^{\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}}. \tag{8-18}
 $$
-
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}\_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 
