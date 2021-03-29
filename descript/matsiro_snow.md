@@ -554,7 +554,7 @@ The amount of dust on the snow cover and in the snow layers are calculated in SU
 
 The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F when the option OPT\_SNWALB is active.
 
-Flux of DBC $D\_m$ and weighted flux of DBC $D\_w$ is obtained by
+Flux of DBC $D\_m$ and weighted-mean flux of DBC $D\_w$ is obtained by
 $$
 \begin{aligned}
 D\_m &= D\_{dust} + D\_{BC}, \\
@@ -581,11 +581,12 @@ $$
 The amount of DBC on the uppermost snow layer is updated as
 $$
 \begin{aligned}
-{M\_d}\_{m(1)}^{\tau+1} &= Md\_{m(1)}^{\tau} + D\_m, \\
-{M\_d}\_{w(1)}^{\tau+1} &= Md\_{w(1)}^{\tau} + D\_w, 
+M\_{d\_m(1)}^{\tau+1} &= M\_{d\_m(1)}^{\tau} + D\_m, \\
+M\_{d\_w(1)}^{\tau+1} &= M\_{d\_w(1)}^{\tau} + D\_w, 
 \end{aligned} \tag{8-47}
 $$
-where $Md\_{m(k)}$ and $Md\_{w(k)}$ are the amount of unweighted and weighted DBC on the $k$th snow layer.
+where $M\_{d\_m(k)}$ and $M\_{d\_w(k)}$ are the amount of DBC on the $k$th snow layer.
+
 
 ### Redistribution of dust
 
@@ -647,6 +648,10 @@ Md\_{(2)}^{\tau+1} - Md\_{(2)}^{\tau}
  = \Delta Md\_{(1)}^{-} - \Delta Md\_{(1)}^{+} + \Delta Md\_{(3)}^{-} - \Delta Md\_{(3)}^{+}. \tag{8-55}
 $$
 
+Finally, the density of DBC on the $k$th layer $\rho\_{d(k)}$ is updated by
+$$
+\rho\_{d(k)} = M\_{d(k)} / Sn\_{(k)} /times 10^6.
+$$
 
 ## Albedo of snow and ice
 
