@@ -70,10 +70,10 @@ Input
 | $w\_c$                      | Canopy water                                     | $\mathrm{m}$        | GLWC         |
 | $A\_{Snc}$                  | Canopy snow ratio                                | -                   | SNRATC       |
 | $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   | DSTFAL       |
-| -                           | Standard deviation of topography                 | $\mathrm{m}$        | GRZSD        |
-| -                           | Annual mean temperature over the latest 30 years | $\mathrm{K}$        | T2HIST       |
-| -                           | Index of the surface condition                   | -                   | ILSFC        |
-| -                           | Soil type                                        | -                   | ILSOIL       |
+| [TODO]                      | Standard deviation of topography                 | $\mathrm{m}$        | GRZSD        |
+| [TODO]                      | Annual mean temperature over the latest 30 years | $\mathrm{K}$        | T2HIST       |
+| [TODO]                      | Index of the surface condition                   | -                   | ILSFC        |
+| [TODO]                      | Soil type                                        | -                   | ILSOIL       |
 
 
 ## Diagnosis of snow cover fraction
@@ -82,6 +82,8 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### Case 1: When OPT\_SSNOWD is active
 
+[TODO] 1年に1度、積雪期と融雪期をリセットしていて、そのための変数をリスタートにも入れています。もし可能でしたら、その説明もあると嬉しいです。
+
 The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
@@ -89,18 +91,16 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
+\int\_0^{Sn\_w\_m} f(s)dw + \int\_{Sn\_w\_m}^\infty f(Sn\_w)ds = 1, \tag{8-1}
 $$
-where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+where $sw$ is the snow water equivalent depth and $f(s)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
 f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{8-2}
 $$
-
 where
-
 $$
 \lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
 $$
@@ -112,26 +112,20 @@ $$
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
 The snow amount $Sn$ is given by 
-
 $$
 Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD, \tag{8-5}
 $$
-
 and this equation is rewritten to
-
 $$
 Sn(D\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
  \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
  \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right), \tag{8-6}
 $$
-
 where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
-
 $D\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
 
 Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
-
 $$
 A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{D\_m}}{2} \right). \tag{8-7}
 $$
@@ -139,11 +133,9 @@ $$
 ### Case 2: When OPT\_SSNOWD is inactive
 
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
-
 $$
 Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
 $$
-
 where $Sn\_c$ is 100 $\mathrm{kg/m^2}$.
 
 
@@ -224,9 +216,8 @@ $$
 The prognostic equation of the snow water equivalent is given by
 
 $$
- \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t\_L} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
 $$
-
 where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_{Sn}$ is the sublimation flux, $M\_{Sn}$ is the snowmelt, and $Fr\_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 
 ### Sublimation of snow
@@ -234,11 +225,11 @@ where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_
 First, by subtracting the sublimation, the snow water equivalent is partially updated:
 
 $$
-Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t\_L \tag{8-13}
+Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t \tag{8-13}
 $$
 
 $$
-\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t\_L \tag{8-14}
+\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t \tag{8-14}
 $$
 
 In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
