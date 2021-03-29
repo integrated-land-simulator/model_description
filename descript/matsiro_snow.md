@@ -95,14 +95,14 @@ For the ablation season, the snow cover fraction decreases based on the sub-grid
 $$
 \int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1, \tag{8-1}
 $$
-where $W\_{Sn}$ is the snow water equivalent depth and $f(W\_{Sn})$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+where $W\_{Sn}$ is the snow water equivalent depth and $f(W\_{Sn})$ is the probability distribution function of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
 f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(W\_{Sn})-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{8-2}
 $$
-where $\lambda = \ln(\mu) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
+where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
 Here $\mu$ is the accumulated snow and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
