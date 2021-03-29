@@ -593,9 +593,9 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
  & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
  \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
- & \quad (hoge) \\
+ & && (hoge) \\
  & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right) \\
- & \quad (fuga)
+ & && (fuga)
 \end{aligned} \right., \tag{8-49}
 $$
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
