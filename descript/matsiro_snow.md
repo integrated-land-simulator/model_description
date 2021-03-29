@@ -151,7 +151,7 @@ As a standard, the mass of each layer ($\Delta{\widetilde{Sn}}\_{(k)} (k=1,2,3)$
 
 $$
 \begin{aligned}
-\Delta\widetilde{Sn}\_{(1)} &= \left\\{
+\Delta \widetilde{Sn}\_{(1)} &= \left\\{
 \begin{array}{ll}
  \widetilde{Sn} \\
  0.5\widetilde{Sn}  \\
@@ -163,7 +163,7 @@ $$
  (\widetilde{Sn} \geq 40)
 \end{array}
 \right. \\
-\Delta\widetilde{Sn}\_{(2)} &= \left\\{
+\Delta \widetilde{Sn}\_{(2)} &= \left\\{
 \begin{array}{ll}
  0 \\
  \widetilde{Sn} - \Delta Sn\_{(1)} \\
@@ -177,7 +177,7 @@ $$
  (\widetilde{Sn} \geq 100)
 \end{array}
 \right. \\
-\Delta\widetilde{Sn}\_{(3)} &= \left\\{
+\Delta \widetilde{Sn}\_{(3)} &= \left\\{
 \begin{array}{ll}
  0 \\
  \widetilde{Sn} - (\Delta Sn\_{(1)} + \Delta Sn\_{(2)})
