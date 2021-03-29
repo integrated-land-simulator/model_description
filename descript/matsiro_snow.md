@@ -241,9 +241,9 @@ $$
 T\_{Sn(k)}^{\*\*} = T\_{melt}. \tag{8-16}
 $$
 
-$\Delta \widetilde{F}\_{conv}$ is newly defined by
+$\Delta \widetilde{F}\_{conv}$ is newly defined in each layer by
 $$
-\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
+\Delta \widetilde{F}\_{conv(k)} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
 $$
 where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
@@ -561,7 +561,7 @@ The dust fall is added to the top layer:
 $$
 M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-47}
 $$
-where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
+where $M\_{d(k)}$ is the amount of dust on the $k$th snow layer and $D$ is the dust fall.
 
 
 ### Redistribution of dust
