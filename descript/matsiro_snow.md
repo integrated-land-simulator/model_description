@@ -91,7 +91,7 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{Sn\_w\_m} f(s)dw + \int\_{Sn\_w\_m}^\infty f(Sn\_w)ds = 1, \tag{8-1}
+\int\_0^{Sn\_{w\_m}} f(Sn\_w)dSn\_w + \int\_{Sn\_{w\_m}}^\infty f(Sn\_w)dSn\_w = 1, \tag{8-1}
 $$
 
 where $Sn\_w$ is the snow water equivalent depth and $f(Sn\_w)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
