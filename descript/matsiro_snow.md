@@ -392,7 +392,7 @@ $$
 z\_{Sn(k+1/2)}
  = \left\\{
  \begin{aligned}
-  & 0.5 \Delta \widetilde{Sn}\_{(1)} / \rho\_{Sn} 
+  & 0.5 \widetilde{Sn}\_{(1)} / \rho\_{Sn} 
   \; &&(k = 1) \\
   & 0.5 (\widetilde{Sn}\_{(k)} + \widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
   \; &&(k = 2, ..., K\_{Sn}-1) \\
@@ -467,10 +467,9 @@ $$
 $$
 
 and [Eq. (8-32)](#8-32) is treated as
-
 $$
 \begin{aligned}
- c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{\Delta t\_L}
+ c\_{pi}\widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{t}
  &= &&\widetilde{F}\_{Sn\_{(k+1/2)}}^{\*} - \widetilde{F}\_{Sn\_{(k-1/2)}}^{\*} \\
  &= &&\widetilde{F}\_{Sn\_{(k+1/2)}}^{\tau}
   \+ \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
@@ -481,9 +480,9 @@ $$
 \end{aligned} \tag{8-39}
 $$
 
-
-and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}}\ (k = 1, ..., K\_{Sn})$ simultaneous equations with respect to $K\_{Sn}$. At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, the snow lower boundary condition is the temperature in the uppermost soil layer, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer. The snow temperature is partially updated by
-
+and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}} (k = 1, ..., K\_{Sn})$ simultaneous equations with respect to $K\_{Sn}$.
+At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer, which is the boundary condition of the snow lower boundary.
+The snow temperature is updated by
 
 $$
 T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-40}
@@ -491,23 +490,20 @@ $$
 
 ### Case 2: When snowmelt occurs in the uppermost layer
 
-When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
-
+When the temperature of the uppermost snow layer solved in case 1 is higher than 0 $^\circ\mathrm{C}$, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 $$
 \widetilde{F}\_{3/2}^{\*}
- = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
+ = \frac{k\_{Sn\_{(3/2)}}}{z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
  +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
  \Delta T\_{Sn\_{(2)}} \tag{8-41}
 $$
-
 and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
 
 The energy convergence used for melting in the uppermost snow layer is given by:
-
 $$
 \Delta \widetilde{F}\_{conv} 
  = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
- \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L} \tag{8-42}
+ \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L}. \tag{8-42}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -516,39 +512,33 @@ Even if the temperature of the second snow layer and below is higher than $T\_{m
 ## Fluxes given to the soil or the runoff process
 
 The heat flux given to the soil through the snow process is
-
 $$
 \Delta F\_{conv}^{\*} 
  = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*},
 \tag{8-43}
 $$
-
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground.
 
-Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
+[TODO] この記述で理解はできますが，document 中に式でのこの変数の説明はないようです。
 
+Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 $$
  \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-44}
 $$
 
-
 The water flux given to the runoff process through the snow process is then expressed as
-
 $$
 \begin{aligned}
- Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*}, \\
- Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
-\end{aligned} \tag{8-45}
+ Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
+ Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*}
+\end{aligned}, \tag{8-45}
 $$
-
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
 
 ## Glacier formation
 
 In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
-
-
 $$
 \begin{aligned}
  Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t\_L, \\
@@ -556,24 +546,19 @@ $$
  \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t\_L,
 \end{aligned} \tag{8-46}
 $$
-
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
-
 
 
 ## Dust in snow
 
 The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
 
-
 ### Dust fall on the snow cover
 
 The dust fall is added to the top layer:
-
 $$
 M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-47}
 $$
-
 where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust fall.
 
 
@@ -582,15 +567,12 @@ where $M\_{d(k)}$ is the amount of snow on the $k$th layer and $D$ is the dust f
 The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT).
 
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
-
 $$
 Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
 $$
-
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
 
 When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
-
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
@@ -601,24 +583,19 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
 \end{aligned} \right., \tag{8-49}
 $$
-
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
 
 When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
-
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
 $$
 
 It leads to 
-
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-}, \tag{8-51}
 $$
-
 where
-
 $$
 M\_{d(1)}^{+}
  = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right)
@@ -635,12 +612,10 @@ $$
 $$
 
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
-
 $$
 M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
  = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+} + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}. \tag{8-55}
 $$
-
 
 
 ## Albedo of snow and ice
