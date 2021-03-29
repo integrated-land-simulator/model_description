@@ -40,17 +40,18 @@ The following tables present attributions of key variables in SUBROUTINE MATSNW.
 
 Modified
 
-| Variable                       | Long name                                        | Unit                | Name in code |
-|:-------------------------------|:-------------------------------------------------|:--------------------|:-------------|
-| $Sn$                           | Amount of accumulated snow                       | $\mathrm{kg/m^2}$   | GLSNW        |
-| $T\_{Sn(k)} \;\; (k=1,2,3)$    | Snow temperature of the $k$th layer              | $\mathrm{K}$        | GLTSN        |
-| $\alpha\_b  \;\; (b=1,2,3)$    | Snow albedo for band $b$                         | -                   | GLASN        |
-| $A\_{Sn}$                      | Snow fraction                                    | -                   | GLRSN        |
-| [TODO]                         | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
-| $M\_{Sn}$                      | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
-| $P\_{r\_c}$                    | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPC        |
-| $P\_{r\_l}$                    | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
-| $\rho D\_{(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon \\ in the $k$th snow layer | $\mathrm{ppmv}$     | CDST         |
+| Variable                      | Long name                                        | Unit                | Name in code |
+|:------------------------------|:-------------------------------------------------|:--------------------|:-------------|
+| $Sn$                          | Amount of accumulated snow                       | $\mathrm{kg/m^2}$   | GLSNW        |
+| $T\_{Sn(k)} \;\; (k=1,2,3)$   | Snow temperature of the $k$th layer              | $\mathrm{K}$        | GLTSN        |
+| $\alpha\_b  \;\; (b=1,2,3)$   | Snow albedo for band $b$                         | -                   | GLASN        |
+| $A\_{Sn}$                     | Snow fraction                                    | -                   | GLRSN        |
+| [TODO]                        | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
+| $M\_{Sn}$                     | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
+| $P\_{r\_c}$                   | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPC        |
+| $P\_{r\_l}$                   | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
+| $\rho\_{d(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer | $\mathrm{ppmv}$     | CDST         |
+| $\rho\_{d(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer | $\mathrm{ppmv}$     | CDST         |
 
 Output
 
@@ -588,7 +589,8 @@ where $Md\_{m(k)}$ and $Md\_{w(k)}$ are the amount of unweighted and weighted DB
 
 ### Redistribution of dust
 
-The amount of DBC in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$.
+The amount of DBC in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$. 
+Also, in this section, $\rho\_{d(k)}$ represents $\rho\_{d\_m(k)}$ and $\rho\_{d\_w(k)}$, the density of dust and black carbon calculated using $M\_d\_m$ and $M\_d\_w$, respectively.
 
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
