@@ -554,13 +554,13 @@ The flux of dust and black carbon (DBC), the light-absorpting particles, is calc
 Flux of DBC $D\_M$ and weighted flux of DBC $D\_W$ is obtained by
 $$
 \begin{aligned}
-D\_M &= D\_{dust} + D\_{BC},
-D\_W &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + \gamma\_{BC}}.
+D\_m &= D\_{dust} + D\_{BC}, \\
+D\_w &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + \gamma\_{BC}},
 \end{aligned}
 $$
-Here, $\gamma\_{C}$ is defined by the following equalities:
+where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{C} (C = dust, BC)$ is defined by the following equalities:
 $$
-\gamma\_{C} = \gamma\_{C,vis}w\_r\_{vis}
+\gamma\_{C} = \gamma\_{C,vis} {w\_r}\_{vis}
 $$
 
 The dust fall is added to the top layer:
