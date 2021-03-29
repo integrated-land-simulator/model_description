@@ -95,7 +95,7 @@
         1. [Calculation of heat flux and growth rate](#calculation-of-heat-flux-and-growth-rate)
         2. [Sublimation and freshwater flux for lake](#sublimation-and-freshwater-flux-for-lake)
         3. [Updating lake ice fraction](#updating-lake-ice-fraction)
-        4. [Growth and Melting](#growth-and-melting)
+        4. [Growth and Melting of lake ice and snow](#growth-and-melting-of-lake-ice-and-snow)
     4. [Physical formulation and process](#physical-formulation-and-process)
         1. [Setting the vertical diffusion coefficients](#setting-the-vertical-diffusion-coefficients)
         2. [Estimate the diffusion terms of the tracer equations](#estimate-the-diffusion-terms-of-the-tracer-equations)
@@ -192,7 +192,7 @@ where $l=1,2$ denotes snow-free and snow-covered portions, respectively; $k$ is 
 
 As the default setting, the soil has six layers whose thicknesses are defined by the depth boundaries of 5, 20, 75, 100, 200, and 1000 cm from the surface. The definition points of soil temperature, soil moisture, and frozen soil moisture are the same. The maximum number of snow layer is three by default, while the number is diagnosed from snow water equivalent. As the default setting, the maximum number is three layers.
 
-The ground surface temperature and canopy temperature are so-called skin temperatures whose heat capacity is zero; however, they take the form of prognostic variables. (The current calculation method depends on the values of the preceding step because the stability, etc. assessed by the values of the preceding step are used. If the stability, etc. were to be assessed by updated values and calculation iterated to the point of convergence, perfect diagnostic variables would be obtained that would not depend on the values of the preceding step.) The other variables are all prognostic variables that always require the values of the preceding step.
+The ground surface temperature and canopy temperature are so-called surface temperatures whose heat capacity is zero; however, they take the form of prognostic variables. (The current calculation method depends on the values of the preceding step because the stability, etc. assessed by the values of the preceding step are used. If the stability, etc. were to be assessed by updated values and calculation iterated to the point of convergence, perfect diagnostic variables would be obtained that would not depend on the values of the preceding step.) The other variables are all prognostic variables that always require the values of the preceding step.
 
 The ground surface temperature and canopy temperature are updated in the flux calculation section. All of the other variables (original prognostic variables) are updated in the land surface integration section.
 
@@ -2262,7 +2262,7 @@ where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,
 
 # Runoff
 
-SUBROUTINE: MATROF in matrof.F.
+SUBROUTINE  MATROF in matrof.F.
 
 The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979).
 
@@ -2922,53 +2922,53 @@ $$
 # Lake
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-Up to and including the calculation of the surface flux (section 11.1 and 11.2), the method is derived from the land surface model MATSIRO, while the calculation below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original program. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM[@Tatebe2019-ow] and Hasumi (2015).
+The method for surface flux calculation (section 11.1 and 11.2) is derived from the sea surface scheme of MIROC-AGCM, while the calculation for the processes below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original programs. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part of this section is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM[@Tatebe2019-ow] and Hasumi (2015).
 
-Dimensions of the lake scheme is defined in `include/zkg21c.F`. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from `KLSTR=2` to `KLEND=KLMAX+1`, `NLZDIM = KLMAX+KLSTR` exists as a parameter for management.
+Dimensions of the lake scheme is defined in include/zkg21c.F. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from the first number of vertical layer (`KLSTR=2`) to the last number of vertical layer (`KLEND=KLMAX+1`). `NLZDIM = KLMAX+KLSTR` is also defined for the management.
 
-Minimum depth of lake is given in `matdrv.F` as $10 \times 10^2 \mathrm{[cm]}$, hence any lakes cannot be disappeared even in severe conditions.
+Lakes have been calculated as one of the tiles in a grid, as described in section 13.1.　As a standard value, minimum depth of lake of $10 \times 10^2 \mathrm{[cm]}$ is given in matdrv.F, hence any lakes cannot disappear even in severe dry conditions.
 
 ## Calculation of lake surface conditions
 
-In `ENTRY[LAKEBC]` (in `SUBROUTINE:[LSFBCS]` of lakesf.F) lake surface albedo, roughness, and heat flux are calculated. They are calculated supposing ice-free conditions, then modified. While the albedo of snow is a pronostic variable, the lake surface albedo considering with ice and snow above is a diagnostic variable. The aging effect of the snow is  differently treated. These methods are actually same with an old version of COCO-OGCM. The newest version of COCO, which is going to be coupled to MIROC7-AOGCM, has been applied a melt pond scheme a snow aging scheme which is basically the same with the treatment in the current land surface (Komuro, the GCM meeting on 22nd Feb, 2021).
+In ENTRY LAKEBC (in SUBROUTINE LSFBCS of lakesf.F) lake surface albedo, roughness, and heat flux are calculated. They are calculated supposing ice-free conditions, then modified to take into account the effects of ice and snow cover. While the albedo of land snow is a prognostic variable, the lake surface albedo considering with ice and snow above is a diagnostic variable. The aging effect of the snow is simply depending on its temperature. These methods are actually same with an old version of COCO-OGCM[@Hasumi2015-fs]. The newest version of COCO, which is going to be coupled to MIROC7-AOGCM, has been applied a melt pond scheme a snow aging scheme which is basically the same with the treatment in the current land surface (Komuro, the GCM meeting on 22nd Feb, 2021).
 
-- Output variables
+- Output variables of LAKEBC
 
-| Variable                        | Variable in source code | Description                | Units                |
-|:--------------------------------|:------------------------|:---------------------------|:---------------------|
+| Variable                        | Variable in source code | Longname                   | Unit                 |
+|:------------------------------- |:----------------------- |:-------------------------- |:-------------------- |
 | $\alpha_{Lk}$                   | GRALB                   | Lake surface albedo        | $\mathrm{[-]}$       |
 | $z_{Lk0}$                       | GRZ0                    | Lake surface roughness     | $\mathrm{[m]}$       |
 | $G$                             | FOGFLX                  | Heat flux                  | $\mathrm{[W/m^2]}$   |
 | $\frac{\partial G}{\partial T}$ | DFGT                    | Heat diffusion coefficient | $\mathrm{[W/m^2/K]}$ |
 
-- Input variables
+- Input variables of LAKEBC
 
-| Variable            | Variable in source codes | Description            | unit                |
-|:------------------- |:------------------------ |:---------------------- |:------------------- |
-| $T_s$               | GRTS                     | surface temperature    | $\mathrm{[K]}$      |
-| $T_b$               | GRTB                     | ice base temperature   | $\mathrm{[K]}$      |
-| $Ic$                | GRICE                    | lake ice amount        | $\mathrm{[kg/m^2]}$ |
-| $SnLk$              | GRSNW                    | snow amount            | $\mathrm{[kg/m^2]}$ |
-| $R_{IcLk}$          | GRICR                    | lake ice concentration | $\mathrm{[-]}$      |
-| $u_a$               | GDUA                     | u surface wind         | $\mathrm{[m/s]}$    |
-| $v_a$               | GDVA                     | v surface wind         | $\mathrm{[m/s]}$    |
-| $\mathrm{cos}\zeta$ | RCOSZ                    | cos(solar zenith)      | $\mathrm{[-]}$      |
+| Variable            | Variable in source codes | Longname                               | Unit                |
+|:------------------- |:------------------------ |:-------------------------------------- |:------------------- |
+| $T_s$               | GRTS                     | Surface temperature                    | $\mathrm{[K]}$      |
+| $T_b$               | GRTB                     | Ice base temperature                   | $\mathrm{[K]}$      |
+| $Ic$                | GRICE                    | lake ice amount                        | $\mathrm{[kg/m^2]}$ |
+| $SnLk$              | GRSNW                    | snow amount                            | $\mathrm{[kg/m^2]}$ |
+| $R_{IcLk}$          | GRICR                    | lake ice concentration                 | $\mathrm{[-]}$      |
+| $u_a$               | GDUA                     | Atmospheric 1st layer east-west wind   | $\mathrm{[m/s]}$    |
+| $v_a$               | GDVA                     | Atmospheric 1st layer north-south wind | $\mathrm{[m/s]}$    |
+| $\mathrm{cos}\zeta$ | RCOSZ                    | cos(solar zenith)                      | $\mathrm{[-]}$      |
 
-First, let us consider the lake albedo. The lake level $\alpha_{Lk(d,b)}$, $b=1,2,3$ represent the visible, near-infrared, and infrared wavelength bands, respectively. Also, $d=1,2$ represents direct and scattered light, respectively. The albedo for the visible bands are calculated in `SUBROUTINE:[LAKEALB]`, supposing ice-free conditions. The albedo for near-infrared is set to same as the visible one. The albedo for infrared is uniformly set to a constant value.
+First, the lake albedo $\alpha_{Lk(d,b)}$ is calculated. $b=1,2,3$ represent the visible, near-infrared, and infrared wavelength bands, respectively. Also, $d=1,2$ represents direct and scattered light, respectively. The albedo for the visible bands are calculated in SUBROUTINE LAKEALB, supposing ice-free conditions. The albedo for near-infrared is set to same as that for the visible bands. The albedo for infrared is uniformly set to a constant value, as mentioned in section 11.1.1.
 
-When lake ice is present, the albedo is modified to take into account the ice concentration.
+When lake ice is present, the albedo is modified to take into account the ice cover on lake that can change the albedo.
 
 $$
 	{\alpha_{Lk}'} = \alpha_{Lk} + (\alpha_{IcLk}-\alpha_{Lk}) R_{IcLk}
 $$
 
-where $\alpha_{IcLk}$ is the lake ice albedo, and $R_{IcLk}$ is the lake ice concentation, respectively. In addition, we want to consider the albedo change due to snow cover. Assuming that the snow albedo depends on the skin temperature, we can calculate a function $F$ below.
+where $\alpha_{IcLk}$ is the lake ice albedo, and $R_{IcLk}$ is the lake ice concentation, respectively. In addition, snow cover on a lake ice that can change the albedo is also considered. Assuming that the snow albedo depends on the surface temperature, we can calculate a function $F$ below.
 
 $$
 	F(T_s) = \frac{T_s-T_m^{min}}{T_m^{max}-T_m^{min}} \quad,\quad (0 \le F(T_s)\le 1)
 $$
 
-where $T_s$ is the skin temperature, and $T_m^{min}$ and $T_m^{max}$ are the minimum and the minimum temperature for the albedo change, respectively.
+where $T_s$ is the surface temperature, and $T_m^{min}$ and $T_m^{max}$ are the minimum and the minimum temperature for the albedo change, respectively.
 
 Then, the albedo can be modified by
 
@@ -2982,20 +2982,20 @@ $$
 
 where the $\alpha_{SnLk(d,b)}$ is the snow albedo covering the lake, and $R_{SnLk}$ is the snow coverage, respectively.
 
-Second, let us consider the lake surface roughness. The roughnesses of for momentum, heat and vapor are calculated in `SUBROUTINE:[LAKEZ0F]`, based on Miller et al. (1992), same with COCO-OGCM (Hasumi 2015), supposing the ice-free conditions, then modified.
+Second, the lake surface roughness for momentum, heat and vapor are calculated in SUBROUTINE LAKEZ0F, based on Miller et al. (1992), same with COCO-OGCM (Hasumi 2015), supposing the ice-free conditions, then modified to take into account the effects of ice and snow cover.
 
 When lake ice is present, each roughness is modified to take into account the lake ice concentration ($R_{IcLk}$)
 
 $$
-	{z_{Lk0}'} = z_{Lk0} + (R_{IcLk} -z_{Lk0}) R_{IcLk}
+	{z_{Lk0}'} = z_{Lk0} + (z_{Lk0,ice} -z_{Lk0}) R_{IcLk}
 $$
 
-where $z_{Lk0}$ is surface roughness.
+where $z_{Lk0}$ is surface roughness, and $z_{Lk0,ice}$ is surface roughness for lake ice, respectively.
 
 Then, taking into account the snow coverage ($R_{SnLk})$, we can express it as
 
 $$
-	{z_{Lk0}} = {z_{Lk0}'} + (R_{SnLk} - {z_{Lk0}'}) R_{SnLk}
+	{z_{Lk0}} = {z_{Lk0}'} + (z_{Lk0,ice} - {z_{Lk0}'}) R_{SnLk}
 $$
 
 Third, the heat flux is considered with the temperature differences between the snow surface and the ice bottom, because the difference should be zero in the ice-free conditions.
@@ -3017,6 +3017,7 @@ $$
 where $D_{SnLk}$ is the coefficient of snow.
 
 Therefore, the net heat diffusion coefficient is finally
+
 $$
 	\frac{\partial G}{\partial T} = \Big(\frac{\partial G}{\partial T} \Big)_{IcLk} (1-R_{SnLk}) + \Big(\frac{\partial G}{\partial T}\Big)_{SnLk} R_{SnLk}
 $$
@@ -3030,15 +3031,15 @@ $$
 
 ### Calculation of lake surface albedo
 
-Contents of `SUBROUTINE:[LAKEALB]` is the same with `SUBROUTINE [SEAALB]` (in p-sfc.F). For lake surface level albedo $\alpha_{Lk,L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
+Processes of SUBROUTINE LAKEALB is the same with SUBROUTINE [SEAALB (in p-sfc.F), which is the sea surface flux scheme of MIROC6-AGCM[@Tatebe2019-ow]. For lake surface level albedo $\alpha_{Lk,L(d)}$, $d=1,2$ represents direct and scattered light, respectively.
 
-Using the solar zenith angle at latitude $\zeta$ ($\mathrm{cos}\zeta$), the albedo for direct light is presented by
+Using the solar zenith angle $\zeta$ ($\mathrm{cos}\zeta$), the albedo for direct light is presented by
 
 $$
 	\alpha_{Lk,L(1)} = e^{(C_3A^* + C_2) A^* +C_1}
 $$
 
-where $A = \mathrm{min}(\mathrm{max}(\mathrm{cos}\zeta,0.03459),0.961)$, and $C_1, C_2, C_3$ is $-0.7479, -4.677039, 1.583171$ respectively.
+where $A^* = \mathrm{min}(\mathrm{max}(\mathrm{cos}\zeta,0.03459),0.961)$, and $C_1, C_2, C_3$ is $-0.7479, -4.677039, 1.583171$ respectively.
 
 On the other hand, the albedo for scattered light is uniformly set to a constant parameter.
 
@@ -3048,7 +3049,7 @@ $$
 
 ### Lake surface roughness
 
-Contents of `SUBROUTINE:[LAKEZ0F]` is the same with `SUBROUTINE:[SEAZ0F]` (of pgocn.F).
+Contents of SUBROUTINE LAKEZ0F is the same with SUBROUTINE SEAZ0F (of pgocn.F), which is the sea surface scheme of MIROC6-AGCM[@Tatebe2019-ow].
 
 The roughness variation of the lake surface is determined by the friction velocity $u^\star$.
 
@@ -3056,7 +3057,7 @@ $$
 u^{\star} = \sqrt{C_{M_0} ({u_a}^2  +{v_a}^2)}
 $$
 
-We perform successive approximation calculation of ${C_{M_0}}$, because $F_u,F_v,F_\theta,F_q$ are required.
+We perform successive approximation calculation of ${C_{M_0}}$, because the variables of the  atmosphseric first layer ($u_a,v_a,T_a,q_a$) are required.
 
 $$
 	z_{Lk0,M} = z_{0,M_0} + z_{0,M_R} + \frac{z_{0,M_R} {u^\star }^2 }{g} + \frac{z_{0,M_S}\nu }{u^\star}
@@ -3070,50 +3071,49 @@ $$
 	z_{Lk0,E} = z_{0,E_0} + z_{0,E_R} + \frac{z_{0,E_R} {u^\star }^2 }{g} + \frac{z_{0,E_S}\nu }{u^\star}
 $$
 
-where, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere, $z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat and vapor, and
-$z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base of them, and $z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$ are rough factor for them, and $z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$ are smooth factor for them, respectively.
+where, $\nu = 1.5 \times 10^{-5} \mathrm{[m^2/s]}$ is the kinetic viscosity of the atmosphere, $z_{0,M},z_{0,H}$ and $z_{0,E}$ are surface roughness for momentum, heat and vapor ($0.0, 0.018$, and $0.11$ as standard values), and $z_{0,M_0},z_{0,H_0}$ and $z_{0,E_0}$ are base of them ($1.4\times 10^{-5}, 0.0$, and $0.4$ as standard values), and $z_{0,M_R},z_{0,M_R}$ and $z_{0,E_R}$ ($1.3\times10^{-4}, 0.0$, and $0.62$ as standard values) are rough factor for them, and $z_{0,M_S},z_{0,M_S}$ and $z_{0,E_S}$ are smooth factor for them, respectively.
 
 ## Solution of energy balance at lake surface
 
-In `SUBROUTINE:[LAKEHB]` (of lakesf.F), the energy balance at lake surface is solved.
+In SUBROUTINE [LAKEHB] (of lakesf.F), the energy balance at lake surface is solved.
 
-- Output variables
+- Output variables of LAKEHB
 
-| Variable       | Variable in source code | Description        |
-|:-------------- |:----------------------- |:------------------ |
-| $W_{free/ice}$ | WFLUXS                  | surface water flux |
-| $LW^\uparrow$  | RFLXLU                  | upward long wave   |
-| $F$            | SFLXBL                  | flux balance       |
+| Variable       | Variable in source code | Longname           | Unit               |
+|:-------------- |:----------------------- |:------------------ |:------------------ |
+| $W_{free/ice}$ | WFLUXS                  | Surface water flux | $\mathrm{[W/m^2]}$ |
+| $LW^\uparrow$  | RFLXLU                  | Upward long wave   | $\mathrm{[W/m^2]}$ |
+| $F$            | SFLXBL                  | Flux balance       | $\mathrm{[W/m^2]}$ |
 
-- Input variables
+- Input variables of LAKEHB
 
-| Variable                          | Variable in source code | Description                   |
-|:--------------------------------- |:----------------------- |:----------------------------- |
-| $\frac{\partial H}{\partial T_s}$ | DTFDS                   | sensible heat flux coefficent |
-| $\frac{\partial E}{\partial T_s}$ | DQFDS                   | latent heat flux coefficient  |
-| $\frac{\partial G}{\partial T_s}$ | DGFDS                   | surface heat flux coefficient |
-| $SW^\downarrow$                   | RFLXSD                  | downward SW radiation         |
-| $SW^\uparrow$                     | RFLXLU                  | upward SW radiation           |
-| $LW^\downarrow$                   | RFLXLD                  | downward LW radiation         |
-| $\alpha_{Lk}$                     | GRALBL                  | lake surface albedo           |
-| $R_{IcLk}$                        | GRICR                   | lake ice concentration        |
+| Variable                          | Variable in source code | Longname                       | Unit                 |
+|:--------------------------------- |:----------------------- |:------------------------------ |:-------------------- |
+| $\frac{\partial H}{\partial T_s}$ | DTFDS                   | Sensible heat flux coefficient | $\mathrm{[W/m^2/K]}$ |
+| $\frac{\partial E}{\partial T_s}$ | DQFDS                   | Latent heat flux coefficient   | $\mathrm{[W/m^2/K]}$ |
+| $\frac{\partial G}{\partial T_s}$ | DGFDS                   | Surface heat flux coefficient  | $\mathrm{[W/m^2/K]}$ |
+| $SW^\downarrow$                   | RFLXSD                  | Downward SW radiation          | $\mathrm{[W/m^2]}$   |
+| $SW^\uparrow$                     | RFLXLU                  | Upward SW radiation            | $\mathrm{[W/m^2]}$   |
+| $LW^\downarrow$                   | RFLXLD                  | Downward LW radiation          | $\mathrm{[W/m^2]}$   |
+| $\alpha_{Lk}$                     | GRALBL                  | Lake surface albedo            | $\mathrm{[-]}$       |
+| $R_{IcLk}$                        | GRICR                   | Lake ice concentration         | $\mathrm{[-]}$       |
 
 *The comments for some variables say "soil", but this is because the program was adapted from a land surface scheme, and has no particular meaning.*
 
 
-Downward radiative fluxes are not directly dependent on the condition of the lake surface, and their observed values are simply specified to drive the model. Shotwave emission from the lake surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. Let $\alpha_{Lk,SW}$ be the lake surface albedo for shortwave radiation. The upward shortwave radiative flux ($SW^\uparrow$) is represented by
+Downward radiative fluxes are not directly dependent on the condition of the lake surface, and the atmospheric values are simply used in the lake model. Shortwave emission from the lake surface is negligible, so the upward part of the shortwave radiative flux is accounted for solely by reflection of the incoming downward flux. The upward shortwave radiative flux ($SW^\uparrow$) is represented by
 
 $$
 	SW^\uparrow = - \alpha_{Lk,SW} SW^\downarrow
 $$
 
-where $SW^\downarrow$ is the downward shortwave radiation flux, and $\alpha_{Lk,SW}$ is lake surface albedo for shortwave radiation in the ice-free area, respectively. On the other hand, the upward longwave radiative flux has both reflection of the incoming flux and emission from the lake surface. Let $\alpha_{Lk}$ be the lake surface albedo for longwave radiation and $\epsilon$ be emissivity of the lake surface relative to the black body radiation. The upward shortwave radiative flux is represented by
+where $SW^\downarrow$ is the downward shortwave radiation flux, and $\alpha_{Lk,SW}$ is lake surface albedo for shortwave radiation in the ice-free area, respectively. On the other hand, the upward longwave radiative flux has both reflection of the incoming flux and emission from the lake surface. The upward shortwave radiative flux is represented by
 
 $$
 	LW^\uparrow = - \alpha_{Lk} LW^\downarrow + \epsilon \sigma T_s ^4
 $$
 
-where $\sigma$ is the Stefan-Boltzmann constant, and $T_s$ is surface temprature, respectively. If lake ice exists, snow or lake ice temperature is considered by fractions. When radiative equilibrium is assumed, emissivity becomes identical to co-albedo:
+where $\alpha_{Lk}$ be the lake surface albedo for longwave radiation, $\epsilon$ be emissivity of the lake surface relative to the black body radiation, $\sigma$ is the Stefan-Boltzmann constant, and $T_s$ is surface temprature, respectively. If lake ice exists, snow or lake ice temperature is considered by fractions. When radiative equilibrium is assumed, emissivity becomes identical to co-albedo:
 
 $$
 	\epsilon = 1 - \alpha_{Lk}
@@ -3122,16 +3122,16 @@ $$
 The net surface flux is presented by
 
 $$
-	F^*=H + (1-\alpha_{Lk})\sigma T_s^4 + \alpha_{Lk} LW^\uparrow - LW^\downarrow +SW^\uparrow - SW^\downarrow		
+	F^*=H + \Big((1-\alpha_{Lk})\sigma T_s^4 + \alpha_{Lk} LW^\downarrow\Big)  - LW^\downarrow +SW^\uparrow - SW^\downarrow		
 $$
 
-The heat flux into the lake surface is presented, with the surface heat flux ($G$) calculated in `SUBROUTINE:[SFCFLX]` (in matdrv.F).
+The heat flux into the lake surface is presented, with the surface heat flux ($G$) calculated in SUBROUTINE [SFCFLX] (in matdrv.F).
 
 $$
 	G^* = G - F^*
 $$
 
-where $G^* $ is the net incoming flux (the opposite direction with $F^* $).
+where $G^{*}$ is the net incoming flux (the opposite direction with $F^{*}$).
 
 The temperature derivative term is
 
@@ -3151,7 +3151,7 @@ $$
 	\frac{\partial G_{IcLk}}{\partial T_s}=\frac{\partial G^*}{\partial T_s} + l_s\frac{\partial E}{\partial T_s}
 $$
 
-Finally, we can update the skin temperature with the lake ice concentration with $\Delta T_s=G_{IcLk} ( \frac{\partial G_{IcLk}}{\partial T_s})^{-1}$
+Finally, we can update the surface temperature with the lake ice concentration with $\Delta T_s=G_{IcLk} ( \frac{\partial G_{IcLk}}{\partial T_s})^{-1}$
 
 $$
 	T_s = T_s +R_{IcLk} \Delta T_s
@@ -3217,65 +3217,66 @@ $$
 
 ## Calculation of lake ice
 
-In this section, the lake ice calculation is described. There are three prognostic variables in the lake ice model described herein: lake ice concentration $A_I$, which is area fraction of a grid covered by lake ice and takes a value between zero and unity; mean lake ice thickness $h_I$ over ice-covered part of a grid; mean snow depth $h_S$ over lake ice. Horizontal flow of ice is not considered in the lake parts, differently from the COCO-OGCM. Let us consider here a case that the model is integrated from the n-th time level to the (n+1)-th time level. $A_I$, $h_I$ and $h_S$ are incrementally modified.
+In this section, the lake ice calculation is described. There are three prognostic variables in the lake ice model described herein: lake ice concentration $A_I$, which is area fraction of a grid covered by lake ice and takes a value between zero and unity; mean lake ice thickness $h_I$ over ice-covered part of a grid; mean snow depth $h_S$ over lake ice. Horizontal flow of ice is not considered in the lake parts, differently from the COCO-OGCM. $A_I$, $h_I$ and $h_S$ are incrementally modified as the prognostic variables. The variables representing the surface state are represented with the subscript $k=2$, since the top of the vertical layers is actually defined as `KLSTR=2`.
 
-The model also calculates temperature at snow top (lake ice top when there is no snow cover) $T_I$, which is a diagnostic variable. Density of lake ice ($\rho_I$) and snow $(\rho_S)$ are assumed to be constant Lake ice is assumed to have nonzero salinity, and its value $S_I$ is assumed to be a constant parameter.
+The model also calculates temperature at snow top (lake ice top when there is no snow cover) $T_I$, which is a diagnostic variable. Density of lake ice ($\rho_I$) and snow $(\rho_S)$ are assumed to be constant. Lake ice is assumed to have nonzero salinity, and its value $S_I$ is assumed to be a constant parameter.
 
 ### Calculation of heat flux and growth rate
 
-In `ENTRY:[FIHEATL]` (in `SUBROUTINE:[FIHSTL]` of lakeic.F), heat flux in lake ice and its growth rate is calculated.
+In ENTRY FIHEATL (in SUBROUTINE FIHSTL of lakeic.F), heat flux in lake ice and its growth rate is calculated.
 
 
-- Output variables
+- Output variables of FIHEATL
 
-| Variable | Variable in source code | Description                            | unit              |
+| Variable | Variable in source code | Longname                               | Unit              |
 |:-------- |:----------------------- |:-------------------------------------- |:----------------- |
 | $W_{AO}$ | WAO                     | Lake ice growth rate in ice-free area  | $\mathrm{[cm/s]}$ |
-| $W_{AS}$ | WAS                     | snow growth rate due to heat inbalance | $\mathrm{[cm/s]}$ |
-| $W_{IO}$ | WIO                     | basal growth rate of lake ice          | $\mathrm{[cm/s]}$ |
+| $W_{AS}$ | WAS                     | Snow growth rate due to heat imbalance | $\mathrm{[cm/s]}$ |
+| $W_{IO}$ | WIO                     | Basal growth rate of lake ice          | $\mathrm{[cm/s]}$ |
 
-- Input variables
+- Input variables of FIHEATL
 
-| Variable   | Variable in source code | Description                                                                                        | unit                                    |
+| Variable   | Variable in source code | Longname                                                                                           | Unit                                    |
 |:---------- |:----------------------- |:-------------------------------------------------------------------------------------------------- |:--------------------------------------- |
-| $A_I$      | A                       | lake ice concentration                                                                             | $\mathrm{[-]}$                          |
-| $Q_{AI}$   | QAI                     | air-ice heat flux multiplied by the factor of lake ice concentration                               | $\mathrm{[-]}$                          |
-| $Q_{IO}$   | QIO                     | vertical heat flux through lake ice and snow                                                       | $\mathrm{[W/m^2]}$                      |
+| $A_I$      | A                       | Lake ice concentration                                                                             | $\mathrm{[-]}$                          |
+| $Q_{AI}$   | QAI                     | Air-ice heat flux multiplied by the factor of lake ice concentration                               | $\mathrm{[-]}$                          |
+| $Q_{IO}$   | QIO                     | Vertical heat flux through lake ice and snow                                                       | $\mathrm{[W/m^2]}$                      |
 | $SW^A$     | SWABS                   | Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied | $\mathrm{[W/m^2]}$                      |
-| $T, S$     | T(NLTDIM)               | Lake temperature  / Salinity                                                                       | $\mathrm{[^o C/m^2]}$/ $\mathrm{[psu]}$ |
-| $\Delta t$ | TS                      | time step                                                                                          | $\mathrm{[s]}$                          |
+| $T, S$     | T(NLTDIM)               | Lake temperature / Salinity                                                                       | $\mathrm{[^o C/m^2]}$/ $\mathrm{[psu]}$ |
+| $\Delta t$ | TS                      | Time step                                                                                          | $\mathrm{[s]}$                          |
 
-- Internal works
+- Internal work variables of FIHEATL
 
-| Variable   | Variable in source code | Description               | unit                   |
-|:---------- |:----------------------- |:------------------------- |:---------------------- |
-| $\Delta T$ | TDEV                    | freezing point depression | $\mathrm{[^o C]}$      |
-| $W_{FZ}$   | WFRZ                    | lake ice growth rate      | $\mathrm{[cm e.w./s]}$ |
+| Variable   | Variable in source code | Longname                  | Unit                    |
+|:---------- |:----------------------- |:------------------------- |:----------------------- |
+| $\Delta T$ | TDEV                    | Freezing point depression | $\mathrm{[^o C]}$       |
+| $W_{FZ}$   | WFRZ                    | Lake ice growth rate      | $\mathrm{[cm\ e.w./s]}$ |
 
-Temperature at lake ice base is taken to be the lake model’s top level temperature $T(k=2)$. In this model, lake ice exists only when and where $T(k=2)$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f=-0.0543 S$ is used here, where temperature and salinity are measured by ◦C and psu, respectively). In heat budget calculation for snow and lake ice, only latent heat of fusion and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
 
-Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum possible volume of lake ice in a grid. If a predicted volume $A_Ih_I$ is less than that minimum, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than that minimum by releasing the latent heat corresponding to the supercooling.
+Temperature at lake ice base is taken to be the lake model’s top level temperature $T_{(k=2)}$. In this model, lake ice exists only when and where $T_{(k=2)}$ is at the freezing point $T_f$, which is a decreasing function of salinity ($T_f=-0.0543 S$ is used here, where temperature and salinity are measured by $\mathrm{^o C}$ and psu, respectively). In the heat budget calculation for snow and lake ice, only latent heat of melting and sublimation is taken into account, and heat content associated with temperature is neglected. Therefore, temperature inside lake ice and snow are not calculated, and $T_I$ is estimated from surface heat balance.
+
+Nonzero minimum values are prescribed for $A_I$ and $h_I$ , which are denoted by $A^{min}_I$ and $h^{min}_I$, respectively. These parameters define a minimum volume of lake ice in a grid. If a predicted volume $A_Ih_I$ is less than the minimum volume, $A_I$ is reset to zero, and $T_1$ is lowered to compensate the corresponding latent heat. In this case, the lake model’s top level is kept at a supercooled state. Such a state continues until the lake is further cooled and the temperature becomes low enough to produce more lake ice than the minimum volume.
 
 Surface heat flux is separately calculated for each of air-lake and air-ice interfaces in one grid.
 
-The skin temperature of lake ice $T_I$ is determined such That
+The surface temperature of lake ice $T_I$ is determined such that
 
 $$
 	Q_{AI} = Q_{IO}
 $$
 
-is satisfied, where $Q_{IO}$ is corresponding to $G+SW^\downarrow$ and $Q_{AI}$ is corresponding to $G_{IcLk} - W_{IcLk}$. However, When the estimated $T_I$ exceeds the melting point of lake ice $T_m$ (which is set to 0 ◦C for convenience), $T_I$ is reset to $T_m$ and $Q_{AI}$ and $Q_{IO}$ are re-estimated by using it. The heat imbalance between $Q_{AI}$ and $Q_{IO}$ is consumed to melt snow (lake ice when there is no snow cover). Snow growth rate due to this heat imbalance is estimated by
+is satisfied, where $Q_{IO}$ corresponds to $G_{IcLk}$ and $Q_{AI}$ corresponds to $G_{IcLk} - W_{IcLk}$, respectively. (They are calculated in matdrv.F.) However, when the estimated $T_I$ exceeds the melting point of lake ice $T_m$ (which is set to 0 $\mathrm{[^o C]}$ for convenience), $T_I$ is reset to $T_m$ and $Q_{AI}$ and $Q_{IO}$ are re-estimated by using it. The heat imbalance between $Q_{AI}$ and $Q_{IO}$ is consumed to melt snow (lake ice when there is no snow cover). Snow growth rate due to this heat imbalance is estimated by
 
 $$
-	W_{AS} = \frac{Q_{AI}-Q_{IO}}{\rho L_f}
+	W_{AS} = \frac{Q_{AI}-Q_{IO}}{\rho_O L_f}
 $$
 
-where $\rho_O$ is density of lakewater and $L_f$ is the latent heat of fusion (the same value is applied to snow and lake ice). This growth rate is expressed as a change of equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is weighted by lake ice concentration.
+where $\rho_O$ is density of water and $L_f$ is the latent heat of melting (the same value is applied to snow and lake ice). This growth rate is expressed as an equivalent liquid water depth per time.  It is zero when $T_I < T_m$ and negative when $T_I = T_m$. Note that $W_{AS}$ is already weighted by lake ice concentration, because $Q_{AI}$ and $Q_{IO}$ are the fluxes on the ice.
 
-Although it is assumed that $T(2) = T_f$ when lake ice exists, $T_1$ could deviated from $T_f$ due to a change of salinity or other factors. Such deviation should be adjusted by forming or melting lake ice. Under a temperature deviation of the top layer of lake,
+Although it is assumed that $T_{(k=2)} = T_f$ when lake ice exists, $T_{k=2}$ could deviated from $T_f$ due to a change of salinity or other factors. Such deviation should be adjusted by forming or melting lake ice. Under a temperature deviation of the top layer of lake,
 
 $$
-	\Delta T = T(k=2) - T_f S(k=2)
+	\Delta T = T_{(k=2)} - T_f S_{(k=2)}
 $$
 
 lake ice growth rate necessary to compensate it in the single time step is given by
@@ -3284,13 +3285,13 @@ $$
 	W_{FZ} = - \frac{C_{po} \Delta T \Delta z_1}{L_f \Delta t}
 $$
 
-where $C_{po}$ is the heat capacity of lake water and $\Delta z_1=100 \mathrm{cm}$ is the thickness of the lake model's top level (uniformly set to constant in case of the current lake model.) This growth rate is estimated at all grids, irrespective of lake ice existence, for a technical reason. As described below, this growth rate first estimates negative ice volume for ice-free grids, but the same heat flux calculation procedure as for ice-covered grids finally results in the correct heat flux to force the lake. Basal growth rate of lake ice is given by
+where $C_{po}$ is the heat capacity of lake water and $\Delta z_1=100 \mathrm{cm}$ is the thickness of the lake model's top level (uniformly set to constant in the current lake model.) This growth rate is estimated at all grids, irrespective of lake ice existence, for a technical reason. As described below, this growth rate first estimates negative ice volume for ice-free grids, but the same heat flux calculation procedure as for ice-covered grids finally results in the correct heat flux to force the lake. Basal growth rate of lake ice is given by
 
 $$
 	W_{IO} = A_I W_{FZ} + \frac{Q_{IO}}{\rho_OL_f}
 $$
 
-where $W_{IO}$ is weighted by lake ice concentration.
+Note that $W_{AS}$ is already weighted by lake ice concentration, because $Q_{AI}$ and $Q_{IO}$ are the fluxes on the ice.
 
 Lake ice formation could also occur in the ice-free area. Let us define $Q_{AO}$ by
 
@@ -3298,7 +3299,7 @@ $$
 	Q_{AO} = (1-A_{I}) [Q-(1-\alpha_{Lk,SW})SW^\downarrow]
 $$
 
-i.e., air-lake heat flux except for shortwave, multiplied by the factor of the fraction of ice-free area. Here, $Q$ is  air-ice heat flux. Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied, is represented by
+i.e., air-lake heat flux except for shortwave over ice^free area. Here, $Q$ is  air-ice heat flux. Shortwave radiation absorbed at ice-free lake surface, with the factor of ice-free area multiplied, is represented by
 
 $$
 	SW^A = (1-A_I)(1-\alpha_{Lk,SW}) SW^\downarrow
@@ -3307,10 +3308,10 @@ $$
 Lake ice growth rate in ice-free area is calculated by
 
 $$
-	W_{AO} = (1-A_I)W_{FZ} + \frac{Q_{AO}+I(k=2) SW^A}{\rho_O L_f}
+	W_{AO} = (1-A_I)W_{FZ} + \frac{Q_{AO}+I_{(k=2)} SW^A}{\rho_O L_f}
 $$
 
-where $I(k=2)$ denotes the fraction of $SW^A$ absorbed by the lake model's top level, which is calculate in `SUBROUTINE:[SVTSETL]` of lakepo.F.
+where $I_{(k=2)}$ denotes the fraction of $SW^A$ absorbed by the lake model's top level, which is calculate in SUBROUTINE [SVTSETL] of lakepo.F.
 
 Finally, the heat flux for freshwater is
 
@@ -3320,33 +3321,33 @@ $$
 
 ### Sublimation and freshwater flux for lake
 
-In `ENTRY[FWATERL]` (in `SUBROUTINE:[FWASTL]` of lakeic.F), sublimation (freshwater) flux, which is practically come from the land ice runoff, is calculated or prescribed over lake ice cover.
+In ENTRY FWATERL (in SUBROUTINE [FWASTL] of lakeic.F), sublimation (freshwater) flux, which is practically come from the land ice runoff, is calculated or prescribed over lake ice cover.
 
-- Output variables (Prognostic variables)
+- Output variables (Prognostic variables) of FWATERL
 
-| Variable | Variable | Description    |    unit             |
+| Variable | Variable | Longname           | Unit            |
 |:-------- |:-------- |:------------------ |:--------------- |
-| $A_I'$   | AX       | lake ice fraction  | $\mathrm{[-]}$  |
-| $h_I'$   | HIX      | lake ice thickness | $\mathrm{[cm]}$ |
-| $h_S'$   | HSX      | snow depth         | $\mathrm{[cm]}$ |
+| $A_I'$   | AX       | Lake ice fraction  | $\mathrm{[-]}$  |
+| $h_I'$   | HIX      | Lake ice thickness | $\mathrm{[cm]}$ |
+| $h_S'$   | HSX      | Snow depth         | $\mathrm{[cm]}$ |
 
 - Input variables
 
-| Variable   | Variable | Description                     | unit            |
+| Variable   | Variable | Longname                        | Unit            |
 |:---------- |:-------- |:------------------------------- |:--------------- |
-| $F_W^{EV}$ | WEV      | latent heat flux of evaporation | $\mathrm{cm/s}$ |
-| $F_W^{SB}$ | WSB      | latent heat flux of sublimation | $\mathrm{cm/s}$ |
-| $S_{off}$  | SOFF     | overflow snow flux              | $\mathrm{cm/s}$ |
+| $F_W^{EV}$ | WEV      | Latent heat flux of evaporation | $\mathrm{cm/s}$ |
+| $F_W^{SB}$ | WSB      | Latent heat flux of sublimation | $\mathrm{cm/s}$ |
+| $S_{off}$  | SOFF     | Overflow snow flux              | $\mathrm{cm/s}$ |
 
 - Parameters
 
-| Variable     | Variable | Description                   | unit              | value            |
-|:------------ |:-------- |:----------------------------- |:----------------- |:---------------- |
-| $\rho_S$     | rhos     | density of snow               | $\mathrm{[g/cm^3]}$ | $0.33$           |
-| $\rho_I$     | rhoi     | density of lake ice           | $\mathrm{[g/cm^3]}$ | $0.9$            |
-| $R_{\rho_S}$ | rrs      | Ratio of density (ocean/snow) | $\mathrm{[-]}$    | $\rho_O/\rho_s$  |
-| $R_{\rho_I}$ | rri      | Ratio of density (ocean/ice)  | $\mathrm{[-]}$    | $\rho_O/\rho_I$  |
-| $h_I^{min}$  | himin    | Minimum thickness of ice      | $\mathrm{[cm]}$   | $1.0\times 10^1$ |
+| Variable     | Variable | Longname                      | Unit                | Value            |
+|:------------ |:-------- |:----------------------------- |:------------------- |:---------------- |
+| $\rho_S$     | rhos     | Density of snow               | $\mathrm{[g/cm^3]}$ | $0.33$           |
+| $\rho_I$     | rhoi     | Density of lake ice           | $\mathrm{[g/cm^3]}$ | $0.9$            |
+| $R_{\rho_S}$ | rrs      | Ratio of density (ocean/snow) | $\mathrm{[-]}$      | $\rho_O/\rho_s$  |
+| $R_{\rho_I}$ | rri      | Ratio of density (ocean/ice)  | $\mathrm{[-]}$      | $\rho_O/\rho_I$  |
+| $h_I^{min}$  | himin    | Minimum thickness of ice      | $\mathrm{[cm]}$     | $1.0\times 10^1$ |
 
 The flux is first consumed to reduce snow thickness in n-th time step:
 
@@ -3354,33 +3355,33 @@ $$
 	h_S' = h_S^n -  \frac{\rho_O  F_W^{SB}\Delta t}{\rho_S A_I^n}
 $$
 
-If $h_S'$ becomes less than zero, it is reset to zero.  Then, the melted snow flux is added to $F_W^{SB}$. $F_W^{SB}$ is redefined by
+If $h_S'$ becomes less than zero, it is reset to zero. Then, the melted snow flux is added to $F_W^{SB}$. $F_W^{SB}$ is redefined by
 
 $$
 	F_W^{SB}{'} = F_W^{SB} + \frac{\rho_S A_I^n (h_S' - h_S^n)}{\rho_O\Delta t}
 $$
 
-Where there no remains snow, but $F_W^{SB}{'}$ is not zero, The remain flux is consumed to reduce lake ice thickness:
+Where there no remains snow, but $F_W^{SB}{'}$ is not zero. The remain flux is consumed to reduce lake ice thickness:
 
 $$
 	h_I' = h_I^n - \frac{\rho_O F_W^{SB}{'} \Delta t }{\rho_I A_I^n}
 $$
 
-If $h_I'$ becomes less than $h_I^{min}$, it is reset to zero. Then,  the melted iceflux is added to $F_W^{SB}{'}$. $F_W^{SB}{'}$ is redefined by
+If $h_I'$ becomes less than $h_I^{min}$, it is reset to zero. Then, the melted iceflux is added to $F_W^{SB}{'}$. $F_W^{SB}{'}$ is redefined by
 
 $$
-	F_W^{SB}{''} = F_W^{SB}{'} - A_I^n \frac{\rho_S (h_I^n-h_I')}{\rho_O\Delta t}
+	F_W^{SB}{''} = F_W^{SB}{'} - \frac{\rho_I  A_I^n (h_I^n-h_I')}{\rho_O\Delta t}
 $$
 
 Finally, nonzero $F_W^{SB}{''}$ is consumed to reduce lake ice concentration:
 
 $$
-	A_I' = A_I^n - \frac{R_{\rho_I}F_W^{SB}{''} \Delta t }{h_I^{min}}
+	A_I' = A_I^n - \frac{\rho_OF_W^{SB}{''} \Delta t }{\rho_Ih_I^{min}}
 $$
 
-if $A_I'$ becomes less then 0, it is reset to zero. Even if $A_I'$ becomes less than $A_I^{min}$, on the other hand, it is not adjusted here. If $A_I'$ is adjusted to zero, it means that the sublimation flux is not used up by eliminating snow and lake ice.
+If $A_I'$ becomes less then 0, it is reset to zero. Even if $A_I'$ becomes less than $A_I^{min}$, on the other hand, it is not adjusted here. If $A_I'$ is adjusted to zero, it means that the sublimation flux is not used up by eliminating snow and lake ice.
 
-The remaining part is consumed to reduce lake water, so the evaporation flux $F_W^{EV}$ is modified as
+Finally the evaporation flux $F_W^{EV}$ is modified so as to reduce the lake water.
 
 $$
 	F_W^{EV} = F_W^{EV} + F_W^{SB} + \frac{(A_I'-A_I^n) h_I^{min}}{R_{\rho_I}\Delta t}
@@ -3400,7 +3401,7 @@ $$
 	\Delta F_W^{EV} = F_W^{EV}{'} -	F_W^{EV}
 $$
 
-When sublimation flux is consumed to reduce lake ice amount, salt contained in lake ice has to be added to the remaining lake ice or the underlying water. Otherwise, total salt of the ice-lake system is not cosereved. Here, it is added to underlying water, and the way of this adjustment is described later. Note that lake ice tends to gradually drain high salinity water contained in brine pockets in reality. Thus, such an adjustment is not very unreasonable. When $A_I'$ is adjusted to zero, on the other hand, the remaining sublimation flux is consumed to reduce lake water. In this case, difference between the latent heat of sublimation and evaporation has to be adjusted, which is also described later.
+When sublimation flux is consumed to reduce lake ice amount, salt contained in lake ice has to be added to the remaining lake ice or the underlying water in other to conserve total salt of the ice-lake system. Here, it is added to underlying water, and the way of this adjustment is described later. Such an adjustment is not very unreasonable because the ice tends to gradually drain high salinity water contained in brine pockets in reality. When $A_I'$ is adjusted to zero, on the other hand, the remaining sublimation flux is consumed to reduce lake water. In this case, difference between the latent heat of sublimation and evaporation has to be adjusted, which is also described later.
 
 If the ice and/or snow is too thick, they are converted to snow flux. Here, the overflow snow flux $S_{off}$ is added to ${F_W^{SN}}$
 
@@ -3408,54 +3409,54 @@ $$
 	F_W^{SN} = F_W^{SN} + S_{off}
 $$
 
-$S_{off}$ is actually calculated in `SUBROUTINE[MATDRV]` (of matdrv.F), then handed to `ENTRY:[FWATER]`.
+$S_{off}$ is actually calculated in SUBROUTINE[MATDRV] (of matdrv.F), then handed to ENTRY FWATER.
 
 ### Updating lake ice fraction
 
-- Input variables
+- Input variables of PCMCTL
 
-| Variable | Variable in source code | Description                       | unit              |
+| Variable | Variable in source code | Longname                          | Unit              |
 |:-------- |:----------------------- |:--------------------------------- |:----------------- |
-| $h_I$    | HIX                     | Thickness of lake ice a           | $\mathrm{[cm]}$   |
-| $W_{AO}$ | WAO                     | snow growth rate in ice-free area | $\mathrm{[cm/s]}$ |
+| $h_I$    | HIX                     | Thickness of lake ice             | $\mathrm{[cm]}$   |
+| $W_{AO}$ | WAO                     | Snow growth rate in ice-free area | $\mathrm{[cm/s]}$ |
 
-In `ENTRY:[PCMPCTL]` (in `SUBROUTINE:[CMPSTL]` of lakeic.F), the lake ice fraction is updated, using the lake ice thickness ($h_I$) and the growth (retreat) rate in ice-free area ($W_{AO}$):
+In ENTRY PCMPCTL (in SUBROUTINE CMPSTL of lakeic.F), the lake ice fraction is updated, using the lake ice thickness ($h_I$) and the growth (retreat) rate in ice-free area ($W_{AO}$):
 
 $$
 	{A_I^{n+1}} = {A_I'} +\frac{\rho_O }{\rho_I h_I \phi W_{AO}\Delta t}
 $$
 
-If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ becomes smaller than zero, it is reset to zero.
+where $\phi$ is a factor coefficient. ($\phi$ is set to $4.0$ if $W_{AO}$ is greater than 0, otherwise is set to $0.5$.)　If $A_I^{n+1}$ becomes greater than 1, it is reset to 1, and if $A_I^{n+1}$ becomes smaller than zero, it is reset to zero.
 
-### Growth and Melting
+### Growth and Melting of lake ice and snow
 
-In `ENTRY:[PTHICKL]` (in `SUBROUTINE:[OTHKSTL]` of lakeic.F), the lake ice growth and melting are calculated. The variables in the (n+1)-th time level are finally determined here.
+In ENTRY PTHICKL (in SUBROUTINE OTHKSTL of lakeic.F), the lake ice growth and melting are calculated. The variables in the (n+1)-th time level are finally determined here.
 
-- Variables
+- Variables of PTHICKL
 
-| Variable                | Variable in source code | Description                                |
+| Variable                | Variable in source code | Longname                                   |
 |:----------------------- |:----------------------- |:------------------------------------------ |
-| $A_I^{n+1}$             | AX                      | lake ice fraction                          |
-| $V_I$                   | AXHIX                   | lake ice volume                            |
-| $V_S, V_S', V_S^{ \**}$   | AXHSX                   | lake snow volume                           |
-| $V_I^{n+1}$             | AXHIXN                  | lake ice volume                            |
-| $V_S^{n+1}$             | AXHSXN                  | lake snow volume                           |
-| $h_I'$                  | HIX                     | lake ice thickness                         |
+| $A_I^{n+1}$             | AX                      | Lake ice fraction                          |
+| $V_I$                   | AXHIX                   | Lake ice volume                            |
+| $V_S, V_S', V_S^{**}$ | AXHSX                   | Lake snow volume                           |
+| $V_I^{n+1}$             | AXHIXN                  | Lake ice volume                            |
+| $V_S^{n+1}$             | AXHSXN                  | Lake snow volume                           |
+| $h_I'$                  | HIX                     | Lake ice thickness                         |
 | $h_S'$                  | HSX                     | Snow depth                                 |
 | $h_S^n$                 | HSZ                     | Snow depth                                 |
-| $h_I^n$                 | HIZ                     | lake ice thickness                         |
+| $h_I^n$                 | HIZ                     | Lake ice thickness                         |
 | $W_{AS}$                | WAS                     | snow growth rate due to heat imbalance     |
-| $W_{AI}$                | WAI                     | lake ice growth rate due to heat imbalance |
-| $W_{res}$               | WRES                    | Reduced heat flux                          |
-| $W_{IO}$                | WIO                     | basal growth rate of lake ice              |
-| $F_W^{SN}, {F_W^{SN}}'$ | SNOW                    | snow fall flux                             |
+| $W_{AI}$                | WAI                     | Lake ice growth rate due to heat imbalance |
+| $W_{res}$               | WRES                    | Residual heat flux                          |
+| $W_{IO}$                | WIO                     | Basal growth rate of lake ice              |
+| $F_W^{SN}, {F_W^{SN}}'$ | SNOW                    | Snow fall flux                             |
 | $W_{AO}$                | WAO                     | Lake ice growth rate in ice-free area      |
-| $F_W^{PR}$              | PREC                    | precipitation flux                         |
-| $L_e$                   | EVAP                    | latent heat flux of evaporation            |
-| --                      | SUBI                    | latent heat flux of sublimation            |
+| $F_W^{PR}$              | PREC                    | Precipitation flux                         |
+| $L_e$                   | EVAP                    | Latent heat flux of evaporation            |
+| --                      | SUBI                    | Latent heat flux of sublimation            |
 | $A_I'$                  | AZ                      | Lake ice concentration                     |
-| $H_{lake}$              | FT                      | lake heat flux                             |
-| $\Delta t$              | TS                      | time step                                  |
+| $H_{lake}$              | FT                      | Lake heat flux                             |
+| $\Delta t$              | TS                      | Time step                                  |
 | --                      | ROFF                    | --                                         |
 | --                      | ADJLAT                  | --                                         |
 | --                      | FS                      | --                                         |
@@ -3470,11 +3471,11 @@ $$
 	V_S' = A_I' h_S^n
 $$
 
-From here, let us consider the contribution of snowfall and freshwater fluxes to the growth.
+Furthermore, the contribution of snowfall and fresh water flux to the growth of lake ice and snow volume are also taken into account.
 
-Changes of snow depth due to snow fall (freshwater) flux ($F_W^{SN}$) (expressed by negative values to be consistent with other freshwater flux components) is first taken into account. $F_W^{SN}$ is not weighted by lake ice concentration or ice-free area are fraction, as snowfall take place for both regions.
+Changes of snow depth due to snow fall (freshwater) flux ($F_W^{SN}$) (expressed by negative values to be consistent with other freshwater flux components) is first taken into account.
 
-If the newly predicted (in `ENTRY:[PCMPCTL]`) lake ice concentration ($A_I^{n+1}$) is zero, the amount of snow existed before the growth is added to the snowfall flux.
+If the newly predicted lake ice concentration ($A_I^{n+1}$) is zero (in ENTRY PCMPCTL), the amount of snow existed before the growth is added to the snowfall flux.
 
 $$
 	{F_W^{SN}}' = F_W^{SN} + \frac{\rho_S V_S'}{\rho_O \Delta t}
@@ -3483,7 +3484,7 @@ $$
 Snow depth and amount is set to zero:
 
 $$
-	h_S'=0, \quad V_S^{ \**} = 0
+	h_S'=0, \quad V_S^{**} = 0
 $$
 
 Otherwise, snowfall accumulates over the ice covered region. Snow depth is modified by
@@ -3495,10 +3496,10 @@ $$
 And the snow amount is also modified by
 
 $$
-	V_S^* = A_I^{n+1} h_S^*
+	V_S^* = A_I^{n+1} h_S^* \tag{eq11-3}
 $$
 
-The snowfall flux is reduced by that amount:
+The snowfall flux is reduced by that amount (eq[eq11-3](#eq11-3)):
 
 $$
 	{F_W^{SN}}' = (1-A_I^{n+1}) F_W^{SN}
@@ -3510,83 +3511,93 @@ $$
 	F_W^{PR} = F_W^{PR} + {F_W^{SN}}'
 $$
 
-When the lake ice is not existed ($A_I^{n+1}=0$), the snow amount grown above is converted to ice. Growth rate of the lake ice is presented by:
+- Modification of lake snow amount
+
+When the lake ice does not exist ($A_I^{n+1}=0$), the snow amount grown above is converted to ice. In this case, growth rate of the lake ice is presented by:
 
 $$
- W_{AI}^* =   \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
+ W_{AI}^* = \frac{\rho_O V_S^{*}}{\rho_S \Delta t}
 $$
 
-When the lake ice existed, if the snow growth rate
-$$
-	W_{AS}^* = W_{AS} +  \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
-$$
-
-is positive, the energy is used for the snow growing. Otherwise, $W_{AS}^*$ is assumed to reduce the lake ice.
+When the lake ice exist and the snow growth rate
 
 $$
-	W_{AI}^* = W_{AS}^*
+	W_{AS}^* = W_{AS} +  \frac{\rho_O V_S^{*}}{\rho_S \Delta t}
 $$
 
-and deficient flux is come from the snow amount changes.
+is positive, the energy is used for the snow growing.
+
+When the lake ice exist and the snow growth rate is negative, $W_{AS}^*$ is assumed to reduce the lake ice.
 
 $$
-	W_{AS}^* = - \frac{\rho_O V_S^{\*}}{\rho_S \Delta t}
+	W_{res} = \frac{\rho_OV_I'}{\rho_I \Delta t}+ W_{AS}^*
+$$
+
+where $W_{res}$ is the residual heat flux.
+
+Deficient flux results from the snow amount changes is
+
+$$
+	W_{AS}^* = - \frac{\rho_O V_S^{*}}{\rho_S \Delta t}
 $$
 
 Then, the snow depth is modified with the accumulation.
 
 $$
-	h_S^{ \**} = \frac{V_S^{\*}+ \rho_O W_{AS} \Delta t}{\rho_S {A_I^{n+1}}}
+	h_S^{ *} = \frac{V_S^{*}+ \rho_O W_{AS} \Delta t}{\rho_S {A_I^{n+1}}}
 $$
 
-if $h_S'$ is less than 0, it is reset to zero.
+if $h_S^*$ is less than 0, it is reset to zero.
 
-Freshwater flux for ice growth is also considered. When the lake ice is not existed, the flux is just handed to the lake surface.
+- Modification of lake ice amount
 
-$$
-	W_{IO}^* = W_{IO} + W_{AI}^*
-$$
 
-When the lake ice exists ($A_I^{n+1}>0$), if the ice growth rate
+Freshwater flux for ice growth is also considered. When the lake ice does not exist, the flux is just handed to the lake surface.
 
 $$
-	W_{AI}^* = W_{AI} + \frac{V_I^{\*}}{R_{\rho_I \Delta t}}
+	W_{IO}^* = W_{IO} + W_{res}
 $$
+
+When the lake ice exists ($A_I^{n+1}>0$), if the residual flux ($W_{res}$)
 
 is negative, the flux is handed to the lake surface.
 
 $$
-		W_{IO}^* = W_{IO} + W_{AI}^*
+		W_{IO}^* = W_{IO} + W_{res}
 $$
 
-and deficient flux is come from the lake amount changes.
+Deficient flux results from the lake ice amount changes is
 
 $$
-	W_{AI}^* = - \frac{V_I^{\*}}{R_{\rho_I \Delta t}}
-$$
+	W_{AI}^* = - \frac{\rho_OV_I^{*}}{\rho_I \Delta t}
+  $$
 
-The amount of the ice is then updated,
-
-$$
-	V_I^* = V_I' + \frac{\rho_O W_{AI}\Delta t}{\rho_I}
-$$
-
-Then, the snow amount in the new time step (n+1) is,
+The amount of the lake ice is then updated,
 
 $$
-	V_S^{n+1} = A_I^{n+1} h_S^{ \**}
+	V_I^* = V_I' + \frac{\rho_O W_{AI}^*\Delta t}{\rho_I}
 $$
 
-For the ice amount,
+- Getting lake snow and ice amounts in the $n+1$-th time level
+
+Then, the lake snow amount in the new time step (n+1) is,
 
 $$
-	V_I^{n+1} = V_I^* + \frac{\rho_O (W_{IO}+W_{AO})\Delta t}{\rho_I}
+	V_S^{n+1} = A_I^{n+1} h_S^{ **}
 $$
+
+For the lake ice amount,
+
+$$
+	V_I^{n+1} = V_I^* + \frac{\rho_O (W_{IO}^*+W_{AO})\Delta t}{\rho_I}
+$$
+
+- adjustment
 
 If $V_I^{n+1}$ is equal or less than 0, lake ice fraction is set to zero (A_I^{n+1}=0) and its thickness is set to $h_I^{min}$. Otherwise,
 
 $$
-	h_I^{ *** } = \frac{V_I^{n+1}}{A^*}
+	h_I^{ *** } = \frac{V_I^{n+1}}{A_I^{n+1}}
 $$
 
 If $h_I^{*** }$ is smaller than $h_I^{min}$, it is set to $h_I^{min}$ and the lake ice concentration is adjusted.
@@ -3597,7 +3608,7 @@ $$
 
 If the $A_I^{n+1}$ is less than $A_I^{min}$, it is set to 0. If the $A_I^{n+1}$ is larger than $A_I^{max}=1$, it is set to $A_I^{max}$.
 
-Let us consider the case of the ice is very thick.  Here, the remained volume, which is not covered by ice is considered.
+When it comes to the case where the ice is very thick, the remained volume, which is not covered by ice, is considered.
 
 $$
 	V_a^{free} = (A_{max}-A_{min})h_I^{min}
@@ -3613,7 +3624,7 @@ $$
 	h_I^{*** } = V^{free} + \frac{A_I^{n+1} h_I^{m+1}}{A_I^{max}}
 $$
 
-The deficient water is come from the snow. The snow depth is now updated
+The deficient water is derived from the snow. The snow depth is now updated
 
 $$
 	h_S^{\ *** } = A_I^{n+1}\frac{h_S^{\ *** }}{A_{max}-\frac{V_a^{free}}{h_I^{\ *** }}}
@@ -3625,7 +3636,7 @@ $$
 	h_S^{n+1} = \mathrm{min}(h_S^{\ *** }, \frac{\rho_O-\rho_I}{\rho_S}h_I^{\ *** })
 $$
 
-and the ice thickness is also updated.
+The ice thickness is also updated.
 
 $$
 	h_I^{n+1} = h_I^{\ *** } + \frac{\rho_S}{\rho_I} (h_S^{\ *** }-h_S^{n+1})
@@ -3658,16 +3669,16 @@ $$
 	F_S = S_I(W_I-F_W^{SB}{''})
 $$
 
-The freshwater flux ($F_W(1)$) is
+The freshwater flux ($F_{W(NLTDIM=1)}$) is
 
 $$
-	F_W(1) = - F_W(1) + \frac{L_f}{C_p} \Big(W_I^{n+1}+W_S^{n+1}-Sn + \Delta F_W^{EV}\Big)
+	F_{W(NLTDIM=1)} = - F_{W(NLTDIM=1)} + \frac{L_f}{C_p} \Big(W_I^{n+1}+W_S^{n+1}-Sn + \Delta F_W^{EV}\Big)
 $$
 
-The salinity flux ($F_W(2)$) is
+The salinity flux ($F_{W(NLTDIM=2)}$) is
 
 $$
-	F_W(2) =F_W^{EV} - F_W^{PR} - R_{off} + W_S^n + W_I^n
+	F_{W(NLTDIM=2)} =F_W^{EV} - F_W^{PR} - R_{off} + W_S^n + W_I^n
 $$
 
 ## Physical formulation and process
@@ -3688,7 +3699,7 @@ This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion 
 | ------------------------------ | --------- | ------- | -------------- | ---- |
 | Vertical diffusion coefficient | $K_{V}$   | AHVL    | IJLDIM, NLZDIM | -    |
 
-ENTRY: [VDIFFL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+ENTRY VDIFFL (in SUBROUTINE LAKEPO of lakepo.F)
 
 In this part, the vertical diffusion coefficients are first determined for each lake layer.
 
@@ -3725,7 +3736,7 @@ It is known that the surface wind and vertical temperature stratification will a
 | The water depth excluding the first layer | $h'$      | HZBOT   | IJLDIM         | m    |
 | Depth of each lake layer                  | $D$       | DZ      | IJLDIM, NLZDIM | cm   |
 
-ENTRY: [FLXTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+ENTRY FLXTRCL (in SUBROUTINE LAKEPO of lakepo.F)
 
 This part introduces the calculation of the vertical diffusive tracer flux. Temperature is shown here as an example, and the tracer equation of salinity is identical.
 
@@ -3774,7 +3785,7 @@ The above equations apply to salinity as well.
 | --------------------- | --------- | ------- | --------- | ---- |
 | Lake water deficiency | $V_{D}$   | XHD     | IJLDIM    | cm   |
 
-ENTRY: [SLVTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+ENTRY SLVTRCL (in SUBROUTINE LAKEPO of lakepo.F)
 
 This part introduces the update of water temperature and salinity of each layer due to the diffusion, freshwater flux, and absorption of solar radiation.
 
@@ -3903,7 +3914,7 @@ $$
 
 ### The vertical convection
 
-ENTRY: [OVTURNL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
+ENTRY OVTURNL (in SUBROUTINE LAKEPO of lakepo.F)
 
 This part introduced the vertical convection of the water between different layers.
 
@@ -3957,7 +3968,7 @@ Finally, $R_{out}$ is added to runoff from land and given to the river.
 
 # Snow-fed Wetland
 
-[#ifdef OPT_SW_STORAGE] (in SUBROUTINE: [MATROF] in matrof.F)
+[#ifdef OPT_SW_STORAGE] (in SUBROUTINE  [MATROF] in matrof.F)
 
 ## Outline of wetland scheme
 
@@ -4009,7 +4020,7 @@ where $WI\_{soil,original}$ is the original soil water input, $S$ represents the
 
 # Tile scheme
 
-ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F)
+ENTRY LNDFLX (in SUBUROUTINE MATSIRO of matdrv.F)
 
 In the latest version of MATSIRO, a tile treatment of the land surface has been introduced to represent the subgrid fraction of land surface types, so as to partially mimic the behavior at a higher resolution.
 
