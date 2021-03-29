@@ -93,28 +93,20 @@ For the ablation season, the snow cover fraction decreases based on the sub-grid
 $$
 \int\_0^{Sn\_{w\_m}} f(Sn\_w)dSn\_w + \int\_{Sn\_{w\_m}}^\infty f(Sn\_w)dSn\_w = 1, \tag{8-1}
 $$
-
-where $Sn\_w$ is the snow water equivalent depth and $f(Sn\_w)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+where $Sn\_w$ is the snow water equivalent depth and $f(Sn\_w)$ is the probability distribution function of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
-f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
- -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
+f(Sn\_w) = \frac{1}{Sn\_w\zeta\sqrt{2\pi}} \exp{ \left[ 
+ -\frac{1}{2} {\left( \frac{\ln(Sn\_w)-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{8-2}
 $$
-where
-$$
-\lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
-$$
-
-$$
-\zeta^2 = \ln(1+CV^2). \tag{8-4}
-$$
+where $\lambda = \ln(\mu) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
 The snow amount $Sn$ is given by 
 $$
-Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD, \tag{8-5}
+Sn({Sn\_w}\_m) = \int\_0^{{Sn\_w}\_m} 0[f(Sn\_w)]dD + \int\_{{Sn\_w}\_m}^\infty (Sn\_w-{Sn\_w}\_m)[f(Sn\_w)]dSn\_w, \tag{8-5}
 $$
 and this equation is rewritten to
 $$
