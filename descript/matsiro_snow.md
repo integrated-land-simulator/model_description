@@ -650,8 +650,9 @@ $$
 
 Finally, the density of DBC on the $k$th layer $\rho\_{d(k)}$ is updated by
 $$
-\rho\_{d(k)} = M\_{d(k)} / Sn\_{(k)} /times 10^6.
+\rho\_{d(k)} = M\_{d(k)} / Sn\_{(k)} \times 10^6.
 $$
+
 
 ## Albedo of snow and ice
 
