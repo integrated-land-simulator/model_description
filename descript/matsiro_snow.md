@@ -605,12 +605,12 @@ where
 $$
 \begin{aligned}
 M\_{d(1)}^{+}
- &=& \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
+ &= \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
  \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), \\
 M\_{d(1)}^{-}
- &=& \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-53}
+ &= \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),
 \Delta Sn\_{(1)} 
- &=& Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-54}
+ &= Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}.
 \end{aligned}
 $$
 
