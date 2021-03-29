@@ -140,7 +140,7 @@ This process is treated in SUBROUTINE SNWCUT in matsnw.F.
 
 The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
 
-As a standard, the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
+As a standard, the mass of each layer (${\widetilde{Sn}}\_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
 
 $$
 \begin{aligned}
@@ -180,14 +180,9 @@ $$
  (\widetilde{Sn} \geq 60)
 \end{array}
 \right.
-\end{aligned} \tag{8-9}
+\end{aligned}, \tag{8-9}
 $$
-
-where
-
-$$
-\widetilde{Sn} =  Sn / A\_{Sn} \tag{8-10}
-$$
+where $\widetilde{Sn} =  Sn / A\_{Sn}.$
 
 $Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer (${\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
@@ -220,7 +215,7 @@ where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_
 First, by subtracting the sublimation, the snow water equivalent is updated:
 
 $$
-Sn^{\*} = Sn^{\tau} - E\_{Sn}, \Delta t \tag{8-13}
+Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t, \tag{8-13}
 $$
 $$
 \widetilde{Sn}\_{(1)}^{\*} =  \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t. \tag{8-14}
@@ -235,7 +230,7 @@ When the snow temperature is calculated and the temperature of the uppermost sno
 In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost snow layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost snow layer is
 
 $$
-\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t\_L ). \tag{8-15}
+\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t ). \tag{8-15}
 $$
 
 With regard to the second snow layer and below, if the estimated snow temperature is higher than $T\_{melt}$, it is adjusted to $T\_{melt}$ and the desidual energy from the adjustment is applied to the snowmelt. That is, it is assumed to be
@@ -279,17 +274,20 @@ $$
 
 ### Freeze of snowmelt water and rainfall in snow
 
-The freeze of snowmelt water and rainfall in the snow is calculated next. With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer. The retention of liquid water content in the snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.
+The freeze of snowmelt water and rainfall in the snow is calculated next.
+With regard to the snowmelt water, consideration is given to the effect of the liquid water produced by the snowmelt in the upper layer refreezing in the lower layer.
+The retention of liquid water content in the accumulated snow is not considered, and the entire amount is treated whether it has frozen in the snow or percolated under the snow.
 
 The liquid water flux at the snow upper boundary in the snow-covered portion is
-
 $$
-\widetilde{F}\_{wSn(1)} = Pr\_c^{\*} + Pr\_l^{\*} + M\_{Sn} / A\_{Sn} \tag{8-23}
+\widetilde{F}\_{wSn(1)} = Pr\_c^{\*} + Pr\_l^{\*} + M\_{Sn} / A\_{Sn}. \tag{8-23}
 $$
 
 Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).
 
-It is reasonable to assume the temperature of the snowmelt water as 0 $^\circ\mathrm{C}$, and the temperature of rainfall on the snow is also assumed to be 0 $^\circ\mathrm{C}$ for convenience. The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0 $^\circ\mathrm{C}$, any additional water is assumed to be unable to freeze and to percolate to the layer below. In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer$\widetilde{Fr}\_{Sn(k)}$ is solved by
+It is reasonable to assume the temperature of the snowmelt water as 0 $^\circ\mathrm{C}$, and the temperature of rainfall on the snow is also assumed to be 0 $^\circ\mathrm{C}$ for convenience.
+The temperature of the snow increases due to the latent heat of the freezing of water; however, when the temperature of the snow in a certain layer is increased to 0 $^\circ\mathrm{C}$, any additional water is assumed to be unable to freeze and to percolate to the layer below.
+In addition, an upper limit is set on the ratio of water that can be frozen compared with the mass of snow in the layer. The amount of freeze in a given layer $\widetilde{Fr}\_{Sn(k)}$ is solved by
 
 $$
 \widetilde{Fr}\_{Sn\_{(k)}} = \min\left(
@@ -297,37 +295,30 @@ $$
 \frac{c\_{pi}(T\_{melt}-T\_{Sn\_{(k)}}^{\*\*})}{l\_m} \
 \frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} , \
 f\_{Fmax}\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} \
-\right) \tag{8-24}
+\right), \tag{8-24}
 $$
-
-where $F\_{w\_{Sn\_{(k)}}}$ is the liquid water flux percolated from the upper boundary of the $k$th layer of the snow. $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f\_{Fmax}$ is assumed to be 0.1 as a standard value.
+where $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f\_{Fmax}$ is assumed to be 0.1 as a standard value.
 
 The snow temperature change is updated by
-
 $$
-T\_{Sn\_{(k)}}^{\*\*\*} = \frac{l\_m \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L
+T\_{Sn\_{(k)}}^{\*\*\*} = \frac{l\_m \widetilde{Fr}\_{Sn\_{(k)}}\Delta t
  \+ c\_{pi}(T\_{Sn\_{(k)}}^{\*\*}\Delta \widetilde{Sn}\_{(k)}^{\*\*} 
- \+ T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}
- {c\_{pi}(\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L)}, \tag{8-25}
+ \+ T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t)}
+ {c\_{pi}(\Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t)}, \tag{8-25}
 $$
-
 and the mass is updated as follows:
-
 $$
- \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t\_L. \tag{8-26}
+ \widetilde{Sn}\_{(k)}^{\*\*\*} = \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t. \tag{8-26}
 $$
 
 The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
-
 $$
  Fr\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{Fr}\_{Sn\_{(k)}} A\_{Sn}. \tag{8-27}
 $$
 
-
 By adding the amount of freeze, the snow water equivalent is partially updated as follows:
-
 $$
- Sn^{\*\*\*} = Sn^{\*\*} + Fr\_{Sn} \Delta t\_L. \tag{8-28}
+ Sn^{\*\*\*} = Sn^{\*\*} + Fr\_{Sn} \Delta t. \tag{8-28}
 $$
 
 The liquid water that has percolated from the snow to the lower boundary is given to the soil.
