@@ -48,7 +48,7 @@ Modified
 | $A\_{Sn}$                        | Snow fraction                                    | -                   | GLRSN        |
 | $W\_{Sn}$                        | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
 | $M\_{Sn}$                        | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
-| $P\_{r\_c}$                      | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPC        |
+| $P\_{r\_c}$                      | (Input) Water input after canopy interception derived from convective precipitation \par\noindent hoge | $\mathrm{kg/m^2/s}$ | WINPC        |
 | $P\_{r\_l}$                      | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
 | $\rho\_{d\_w(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D\_w$ | $\mathrm{ppmv}$     | CDST         |
 | $\rho\_{d\_m(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D\_m$ | $\mathrm{ppmv}$     | CDSTM        |
@@ -74,8 +74,8 @@ Input
 | $D\_m$                      | Flux of dust and black carbon                        | $\mathrm{kg/m^2/s}$ | DSTFLM       |
 | $z\_{sd}$                   | Standard deviation of topography                     | $\mathrm{m}$        | GRZSD        |
 | $T\_{hist}$                 | Annual mean temperature over the latest 30 years     | $\mathrm{K}$        | T2HIST       |
-| [TODO]                      | Index of the surface condition                       | -                   | ILSFC        |
-| [TODO]                      | Soil type                                            | -                   | ILSOIL       |
+| -                           | Index of the surface condition                       | -                   | ILSFC        |
+| -                           | Soil type                                            | -                   | ILSOIL       |
 
 
 ## Diagnosis of snow cover fraction
