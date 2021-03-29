@@ -72,8 +72,8 @@ Input
 | $A\_{Snc}$                  | Canopy snow ratio                                    | -                   | SNRATC       |
 | $D\_w$                      | Weighted mean of the fluxes of dust and black carbon | $\mathrm{kg/m^2/s}$ | DSTFAL       |
 | $D\_m$                      | Flux of dust and black carbon                        | $\mathrm{kg/m^2/s}$ | DSTFLM       |
-| [TODO]                      | Standard deviation of topography                     | $\mathrm{m}$        | GRZSD        |
-| [TODO]                      | Annual mean temperature over the latest 30 years     | $\mathrm{K}$        | T2HIST       |
+| $z\_{sd}$                   | Standard deviation of topography                     | $\mathrm{m}$        | GRZSD        |
+| $T\_{hist}$                 | Annual mean temperature over the latest 30 years     | $\mathrm{K}$        | T2HIST       |
 | [TODO]                      | Index of the surface condition                       | -                   | ILSFC        |
 | [TODO]                      | Soil type                                            | -                   | ILSOIL       |
 
@@ -104,11 +104,9 @@ f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[
 $$
 where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
-Here $\W\_{Sn}$ is the accumulated snow and $CV$ is the coefficient of variation. With the default settings, $CV$ is diagnosed from the coldness index $\overline{T\_c}$, standard deviation of the subgrid topography $z\_{sd}$ and vegetation type that is a proxy for surface winds. 
+Here $\W\_{Sn}$ is the accumulated snow and $CV$ is the coefficient of variation. With the default settings, $CV$ is diagnosed from the coldness index $T\_{hist}$, standard deviation of the subgrid topography $z\_{sd}$ and vegetation type that is a proxy for surface winds. 
 For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
-When $\overline{T\_c} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le \overline{T\_c}} \lt 10$ and $\overline{T\_c} \lt 0$, it is determined from $z\_{sd}$ and vegitation type.
-
-
+When $T\_{hist} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le T\_{hist} \lt 10$ and $T\_{hist} \lt 0$, it is determined from $z\_{sd}$ and vegitation type.
 
 The snow amount $Sn$ is given by 
 $$
