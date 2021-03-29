@@ -549,7 +549,7 @@ The amount of dust on the snow cover and in the snow layers are calculated in SU
 
 [TODO] ブラックカーボンとダストの沈着量から、重み付けしてDを計算しているので、その説明をお願いします。コードは、miroc6版のmatdrv.Fの1019〜1037行目あたりです。
 
-The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F.
+The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F when the option OPT\_SNWALB is active.
 
 Flux of DBC $D\_m$ and weighted flux of DBC $D\_w$ is obtained by
 $$
@@ -575,7 +575,7 @@ where $Md\_{m(k)}$ and $Md\_{w(k)}$ are the amount of unweighted and weighted DB
 
 ### Redistribution of dust
 
-The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$.
+The amount of DBC in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$.
 
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
@@ -583,7 +583,7 @@ Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (
 $$
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
 
-When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
+When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
 Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
  = \left\\{ \begin{aligned}
@@ -596,9 +596,9 @@ Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
  \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
 \end{aligned} \right., \tag{8-49}
 $$
-where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
+where $\rho\_{d(k)}$ is the density of DBC in the $k$th layer.
 
-When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
+When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer decreases, and thus
 $$
 Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
  = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
@@ -626,7 +626,7 @@ $$
  = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-54}
 $$
 
-The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
+The change in the amount of DBC in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 $$
 Md\_{(2)}^{\tau+1} - Md\_{(2)}^{\tau} 
  = \Delta Md\_{(1)}^{-} - \Delta Md\_{(1)}^{+} + \Delta Md\_{(3)}^{-} - \Delta Md\_{(3)}^{+}. \tag{8-55}
