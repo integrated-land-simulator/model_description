@@ -551,24 +551,25 @@ The amount of dust on the snow cover and in the snow layers are calculated in SU
 
 The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F.
 
-Flux of DBC $D\_M$ and weighted flux of DBC $D\_W$ is obtained by
+Flux of DBC $D\_m$ and weighted flux of DBC $D\_w$ is obtained by
 $$
 \begin{aligned}
 D\_m &= D\_{dust} + D\_{BC}, \\
 D\_w &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + \gamma\_{BC}},
 \end{aligned}
 $$
-where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{C} (C = dust, BC)$ is defined by the following equalities:
+where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{c} (c = dust, BC)$ is defined by
 $$
-\gamma\_{C} = \gamma\_{C,vis} {w\_r}\_{vis}
+\gamma\_{c} = {\gamma\_c}\_{vis} {w\_r}\_{vis} + {\gamma\_c}\_{nir} {w\_r}\_{nir} + {\gamma\_c}\_{ifr} {w\_r}\_{ifr},
 $$
+where ${\gamma\_c}\_{vis}$, ${\gamma\_c}\_{nir}$ and ${\gamma\_c}\_{ifr}$ are the absorption coefficients for $c$ (dust or black carbon) of three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
 
-The dust fall is added to the top layer:
+The amount of DBC on the uppermost snow layer is updated as
 $$
-M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-47}
+Md\_{m(1)}^{\tau+1} = Md\_{m(1)}^{\tau} + D\_m, \tag{8-47}
+Md\_{w(1)}^{\tau+1} = Md\_{w(1)}^{\tau} + D\_w, \tag{8-47}
 $$
-where $M\_{d(k)}$ is the amount of dust on the $k$th snow layer and $D$ is the dust fall.
-
+where $Md\_{m(k)}$ and $Md\_{w(k)} are the amount of unweighted and weighted DBC on the $k$th snow layer.
 
 ### Redistribution of dust
 
