@@ -562,7 +562,7 @@ where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respective
 $$
 \gamma\_{c} = \gamma\_{c,vis} w\_{r,vis} + \gamma\_{c,nir} w\_{r,nir} + \gamma\_{c,ifr} w\_{r,ifr},
 $$
-where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients of the component $c$ ($dust$ or $BC$) for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
+where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
 
 The amount of DBC on the uppermost snow layer is updated as
 $$
