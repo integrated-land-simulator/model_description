@@ -229,7 +229,7 @@ When the snow temperature is calculated and the temperature of the uppermost sno
 In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost snow layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost snow layer is
 
 $$
-\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv(1)} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t ). \tag{8-15}
+\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t ). \tag{8-15}
 $$
 
 With regard to the second snow layer and below, if the estimated snow temperature is higher than $T\_{melt}$, it is adjusted to $T\_{melt}$ and the desidual energy from the adjustment is applied to the snowmelt. That is, it is assumed to be
@@ -238,9 +238,9 @@ $$
 T\_{Sn(k)}^{\*\*} = T\_{melt}. \tag{8-16}
 $$
 
-$\Delta \widetilde{F}\_{conv}$ is newly defined in each layer by
+$\Delta \widetilde{F}\_{conv}$ is newly defined by
 $$
-\Delta \widetilde{F}\_{conv(k)} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
+\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
 $$
 where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
@@ -251,11 +251,11 @@ $$
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}\_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 $$
-\Delta \widetilde{F}\_{conv}^{\*}\_{(k)} = \Delta \widetilde{F}\_{conv(k)} - l\_m \widetilde{M}\_{Sn\_{(k)}}, \tag{8-19}
+\Delta \widetilde{F}\_{conv}^{\*} = \Delta \widetilde{F}\_{conv} - l\_m \widetilde{M}\_{Sn\_{(k)}}, \tag{8-19}
 $$
 $$
 T\_{Sn\_{(k+1)}}^{\*\*} 
- = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv(k)}^{\*} / (c\_{pi} \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t. \tag{8-20}
+ = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t. \tag{8-20}
 $$
 
 When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
@@ -508,12 +508,10 @@ $$
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground, defined as
 $$
 P\_{Sn,melt}^{\*} = \left\\{ \begin{aligned}
-& 0 \\
-& P\_{Sn}^{\*}
+& 0            && (T\_{g(1)} \le T\_{melt}) \\
+& P\_{Sn}^{\*} && (T\_{g(1)} > T\_{melt}) 
 \end{aligned} \right.
 $$
-
-[TODO] この記述で理解はできますが，document 中に式でのこの変数の説明はないようです。
 
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 $$
