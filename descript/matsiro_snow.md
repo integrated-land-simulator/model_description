@@ -46,7 +46,7 @@ Modified
 | $T\_{Sn(k)} \;\; (k=1,2,3)$      | Snow temperature of the $k$th layer              | $\mathrm{K}$        | GLTSN        |
 | $\alpha\_b  \;\; (b=1,2,3)$      | Snow albedo for band $b$                         | -                   | GLASN        |
 | $A\_{Sn}$                        | Snow fraction                                    | -                   | GLRSN        |
-| [TODO]                           | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
+| $W\_{Sn}$                        | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
 | $M\_{Sn}$                        | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
 | $P\_{r\_c}$                      | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPC        |
 | $P\_{r\_l}$                      | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
@@ -84,11 +84,11 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### Case 1: When OPT\_SSNOWD is active
 
-[TODO] 1年に1度、積雪期と融雪期をリセットしていて、そのための変数をリスタートにも入れています。もし可能でしたら、その説明もあると嬉しいです。
-
 The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
+The flag of transition from ablation season to accumulation season is raised once in a year, and the transition is judged based on the snow amount, accumulated snow, net snow gain and snowfall. This flag is included in the restart variables similarly to the state variables.
+
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be unity in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth ${W\_{Sn}}\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
@@ -104,7 +104,11 @@ f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[
 $$
 where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
-Here $\mu$ is the accumulated snow and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
+Here $\W\_{Sn}$ is the accumulated snow and $CV$ is the coefficient of variation. With the default settings, $CV$ is diagnosed from the coldness index $\overline{T\_c}$, standard deviation of the subgrid topography $z\_{sd}$ and vegetation type that is a proxy for surface winds. 
+For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
+When $\overline{T\_c} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le \overline{T\_c}} \lt 10$ and $\overline{T\_c} \lt 0$, it is determined from $z\_{sd}$ and vegitation type.
+
+
 
 The snow amount $Sn$ is given by 
 $$
@@ -209,7 +213,7 @@ $$
 The prognostic equation of the snow water equivalent is given by
 
 $$
- \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
+\frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
 $$
 where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_{Sn}$ is the sublimation flux, $M\_{Sn}$ is the snowmelt, and $Fr\_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 $\tau$ is time step and $\Delta t$ is its length.
@@ -648,7 +652,7 @@ Md\_{(2)}^{\tau+1} - Md\_{(2)}^{\tau}
  = \Delta Md\_{(1)}^{-} - \Delta Md\_{(1)}^{+} + \Delta Md\_{(3)}^{-} - \Delta Md\_{(3)}^{+}. \tag{8-55}
 $$
 
-Finally, the density of DBC on the $k$th layer $\rho\_{d(k)}$ is updated by
+Finally, the density of DBC on the $k$th snow layer $\rho\_{d(k)}$ is updated by
 $$
 \rho\_{d(k)} = M\_{d(k)} / Sn\_{(k)} \times 10^6.
 $$
