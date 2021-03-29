@@ -562,7 +562,20 @@ where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respective
 $$
 \gamma\_{c} = \gamma\_{c,vis} \omega\_{vis} + \gamma\_{c,nir} \omega\_{nir} + \gamma\_{c,ifr} \omega\_{ifr},
 $$
-where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
+where $\gamma\_{c,b}$ is the absorption coefficient for the band $b$, and $\omega\_b$ is the radiation weight of the band $b$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and they take the following values as a standard.
+$$
+\begin{aligned}
+\gamma\_{dust,vis} &= 6.36777 \times 10^2, 
+\gamma\_{dust,nir} &= 3.34617 \times 10^2, 
+\gamma\_{dust,ifr} &= 8.62054 \times 10^2, \\
+\gamma\_{BC,vis}   &= 7.43200 \times 10^4, 
+\gamma\_{BC,nir}   &= 2.93200 \times 10^4,
+\gamma\_{BC,ifr}   &= 2.47174 \times 10^3, \\
+\omega\_{vis} &= 0.46, \omega\_{nir} &= 0.36, \omega\_{ifr} &= 0.18
+\end{aligned}
+$$
+
+where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively, and $\omega\_{vis}$, $\omega\_{nir}$ and $\omega\_{ifr}$ are 
 
 The amount of DBC on the uppermost snow layer is updated as
 $$
