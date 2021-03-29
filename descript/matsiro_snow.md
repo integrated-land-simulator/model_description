@@ -159,7 +159,7 @@ $$
 \widetilde{Sn}\_{(2)} &= \left\\{
 \begin{array}{ll}
  0 \\
- \widetilde{Sn} - \Delta Sn\_{(1)} \\
+ \widetilde{Sn} - Sn\_{(1)} \\
  0.5(\widetilde{Sn} - 20) \\
  40
 \end{array}
@@ -173,7 +173,7 @@ $$
 \widetilde{Sn}\_{(3)} &= \left\\{
 \begin{array}{ll}
  0 \\
- \widetilde{Sn} - (\Delta Sn\_{(1)} + \Delta Sn\_{(2)})
+ \widetilde{Sn} - (Sn\_{(1)} + Sn\_{(2)})
 \end{array}
 \begin{array}{ll}
  (\widetilde{Sn} < 60) \\
@@ -267,7 +267,7 @@ $$
  M\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{M}\_{Sn(k)} A\_{Sn} \tag{8-21}
 $$
 
-By subtracting the snowmelt, the snow water equivalent is partially updated:
+By subtracting the snowmelt, the snow water equivalent is updated:
 $$
 Sn^{\*\*} = Sn^{\*} - M\_{Sn} \Delta t. \tag{8-22}
 $$
@@ -293,8 +293,8 @@ $$
 \widetilde{Fr}\_{Sn\_{(k)}} = \min\left(
 \widetilde{F}\_{w\_{Sn\_{(k)}}}, \
 \frac{c\_{pi}(T\_{melt}-T\_{Sn\_{(k)}}^{\*\*})}{l\_m} \
-\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} , \
-f\_{Fmax}\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t\_L} \
+\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} , \
+f\_{Fmax}\frac{\Delta \widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} \
 \right), \tag{8-24}
 $$
 where $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f\_{Fmax}$ is assumed to be 0.1 as a standard value.
@@ -333,24 +333,25 @@ $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed as described in the section 8.1 and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+[TODO] MATSIRO6ではこの処理について，新しく，土壌温度が融点より高くても降雪を溶かさない仕様に変更したと理解しています。この部分は変更した方がよいのではないでしょうか。
+
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by [Eq. 8.7] and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
-
 $$
-\Delta \widetilde{Sn}\_{(k)}^{\tau+1} = \Delta \widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t\_L /A\_{Sn}. \tag{8-30}
+\widetilde{Sn}\_{(k)}^{\tau+1} = \widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t /A\_{Sn}. \tag{8-30}
 $$
 
 ### Redivision of snow layer and rediagnosis of temperature
 
-When the snow water equivalent is updated, the snow-covered ratio is rediagnosed as described in the section 8.1 and the mass of each layer is redivided as described in the section 8.2. The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
+When the snow water equivalent is updated, the snow-covered ratio is rediagnosed as described in the section 8.1 and the mass of each layer is reallocated as described in the section 8.2. The temperature in each redivided layer is rediagnosed so that the energy is conserved as follows:
 
 $$
 T\_{Sn\_{(k)}}^{\mathrm{new}} = \left(
  \sum\_{l=1}^{K\_{Sn}^{\mathrm{old}}} 
  f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})} T\_{Sn(l)}^{\mathrm{old}} 
- \Delta \widetilde{Sn}\_{(l)}^{\mathrm{old}} A\_{Sn}^{\mathrm{old}} 
-\right) \Bigm/ (\Delta \widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}). \tag{8-31}
+ \widetilde{Sn}\_{(l)}^{\mathrm{old}} A\_{Sn}^{\mathrm{old}} 
+\right) \Bigm/ (\widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}). \tag{8-31}
 $$
 
 It should be noted that the variables with the index "old" and "new" are those before and after redivision, respectively. $f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
