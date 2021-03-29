@@ -549,6 +549,20 @@ The amount of dust on the snow cover and in the snow layers are calculated in SU
 
 [TODO] ブラックカーボンとダストの沈着量から、重み付けしてDを計算しているので、その説明をお願いします。コードは、miroc6版のmatdrv.Fの1019〜1037行目あたりです。
 
+The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F.
+
+Flux of DBC $D\_M$ and weighted flux of DBC $D\_W$ is obtained by
+$$
+\begin{aligned}
+D\_M &= D\_{dust} + D\_{BC},
+D\_W &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + \gamma\_{BC}}.
+\end{aligned}
+$$
+Here, $\gamma\_{C}$ is defined by the following equalities:
+$$
+\gamma\_{C} = \gamma\_{C,vis}w\_r\_{vis}
+$$
+
 The dust fall is added to the top layer:
 $$
 M\_{d(1)}^{\tau+1} = M\_{d(1)}^{\tau} + D, \tag{8-47}
@@ -565,8 +579,6 @@ $$
 Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
 $$
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
-
-[TODO] タイムステップに関するこの表現についても一言説明を添えていただけるとありがたいです。
 
 When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
