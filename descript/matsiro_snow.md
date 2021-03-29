@@ -581,17 +581,6 @@ $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
  & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
- \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) 
- \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
- & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
- \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
-\end{aligned} \right., \tag{8-49}
-$$
-
-$$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
- = \left\\{ \begin{aligned}
- & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
  \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
  & \hspace{36mm}
  \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
@@ -614,9 +603,11 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^
 $$
 where
 $$
+\begin{multiline}
 M\_{d(1)}^{+}
- = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right)
+ = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
  \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
+\end{multiline}
 \tag{8-52}
 $$
 $$
