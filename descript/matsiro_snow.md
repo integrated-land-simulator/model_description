@@ -36,44 +36,44 @@ The snow cover fraction, snow water equivalent, snow temperature and snow albedo
 
 Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice albedo is calculated in SUBROUTINE ICEALB in matice.F.
 
-Tables below show the important arguments of SUBROUTINE MATSNW classified by the statements of "modified", "output" and "input".
+The following tables present attributions of key variables in SUBROUTINE MATSNW.
 
 Modified
 
-| Name in code | Variable                    | Description                                      | Unit                |
-|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
-| GLSNW        | $Sn$                        | Amount of snowfall                               | $\mathrm{kg/m^2}$   |
-| GLTSN        | $T\_{Sn(k)} \;\; (k=1,2,3)$ | Snow temperature of the $k$th layer              | $\mathrm{K}$        |
-| GLASN        | $\alpha\_b  \;\; (b=1,2,3)$ | Snow albedo for band $b$                         | -                   |
-| GLRSN        | $A\_{Sn}$                   | Snow fraction                                    | -                   |
-| GLSDA        | -                           | Snow accumulation                                | $\mathrm{kg/m^2}$   |
-| GLSDM        | $M\_{Sn}$                   | Accumulation of the snow melt                    | $\mathrm{kg/m^2}$   |
-| WINPC        | $P\_{r\_c}$                 | Convective precipitation flux                    | $\mathrm{kg/m^2/s}$ |
-| WINPL        | $P\_{r\_l}$                 | Layered precipitation flux                       | $\mathrm{kg/m^2/s}$ |
-| CDST         | $\rho\_{(k)}$               | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     |
+| Variable                       | Long name                                        | Unit                | Name in code |
+|:-------------------------------|:-------------------------------------------------|:--------------------|:-------------|
+| $Sn$                           | Amount of accumulated snow                       | $\mathrm{kg/m^2}$   | GLSNW        |
+| $T\_{Sn(k)} \;\; (k=1,2,3)$    | Snow temperature of the $k$th layer              | $\mathrm{K}$        | GLTSN        |
+| $\alpha\_b  \;\; (b=1,2,3)$    | Snow albedo for band $b$                         | -                   | GLASN        |
+| $A\_{Sn}$                      | Snow fraction                                    | -                   | GLRSN        |
+| [TODO]                         | Snow accumulation                                | $\mathrm{kg/m^2}$   | GLSDA        |
+| $M\_{Sn}$                      | Accumulation of the snow melt                    | $\mathrm{kg/m^2}$   | GLSDM        |
+| $P\_{r\_c}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPC        |
+| $P\_{r\_l}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPL        |
+| $\rho D\_{(k)} \;\; (k=1,2,3)$ | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     | CDST         |
 
 Output
 
-| Name in code | Variable                    | Description                                      | Unit                |
-|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
-| GGLACR       | $Ro\_{gl}$                  | Glacier formation                                | $\mathrm{kg/m^2/s}$ |
+| Variable                    | Description                                      | Unit                | Name in code |
+|:----------------------------|:-------------------------------------------------|:--------------------|:-------------|
+| $Ro\_{gl}$                  | Glacier formation                                | $\mathrm{kg/m^2/s}$ | GGLACR       |
 
 Input
 
-| Name in code | Variable                    | Description                                      | Unit                |
-|:-------------|:----------------------------|:-------------------------------------------------|:--------------------|
-| SNFAL        | $P\_{Sn}$                   | Snow fall                                        | $\mathrm{kg/m^2/s}$ |
-| SNSUB        | $E\_{Sn}$                   | Snow sublimation                                 | $\mathrm{kg/m^2/s}$ |
-| SNFLXS       | $F\_{Sn(1/2)}$              | Snow surface heat flux                           | $\mathrm{W/m^2}$    |
-| GLG          | $T\_{g(k)}$                 | Soil temperature of the $k$th layer              | $\mathrm{T}$        |
-| GLW          | $w\_{g(k)}$                 | Soil moisture                                    | $\mathrm{m^3/m^3}$  |
-| GLWC         | $w\_c$                      | Canopy water                                     | $\mathrm{m}$        |
-| SNRATC       | $A\_{Snc}$                  | Canopy snow ratio                                | -                   |
-| DSTFAL       | $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   |
-| GRZSD        | -                           | Standard deviation of topography                 | $\mathrm{m}$        |
-| T2HIST       | -                           | Annual mean temperature over the latest 30 years | $\mathrm{K}$        |
-| ILSFC        | -                           | Index of the surface condition                   | -                   |
-| ILSOIL       | -                           | Soil type                                        | -                   |
+| Variable                    | Description                                      | Unit                | Name in code |
+|:----------------------------|:-------------------------------------------------|:--------------------|:-------------|
+| $P\_{Sn}$                   | Snow fall                                        | $\mathrm{kg/m^2/s}$ | SNFAL        |
+| $E\_{Sn}$                   | Snow sublimation                                 | $\mathrm{kg/m^2/s}$ | SNSUB        |
+| $F\_{Sn(1/2)}$              | Snow surface heat flux                           | $\mathrm{W/m^2}$    | SNFLXS       |
+| $T\_{g(k)}$                 | Soil temperature of the $k$th layer              | $\mathrm{T}$        | GLG          |
+| $w\_{g(k)}$                 | Soil moisture                                    | $\mathrm{m^3/m^3}$  | GLW          |
+| $w\_c$                      | Canopy water                                     | $\mathrm{m}$        | GLWC         |
+| $A\_{Snc}$                  | Canopy snow ratio                                | -                   | SNRATC       |
+| $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   | DSTFAL       |
+| -                           | Standard deviation of topography                 | $\mathrm{m}$        | GRZSD        |
+| -                           | Annual mean temperature over the latest 30 years | $\mathrm{K}$        | T2HIST       |
+| -                           | Index of the surface condition                   | -                   | ILSFC        |
+| -                           | Soil type                                        | -                   | ILSOIL       |
 
 
 ## Diagnosis of snow cover fraction
@@ -85,13 +85,12 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
-For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
+For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be unity in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
 \int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
 $$
-
 where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
