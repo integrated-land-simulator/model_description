@@ -560,7 +560,7 @@ D\_w &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + 
 $$
 where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{c} (c = dust, BC)$ is defined by
 $$
-\gamma\_{c} = \gamma\_{c,vis} w\_{r,vis} + \gamma\_{c,nir} w\_{r,nir} + \gamma\_{c,ifr} w\_{r,ifr},
+\gamma\_{c} = \gamma\_{c,vis} \omega\_{vis} + \gamma\_{c,nir} \omega\_{nir} + \gamma\_{c,ifr} \omega\_{ifr},
 $$
 where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
 
