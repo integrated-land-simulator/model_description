@@ -3999,7 +3999,7 @@ where $WI\_{soil,original}$ is the original soil water input, $S$ represents the
 
 # Tile scheme
 
-MATSIRO employs a tile treatment of the land surface to represent the subgrid land surface types, so as to partially mimic the behavior at a higher resolution. The tile scheme is demonstrated in ENTRY:[LNDFLX] (in SUBUROUTINE: [MATSIRO] of matdrv.F), and the variables and parameters are introduced as follows:
+MATSIRO employs a tile treatment of the land surface to represent the subgrid land surface types, so as to partially mimic the behavior at a higher resolution. The tile scheme is demonstrated in ENTRY:[LNDFLX] and [LNDSTP] (in SUBUROUTINE: [MATSIRO] of matdrv.F), and the variables and parameters are introduced as follows:
 
 - Output variables
 
@@ -4012,10 +4012,11 @@ MATSIRO employs a tile treatment of the land surface to represent the subgrid la
 - Parameters
 
 
-| PARAMETER    | Description                                            | Code    | Initial values | Units |
-| ------------ | ------------------------------------------------------ | ------- | -------------- | ----- |
-| $f_{lake}$   | Fractional weight of lake                              | LKFRAC  | -              | -     |
-| $f_i(i=1,2)$ | Fractional weight of potential vegetation and cropland | SFFRAC1 | -              | -     |
+| PARAMETER      | Description                                                  | Code    | Units |
+| -------------- | ------------------------------------------------------------ | ------- | ----- |
+| $f_{lake}$     | Fractional weight of lake in grid                            | LKFRAC  | -     |
+| $f_i(i=1,2)$   | Fractional weight of potential vegetation and cropland in grid | SFFRAC  | -     |
+| $f_i^"(i=1,2)$ | Sub-fractional weight of potential vegetation and cropland on land | SFFRAC1 | -     |
 
 Basically, one land surface grid is divided into three tiles in the control run — lake, potential vegetation and cropland:
 
@@ -4026,14 +4027,18 @@ Basically, one land surface grid is divided into three tiles in the control run 
 
 All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
 $$
-F=F_{lake}f_{lake}+\sum_{i=1}^nF_if_i(1-f_{lake})
+F=F_{lake}f_{lake}+\sum_{i=1}^nF_if_i
 $$
 
 $$
-\sum_{i=1}^nf_i=1
+f_i=f_i^"(1-f_{lake})
 $$
 
-where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, respectively. The sum of fractions from 3 types of tile always equals 1.
+$$
+\sum_{i=1}^nf_i^"=1
+$$
+
+where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, $f_2^"$ and $f_2^"$ denote the sub-fractional weights of potential vegetation and cropland on land, respectively. The sum of $f_{lake}$, $f_1$ and $f_2$ always equals 1.
 
 By default, tile scheme is applied in land surface type, but it can be used for multiple purposes.
 
