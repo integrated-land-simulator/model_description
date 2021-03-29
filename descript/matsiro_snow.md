@@ -566,8 +566,10 @@ where ${\gamma\_c}\_{vis}$, ${\gamma\_c}\_{nir}$ and ${\gamma\_c}\_{ifr}$ are th
 
 The amount of DBC on the uppermost snow layer is updated as
 $$
-Md\_{m(1)}^{\tau+1} = Md\_{m(1)}^{\tau} + D\_m, \tag{8-47}
-Md\_{w(1)}^{\tau+1} = Md\_{w(1)}^{\tau} + D\_w, \tag{8-47}
+\begin{aligned}
+Md\_{m(1)}^{\tau+1} &= Md\_{m(1)}^{\tau} + D\_m, \\
+Md\_{w(1)}^{\tau+1} &= Md\_{w(1)}^{\tau} + D\_w, 
+\end{aligned} \tag{8-47}
 $$
 where $Md\_{m(k)}$ and $Md\_{w(k)} are the amount of unweighted and weighted DBC on the $k$th snow layer.
 
