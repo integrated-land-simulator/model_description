@@ -189,7 +189,7 @@ $$
 \widetilde{Sn} =  Sn / A\_{Sn} \tag{8-10}
 $$
 
-$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta {\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
+$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer (${\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
 From the above, it can be clearly seen that the number of snow layers ($K\_{Sn}$) is as follows, as a standard:
 
@@ -246,38 +246,35 @@ $$
 
 $\Delta \widetilde{F}\_{conv}$ is newly defined by
 $$
-\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t\_L \tag{8-17}
+\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta \widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
 $$
-and the snowmelt is solved as in [Eq. (8-15)](#8-15).
+where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 $$
-\Delta \widetilde{Sn}\_{(k)}^{\*\*} = \Delta \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}}. \tag{8-18}
+\widetilde{Sn}\_{(k)}^{\*\*} = \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}}. \tag{8-18}
 $$
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}\_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 
 $$
-\Delta \widetilde{F}\_{conv}^{\*} = \Delta \widetilde{F}\_{conv} - l\_m \widetilde{M}\_{Sn\_{(k)}} \tag{8-19}
+\Delta \widetilde{F}\_{conv}^{\*} = \Delta \widetilde{F}\_{conv} - l\_m \widetilde{M}\_{Sn\_{(k)}}, \tag{8-19}
 $$
-
 $$
 T\_{Sn\_{(k+1)}}^{\*\*} 
- = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t\_L \tag{8-20}
+ = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t. \tag{8-20}
 $$
 
-where $c\_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
+When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
 
 The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):
-
 $$
  M\_{Sn} = \sum\_{k=1}^{K\_{Sn}} \widetilde{M}\_{Sn(k)} A\_{Sn} \tag{8-21}
 $$
 
 By subtracting the snowmelt, the snow water equivalent is partially updated:
-
 $$
-Sn^{\*\*} = Sn^{\*} - M\_{Sn} \Delta t\_L \tag{8-22}
+Sn^{\*\*} = Sn^{\*} - M\_{Sn} \Delta t. \tag{8-22}
 $$
 
 ### Freeze of snowmelt water and rainfall in snow
