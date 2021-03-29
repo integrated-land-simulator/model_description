@@ -221,6 +221,8 @@ $$
 \widetilde{Sn}\_{(1)}^{\*} =  \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t. \tag{8-14}
 $$
 
+[TODO] アスタリスクはアップデートされた中間変数の印だと理解しているのですが，document特にその旨の記述は無いようです。 読み手としてはどこかに記号の意味が明記されているとありがたいです。
+
 In a case where the sublimation is larger than the snow water equivalent in the uppermost snow layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
 
 ### Snowmelt
@@ -335,7 +337,7 @@ However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}
 
 [TODO] MATSIRO6ではこの処理について，新しく，土壌温度が融点より高くても降雪を溶かさない仕様に変更したと理解しています。この部分は変更した方がよいのではないでしょうか。
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by [Eq. 8.7] and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by [Eq. (8-7)](#8-7) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
 $$
@@ -361,10 +363,12 @@ It should be noted that the variables with the index "old" and "new" are those b
 
 ### Snow heat conduction equations
 
+[TODO] フラックスを考える層と層の境界部分を表現しているのだと理解しているのですがあっていますか？Documentの会合で質問が出たような記憶がある(のですが，回答をちゃんと聞いていませんでした...)ので，この記述方法が意味するところをどこかに明記していただけるとありがたいです。
+
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 
 $$
-c\_{pi}\Delta \widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t\_L} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
+c\_{pi} \widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
 \qquad (k=1,\ldots,K\_{Sn}) \tag{8-32}
 $$
 
@@ -376,56 +380,49 @@ $$
  \begin{aligned}
   & (F\_{Sn(1/2)} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv} 
   \; &&(k = 0) \\
-  & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{z\_{Sn(k+1/2)}}
   \; &&(k = 1, ..., K\_{Sn}-1) \\
-  & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{z\_{Sn(k+1/2)}}
   \; &&(k = K\_{Sn})
  \end{aligned}
 \right., \tag{8-33}
 $$
-
-where $k\_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
-
-
+where $k\_{Sn(k+1/2)}$  is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. $z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
 $$
-\Delta z\_{Sn(k+1/2)}
+z\_{Sn(k+1/2)}
  = \left\\{
  \begin{aligned}
   & 0.5 \Delta \widetilde{Sn}\_{(1)} / \rho\_{Sn} 
   \; &&(k = 1) \\
-  & 0.5 (\Delta \widetilde{Sn}\_{(k)} + \Delta \widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
+  & 0.5 (\widetilde{Sn}\_{(k)} + \widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
   \; &&(k = 2, ..., K\_{Sn}-1) \\
-  & 0.5 \Delta \widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
+  & 0.5 \widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
   \; &&(k = K\_{Sn})
  \end{aligned}
-\right. \tag{8-34}
+\right., \tag{8-34}
 $$
+where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change over time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
-where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change with the passage of time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
-
-In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$. $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
+In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using three energy variables: the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$.
+$\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
 
 In the equation for the snow lower boundary flux $\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$, $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
-
 $$
-\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}} \tag{8-35}
-$$
-
-there is assumed to be no convergence at the snow lower boundary, and by putting
-
-
-$$
-\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)} \tag{8-36}
+\widetilde{F}\_{g(1/2)} = k\_{g(1/2)} \frac{T\_{g(1)}-T\_{Sn\_{(B)}}}{\Delta z\_{g(1/2)}}. \tag{8-35}
 $$
 
-$T\_{Sn\_{(B)}}$ is solved. When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
+There is assumed to be no convergence at the snow lower boundary, and $T\_{Sn\_{(B)}}$ is solved by putting
+$$
+\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)}. \tag{8-36}
+$$
 
+When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
- = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-  +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+ = \left[ \frac{z\_{g(1/2)}}{k\_{g(1/2)}}
+  +\frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1}
- (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}) \tag{8-37}
+ (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}). \tag{8-37}
 $$
 
 ### Case 1: When snowmelt does not occur in the uppermost layer
@@ -442,20 +439,20 @@ $$
  &= \left\\{ \begin{aligned}
  & (F\_{Sn\_{(1/2)}} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv}
  \; && (k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
+ & \frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
  \; && (k = 1, ..., K\_{Sn}-1) \\
  & \left[
-  \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
-  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+  \frac{z\_{g(1/2)}}{k\_{g(1/2)}}
+  \+ \frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; && (k = K\_{Sn})
 \end{aligned} \right., \\
 \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
  &= \left\\{ \begin{aligned}
- & \-\frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{(k+1/2)}}}
+ & \-\frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn\_{(k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1) \\
- & \-\left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}} 
-  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
+ & \-\left[ \frac{z\_{g(1/2)}}{k\_{g(1/2)}} 
+  \+ \frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
  \right]^{-1}
  \; &&(k = K\_{Sn})
 \end{aligned} \right., \\
@@ -463,7 +460,7 @@ $$
  &= \left\\{ \begin{aligned}
  & 0
  \; &&(k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
+ & \frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
 \end{aligned} \right.
 \end{aligned} \tag{8-38}
