@@ -3730,7 +3730,7 @@ This part introduces the calculation of the vertical diffusive tracer flux. Temp
 
 The thickness of each lake layer is first calculated. The water column is divided into 5 layers (k=2, 3, 4, 5, 6) in the current version, and the k=1 and k=7 represent the top surface and the bottom surface of the water column, respectively. The layer of the water column is shown in Fig. 11-1.
 
-![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Lake_11-1.eps)
+![The layer of the water column](https://github.com/integrated-land-simulator/model_description/blob/7fde1cde17a72c5782fb2e94605290e8da290063/descript/Lake_11-1.eps)
 
 Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{1}$, and $D_{1}$ is set to 100 cm. Therefore, the thickness of the first layer can be described as:
 $$
@@ -3954,17 +3954,15 @@ The $H_{max} [cm]$ is, by default, the climatology of lake depth + 10 m. $\tau_{
 
 Finally, $R_{out}$ is added to runoff from land and given to the river.
 
-# Snow-fed Wetland
-
-[#ifdef OPT_SW_STORAGE] (in SUBROUTINE: [MATROF] in matrof.F)
+# Wetland
 
 ## Outline of wetland scheme
 
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL (when # ifdef OPT_SW_STORAGE in SUBROUTINE: [MATROF] in matrof.F is active) in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
-![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/1a4e8bb405ef98886c7d0bd2aa867b07b0a87654/descript/Wetland_12-1.eps)
+![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/7fde1cde17a72c5782fb2e94605290e8da290063/descript/Wetland_12-1.eps) 
 
 ## Inflow and outflow of the wetland
 
@@ -3974,7 +3972,7 @@ $$
 \frac{S^{\tau +1}-S^{\tau }}{\Delta t}=-\frac{S}{\beta}+(1-\alpha )R_{s}
 $$
 
-where $R\_{s}$ is surface runoff calculated as a total of $Ro\_{s}$ (saturation excess runoff), $Ro\_{i}$ (infiltration excess runoff), and $Ro\_{o}$ (overflow of the uppermost soil layer); $\tau$ is time; and $\alpha$ and $\beta$ are parameters related to the inflow and outflow of the wetland storage, respectively.
+where $R_{s}$ is surface runoff calculated as a total of $Ro_{s}$ (saturation excess runoff), $Ro_{i}$ (infiltration excess runoff), and $Ro_{o}$ (overflow of the uppermost soil layer); $\tau$ is time; and $\alpha$ and $\beta$ are parameters related to the inflow and outflow of the wetland storage, respectively.
 
 $\beta$ is a spatially dependent time constant, and can be calculated using a function of the standard deviation of elevation above sea level:
 
@@ -3982,28 +3980,27 @@ $$
 \beta =max(\beta_{0}(1-min(\sigma_{z}(x),\sigma_{z max})/\sigma_{z max}), \Delta t)
 $$
 
-where $\beta\_{0}$ is the maximum of the time constant, $\sigma \_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  Parameter $\sigma _{z}$ is a physical parameter calculated by a topography dataset, with a higher spatial resolution than the simulation, and $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta \_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\beta_{0}$ is the maximum of the time constant, $\sigma _{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  The parameter $\sigma_{z}$ is a physical parameter calculated by the topography dataset, with a higher spatial resolution than the simulation, and $\beta_{0}$, $\sigma_{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
 
 ## Storage of the surface runoff
 
-The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:
+The ratio of total surface runoff that flows directly to the rivers is controlled by parameter $\alpha$. Therefore, the actual runoff flows into rivers $Ro$ changes to:   
 
 $$
 Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
 $$
 
-where $\alpha$ is the inflow parameter (see 12.1); $Ro\_{s}$ is the saturation excess runoff (Dunne runoff), $Ro\_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro\_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro\_{b}$ is the groundwater runoff (section 7.3).
+where $\alpha$ is the inflow parameter (see 12.1); $Ro_{s}$ is the saturation excess runoff (Dunne runoff), $Ro_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro_{b}$ is the groundwater runoff (section 7.3). 
 
 ## Water input of soil surface
 
 The outflow from the wetland storage is re-added to the water input of the soil surface, combining with the original water input (e.g. precipitation that passes through canopy gaps, water drops from the canopy, and snowmelt water). Therefore, the updated soil water input $WI_{soil,total}$ of each time step can be represented as:
 
 $$
-WI_{soil,total}=WI_{soil,original}+\frac{S}{\beta }\Delta t
+WI_{soil,total}=Pr_{c}^{**}+Pr_{l}^{**}-Ro_{s}-Ro_{i}+\frac{S}{\beta }\Delta t
 $$
 
-where $WI\_{soil,original}$ is the original soil water input, $S$ represents the wetland storage, $\beta$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
-
+where $Pr_{c}^{**}$ represents the convective rainfall, $Pr_{l}^{**}$ represents the non-convective rainfall, $S$ represents the wetland storage, $\beta$ represents the outflow parameter of the wetland, and $\Delta t$ is the time step.
 
 
 # Tile scheme
