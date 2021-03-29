@@ -575,8 +575,6 @@ $$
 \end{aligned}
 $$
 
-where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively, and $\omega\_{vis}$, $\omega\_{nir}$ and $\omega\_{ifr}$ are 
-
 The amount of DBC on the uppermost snow layer is updated as
 $$
 \begin{aligned}
