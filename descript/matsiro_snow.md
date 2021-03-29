@@ -565,13 +565,13 @@ $$
 where $\gamma\_{c,b}$ is the absorption coefficient for the band $b$, and $\omega\_b$ is the radiation weight of the band $b$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and they take the following values as a standard.
 $$
 \begin{aligned}
-\gamma\_{dust,vis} &= 6.36777 \times 10^2, 
-\gamma\_{dust,nir} &= 3.34617 \times 10^2, 
+\gamma\_{dust,vis} &= 6.36777 \times 10^2, &
+\gamma\_{dust,nir} &= 3.34617 \times 10^2, &
 \gamma\_{dust,ifr} &= 8.62054 \times 10^2, \\
-\gamma\_{BC,vis}   &= 7.43200 \times 10^4, 
-\gamma\_{BC,nir}   &= 2.93200 \times 10^4,
+\gamma\_{BC,vis}   &= 7.43200 \times 10^4, &
+\gamma\_{BC,nir}   &= 2.93200 \times 10^4, &
 \gamma\_{BC,ifr}   &= 2.47174 \times 10^3, \\
-\omega\_{vis} &= 0.46, \omega\_{nir} &= 0.36, \omega\_{ifr} &= 0.18
+\omega\_{vis} &= 0.46, &\omega\_{nir} &= 0.36, &\omega\_{ifr} &= 0.18
 \end{aligned}
 $$
 
