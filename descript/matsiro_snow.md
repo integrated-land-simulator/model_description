@@ -603,11 +603,11 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^
 $$
 where
 $$
-\begin{multiline}
+\begin{aligned}
 M\_{d(1)}^{+}
  = \rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
  \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
-\end{multiline}
+\end{aligned}
 \tag{8-52}
 $$
 $$
