@@ -503,7 +503,7 @@ The energy convergence used for melting in the uppermost snow layer is given by:
 $$
 \Delta \widetilde{F}\_{conv} 
  = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
- \- c\_{pi}\Delta \widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t\_L}. \tag{8-42}
+ \- c\_{pi}\widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t}. \tag{8-42}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -529,9 +529,9 @@ $$
 The water flux given to the runoff process through the snow process is then expressed as
 $$
 \begin{aligned}
- Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*} \\
- Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*}
-\end{aligned}, \tag{8-45}
+ Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*}, \\
+ Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
+\end{aligned} \tag{8-45}
 $$
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
@@ -541,9 +541,9 @@ where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water 
 In this case, the maximum value is set for the snow water equivalent, and the portion exceeding the maximum value is considered to become glacier runoff:
 $$
 \begin{aligned}
- Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t\_L, \\
- Sn &= Sn - Ro\_{gl} \Delta t\_L, \\
- \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t\_L,
+ Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t, \\
+ Sn &= Sn - Ro\_{gl} \Delta t, \\
+ \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t,
 \end{aligned} \tag{8-46}
 $$
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
@@ -554,6 +554,8 @@ where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted f
 The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
 
 ### Dust fall on the snow cover
+
+[TODO] ブラックカーボンとダストの沈着量から、重み付けしてDを計算しているので、その説明をお願いします。コードは、miroc6版のmatdrv.Fの1019〜1037行目あたりです。
 
 The dust fall is added to the top layer:
 $$
@@ -572,15 +574,17 @@ Sn^{\tau+1/2}\_{(k)} = Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (
 $$
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
 
+[TODO] タイムステップに関するこの表現についても一言説明を添えていただけるとありがたいです。
+
 When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
  & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
  \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) 
- \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
+ \; && \\ \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
  & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right)
- \; && \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
+ \; && \\ \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
 \end{aligned} \right., \tag{8-49}
 $$
 where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
@@ -588,7 +592,8 @@ where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
 When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
- = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
+ = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} \\
+ \- Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
 $$
 
 It leads to 
