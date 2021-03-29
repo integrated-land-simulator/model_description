@@ -352,8 +352,8 @@ $$
 T\_{Sn\_{(k)}}^{\mathrm{new}} = \left(
  \sum\_{l=1}^{K\_{Sn}^{\mathrm{old}}} 
  f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})} T\_{Sn(l)}^{\mathrm{old}} 
- \widetilde{Sn}\_{(l)}^{\mathrm{old}} A\_{Sn}^{\mathrm{old}} 
-\right) \Bigm/ (\widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}). \tag{8-31}
+ \Delta\widetilde{Sn}\_{(l)}^{\mathrm{old}} A\_{Sn}^{\mathrm{old}} 
+\right) \Bigm/ (\Delta\widetilde{Sn}\_{(k)}^{\mathrm{new}} A\_{Sn}^{\mathrm{new}}). \tag{8-31}
 $$
 
 It should be noted that the variables with the index "old" and "new" are those before and after redivision, respectively. $f\_{(l^{\mathrm{old}}\in k^{\mathrm{new}})}$ is the ratio of the mass of the $k$th layer after redivision to the mass of the $l$th layer before redivision.
@@ -365,7 +365,7 @@ It should be noted that the variables with the index "old" and "new" are those b
 
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 $$
-c\_{pi} \widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
+c\_{pi} \Delta\widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
 \qquad (k=1,\ldots,K\_{Sn}) \tag{8-32}
 $$
 with the heat conduction flux $\widetilde{F}\_{Sn}$ given by
@@ -375,24 +375,24 @@ $$
  \begin{aligned}
   & (F\_{Sn(1/2)} - \Delta F\_{conv(1)}) / A\_{Sn} - \Delta F\_{c,conv} 
   \; &&(k = 0) \\
-  & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(k+1)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \; &&(k = 1, ..., K\_{Sn}-1) \\
-  & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{z\_{Sn(k+1/2)}}
+  & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \; &&(k = K\_{Sn})
  \end{aligned}
 \right., \tag{8-33}
 $$
 where $k\_{Sn(k+1/2)}$ is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. The subscript $k+1/2$ of the flux represents the flux from the $(k+1)$th snow layer to the upper one.
-$z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
+$\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
 $$
-z\_{Sn(k+1/2)}
+\Delta z\_{Sn(k+1/2)}
  = \left\\{
  \begin{aligned}
-  & 0.5 \widetilde{Sn}\_{(1)} / \rho\_{Sn} 
+  & 0.5 \Delta\widetilde{Sn}\_{(1)} / \rho\_{Sn} 
   \; &&(k = 1) \\
-  & 0.5 (\widetilde{Sn}\_{(k)} + \widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
+  & 0.5 (\Delta\widetilde{Sn}\_{(k)} + \Delta\widetilde{Sn}\_{(k+1)}) / \rho\_{Sn} 
   \; &&(k = 2, ..., K\_{Sn}-1) \\
-  & 0.5 \widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
+  & 0.5 \Delta\widetilde{Sn}\_{(K\_{Sn})} / \rho\_{Sn}
   \; &&(k = K\_{Sn})
  \end{aligned}
 \right., \tag{8-34}
@@ -415,8 +415,8 @@ $$
 When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
- = \left[ \frac{z\_{g(1/2)}}{k\_{g(1/2)}}
-  +\frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+ = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
+  +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1}
  (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}). \tag{8-37}
 $$
@@ -435,20 +435,20 @@ $$
  &= \left\\{ \begin{aligned}
  & (F\_{Sn\_{(1/2)}} - \Delta F\_{conv}) / A\_{Sn} - \Delta F\_{c,conv}
  \; && (k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
+ & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn(k+1/2)}} (T\_{Sn(k+1)}^\tau - T\_{Sn(k)}^\tau)
  \; && (k = 1, ..., K\_{Sn}-1) \\
  & \left[
-  \frac{z\_{g(1/2)}}{k\_{g(1/2)}}
-  \+ \frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
+  \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
+  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1} (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}^\tau)
  \; && (k = K\_{Sn})
 \end{aligned} \right., \\
 \frac{\partial \widetilde{F}\_{Sn\_{(k+1/2)}}}{\partial T\_{Sn\_{(k)}}}
  &= \left\\{ \begin{aligned}
- & \-\frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn\_{(k+1/2)}}}
+ & \-\frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{(k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1) \\
- & \-\left[ \frac{z\_{g(1/2)}}{k\_{g(1/2)}} 
-  \+ \frac{z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
+ & \-\left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}} 
+  \+ \frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2}}}
  \right]^{-1}
  \; &&(k = K\_{Sn})
 \end{aligned} \right., \\
@@ -456,7 +456,7 @@ $$
  &= \left\\{ \begin{aligned}
  & 0
  \; &&(k = 0) \\
- & \frac{k\_{Sn\_{(k+1/2)}}}{z\_{Sn\_{k+1/2)}}}
+ & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
 \end{aligned} \right.
 \end{aligned} \tag{8-38}
