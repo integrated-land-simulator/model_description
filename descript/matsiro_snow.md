@@ -46,8 +46,8 @@ Modified
 | $T\_{Sn(k)} \;\; (k=1,2,3)$    | Snow temperature of the $k$th layer              | $\mathrm{K}$        | GLTSN        |
 | $\alpha\_b  \;\; (b=1,2,3)$    | Snow albedo for band $b$                         | -                   | GLASN        |
 | $A\_{Sn}$                      | Snow fraction                                    | -                   | GLRSN        |
-| [TODO]                         | Accumulation of the snowfall                     | $\mathrm{kg/m^2}$   | GLSDA        |
-| $M\_{Sn}$                      | Accumulation of the snowmelt                     | $\mathrm{kg/m^2}$   | GLSDM        |
+| [TODO]                         | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
+| $M\_{Sn}$                      | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
 | $P\_{r\_c}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPC        |
 | $P\_{r\_l}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPL        |
 | $\rho D\_{(k)} \;\; (k=1,2,3)$ | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     | CDST         |
@@ -91,7 +91,7 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{D\_m} f(D)dD + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
+\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
 $$
 where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
@@ -102,7 +102,7 @@ f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[
 $$
 where $\lambda = \ln(\mu) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
-Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
+Here $\mu$ is the accumulated snow and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
 The snow amount $Sn$ is given by 
 $$
@@ -546,8 +546,6 @@ where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted f
 The amount of dust on the snow cover and in the snow layers are calculated in SUBROUTINE DSTCUT in matsnw.F.
 
 ### Dust fall on the snow cover
-
-[TODO] ブラックカーボンとダストの沈着量から、重み付けしてDを計算しているので、その説明をお願いします。コードは、miroc6版のmatdrv.Fの1019〜1037行目あたりです。
 
 The flux of dust and black carbon (DBC), the light-absorpting particles, is calculated in SUBROUTINE MATSIRO in matdrv.F when the option OPT\_SNWALB is active.
 
