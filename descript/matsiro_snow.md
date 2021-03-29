@@ -575,7 +575,7 @@ where $Md\_{m(k)}$ and $Md\_{w(k)}$ are the amount of unweighted and weighted DB
 
 ### Redistribution of dust
 
-The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT).
+The amount of dust in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$.
 
 Snow mass of $k$th layer after updating of snow mass and before snow layer recutting $Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
@@ -585,7 +585,7 @@ where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, re
 
 When $Sn^{\tau+1}\_{(1)} > Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
+Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
  = \left\\{ \begin{aligned}
  & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
  \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
@@ -600,25 +600,25 @@ where $\rho\_{d(k)}$ is the density of dust in the $k$th layer.
 
 When $Sn^{\tau+1}\_{(1)} \leq Sn^{\tau+1/2}\_{(1)}$, the amount of dust in the 1st layer decreases, and thus
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
+Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau}
  = -\rho\_{d(1)} \left( Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
 $$
 
 It leads to 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = \Delta M\_{d(1)}^{+} - \Delta M\_{d(1)}^{-}, \tag{8-51}
+Md\_{(1)}^{\tau+1} - Md\_{(1)}^{\tau} = \Delta Md\_{(1)}^{+} - \Delta Md\_{(1)}^{-}, \tag{8-51}
 $$
 where
 $$
 \begin{aligned}
-M\_{d(1)}^{+}
+Md\_{(1)}^{+}
  = &\rho\_{d(2)} \min\left( \max\left( \Delta Sn\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
  & \+ \rho\_{d(3)} \max\left( \max\left( \Delta Sn\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
 \end{aligned}
 \tag{8-52}
 $$
 $$
-M\_{d(1)}^{-}
+Md\_{(1)}^{-}
  = \rho\_{d(1)} \max\left( -\Delta Sn\_{(1)}, 0 \right),  \tag{8-53}
 $$
 $$
@@ -628,8 +628,8 @@ $$
 
 The change in the dust amount in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 $$
-M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
- = \Delta M\_{d(1)}^{-} - \Delta M\_{d(1)}^{+} + \Delta M\_{d(3)}^{-} - \Delta M\_{d(3)}^{+}. \tag{8-55}
+Md\_{(2)}^{\tau+1} - Md\_{(2)}^{\tau} 
+ = \Delta Md\_{(1)}^{-} - \Delta Md\_{(1)}^{+} + \Delta Md\_{(3)}^{-} - \Delta Md\_{(3)}^{+}. \tag{8-55}
 $$
 
 
