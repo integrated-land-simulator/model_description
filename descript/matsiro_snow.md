@@ -100,14 +100,7 @@ f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[
  -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{8-2}
 $$
-where
-$$
-\lambda = \ln(\mu) - \frac{1}{2}\zeta^2, \tag{8-3}
-$$
-
-$$
-\zeta^2 = \ln(1+CV^2). \tag{8-4}
-$$
+where $\lambda = \ln(\mu) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
 Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
 
@@ -122,7 +115,7 @@ Sn(D\_m)
  \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
  \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right), \tag{8-6}
 $$
-where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
+where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, and $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
 $D\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
 
 Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
@@ -136,7 +129,7 @@ The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fracti
 $$
 Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
 $$
-where $Sn\_c$ is 100 $\mathrm{kg/m^2}$.
+where $Sn\_c$ is 100 $\mathrm{kg/m^2}$ as a standard.
 
 
 ## Vertical division of snow layers
