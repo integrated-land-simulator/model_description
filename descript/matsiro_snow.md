@@ -110,7 +110,7 @@ The snow amount $Sn$ is given by
 $$
 Sn({W\_{Sn}}\_m) 
  = \int\_0^{{W\_{Sn}}\_m} 0[f(W\_{Sn})]dW\_{Sn} 
- \+ \int\_{W\_{Sn}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn}, \tag{8-5}
+ \+ \int\_{{W\_{Sn}}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn}, \tag{8-5}
 $$
 and this equation is rewritten to
 $$
