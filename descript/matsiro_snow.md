@@ -560,9 +560,9 @@ D\_w &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + 
 $$
 where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{c} (c = dust, BC)$ is defined by
 $$
-\gamma\_{c} = {\gamma\_c}\_{vis} {w\_r}\_{vis} + {\gamma\_c}\_{nir} {w\_r}\_{nir} + {\gamma\_c}\_{ifr} {w\_r}\_{ifr},
+\gamma\_{c} = \gamma\_{c,vis} w\_{r,vis} + \gamma\_{c,nir} w\_{r,nir} + \gamma\_{c,ifr} w\_{r,ifr},
 $$
-where ${\gamma\_c}\_{vis}$, ${\gamma\_c}\_{nir}$ and ${\gamma\_c}\_{ifr}$ are the absorption coefficients for $c$ (dust or black carbon) of three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
+where $\gamma\_{c,vis}$, $\gamma\_{c,nir}$ and $\gamma\_{c,ifr}$ are the absorption coefficients of the component $c$ ($dust$ or $BC$) for three bands, visible (vis), nearinfrared (nir) and infrared (ifr), respectively.
 
 The amount of DBC on the uppermost snow layer is updated as
 $$
