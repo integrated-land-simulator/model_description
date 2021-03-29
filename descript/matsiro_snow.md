@@ -48,9 +48,9 @@ Modified
 | $A\_{Sn}$                      | Snow fraction                                    | -                   | GLRSN        |
 | [TODO]                         | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
 | $M\_{Sn}$                      | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
-| $P\_{r\_c}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPC        |
-| $P\_{r\_l}$                    | [TODO]                                           | $\mathrm{kg/m^2/s}$ | WINPL        |
-| $\rho D\_{(k)} \;\; (k=1,2,3)$ | Dust density in the $k$th layer                  | $\mathrm{ppmv}$     | CDST         |
+| $P\_{r\_c}$                    | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPC        |
+| $P\_{r\_l}$                    | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
+| $\rho D\_{(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon \\ in the $k$th snow layer | $\mathrm{ppmv}$     | CDST         |
 
 Output
 
@@ -60,20 +60,21 @@ Output
 
 Input
 
-| Variable                    | Description                                      | Unit                | Name in code |
-|:----------------------------|:-------------------------------------------------|:--------------------|:-------------|
-| $P\_{Sn}$                   | Snowfall                                         | $\mathrm{kg/m^2/s}$ | SNFAL        |
-| $E\_{Sn}$                   | Snow sublimation                                 | $\mathrm{kg/m^2/s}$ | SNSUB        |
-| $F\_{Sn(1/2)}$              | Snow surface heat flux                           | $\mathrm{W/m^2}$    | SNFLXS       |
-| $T\_{g(k)}$                 | Soil temperature of the $k$th layer              | $\mathrm{T}$        | GLG          |
-| $w\_{g(k)}$                 | Soil moisture                                    | $\mathrm{m^3/m^3}$  | GLW          |
-| $w\_c$                      | Canopy water                                     | $\mathrm{m}$        | GLWC         |
-| $A\_{Snc}$                  | Canopy snow ratio                                | -                   | SNRATC       |
-| $D$                         | Dust fall                                        | $\mathrm{ppmv/s}$   | DSTFAL       |
-| [TODO]                      | Standard deviation of topography                 | $\mathrm{m}$        | GRZSD        |
-| [TODO]                      | Annual mean temperature over the latest 30 years | $\mathrm{K}$        | T2HIST       |
-| [TODO]                      | Index of the surface condition                   | -                   | ILSFC        |
-| [TODO]                      | Soil type                                        | -                   | ILSOIL       |
+| Variable                    | Description                                          | Unit                | Name in code |
+|:----------------------------|:-----------------------------------------------------|:--------------------|:-------------|
+| $P\_{Sn}$                   | Snowfall                                             | $\mathrm{kg/m^2/s}$ | SNFAL        |
+| $E\_{Sn}$                   | Snow sublimation                                     | $\mathrm{kg/m^2/s}$ | SNSUB        |
+| $F\_{Sn(1/2)}$              | Snow surface heat flux                               | $\mathrm{W/m^2}$    | SNFLXS       |
+| $T\_{g(k)}$                 | Soil temperature of the $k$th layer                  | $\mathrm{T}$        | GLG          |
+| $w\_{g(k)}$                 | Soil moisture                                        | $\mathrm{m^3/m^3}$  | GLW          |
+| $w\_c$                      | Canopy water                                         | $\mathrm{m}$        | GLWC         |
+| $A\_{Snc}$                  | Canopy snow ratio                                    | -                   | SNRATC       |
+| $D\_w$                      | Weighted mean of the fluxes of dust and black carbon | $\mathrm{kg/m^2/s}$ | DSTFAL       |
+| $D\_m$                      | Flux of dust and black carbon                        | $\mathrm{kg/m^2/s}$ | DSTFLM       |
+| [TODO]                      | Standard deviation of topography                     | $\mathrm{m}$        | GRZSD        |
+| [TODO]                      | Annual mean temperature over the latest 30 years     | $\mathrm{K}$        | T2HIST       |
+| [TODO]                      | Index of the surface condition                       | -                   | ILSFC        |
+| [TODO]                      | Soil type                                            | -                   | ILSOIL       |
 
 
 ## Diagnosis of snow cover fraction
@@ -88,16 +89,16 @@ The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of 
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be unity in the grid cell.
-For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth $D\_m$, the sum of snow-free and snow-covered fraction equals unity:
+For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth ${W\_{Sn}}\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{D\_m}^\infty f(D)dD = 1, \tag{8-1}
+\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1, \tag{8-1}
 $$
-where $D$ is the snow water equivalent depth and $f(D)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+where $W\_{Sn}$ is the snow water equivalent depth and $f(W\_{Sn})$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
-f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
- -\frac{1}{2} {\left( \frac{\ln(D)-\lambda}{\zeta} \right)}^2 
+f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[ 
+ -\frac{1}{2} {\left( \frac{\ln(W\_{Sn})-\lambda}{\zeta} \right)}^2 
 \right] }, \tag{8-2}
 $$
 where $\lambda = \ln(\mu) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
@@ -106,28 +107,31 @@ Here $\mu$ is the accumulated snow and $CV$ is the coefficient of variation. $CV
 
 The snow amount $Sn$ is given by 
 $$
-Sn(D\_m) = \int\_0^{D\_m} 0[f(D)]dD + \int\_{D\_m}^\infty (D-D\_m)[f(D)]dD, \tag{8-5}
+Sn({W\_{Sn}}\_m) 
+ = \int\_0^{{W\_{Sn}}\_m} 0[f(W\_{Sn})]dW\_{Sn} 
+ \+ \int\_{W\_{Sn}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn}, \tag{8-5}
 $$
 and this equation is rewritten to
 $$
-Sn(D\_m) 
+Sn({W\_{Sn}}\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
- \mathrm{erfc} \left( \frac{z\_{D\_m}-\xi}{\sqrt{2}} \right)
- \- \frac{1}{2} D\_m \mathrm{erfc} \left( \frac{z\_{D\_m}}{\sqrt{2}} \right), \tag{8-6}
+ \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}-\xi}{\sqrt{2}} \right)
+ \- \frac{1}{2} {W\_{Sn}}\_m \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{\sqrt{2}} \right), \tag{8-6}
 $$
-where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(D)-\lambda}{\zeta}$, and $z\_{D\_m}$ is the value of $z$ when $D = D\_m$ and $\mathrm{erfc}$ is the complementary error function.
-$D\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
+where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(W\_{Sn})-\lambda}{\zeta}$, and $z\_{{W\_{Sn}}\_m}$ is the value of $z$ when $W\_{Sn} = {W\_{Sn}}\_m$ and $\mathrm{erfc}$ is the complementary error function.
+${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
 
-Then, the snow cover fraction $A\_{Sn}(D\_m)$ is calculated by
+Then, the snow cover fraction $A\_{Sn}({W\_{Sn}}\_m)$ is calculated by
 $$
-A\_{Sn}(D\_m) = 1 - \int\_0^{D\_m} f(D)dD = \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{D\_m}}{2} \right). \tag{8-7}
+A\_{Sn}({W\_{Sn}}\_m) = 1 - \int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dD 
+= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{8-7}
 $$
 
 ### Case 2: When OPT\_SSNOWD is inactive
 
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
 $$
-Sn(D\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
+Sn({W\_{Sn}}\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
 $$
 where $Sn\_c$ is 100 $\mathrm{kg/m^2}$ as a standard.
 
