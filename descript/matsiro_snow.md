@@ -93,7 +93,8 @@ For the ablation season, the snow cover fraction decreases based on the sub-grid
 $$
 \int\_0^{Sn\_w\_m} f(s)dw + \int\_{Sn\_w\_m}^\infty f(Sn\_w)ds = 1, \tag{8-1}
 $$
-where $sw$ is the snow water equivalent depth and $f(s)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
+
+where $Sn\_w$ is the snow water equivalent depth and $f(Sn\_w)$ is the probability distribution function (PDF) of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
 f(D) = \frac{1}{D\zeta\sqrt{2\pi}} \exp{ \left[ 
