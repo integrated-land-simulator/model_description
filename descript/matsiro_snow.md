@@ -223,7 +223,7 @@ $$
 Sn^{\*} = Sn^{\tau} - E\_{Sn} \Delta t, \tag{8-13}
 $$
 $$
-\widetilde{Sn}\_{(1)}^{\*} =  \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t. \tag{8-14}
+\Delta \widetilde{Sn}\_{(1)}^{\*} = \Delta \widetilde{Sn}\_{(1)}^{\tau} - E\_{Sn}/A\_{Sn} \Delta t. \tag{8-14}
 $$
 The asterisk indicates that the variable is under updating in the time step.
 
@@ -247,13 +247,13 @@ $$
 
 $\Delta \widetilde{F}\_{conv}$ is newly defined by
 $$
-\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
+\Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
 $$
 where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 $$
-\widetilde{Sn}\_{(k)}^{\*\*} = \widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}}. \tag{8-18}
+\Delta\widetilde{Sn}\_{(k)}^{\*\*} = \Delta\widetilde{Sn}\_{(k)}^{\*} - \widetilde{M}\_{Sn\_{(k)}}. \tag{8-18}
 $$
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}\_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
@@ -262,7 +262,7 @@ $$
 $$
 $$
 T\_{Sn\_{(k+1)}}^{\*\*} 
- = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \widetilde{Sn}\_{(k+1)}^{\*}) \Delta t. \tag{8-20}
+ = T\_{Sn\_{(k+1)}}^{\*} + \Delta \widetilde{F}\_{conv}^{\*} / (c\_{pi} \Delta\widetilde{Sn}\_{(k+1)}^{\*}) \Delta t. \tag{8-20}
 $$
 
 When all of the snow is melted, $\Delta \widetilde{F}\_{conv}^{\*}$ is given to the soil.
@@ -298,8 +298,8 @@ $$
 \widetilde{Fr}\_{Sn\_{(k)}} = \min\left(
 \widetilde{F}\_{w\_{Sn\_{(k)}}}, \
 \frac{c\_{pi}(T\_{melt}-T\_{Sn\_{(k)}}^{\*\*})}{l\_m} \
-\frac{\widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} , \
-f\_{Fmax}\frac{\widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} \
+\frac{\Delta\widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} , \
+f\_{Fmax}\frac{\Delta\widetilde{Sn}\_{(k)}^{\*\*}}{\Delta t} \
 \right), \tag{8-24}
 $$
 where $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from the top of the $k$th layer of snow cover. $f\_{Fmax}$ is assumed to be 0.1 as a standard value.
@@ -307,13 +307,13 @@ where $\widetilde{F}\_{w\_{Sn\_{(k)}}}$ is the liquid water flux flowing from th
 The snow temperature change is updated by
 $$
 T\_{Sn\_{(k)}}^{\*\*\*} = \frac{l\_m \widetilde{Fr}\_{Sn\_{(k)}}\Delta t
- \+ c\_{pi}(T\_{Sn\_{(k)}}^{\*\*} \widetilde{Sn}\_{(k)}^{\*\*} 
+ \+ c\_{pi}(T\_{Sn\_{(k)}}^{\*\*} \Delta\widetilde{Sn}\_{(k)}^{\*\*} 
  \+ T\_{melt} \widetilde{Fr}\_{Sn\_{(k)}}\Delta t)}
- {c\_{pi}(\widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t)}, \tag{8-25}
+ {c\_{pi}(\Delta\widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t)}, \tag{8-25}
 $$
 and the mass is updated as follows:
 $$
-\widetilde{Sn}\_{(k)}^{\*\*\*} = \widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t. \tag{8-26}
+\Delta\widetilde{Sn}\_{(k)}^{\*\*\*} = \Delta\widetilde{Sn}\_{(k)}^{\*\*} + \widetilde{Fr}\_{Sn\_{(k)}}\Delta t. \tag{8-26}
 $$
 
 The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
@@ -341,7 +341,7 @@ When snow is produced by snowfall in a grid where no snow was formerly present, 
 
 The snowfall is added to the mass of the uppermost layer:
 $$
-\widetilde{Sn}\_{(k)}^{\tau+1} = \widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t /A\_{Sn}. \tag{8-30}
+\Delta\widetilde{Sn}\_{(k)}^{\tau+1} = \Delta\widetilde{Sn}\_{(k)}^{\*\*\*} + P\_{Sn}^{\*} \Delta t /A\_{Sn}. \tag{8-30}
 $$
 
 ### Redivision of snow layer and rediagnosis of temperature
