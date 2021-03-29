@@ -106,7 +106,7 @@ where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
 Here $W\_{Sn}$ is the accumulated snow and $CV$ is the coefficient of variation. With the default settings, $CV$ is diagnosed from the coldness index $T\_{hist}$, standard deviation of the subgrid topography $z\_{sd}$ and vegetation type that is a proxy for surface winds. 
 For $T\_{hist}$, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years, is applied. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
-When $T\_{hist} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le T\_{hist} \lt 10$ and $T\_{hist} \lt 0$, it is determined from $z\_{sd}$ and vegitation type.
+When $T\_{hist} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le T\_{hist} \lt 10$ and $T\_{hist} \lt 0$, it is determined from $z\_{sd}$ and vegetation type.
 
 The snow amount $Sn$ is given by 
 $$
@@ -147,11 +147,11 @@ This process is treated in SUBROUTINE SNWCUT in matsnw.F.
 
 The number of layers and the mass of each layer are determined uniquely by the snow water equivalent. Consequently, the mass of each layer does not become a new prognostic variable.
 
-As a standard, the mass of each layer (${\widetilde{Sn}}\_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
+As a standard, the mass of each layer ($\Delta{\widetilde{Sn}}\_{(k)} (k=1,2,3)$) is determined as follows ($k=1$ is the uppermost layer):
 
 $$
 \begin{aligned}
-\widetilde{Sn}\_{(1)} &= \left\\{
+\Delta\widetilde{Sn}\_{(1)} &= \left\\{
 \begin{array}{ll}
  \widetilde{Sn} \\
  0.5\widetilde{Sn}  \\
@@ -163,10 +163,10 @@ $$
  (\widetilde{Sn} \geq 40)
 \end{array}
 \right. \\
-\widetilde{Sn}\_{(2)} &= \left\\{
+\Delta\widetilde{Sn}\_{(2)} &= \left\\{
 \begin{array}{ll}
  0 \\
- \widetilde{Sn} - Sn\_{(1)} \\
+ \widetilde{Sn} - \Delta Sn\_{(1)} \\
  0.5(\widetilde{Sn} - 20) \\
  40
 \end{array}
@@ -177,10 +177,10 @@ $$
  (\widetilde{Sn} \geq 100)
 \end{array}
 \right. \\
-\widetilde{Sn}\_{(3)} &= \left\\{
+\Delta\widetilde{Sn}\_{(3)} &= \left\\{
 \begin{array}{ll}
  0 \\
- \widetilde{Sn} - (Sn\_{(1)} + Sn\_{(2)})
+ \widetilde{Sn} - (\Delta Sn\_{(1)} + \Delta Sn\_{(2)})
 \end{array}
 \begin{array}{ll}
  (\widetilde{Sn} < 60) \\
@@ -191,7 +191,7 @@ $$
 $$
 where $\widetilde{Sn} =  Sn / A\_{Sn}.$
 
-$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer (${\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
+$Sn$ is the grid-mean snow water equivalent, and $\widetilde{Sn}$ is the snow water equivalent in the snow-covered portion. Note that the mass of each layer ($\Delta{\widetilde{Sn}}\_{(k)}$) is also the value of the snow-covered portion, not the grid-mean value. The unit is $\mathrm{kg/m^2}$.
 
 From the above, it can be clearly seen that the number of snow layers ($K\_{Sn}$) is as follows, as a standard:
 
