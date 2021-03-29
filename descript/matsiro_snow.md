@@ -571,7 +571,7 @@ Md\_{m(1)}^{\tau+1} &= Md\_{m(1)}^{\tau} + D\_m, \\
 Md\_{w(1)}^{\tau+1} &= Md\_{w(1)}^{\tau} + D\_w, 
 \end{aligned} \tag{8-47}
 $$
-where $Md\_{m(k)}$ and $Md\_{w(k)} are the amount of unweighted and weighted DBC on the $k$th snow layer.
+where $Md\_{m(k)}$ and $Md\_{w(k)}$ are the amount of unweighted and weighted DBC on the $k$th snow layer.
 
 ### Redistribution of dust
 
