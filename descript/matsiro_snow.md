@@ -593,10 +593,10 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  = \left\\{ \begin{aligned}
  & \rho\_{d(2)} Sn^{\tau+1/2}\_{(2)} 
  \+ \rho\_{d(3)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} - Sn^{\tau+1/2}\_{(2)} \right) \\
- & \qquad\qquad
+ & \hspace{12mm}
  \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} > Sn^{\tau+1/2}\_{(2)} \right) \\
  & \rho\_{d(2)} \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \right) \\
- & \qquad\qquad
+ & \hspace{12mm}
  \left( Sn^{\tau+1}\_{(1)} - Sn^{\tau+1/2}\_{(1)} \leq Sn^{\tau+1/2}\_{(2)} \right)
 \end{aligned} \right., \tag{8-49}
 $$
