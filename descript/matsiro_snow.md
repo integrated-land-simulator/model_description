@@ -419,7 +419,7 @@ $$
  = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
   +\frac{\Delta z\_{Sn\_{(K\_{Sn}+1/2)}}}{k\_{Sn\_{(K\_{Sn}+1/2)}}}
  \right]^{-1}
- (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}). \tag{8-32}
+ (T\_{g(1)} - T\_{Sn\_{(K\_{Sn})}}). \tag{8-34}
 $$
 
 ### Case 1: When snowmelt does not occur in the uppermost layer
@@ -460,10 +460,10 @@ $$
  & \frac{k\_{Sn\_{(k+1/2)}}}{\Delta z\_{Sn\_{k+1/2)}}}
  \; &&(k = 1, ..., K\_{Sn}-1)
 \end{aligned} \right.
-\end{aligned} \tag{8-33}
+\end{aligned} \tag{8-35}
 $$
 
-and Eq. [8-28](#8-28) is treated as
+and Eq. [8-29](#8-29) is treated as
 $$
 \begin{aligned}
  c\_{pi}\widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{t}
@@ -474,14 +474,14 @@ $$
  & &&\- \widetilde{F}\_{Sn\_{(k-1/2)}}^{\tau}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k-1)}}} \Delta T\_{Sn\_{(k-1)}}
   \- \frac{\partial \widetilde{F}\_{Sn\_{(k-1/2)}}}{\partial T\_{Sn\_{(k)}}}   \Delta T\_{Sn\_{(k)}}
-\end{aligned} \tag{8-34}
+\end{aligned} \tag{8-36}
 $$
 
 and solved by the LU factorization method as $\Delta T\_{Sn\_{(k)}} (k = 1, ..., K\_{Sn})$ simultaneous equations with respect to $K\_{Sn}$.
 At this juncture, it should be noted that the flux at the snow upper boundary is fixed as the boundary condition, and the snow lower boundary flux is treated explicitly with regard to the temperature of the uppermost soil layer, which is the boundary condition of the snow lower boundary.
 The snow temperature is updated by
 $$
-T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-35}
+T\_{Sn\_{(k)}}^{\*} = T\_{Sn\_{(k)}}^{\tau} + \Delta T\_{Sn\_{(k)}} \tag{8-37}
 $$
 
 ### Case 2: When snowmelt occurs in the uppermost layer
@@ -491,7 +491,7 @@ $$
 \widetilde{F}\_{3/2}^{\*}
  = \frac{k\_{Sn\_{(3/2)}}}{\Delta z\_{Sn\_{(3/2)}}} (T\_{Sn\_{(2)}}^{\tau} - T\_{melt})
  +\frac{\partial \widetilde{F}\_{Sn\_{(3/2)}}}{\partial T\_{Sn\_{(2)}}}
- \Delta T\_{Sn\_{(2)}} \tag{8-36}
+ \Delta T\_{Sn\_{(2)}} \tag{8-38}
 $$
 and solved similarly to case 1 (when there is only one snow layer, the snow temperature is similarly fixed in the flux from the soil to the snow).
 
@@ -499,7 +499,7 @@ The energy convergence used for melting in the uppermost snow layer is given by:
 $$
 \Delta \widetilde{F}\_{conv} 
  = (\widetilde{F}\_{3/2}^{\*} - \widetilde{F}\_{1/2})
- \- c\_{pi}\widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t}. \tag{8-37}
+ \- c\_{pi}\widetilde{Sn}\_{(1)} \frac{T\_{melt}-T\_{Sn\_{(1)}}^{\*}}{\Delta t}. \tag{8-39}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T\_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -510,19 +510,19 @@ Even if the temperature of the second snow layer and below is higher than $T\_{m
 The heat flux given to the soil through the snow process is
 $$
 \Delta F\_{conv}^{\*} 
- = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*}, \tag{8-38}
+ = A\_{Sn} (\Delta\widetilde{F}\_{conv}^{\*} - \widetilde{F}\_{Sn\_{K\_{Sn}}}) - l\_m P\_{Sn,melt}^{\*}, \tag{8-40}
 $$
 where $\Delta\widetilde{F}\_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}\_{Sn\_{K\_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P\_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground, defined as
 $$
 P\_{Sn,melt}^{\*} = \left\\{ \begin{aligned}
 & 0            && (T\_{g(1)} \le T\_{melt}) \\
 & P\_{Sn}^{\*} && (T\_{g(1)} > T\_{melt}) 
-\end{aligned} \right. \tag{8-39}
+\end{aligned} \right. \tag{8-41}
 $$
 
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 $$
- \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-40}
+ \Delta F\_{c,conv}^{\*} = (1 - A\_{Sn}) \Delta F\_{c,conv}. \tag{8-42}
 $$
 
 The water flux given to the runoff process through the snow process is then expressed as
@@ -530,7 +530,7 @@ $$
 \begin{aligned}
  Pr\_c^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_c^{\*}, \\
  Pr\_l^{\*\*} &= ( 1 - A\_{Sn} ) Pr\_l^{\*} + A\_{Sn} \widetilde{F}\_{wSn}^{\*} + P\_{Sn,melt}^{\*},
-\end{aligned} \tag{8-41}
+\end{aligned} \tag{8-43}
 $$
 where $\widetilde{F}\_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
@@ -543,7 +543,7 @@ $$
  Ro\_{gl} &= \max(Sn - Sn\_{\mathrm{max}}, 0) / \Delta t, \\
  Sn &= Sn - Ro\_{gl} \Delta t, \\
  \Delta \widetilde{Sn}\_{(K\_{Sn})} &= \Delta \widetilde{Sn}\_{(K\_{Sn})} - Ro\_{gl} / A\_{Sn} \Delta t,
-\end{aligned} \tag{8-46}
+\end{aligned} \tag{8-44}
 $$
 where $Ro\_{gl}$ is the glacier runoff. The mass of this portion is subtracted from the lowest snow layer. $Sn\_{\max}$ is uniformly assigned the value of $1000 \mathrm{kg/m^2}$ as a standard.
 
@@ -561,11 +561,11 @@ $$
 \begin{aligned}
 D\_m &= D\_{dust} + D\_{BC}, \\
 D\_w &= \frac{\gamma\_{dust} D\_{dust} + \gamma\_{BC} D\_{BC}}{\gamma\_{dust} + \gamma\_{BC}},
-\end{aligned}
+\end{aligned} \tag{8-45}
 $$
 where $D\_{dust}$ and $D\_{BC}$ is the flux of dust and black carbon, respectively. $\gamma\_{c} (c = dust, BC)$ is defined by
 $$
-\gamma\_{c} = \gamma\_{c,vis} \omega\_{vis} + \gamma\_{c,nir} \omega\_{nir} + \gamma\_{c,ifr} \omega\_{ifr},
+\gamma\_{c} = \gamma\_{c,vis} \omega\_{vis} + \gamma\_{c,nir} \omega\_{nir} + \gamma\_{c,ifr} \omega\_{ifr}, \tag{8-46}
 $$
 where $\gamma\_{c,b}$ is the absorption coefficient for the band $b$, and $\omega\_b$ is the radiation weight of the band $b$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and they take the following values as a standard.
 $$
