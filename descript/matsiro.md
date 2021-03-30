@@ -1472,9 +1472,9 @@ $$
 Moreover, by taking the average of the convective precipitation area and nonconvective precipitation area, the canopy water can be updated as follows:
 
 $$
- w_{cl}^{**} &=& A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
- w_{ci}^{**} &=& A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
- w_c^{\tau+1} &=& w_{cl}^{**} + w_{ci}^{**}
+ w_{cl}^{\*\*} &=& A_c w_{cl}^{c**} + (1-A_c) w_{cl}^{nc**} \\
+ w_{ci}^{\*\*} &=& A_c w_{ci}^{c**} + (1-A_c) w_{ci}^{nc**} \\
+ w_c^{\tau+1} &=& w_{cl}^{\*\*} + w_{ci}^{\*\*}
 $$
 
 However, if updating of the frozen fraction ($A_{Snc}$) is considered,
@@ -1489,7 +1489,7 @@ $$
 The melting $M_c$ is therefore diagnosed as
 
 $$
- M_c = - \rho_w ( w_{ci}^{\tau+1} - w_{ci}^{**} ) / \Delta t_L
+ M_c = - \rho_w ( w_{ci}^{\tau+1} - w_{ci}^{\*\*} ) / \Delta t_L
 $$
 
 When the melting is produced during evaporation, that portion is added.
@@ -1723,43 +1723,43 @@ $$
 The prognostic equation of the snow water equivalent is given by
 
 $$
- \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^{*} - E_{Sn} - M_{Sn} + Fr_{Sn} \tag{8-12}
+ \frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t_L} = P_{Sn}^{\*} - E_{Sn} - M_{Sn} + Fr_{Sn} \tag{8-12}
 $$
 
-where $P_{Sn}^{*}$ is the snowfall flux after interception by the canopy, $E_{Sn}$ is the sublimation flux, $M_{Sn}$ is the snowmelt, and $Fr_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
+where $P_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E_{Sn}$ is the sublimation flux, $M_{Sn}$ is the snowmelt, and $Fr_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 
 ### Sublimation of snow
 
 First, by subtracting the sublimation, the snow water equivalent is partially updated:
 
 $$
-Sn^{*} = Sn^{\tau} - E_{Sn} \Delta t_L \tag{8-13}
+Sn^{\*} = Sn^{\tau} - E_{Sn} \Delta t_L \tag{8-13}
 $$
 
 $$
-\Delta \widetilde{Sn}_{(1)}^{*} = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L \tag{8-14}
+\Delta \widetilde{Sn}_{(1)}^{\*} = \Delta \widetilde{Sn}_{(1)}^{\tau} - E_{Sn}/A_{Sn} \Delta t_L \tag{8-14}
 $$
 
 In a case where the sublimation is larger than the snow water equivalent in the uppermost layer, the remaining amount is subtracted from the layer below. If the amount in the second layer is insufficient for such subtraction, the remaining amount is subtracted from the layer below that.
 
 ### Snowmelt
 
-Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T_{Sn(k)}^{*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
+Next, the snow heat conduction is calculated to solve the snowmelt. The method of calculating the snow heat conduction is described later. The updated snow temperature incorporating the heat conduction is assumed to be $T_{Sn(k)}^{\*}$. When the temperature is calculated and the temperature of the uppermost snow layer becomes higher than $T_{melt} = 0 ^\circ\mathrm{C}$, the temperature of the uppermost layer is fixed at $T_{melt}$ and the calculation is performed again. In this case, the energy convergence $\Delta \widetilde{F}_{conv}$ in the uppermost layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost layer is
 
 $$
-\widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^{*}/\Delta t_L ) \tag{8-15}
+\widetilde{M}_{Sn(1)} = \min(\Delta \widetilde{F}_{conv} / l_m, \Delta \widetilde{Sn}_{(1)}^{\*}/\Delta t_L ) \tag{8-15}
 $$
 
 With regard to the second layer and below, if the temperature is higher than $T_{melt}$, it is put back to $T_{melt}$ and the internal energy of that temperature change portion is applied to the snowmelt. That is, it is assumed to be
 
 $$
-T_{Sn(k)}^{**} = T_{melt} \tag{8-16}
+T_{Sn(k)}^{\*\*} = T_{melt} \tag{8-16}
 $$
 
 $\Delta \widetilde{F}_{conv}$ is newly defined by
 
 $$
-\Delta \widetilde{F}_{conv} = ( T_{Sn_{(k)}}^{*} - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^{*}/\Delta t_L \tag{8-17}
+\Delta \widetilde{F}_{conv} = ( T_{Sn_{(k)}}^{\*} - T_{melt} ) c_{pi}\Delta \widetilde{Sn}_{(k)}^{\*}/\Delta t_L \tag{8-17}
 $$
 
 and the snowmelt is solved as in [Eq. (8-15)](#8-15).
@@ -1767,22 +1767,22 @@ and the snowmelt is solved as in [Eq. (8-15)](#8-15).
 By subtracting the snowmelt, the mass of each layer is updated:
 
 $$
-\Delta \widetilde{Sn}_{(k)}^{**} = \Delta \widetilde{Sn}_{(k)}^{*} - \widetilde{M}_{Sn_{(k)}} \tag{8-18}
+\Delta \widetilde{Sn}_{(k)}^{\*\*} = \Delta \widetilde{Sn}_{(k)}^{\*} - \widetilde{M}_{Sn_{(k)}} \tag{8-18}
 $$
 
 
 During these calculations, when a certain layer is fully melted, the remaining amount of $\Delta \widetilde{F}_{conv}$ is given to the layer below to raise the temperature in that layer; that is,
 
 $$
-\Delta \widetilde{F}_{conv}^{*} = \Delta \widetilde{F}_{conv} - l_m \widetilde{M}_{Sn_{(k)}} \tag{8-19}
+\Delta \widetilde{F}_{conv}^{\*} = \Delta \widetilde{F}_{conv} - l_m \widetilde{M}_{Sn_{(k)}} \tag{8-19}
 $$
 
 $$
-T_{Sn_{(k+1)}}^{**}
- = T_{Sn_{(k+1)}}^{*} + \Delta \widetilde{F}_{conv}^{*} / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^{*}) \Delta t_L \tag{8-20}
+T_{Sn_{(k+1)}}^{\*\*}
+ = T_{Sn_{(k+1)}}^{\*} + \Delta \widetilde{F}_{conv}^{\*} / (c_{pi} \Delta \widetilde{Sn}_{(k+1)}^{\*}) \Delta t_L \tag{8-20}
 $$
 
-where $c_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}_{conv}^{*}$ is given to the soil.
+where $c_{pi}$ is the specific heat of snow (ice). When all of the snow is melted, $\Delta \widetilde{F}_{conv}^{\*}$ is given to the soil.
 
 The snowmelt of the overall snow is the sum of the snowmelt in each layer (note, however, that it is the grid-mean value):
 
@@ -1793,7 +1793,7 @@ $$
 By subtracting the snowmelt, the snow water equivalent is partially updated:
 
 $$
-Sn^{**} = Sn^{*} - M_{Sn} \Delta t_L \tag{8-22}
+Sn^{\*\*} = Sn^{\*} - M_{Sn} \Delta t_L \tag{8-22}
 $$
 
 ### Freeze of snowmelt water and rainfall in snow
@@ -1803,7 +1803,7 @@ The freeze of snowmelt water and rainfall in the snow is calculated next. With r
 The liquid water flux at the snow upper boundary in the snow-covered portion is
 
 $$
-\widetilde{F}_{wSn(1)} = Pr_c^{*} + Pr_l^{*} + M_{Sn} / A_{Sn} \tag{8-23}
+\widetilde{F}_{wSn(1)} = Pr_c^{\*} + Pr_l^{\*} + M_{Sn} / A_{Sn} \tag{8-23}
 $$
 
 Here, the melted portion in the second layer of the snow and below is also assumed to have percolated from the snow upper boundary (in actuality, snowmelt in the second layer or below rarely occurs).
@@ -1813,9 +1813,9 @@ It is reasonable to assume the temperature of the snowmelt water as 0 $^\circ\ma
 $$
 \widetilde{Fr}_{Sn_{(k)}} = \min\left(
 \widetilde{F}_{w_{Sn_{(k)}}}, \
-\frac{c_{pi}(T_{melt}-T_{Sn_{(k)}}^{**})}{l_m} \
-\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} , \
-f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{**}}{\Delta t_L} \
+\frac{c_{pi}(T_{melt}-T_{Sn_{(k)}}^{\*\*})}{l_m} \
+\frac{\Delta \widetilde{Sn}_{(k)}^{\*\*}}{\Delta t_L} , \
+f_{Fmax}\frac{\Delta \widetilde{Sn}_{(k)}^{\*\*}}{\Delta t_L} \
 \right) \tag{8-24}
 $$
 
@@ -1824,16 +1824,16 @@ where $F_{w_{Sn_{(k)}}}$ is the liquid water flux percolated from the upper boun
 The snow temperature change is updated by
 
 $$
-T_{Sn_{(k)}}^{***} = \frac{l_m \widetilde{Fr}_{Sn_{(k)}}\Delta t_L
- + c_{pi}(T_{Sn_{(k)}}^{**}\Delta \widetilde{Sn}_{(k)}^{**}
+T_{Sn_{(k)}}^{\*\*\*} = \frac{l_m \widetilde{Fr}_{Sn_{(k)}}\Delta t_L
+ + c_{pi}(T_{Sn_{(k)}}^{\*\*}\Delta \widetilde{Sn}_{(k)}^{\*\*}
  + T_{melt} \widetilde{Fr}_{Sn_{(k)}}\Delta t_L)}
- {c_{pi}(\Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L)}, \tag{8-25}
+ {c_{pi}(\Delta \widetilde{Sn}_{(k)}^{\*\*} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L)}, \tag{8-25}
 $$
 
 and the mass is updated as follows:
 
 $$
- \Delta \widetilde{Sn}_{(k)}^{***} = \Delta \widetilde{Sn}_{(k)}^{**} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L. \tag{8-26}
+ \Delta \widetilde{Sn}_{(k)}^{\*\*\*} = \Delta \widetilde{Sn}_{(k)}^{\*\*} + \widetilde{Fr}_{Sn_{(k)}}\Delta t_L. \tag{8-26}
 $$
 
 The amount of freeze in the overall snow is the sum of the amounts of freeze in each layer (note, however, that it is the grid-mean value):
@@ -1846,7 +1846,7 @@ $$
 By adding the amount of freeze, the snow water equivalent is partially updated as follows:
 
 $$
- Sn^{***} = Sn^{**} + Fr_{Sn} \Delta t_L. \tag{8-28}
+ Sn^{\*\*\*} = Sn^{\*\*} + Fr_{Sn} \Delta t_L. \tag{8-28}
 $$
 
 The liquid water that has percolated from the snow to the lower boundary is given to the soil.
@@ -1856,7 +1856,7 @@ The liquid water that has percolated from the snow to the lower boundary is give
 Lastly, by adding the snowfall after interception by the canopy, the finally updated snow water equivalent is obtained:
 
 $$
- Sn^{\tau+1} = Sn^{***} + P_{Sn}^{*} \Delta t_L \tag{8-29}
+ Sn^{\tau+1} = Sn^{\*\*\*} + P_{Sn}^{\*} \Delta t_L \tag{8-29}
 $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
@@ -1866,7 +1866,7 @@ When snow is produced by snowfall in a grid where no snow was formerly present, 
 The snowfall is added to the mass of the uppermost layer:
 
 $$
-\Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{***} + P_{Sn}^{*} \Delta t_L /A_{Sn}. \tag{8-30}
+\Delta \widetilde{Sn}_{(k)}^{\tau+1} = \Delta \widetilde{Sn}_{(k)}^{\*\*\*} + P_{Sn}^{\*} \Delta t_L /A_{Sn}. \tag{8-30}
 $$
 
 ### Redivision of snow layer and rediagnosis of temperature
@@ -1891,7 +1891,7 @@ It should be noted that the variables with the index "old" and "new" are those b
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 
 $$
-c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^{*} - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
+c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{T_{Sn(k)}^{\*} - T_{Sn(k)}^{\tau}}{\Delta t_L} = \widetilde{F}_{Sn(k+1/2)} - \widetilde{F}_{Sn(k-1/2)}
 \qquad (k=1,\ldots,K_{Sn}) \tag{8-32}
 $$
 
@@ -1961,7 +1961,7 @@ The implicit method is used to treat the temperature from the uppermost snow lay
 
 $$
 \begin{aligned}
-\widetilde{F}_{Sn_{(k+1/2)}}^{*}
+\widetilde{F}_{Sn_{(k+1/2)}}^{\*}
  &= \widetilde{F}_{Sn_{(k+1/2)}}^{\tau}
  + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k)}}} \Delta T_{Sn_{(k)}}
  + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k+1)}}} \Delta T_{Sn_{(k+1)}}, \\
@@ -2001,7 +2001,7 @@ and [Eq. (8-32)](#8-32) is treated as
 $$
 \begin{aligned}
  c_{pi}\Delta \widetilde{Sn}_{(k)} \frac{\Delta T_{Sn_{(k)}}}{\Delta t_L}
- &= &&\widetilde{F}_{Sn_{(k+1/2)}}^{*} - \widetilde{F}_{Sn_{(k-1/2)}}^{*} \\
+ &= &&\widetilde{F}_{Sn_{(k+1/2)}}^{\*} - \widetilde{F}_{Sn_{(k-1/2)}}^{\*} \\
  &= &&\widetilde{F}_{Sn_{(k+1/2)}}^{\tau}
   + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k)}}}   \Delta T_{Sn_{(k)}}
   + \frac{\partial \widetilde{F}_{Sn_{(k+1/2)}}}{\partial T_{Sn_{(k+1)}}} \Delta T_{Sn_{(k+1)}} \\
@@ -2016,7 +2016,7 @@ and solved by the LU factorization method as $\Delta T_{Sn_{(k)}}\ (k = 1, ..., 
 
 
 $$
-T_{Sn_{(k)}}^{*} = T_{Sn_{(k)}}^{\tau} + \Delta T_{Sn_{(k)}} \tag{8-40}
+T_{Sn_{(k)}}^{\*} = T_{Sn_{(k)}}^{\tau} + \Delta T_{Sn_{(k)}} \tag{8-40}
 $$
 
 ### Case 2: When snowmelt occurs in the uppermost layer
@@ -2024,7 +2024,7 @@ $$
 When the temperature of the uppermost snow layer solved in case 1 is higher than 0degC, snowmelt occurs in the uppermost snow layer. In this case, the temperature of the uppermost snow layer is fixed at 0 $^\circ\mathrm{C}$. The flux from the second snow layer to the uppermost snow layer is then expressed as
 
 $$
-\widetilde{F}_{3/2}^{*}
+\widetilde{F}_{3/2}^{\*}
  = \frac{k_{Sn_{(3/2)}}}{\Delta z_{Sn_{(3/2)}}} (T_{Sn_{(2)}}^{\tau} - T_{melt})
  +\frac{\partial \widetilde{F}_{Sn_{(3/2)}}}{\partial T_{Sn_{(2)}}}
  \Delta T_{Sn_{(2)}} \tag{8-41}
@@ -2036,8 +2036,8 @@ The energy convergence used for melting in the uppermost snow layer is given by:
 
 $$
 \Delta \widetilde{F}_{conv}
- = (\widetilde{F}_{3/2}^{*} - \widetilde{F}_{1/2})
- - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn_{(1)}}^{*}}{\Delta t_L} \tag{8-42}
+ = (\widetilde{F}_{3/2}^{\*} - \widetilde{F}_{1/2})
+ - c_{pi}\Delta \widetilde{Sn}_{(1)} \frac{T_{melt}-T_{Sn_{(1)}}^{\*}}{\Delta t_L} \tag{8-42}
 $$
 
 Even if the temperature of the second snow layer and below is higher than $T_{melt}$, the calculation is not iterated and the snowmelt is corrected accordingly.
@@ -2048,17 +2048,17 @@ Even if the temperature of the second snow layer and below is higher than $T_{me
 The heat flux given to the soil through the snow process is
 
 $$
-\Delta F_{conv}^{*}
- = A_{Sn} (\Delta\widetilde{F}_{conv}^{*} - \widetilde{F}_{Sn_{K_{Sn}}}) - l_m P_{Sn,melt}^{*},
+\Delta F_{conv}^{\*}
+ = A_{Sn} (\Delta\widetilde{F}_{conv}^{\*} - \widetilde{F}_{Sn_{K_{Sn}}}) - l_m P_{Sn,melt}^{\*},
 \tag{8-43}
 $$
 
-where $\Delta\widetilde{F}_{conv}^{*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}_{Sn_{K_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P_{Sn,melt}^{*}$ is the snowfall that melts immediately when it reaches the ground.
+where $\Delta\widetilde{F}_{conv}^{\*}$ is the energy convergence remaining when all of the snow has melted, $\widetilde{F}_{Sn_{K_{Sn}}}$ is the heat conduction flux at the lowest snow layer, and $P_{Sn,melt}^{\*}$ is the snowfall that melts immediately when it reaches the ground.
 
 Since the energy of the snow-free portion is given to the soil as it is, the energy correction term due to the phase change of the canopy water is as follows:
 
 $$
- \Delta F_{c,conv}^{*} = (1 - A_{Sn}) \Delta F_{c,conv}. \tag{8-44}
+ \Delta F_{c,conv}^{\*} = (1 - A_{Sn}) \Delta F_{c,conv}. \tag{8-44}
 $$
 
 
@@ -2066,12 +2066,12 @@ The water flux given to the runoff process through the snow process is then expr
 
 $$
 \begin{aligned}
- Pr_c^{**} &= ( 1 - A_{Sn} ) Pr_c^{*}, \\
- Pr_l^{**} &= ( 1 - A_{Sn} ) Pr_l^{*} + A_{Sn} \widetilde{F}_{wSn}^{*} + P_{Sn,melt}^{*},
+ Pr_c^{\*\*} &= ( 1 - A_{Sn} ) Pr_c^{\*}, \\
+ Pr_l^{\*\*} &= ( 1 - A_{Sn} ) Pr_l^{\*} + A_{Sn} \widetilde{F}_{wSn}^{\*} + P_{Sn,melt}^{\*},
 \end{aligned} \tag{8-45}
 $$
 
-where $\widetilde{F}_{wSn}^{*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
+where $\widetilde{F}_{wSn}^{\*}$ is the flux of the rainfall or snowmelt water that has percolated through the lowest snow layer.
 
 
 ## Glacier formation
@@ -2246,7 +2246,7 @@ $$
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 
 $$
-\alpha_b^{\tau+1} = \alpha_b^{\tau+1} + \min\left( \frac{P_{Sn}^{*} \Delta t_L}{\Delta Sn_c}, 1 \right) (\alpha_{b,new} - \alpha_b^{\tau+1}). \tag{8-63}
+\alpha_b^{\tau+1} = \alpha_b^{\tau+1} + \min\left( \frac{P_{Sn}^{\*} \Delta t_L}{\Delta Sn_c}, 1 \right) (\alpha_{b,new} - \alpha_b^{\tau+1}). \tag{8-63}
 $$
 
 $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
@@ -2259,10 +2259,10 @@ The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in
 This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 
 $$
-\alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{*}} \right)}, \tag{8-64}
+\alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{\*}} \right)}, \tag{8-64}
 $$
 
-where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,wet}$ is the one with surface water, $w_{surf}$ is the thisness of surfice water and $w^{*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha_{vis,ice}$, $\alpha_{nir,ice}$ and $\alpha_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha_{b,wet}$ is set to 0.15 for all bands.
+where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,wet}$ is the one with surface water, $w_{surf}$ is the thisness of surfice water and $w^{\*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha_{vis,ice}$, $\alpha_{nir,ice}$ and $\alpha_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha_{b,wet}$ is set to 0.15 for all bands.
 
 
 # Runoff
@@ -2492,7 +2492,7 @@ where $Ro_{(k)}$ denotes the runoff flux from the $k_{WT}$th soil layer.
 All of the rainfall that falls on the surface saturated area runs off as is (saturation excess runoff):
 
 $$
-Ro_s = (Pr_c^{**} + Pr_l^{**}) A_{sat}
+Ro_s = (Pr_c^{\*\*} + Pr_l^{\*\*}) A_{sat}
 \tag{eq283}
 $$
 
@@ -2501,12 +2501,12 @@ The fraction of the surface saturated area $A_{sat}$ is given by [Eq. (276)](#eq
 With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
 
 $$
-Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
+Ro_i^c = \max( \frac{Pr_c^{\*\*}}{A_c} + Pr_l^{\*\*} - K_{s(1)}, 0 ) (1 - A_{sat})
  \tag{eq284}
 $$
 
 $$
-Ro_i^{nc} = \max( Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
+Ro_i^{nc} = \max( Pr_l^{\*\*} - K_{s(1)}, 0 ) (1 - A_{sat})
  \tag{eq285}
 $$
 
@@ -2549,7 +2549,7 @@ here $\alpha$ determines the inflow rate into surface tank and is specified in W
 The water flux given to the soil through the runoff process is
 
 $$
-P_r^{***} = Pr^{**}_c + Pr^{**}_l - Ro_s - Ro_i
+P_r^{\*\*\*} = Pr^{\*\*}_c + Pr^{\*\*}_l - Ro_s - Ro_i
  \tag{eq293}
 $$
 
@@ -2678,7 +2678,7 @@ These equations are solved using the implicit method with regard to the soil tem
 
 
 $$
-  F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
+  F_{g(k+1/2)}^{\*} = F_{g(k+1/2)}^{\tau}
 +\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
  \Delta T_{g(k)}
 +\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
@@ -3136,7 +3136,7 @@ $$
 	G^* = G - F^*
 $$
 
-where $G^{*}$ is the net incoming flux (the opposite direction with $F^{*}$).
+where $G^{\*}$ is the net incoming flux (the opposite direction with $F^{\*}$).
 
 The temperature derivative term is
 
@@ -3470,7 +3470,7 @@ $$
 	V_S' = A_I'' h_S^n
 $$
 
-Here after, predicted values of $A_I''$, $V_I'$, and $V_S'$ are denoted by $A_I^*$, $V_I^*$ and $V_S^{*}$, respectively.
+Here after, predicted values of $A_I''$, $V_I'$, and $V_S'$ are denoted by $A_I^*$, $V_I^*$ and $V_S^{\*}$, respectively.
 
 #### Freshwater flux to lake ice and snow
 
@@ -3491,24 +3491,24 @@ h_S^*=0
 $$
 
 $$
-V_S^{**} = 0
+V_S^{\*\*} = 0
 $$
 
-where $h_S^*$ and $V_S^{**}$ are the updated depth of lake snow and lake snow amount, respectively.
+where $h_S^*$ and $V_S^{\*\*}$ are the updated depth of lake snow and lake snow amount, respectively.
 
 When the lake ice exists, the snowfall accumulates over the ice covered region. The depth of lake snow ($h_S^n$) is modified by
 
 $$
-	h_S^* = \frac{V_S^{**}}{A_I^*} + \frac{\rho_O Fw_S'\Delta t}{\rho_S}
+	h_S^* = \frac{V_S^{\*\*}}{A_I^*} + \frac{\rho_O Fw_S'\Delta t}{\rho_S}
 $$
 
 The snow amount ($V_S^*$) is also modified by
 
 $$
-	V_S^{**} = A_I^* h_S^*
+	V_S^{\*\*} = A_I^* h_S^*
 $$
 
-The snowfall flux ($Fw_S'$) is then reduced by $V_S^{**}$.
+The snowfall flux ($Fw_S'$) is then reduced by $V_S^{\*\*}$.
 
 $$
 	Fw_S'' = (1-A_I^*) Fw_S'
@@ -3525,7 +3525,7 @@ where $Fw_{Pr}'$ is the updated precipitation flux.
 
 #### Growth of lake snow
 
-When the lake ice does not exist ($A_I^*=0$), the snow amount ($V_S^{**}$) is converted to ice. In this case, flux for lake snow growth ($W_{AS}$) is used for the basal growth of the lake ice.
+When the lake ice does not exist ($A_I^*=0$), the snow amount ($V_S^{\*\*}$) is converted to ice. In this case, flux for lake snow growth ($W_{AS}$) is used for the basal growth of the lake ice.
 
 $$
  W_{IO}^* = W_{IO} + W_{AS}
@@ -3536,13 +3536,13 @@ where $W_{IO}^*$ are the updated basal growth rate of lake ice.
 When the lake ice exists, a residual heat flux ($W_{res}$) is considered.
 
 $$
-	W_{res} = \frac{\rho_OV_S^{**}}{\rho_S \Delta t}+ W_{AS}
+	W_{res} = \frac{\rho_OV_S^{\*\*}}{\rho_S \Delta t}+ W_{AS}
 $$
 
 If the residual heat flux is negative ($W_{res}<0$), the snow amount is reduced by
 
 $$
-	W_{AS}^* = - \frac{\rho_O V_S^{**}}{\rho_S \Delta t}
+	W_{AS}^* = - \frac{\rho_O V_S^{\*\*}}{\rho_S \Delta t}
 $$
 
 where $W_{AS}^*$ is the growth rate of the lake snow. In this case, $W_{res}$ is assumed to reduce the lake ice.
@@ -3553,21 +3553,21 @@ $$
 
 where	$W_{AI}$ is a growth rate of the lake ice.
 
-The depth of lake snow ($h_S^{*}$) is modified with the accumulation.
+The depth of lake snow ($h_S^{\*}$) is modified with the accumulation.
 
 $$
-  h_S^{**} = \frac{V_S^{**}+ \rho_O W_{AS}^* \Delta t}{\rho_S {A_I^*}}
+  h_S^{\*\*} = \frac{V_S^{\*\*}+ \rho_O W_{AS}^* \Delta t}{\rho_S {A_I^*}}
 $$
 
-where $h_S^{**}$ is the updated depth of lake snow. If $h_S^{**}$ is less than 0, it is set to zero. When the residual heat flux is zero or positive ($W_{res}\ge 0$), the growth rate of the lake ice ($W_{AI}$) is temporally set to 0.
+where $h_S^{\*\*}$ is the updated depth of lake snow. If $h_S^{\*\*}$ is less than 0, it is set to zero. When the residual heat flux is zero or positive ($W_{res}\ge 0$), the growth rate of the lake ice ($W_{AI}$) is temporally set to 0.
 
-The lake snow amount ($V_S^{**}$) is modified by
+The lake snow amount ($V_S^{\*\*}$) is modified by
 
 $$
-	V_S^{***} = A_I^* h_S^{**}
+	V_S^{\*\*\*} = A_I^* h_S^{\*\*}
 $$
 
-where $V_S^{***}$ is the updated lake snow amount.
+where $V_S^{\*\*\*}$ is the updated lake snow amount.
 
 #### Growth of lake ice
 
@@ -3584,39 +3584,41 @@ $$
 $$
 
 $$
-	W_{AI}^* = - \frac{\rho_OV_I^{*}}{\rho_I \Delta t}
+	W_{AI}^* = - \frac{\rho_OV_I^{\*}}{\rho_I \Delta t}
 $$
 
 where $W_{IO}^*$ is the updated basal growth rate of lake ice, and $W_{AI}^*$ is the updated growth rate of lake ice, respectively.
 
 
-The amount of the lake ice ($V_I^{*}$) is modified by
+The amount of the lake ice ($V_I^{\*}$) is modified by
 
 $$
-	V_I^{**} = V_I^{*} + \frac{\rho_O (W_{IO}^*+W_{AO})\Delta t}{\rho_I}
+	V_I^{\*\*} = V_I^{\*} + \frac{\rho_O (W_{IO}^*+W_{AO})\Delta t}{\rho_I}
 $$
 
-where $V_I^{**}$ is the updated lake ice amount. If the lake ice amount becomes equal to or less than zero ($V_I^{**}\le0$),
+where $V_I^{\*\*}$ is the updated lake ice amount.
+If the lake ice amount becomes equal to or less than zero ($V_I^{\*\*}\le0$),
 
 $$
-  A_I^{**}=0, \quad h_I^{*}=h_I^{min}
+  A_I^{\*\*}=0, \quad h_I^{\*}=h_I^{min}
 $$
 
-where $A_I^{**}$ and $h_I^*$ are the updated lake ice concentration and its thickness. If the lake ice amount becomes equal to or less than zero ($V_I^{**}\gt0$),
+where $A_I^{\*\*}$ and $h_I^*$ are the updated lake ice concentration and its thickness.
+If the lake ice amount becomes equal to or less than zero ($V_I^{\*\*}\gt0$),
 
 $$
-  A_I^{**}=A_I^*, \quad h_I^{*}=\frac{V_{I}^{**}}{A_I^{*}}
+  A_I^{\*\*}=A_I^\*, \quad h_I^{\*}=\frac{V_{I}^{\*\*}}{A_I^{\*}}
 $$
 
-However, if $h_I^{*}$ becomes less than $h_I^{min}$, they are redefined by
+However, if $h_I^{\*}$ becomes less than $h_I^{min}$, they are redefined by
 
 $$
-  A_I^{**}=\frac{V_I^{**}}{h_I^{min}},\quad h_I^{*} = h_I^{min}
+  A_I^{\*\*}=\frac{V_I^\{\*\*}}{h_I^{min}},\quad h_I^{\*} = h_I^{min}
 $$
 
-It is noted that the snow thickness ($h_I^{*}$) is not modified even the $A_I^{**}$ is modified, so snow on the disappearing ice is regarded as falling onto the created ice-free lake surface.
+It is noted that the snow thickness ($h_I^{\*}$) is not modified even the $A_I^{\*\*}$ is modified, so snow on the disappearing ice is regarded as falling onto the created ice-free lake surface.
 
-$A_I^{**}$ is set to be zero when it is less than $A_I^{min}$.
+$A_I^{\*\*}$ is set to be zero when it is less than $A_I^{min}$.
 
 #### Lake ice flows
 
@@ -3628,22 +3630,22 @@ $$
   V_I^{max} = h_I^{min}A_I^{max}, \quad V_I^{min} = h_I^{min}A_I^{min}
 $$
 
-where $A_I^{max}$ and $A_I^{min}$ are maximum and minimum lake ice concentration, which are set to $1$ and $1.0\times 10^{-6}$ as default values. When $V_I^{**} \le (V_I^{max}-V_I^{min})$, the lake ice does not flow. Otherwise, the thickness of lake ice ($h_I^{*}$) is modified so as that the lake ice fully covers the lake.
+where $A_I^{max}$ and $A_I^{min}$ are maximum and minimum lake ice concentration, which are set to $1$ and $1.0\times 10^{-6}$ as default values. When $V_I^{\*\*} \le (V_I^{max}-V_I^{min})$, the lake ice does not flow. Otherwise, the thickness of lake ice ($h_I^{\*}$) is modified so as that the lake ice fully covers the lake.
 
 $$
-  h_I^{**} = \frac{(V_I^{max}-V_I^{min})+A_I^{**}h_I^{*}}{A_I^{max}}
+  h_I^{\*\*} = \frac{(V_I^{max}-V_I^{min})+A_I^{\*\*}h_I^{\*}}{A_I^{max}}
 $$
 
-where $h_I^{**}$ is the updated depth of lake snow. The depth of lake snow and the lake ice concentration are also updated.
+where $h_I^{\*\*}$ is the updated depth of lake snow. The depth of lake snow and the lake ice concentration are also updated.
 
 $$
 \begin{aligned}
-  h_S^{***} &= \frac{A_I^{**}h_S^{**}}{A_I^{max}-(V_I^{max}-V_I^{min})/h_I^{**}}\\
-  A_I^{n+1} &= A_I^{max} - \frac{V_I^{max}-V_I^{min}}{h_I^{**}}
+  h_S^{\*\*\*} &= \frac{A_I^{\*\*}h_S^{\*\*}}{A_I^{max}-(V_I^{max}-V_I^{min})/h_I^{\*\*}}\\
+  A_I^{n+1} &= A_I^{max} - \frac{V_I^{max}-V_I^{min}}{h_I^{\*\*}}
 \end{aligned}
 $$
 
-where $h_S^{***}$ is the updated depth of lake snow and the lake ice concentration, and $A_I^{n+1}$ is the lake ice concentration in the new time step, respectively.
+where $h_S^{\*\*\*}$ is the updated depth of lake snow and the lake ice concentration, and $A_I^{n+1}$ is the lake ice concentration in the new time step, respectively.
 
 Freshwater and sublimation fluxes affect on salinity ($F_{W(NLTDIM=2)}$) are
 
@@ -3658,8 +3660,8 @@ where $W_{I(2)}$ and $W_{S(2)}$ are the growth rate of the lake ice snow below.
 
 $$
 \begin{aligned}
-	W_{I(2)} = \frac{\rho_S A_I^{n+1} h_I^{**} - V_I^{*}}{\rho_I \Delta t}\\
-	W_{S(2)} =  \frac{\rho_S A_I^{n+1} h_S^{***} - V_S^{**}}{\rho_S \Delta t}
+	W_{I(2)} = \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*}}{\rho_I \Delta t}\\
+	W_{S(2)} =  \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
 \end{aligned}
 $$
 
@@ -3668,13 +3670,13 @@ $$
 If there is a large amount of snow and the lake ice surface is below the lake surface, the sinking snow is converted to the lake ice. The depth of lake snow is updated to take buoyancy into account.
 
 $$
-	h_S^{n+1} = \mathrm{min}(h_S^{***}, \frac{\rho_O-\rho_I}{\rho_S}h_I^{**})
+	h_S^{n+1} = \mathrm{min}(h_S^{\*\*\*}, \frac{\rho_O-\rho_I}{\rho_S}h_I^{\*\*})
 $$
 
 The ice thickness is also updated.
 
 $$
-	h_I^{n+1} = h_I^{**} + \frac{\rho_S}{\rho_I} (h_S^{***}-h_S^{n+1})
+	h_I^{n+1} = h_I^{\*\*} + \frac{\rho_S}{\rho_I} (h_S^{\*\*\*}-h_S^{n+1})
 $$
 
 The heat flux affects on the lake water temperature ($F_{W(NLTDIM=1)}$) is
@@ -3687,8 +3689,8 @@ where $W_{I(1)}$ and $W_{S(1)}$ are the growth rate of the lake ice snow below.
 
 $$
 \begin{aligned}
-	W_{I(1)} = \frac{\rho_S A_I^{n+1} h_I^{**} - V_I^{**}}{\rho_I \Delta t} \\
-  W_{S(1)} = \frac{\rho_S A_I^{n+1} h_S^{***} - V_S^{**}}{\rho_S \Delta t}
+	W_{I(1)} = \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*\*}}{\rho_I \Delta t} \\
+  W_{S(1)} = \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
 \end{aligned}
 $$
 
