@@ -3944,7 +3944,7 @@ $$
 
 where $w_{riv}$ is the river water volume $[kg/m^2]$, $\rho_w$ is the density of water, and 100 is the coefficient for unit conversion.
 
-When water depth $H [cm]$ of a lake becomes deeper than the upper limit $H_{max}$, water flows into a river. The outflow rate to the river, $R_{out} [cm/s]$, is diagnosed as follows.
+When water depth $H [cm]$ of a lake becomes deeper than the upper limit $H_{max}$, water outflows into river channel. The outflow rate to the river, $R_{out} [cm/s]$, is diagnosed as follows.
 
 $$
 	R_{out} = (H - H_{max}) / ( \tau_{lake} * 86400 )
