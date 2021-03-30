@@ -3331,7 +3331,7 @@ In ENTRY FWATERL (in SUBROUTINE [FWASTL] of lakeic.F), sublimation (freshwater) 
 | $h_I'$   | HIX      | Lake ice thickness | $\mathrm{[cm]}$ |
 | $h_S'$   | HSX      | Snow depth         | $\mathrm{[cm]}$ |
 
-- Input variables
+- Input variables of FWATERL
 
 | Variable   | Variable | Longname                        | Unit            |
 |:---------- |:-------- |:------------------------------- |:--------------- |
@@ -3339,7 +3339,7 @@ In ENTRY FWATERL (in SUBROUTINE [FWASTL] of lakeic.F), sublimation (freshwater) 
 | $Fw_{Sb}$ | WSB      | Latent heat flux of sublimation | $\mathrm{cm/s}$ |
 | $S_{off}$  | SOFF     | Overflow snow flux              | $\mathrm{cm/s}$ |
 
-- Parameters
+- Parameters of the lake ice model
 
 | Variable     | Variable | Longname                      | Unit                | Value            |
 |:------------ |:-------- |:----------------------------- |:------------------- |:---------------- |
@@ -3436,32 +3436,29 @@ In ENTRY PTHICKL (in SUBROUTINE OTHKSTL of lakeic.F), the lake ice growth and me
 
 - Variables of PTHICKL
 
-| Variable                | Variable in source code | Longname                                   |
-|:----------------------- |:----------------------- |:------------------------------------------ |
-| $A_I^{n+1}$             | AX                      | Lake ice fraction                          |
-| $V_I$                   | AXHIX                   | Lake ice volume                            |
-| $V_S, V_S', V_S^{***}$   | AXHSX                   | Lake snow volume                           |
-| $V_I^{n+1}$             | AXHIXN                  | Lake ice volume                            |
-| $V_S^{n+1}$             | AXHSXN                  | Lake snow volume                           |
-| $h_I'$                  | HIX                     | Lake ice thickness                         |
-| $h_S'$                  | HSX                     | Snow depth                                 |
-| $h_S^n$                 | HSZ                     | Snow depth                                 |
-| $h_I^n$                 | HIZ                     | Lake ice thickness                         |
-| $W_{AS}$                | WAS                     | snow growth rate due to heat imbalance     |
-| $W_{AI}$                | WAI                     | growth rate of the lake ice due to heat imbalance |
-| $W_{res}$               | WRES                    | Residual heat flux                         |
-| $W_{IO}$                | WIO                     | Basal growth rate of lake ice              |
-| $Fw_S, {Fw_S}'$ | SNOW                    | Snow fall flux                             |
-| $W_{AO}$                | WAO                     | growth rate of the lake ice in ice-free area      |
-| $Fw_{Pr}$              | PREC                    | Precipitation flux                         |
-| $L_e$                   | EVAP                    | Latent heat flux of evaporation            |
-| --                      | SUBI                    | Latent heat flux of sublimation            |
-| $A_I'$                  | AZ                      | Lake ice concentration                     |
-| $H_{lake}$              | FT                      | Lake heat flux                             |
-| $\Delta t$              | TS                      | Time step                                  |
-| --                      | ROFF                    | --                                         |
-| --                      | ADJLAT                  | --                                         |
-| --                      | FS                      | --                                         |
+| Variable    | Variable in source code | Longname                                          |
+|:----------- |:----------------------- |:------------------------------------------------- |
+| $A_I$       | AX/AZ                   | Lake ice fraction                                 |
+| $V_I$       | AXHIX                   | Lake ice volume                                   |
+| $V_S$       | AXHSX                   | Lake snow volume                                  |
+| $V_I^{n+1}$ | AXHIXN                  | Lake ice volume                                   |
+| $V_S^{n+1}$ | AXHSXN                  | Lake snow volume                                  |
+| $h_I$       | HIX HIZ                 | Lake ice thickness                                |
+| $h_S$       | HSX/HSZ                 | Snow depth                                        |
+| $W_{AS}$    | WAS                     | snow growth rate due to heat imbalance            |
+| $W_{AI}$    | WAI                     | growth rate of the lake ice due to heat imbalance |
+| $W_{res}$   | WRES                    | Residual heat flux                                |
+| $W_{IO}$    | WIO                     | Basal growth rate of lake ice                     |
+| $Fw_S$      | SNOW                    | Snowfall flux                                     |
+| $W_{AO}$    | WAO                     | growth rate of the lake ice in ice-free area      |
+| $Fw_{Pr}$   | PREC                    | Precipitation flux                                |
+| $L_e$       | EVAP                    | Latent heat flux of evaporation                   |
+| $Fw_{Sb}$   | SUBI                    | Latent heat flux of sublimation                   |
+| $F_W$       | FT                      | Freshwater flux                                   |
+| $\Delta t$  | TS                      | Time step                                         |
+| $R_{off}$   | ROFF                    | --                                                |
+| --          | ADJLAT                  | --                                                |
+| $F_S$       | FS                      | Heatflux for lake surface                         |
 
 The initial conditions of lake ice volume ($V_I'$) and snow volume ($V_S'$) in the $n$-th time step are presented by
 
