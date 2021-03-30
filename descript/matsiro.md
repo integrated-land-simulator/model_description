@@ -287,13 +287,11 @@ Runoff is used as an input variable for the river channel network model.
 The external parameters necessary for the execution of MATSIRO are broadly divided into two types: parameters whose values for each grid cell are given by horizontal distribution (map), and parameters whose values are given by land cover type or soil type tables. The land cover types and soil types are the parameters given by map, and through this, each parameter given by table is allocated to individual grid cells; that is,
 
 parameter given by a map:
-
 $$
  \phi(i,j)
 $$
 
 parameter given by a table:
-
 $$
  \psi(I),
 $$
@@ -304,7 +302,6 @@ or
 $$
  I = I_S (i,j)
 $$
-
 where $(i,j)$ are indexes of the grid horizontal location, $I_L$ is the land use type, and $I_S$ is the soil type.
 
 
@@ -362,17 +359,14 @@ Table: External parameters given by tables
 The leaf area index (LAI), vegetation height, etc. are set as vegetation type parameters.
 
 Seasonally changing horizontal distributions are loaded as external parameters for LAI, and the values according to land use type are loaded as external parameters for the heights of the canopy top and bottom. When there is snow, only the vegetation above the level of the snow depth is taken into consideration and the type parameters are corrected as follows:
-
 $$
  h   &=& \max( h_0 - D_{Sn}, 0 ) \\
  h_B &=& \max( h_{B0} - D_{Sn}, 0 ) \\
  LAI &=& LAI_0 \frac{h-h_B}{h_0-h_{B0}}
 $$
-
 where $h$ is the height of the canopy top (vegetation height), $h_B$ is the height of the canopy bottom (height of clear length),  $LAI$ is the leaf area index, and $h_0$, $h_{B0}$, and $LAI_0$ are the respective values when there is no snow. $D_{Sn}$ is the snow depth. LAI is approximated on the assumption that it is uniformly distributed vertically between the canopy top and bottom.
 
 In terms of coding, next the mean values of the snow-free and snow-covered portions are solved by weighting with the snow-covered ratio ($A_{Sn}$), etc., as follows:
-
 $$
 	h = A_{Sn}h + (1-A_{Sn})h_0
 $$
@@ -388,29 +382,23 @@ Next, the radiation parameters (albedo, vegetation transmissivity , etc.) are ca
 The horizontal distributions of the ground surface (forest floor) albedo $b=1,2$ are loaded as external parameters, with $b=1,2$ denoting the wavelength bands of visible and near infrared, respectively. The infrared ground surface albedo ($\alpha_{0(3)}$) is set to a fixed value (horizontal distributions can also be prepared if desired).
 
 With regard to the ice-sheet portion and snow-covered portion, the dependence of the incidence angle of albedo is considered by the following function form:
-
 $$
  \alpha_{0(d,b)} = \hat{\alpha}_{0(b)} + ( 1 - \hat{\alpha}_{0(b)} )
                          \cdot 0.4 ( 1 - \cos \psi_{in(d)} )^5
 $$
-
 where $b=1,2$ are wavelength bands; $d=1,2$ are direct and diffuse, respectively; and  $\hat{\alpha}_{0(b)}$ is the value of albedo when the incidence angle is 0 (from directly overhead). The cosine of the incidence angle $\cos\psi_{in(d)}$ is expressed as
-
 $$
  \cos\psi_{in(1)} = \cos\zeta, \ \ \
  \cos\psi_{in(2)} = \cos 50^{\circ}
 $$
-
 for direct insolation and diffuse radiation, respectively, where $\zeta$ is the solar zenith angle.
 
 With regard to regions other than the ice-sheet portion and snow-covered portion, the zenith angle dependence is not taken into consideration for the albedo of the ground surface (forest floor) and the same values are given to direct insolation and diffuse radiation; that is,
-
 $$
  \alpha_{0(d,b)} = \alpha_{0(b)}\ \ \ (d=1,2;\ b=1,2)
 $$
 
 Moreover, in the case of the infrared wavelength only diffuse radiation needs to be considered. The value of the infrared albedo for all ground surfaces is given independently of the zenith angle, as follows:
-
 $$
  \alpha_{0(2,3)} = \alpha_{0(3)}
 $$
@@ -421,8 +409,6 @@ $$
 The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by Watanabe and Ohtani (1995).
 
 Considering the canopy as vertically uniform and making use of several assumptions for simplification, the transfer equations of insolation within the canopy and the boundary condition are expressed as
-
-
 $$
  \frac{dS^{\downarrow}_d}{dL} &=& -F \sec\zeta S^{\downarrow}_d \\
  \frac{dS^{\downarrow}_r}{dL} &=& -F (1-t_{f(b)})d_f S^{\downarrow}_r
@@ -436,19 +422,15 @@ $$
  S^{\uparrow}_r(LAI) &=& \alpha_{0(1,b)}S^{\downarrow}_d(LAI)
                        + \alpha_{0(2,b)}S^{\downarrow}_r(LAI)
 $$
-
 where  $S^{\downarrow}_d$ is the downward direct insolation; $S^{\uparrow}_r$ and $S^{\downarrow}_r$ are the upward and downward diffuse radiation, respectively; $L$  is the leaf area cumulatively added downward from the canopy top; $d_f$ is the diffusivity factor ($=\sec 53^{\circ}$), $r_{f(b)}$; $t_{f(b)}$ are the leaf albedo and transmissivity, respectively (the same value is used for diffuse radiation and direct insolation); and $F$  is a factor denoting the direction of the leaves with respect to the radiation. Here, the distribution of the direction of the leaves is assumed to be random ($F=0.5$) for simplicity.
 
 These can be solved analytically, giving the following solutions:
-
 $$
  S^{\downarrow}_d(L) &=& S^{top}_d \exp(-F\cdot L\cdot \sec\zeta) \\
  S^{\downarrow}_r(L) &=& C_1 e^{a L} + C_2 e^{-a L} + C_3 S^{\downarrow}_d(L) \\
  S^{\uparrow}_r(L)   &=& A_1 C_1 e^{a L} + A_2 C_2 e^{-a L} + C_4 S^{\downarrow}_d(L)
 $$
-
 where
-
 $$
    a &=& F d_f [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}  \\
  A_1 &=& \{ 1 - t_{f(b)} + [(1-t_{f(b)})^2 - r_{f(b)}^2]^{1/2}\} / r_{f(b)} \tag{eq17} \\
@@ -466,14 +448,11 @@ $$
 $$
 
 Albedo $\alpha_s$ at the canopy top is expressed as
-
 $$
  S^{\uparrow}_r(0) = \alpha_{s(1,b)} S^{\downarrow}_d(0)
                    + \alpha_{s(2,b)} S^{\downarrow}_r(0)
 $$
-
 therefore,
-
 $$
  \alpha_{s(2,b)} &=& \{ A_2 ( A_1 - \alpha_{0(2,b)}) e^{ a LAI }
                       - A_1 ( A_2 - \alpha_{0(2,b)}) e^{-a LAI }
@@ -482,12 +461,9 @@ $$
                   + ( A_1 - A_2 ) ( C_3 \alpha_{0(2,b)} + \alpha_{0(1,b)} -C_4)
                   e^{- F\cdot LAI\cdot \sec\zeta} / A_3
 $$
-
 are obtained.
 
 If the canopy transmissivity (${\mathcal{T}}_c$) (specifically, the ratio of incident insolation absorbed by the forest floor to the incident insolation of the canopy top) is defined by
-
-
 $$
   {\mathcal{T}}_{c(2,b)} &=& \{ ( 1 - A_2 )( A_1 - \alpha_{0(2,b)} )
                       - ( 1 - A_1 )( A_2 - \alpha_{0(2,b)} ) \} / A_3 \\
@@ -499,7 +475,6 @@ $$
 $$
 
 the following are obtained:
-
 $$
  S^{\downarrow}_d(LAI) + S^{\downarrow}_r(LAI) - S^{\uparrow}_r(LAI)
 = {\mathcal{T}}_{c(1,b)} S^{\downarrow}_d(0)
@@ -513,16 +488,12 @@ The leaf albedo $r_f$ and transmissivity $t_f$ are loaded as external parameters
 1. Snow (ice) effect on leaf surface
 
 When the canopy temperature does not exceed 0°C, the canopy water is regarded as snow (ice). In this case, using the snow albedo ($\alpha_{Sn(b)}$) and canopy water ($w_c$), the following assumptions are made:
-
 $$
  r_{f(b)} &=& ( 1 - f_{cwet} ) r_{f(b)}
          + f_{cwet} \alpha_{Sn(b)} \\
   f_{cwet} &=& {w_c}/w_{c,cap}
 $$
-
-
 where $w_{c,cap}$ is the canopy water capacity. With regard to transmissivity, the following assumption is made for convenience so that the absorptivity $1-r_f-t_f$) does not take a negative value:
-
 $$
  t_{f(b)} = ( 1 - f_{cwet} ) t_{f(b)}
          + f_{cwet} t_{Sn(b)}, \ \ \
@@ -534,7 +505,6 @@ When the canopy water is in the liquid state, the resultant change in the leaf r
 2. Effect considering the directions of reflection and transmission
 
 In solving the above equations, all reflected light is assumed to return in the direction of incidence. However, if, for example, the diffusion of only a portion of the reflected light in the direction of incidence is taken into consideration, the leaf radiation parameters can be replaced as follows (Watanabe, personal communication):
-
 $$
   r_{f(b)} = 0.75 r_{f(b)} + 0.25 t_{f(b)} \\
   t_{f(b)} = 0.75 t_{f(b)} + 0.25 r_{f(b)}
@@ -544,13 +514,10 @@ $$
 The above calculations are performed for $b=1, 2$ (visible and near infrared), respectively.
 
 In addition, in consideration of the uneven distribution of vegetation (such as savanna) in parts of the grid cells, before calculating the albedo, etc., the LAI (taking the original LAI as the grid mean value) of the vegetation-covered portion is calculated as follows:
-
 $$
   LAI = LAI / f_V
 $$
-
 and this is used for the calculation for albedo, etc. mentioned above. ($R^{\downarrow}_{(d,b)}$) is the vegetation-covered ratio in the grid cell. After the albedo, etc. are calculated, the area-weighted mean of the vegetation-covered portion and non- vegetation-covered portion are obtained as
-
 $$
   \alpha_{s(d,b)} &=& f_V \alpha_{s(d,b)}
                        + ( 1 - f_V ) \alpha_{0(d,b)} \\
@@ -569,7 +536,6 @@ $$
  R^{gnd}_S &=& \sum_{b=1}^2\sum_{d=1}^2 {\mathcal{T}}_{s(d,b)} R^{\downarrow}_{(d,b)} \\
  PAR &=& \sum_{d=1}^2 R^{\downarrow}_{(d,1)}
 $$
-
 where $R^{\downarrow}_S$ and $R^{\uparrow}_S$  are the downward and upward shortwave radiation flux, respectively; $R^{\downarrow}_L$ is the downward longwave flux; $R^{gnd}_S$ is the shortwave flux absorbed by the forest floor; and $PAR$ is the downward photosynthesis active radiation (PAR) flux.
 
 The canopy transmissivity of shortwave and longwave radiation, and the emissivity of longwave radiation, are then calculated as follows:
@@ -608,8 +574,6 @@ $$
  P_4 &=& 2 F_T^{1.1} \\
  F_T &=& c_h / c_d
 $$
-
-
 where $z_0$ and $z_T$ are the roughness of the overall canopy with respect to momentum and heat, respectively; $z_0s$ and $z_Ts$ are the roughness of the ground surface (forest floor) with respect to momentum and heat, respectively; $c_d$ and $c_h$ are the exchange coefficient between an individual leaf and the atmosphere with respect to momentum and heat, respectively; $h$ is the vegetation height; $d$ is the zero-plane displacement; and $LAI$ is LAI. $z_T^{\dagger}$ is the roughness with respect to heat when assuming no transfer of heat to or from the leaf surface, and is used when solving the coefficient of heat transfer from the forest floor.
 
 $z_{0s}$ and $z_{Ts}$  are given as external data for each land cover type. Their values ($z_{0s}=0.05$ m, $z_{Ts}=0.005$ m) are fixed as standards. However, the following modifications are made with respect to the snow-covered portion:
@@ -619,7 +583,6 @@ $$
  z_{Ts} = \max( f_{Sn} z_{0s}, z_{TSn} ) \\
           f_{Sn} = 1 - D_{Sn} / z_{0s}
 $$
-
 where $D_{Sn}$, $z_{0Sn}$ and $z_{TSn}$ are the roughness of the snow-covered portion with respect to momentum and heat, respectively.
 
 $c_d$ and $c_h$ are parameters determined by the leaf shape, and are given as external data for each land cover type.
@@ -636,31 +599,21 @@ $$
              \left[ \ln \frac{z_a-d}{z_T^{\dagger}} + \Psi_h(\zeta_g) \right]^{-1} \\
  C_{Hc} &=& C_H - C_{Hs}
 $$
-
-
 where $C_M$ and $C_H$ are the bulk coefficients of the overall canopy (leaf surface + forest floor) with respect to momentum and heat, respectively; $C_{Hs}$ is the bulk coefficient of the ground surface (forest floor) flux with respect to heat; $C_{Hc}$ is the bulk coefficient of the canopy (leaf surface) flux with respect to heat; $\Psi_m$ and $\Psi_h$ are Monin-Obukhov shear functions with respect to momentum and heat, respectively; and $z_a$ is the reference height of the atmosphere (height of the troposphere). Using the Monin-Obukhov lengths $\zeta$ and $\zeta_g$ related to the overall canopy and ground surface (forest floor), respectively, $L$ and $L_g$ are respectively expressed as:
-
-
 $$
  \zeta = \frac{z_a - d}{L} \\
  \zeta_g = \frac{z_a - d}{L_g}
 $$
-
 and the Monin-Obukhov lengths are expressed as:
-
 $$
  L &=& \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg(C_{Hs}(T_s - T_a) + C_{Hc}(T_c - T_a))} \\
  L_s &=& \frac{\Theta_0 C_M^{3/2}|V_a|^2}{kg C_{Hs}(T_s - T_a)}
 $$
-
-
 where $\Theta_0$ =300K; $|V_a|$ is the absolute value of the surface wind speed; $k$ is the Karman constant; $g$ is the gravitational acceleration; and $T_a,$T_c$ and $T_s$ are the temperature of the troposphere, canopy (leaf surface), and ground surface (forest floor), respectively.
 
 Since the bulk coefficient is necessary for calculation of the Monin-Obukhov length, and the Monin-Obukhov length is necessary for calculation of the bulk coefficient, the calculation is iterated (twice as a standard) with a neutral bulk coefficient as the initial value.
 
 Prior to this calculation, the snow depth in the snow-covered portion is added to the zero-plane displacement. However, the upper limit is set so that the zero-plane displacement does not exceed the value of $z_a$:
-
-
 $$
  d = \min( d + D_{Sn} ,\  f_{\max} \cdot z_a )
 $$
@@ -673,7 +626,6 @@ As a standard, $f_{\max}$ is set at 0.5.
 This calculation is performed after the calculation of stomatal resistance, described later.
 
 When the stomatal resistance ($r_{st}$)  and ground surface evaporation resistance　($r_{soil}$)  have been solved, the bulk coefficient with respect to vapor is solved as:
-
 $$
  C_{Ec} |V_a| &=& \left[ (C_{Hc} |V_a|)^{-1} + r_{st} / LAI\right]^{-1} \\
  C_{Es} |V_a| &=& \left[ (C_{Hs} |V_a|)^{-1} + r_{soil}\right]^{-1}
@@ -703,7 +655,6 @@ The stress factor of the overall soil is then obtained by
 $$
  f_w = \sum_{k=1}^{K_g} f_{w(k)} f_{root(k)}
 $$
-
 where  $f_{root(k)}$ is the root distribution fraction in each layer, which is an external parameter for each land cover type.  $\sum_{k=1}^{K_g} f_{root(k)}=1$.　
 
 Furthermore, the weight of transpiration distributed to the root uptake flux in each layer is expressed as
@@ -725,9 +676,7 @@ The amount of photosynthesis is considered to be regulated by the following thre
 $$
  A \leq \min( w_c, w_e, w_s) \tag{eq76}
 $$
-
-
-where $w_c is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).
+where $w_c$ is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).
 
 The respective magnitudes are estimated as follows:
 
@@ -768,12 +717,9 @@ V_m c_i/ 5
 \end{array}
 \right. \\
 $$
-
-
 where $V_m$ is the Rubisco reaction capacity, $c_i$ is the partial pressure of $\mathrm{CO_2}$ in the stoma, $\mathrm{O_2}$ is the partial pressure of oxygen in the stoma, and $PAR$is the photosynthetically active radiation (PAR).  is the $\mathrm{CO_2}$ compensation point, which is expressed by $\Gamma^*$ is the compensation point of $\mathrm{CO_2}$ and is represented by $\Gamma^* = 0.5 O_2 / S$ $K_c$, $K_O$, and $S$ are functions of temperature, whose function form is shown later. $\epsilon_3$ and $\epsilon_4$  are constants determined by the vegetation type.
 
 In order to express a smooth transition between the different upper limits, [Eq. (76)](#eq76) is actually solved as
-
 $$
  \beta_{ce} w_p^2 - w_p(w_c + w_e) + w_c w_e = 0 \\
  \beta_{ps} A^2 - A(w_p + w_s) + w_p w_s = 0
@@ -782,14 +728,10 @@ $$
 The amount of net photosynthesis $A_n$ can be obtained when solving the two equations in order while selecting the smaller of the two solutions for each equation. $\beta_{ce}, \beta_{ps}$ are constants determined by the vegetation type. Note that when $\beta=1$, coincidence is achieved with a simple minimum-value operation.
 
 When the amount of photosynthesis has been solved, ($A_n$) is solved as
-
 $$
  A_n = A - R_d
 $$
-
 where $R_d$ is the amount of respiration, expressed as
-
-
 $$
  R_d = f_d V_m
 $$
@@ -797,7 +739,6 @@ $$
 Here, $f_d$  is a constant determined by the vegetation type.
 
 $V_m$, etc. depend on the temperature and soil moisture, as follows (note that although the temperature dependence differs according to the term in which $V_m$ appears, the value is expressed by the same $V_m$):
-
 $$
  V_m &=& V_{\max} f_T(T_c) f_w \\
  K_c &=& 30 \times 2.1^{Q_T} \\
@@ -821,27 +762,21 @@ $$
 $$
 Q^T &=& (T_c - 298) / 10
 $$
-
-
 where $V_{\max}$, $s_1, \ldots, s_6$ are constants determined by the vegetation type.
 
 If $V_{\max}$, $PAR$, $c_i$, $T_c$ and $f_w$ are given by the above, the amount of photosynthesis in an individual leaf can be calculated. In reality, these values can be considered to be distributed unevenly even in the same canopy; however, $c_i$, $T_c$, and $f_w$ are approximated here as being the same for all leaves, whereas vertical distribution is taken into consideration in the case of $V_{\max}$ and $PAR$. $PAR$ is greater at the top of the canopy, and the lower the position in the canopy, the more it is attenuated. $V_{\max}$ is also considered to conform with this property of $PAR$ and to have a similar distribution.
 
 The average vertical distribution of$PAR$ (and therefore the vertical distribution of $V_{\max}$) is expressed as
-
 $$
  PAR(L) = PAR^{top} \exp(- f_{atn} a L)
 $$
-
 where $L$ is the leaf area added cumulatively from the canopy top, $PAR^{top}$ is $PAR$ at the canopy top, $a$ is the attenuation coefficient defined in [Eq. (17)](#eq17), and $f_{atn}$ is a constant for adjustment. Using this, the factor $f_{avr}$ expressing the average value of $PAR$, is defined as follows:
-
 $$
  f_{avr} = \int_0^{LAI} PAR(L) dL \Bigm / (LAI \cdot PAR^{top})
  = \frac{1 - \exp(- f_{atn} a L)}{f_{atn} a}
 $$
 
 Since each of the terms $A_n$ ($w_c, w_s, w_e, R_d$) is proportional to $V_{\max}$ or $PAR$, based on the assumption that the vertical distributions of $V_{\max}$ and $PAR$ are proportional, by multiplying $A_n$, which was solved using the values of $V_{\max}$ and $PAR$ at the top of the canopy, by $f_{avr}$, the average amount of photosynthesis of leaf ($\overline{A_n}$) can be solved:
-
 $$
  \overline{A_n} = f_{avr} A_n
 $$
@@ -851,74 +786,58 @@ This parameter is expressed as $A_n$ hereafter.
 ## Calculation of stomatal resistance (2)
 
 The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of Ball (1988) as follows:
-
 $$
  g_s = m \frac {A_n}{c_s} h_s + b f_w \tag{eq93}
 $$
-
 where  $c_s$ is the molar fraction of $\mathrm{CO_2}$  (number of mol of $\mathrm{CO_2}$  per 1 mol of air) at the leaf surface, $f_w$ is the soil moisture stress factor, and $m$ and $b$ are constants determined by the vegetation type.
 
 $h_s$ is the relative humidity at the leaf surface and is defined as
-
 $$
  h_s = e_s / e_i \tag{eq94}
 $$
-
-
 where $e_s$ is the molar fraction of vapor at the leaf surface, $e_i$ is the molar fraction of vapor in the stoma, and $e_i = e^* (T_c)$ is the mole fraction of water vapor in the stomata. $e^*$ denotes the molar fraction of saturated vapor.
 
 Assuming that the vapor flux from the inside of the stoma to the leaf surface is equal to the vapor flux from the leaf surface to the atmosphere (i.e., that there is no convergence and divergence of vapor at the leaf surface),
-
 $$
  g_s(e_i - e_s) = g_l(e_s - e_a) \tag{eq95}
 $$
-
 from which we obtain
-
 $$
  e_s = ( g_l e_a + g_s e_i ) / ( g_l + g_s )\tag{eq96}
 $$
-
 where $e_a$ is the molar fraction of vapor in the atmosphere and $g_l$ is the conductance from the leaf surface to the atmosphere. $g_l$ is expressed by $g_l = C_{Hc}|V_a| /
 LAI$ using the bulk coefficient.
 
 Similarly, assuming that there is no convergence and divergence of $\mathrm{CO_2}$  at the leaf surface,
-
 $$
  A_n = g_l(c_a - c_s)/1.4
      = g_s(c_s - c_i)/1.6
 $$
-
 from which we obtain
-
 $$
  c_s = c_a - 1.4 A_n/g_l \\
  c_i = c_s - 1.6 A_n/g_s \tag{eq99}
 $$
-
 where  $c_a$ and $c_i$  are the molar fractions of $\mathrm{CO_2}$  in the atmosphere and in the stoma, respectively. The numerical values 1.4 and 1.6 are constants that appear due to the difference in the diffusion coefficients of vapor and $\mathrm{CO_2}$ .
 
 If we order the equations by substituting [Eq. (94)](#eq94) and [Eq. (96)](#eq96) into [Eq. (93)](#eq93), the following equation is obtained for $g_s$:
-
-
 $$
  H g_s^2 + ( H g_l - e_i - H b f_w ) g_s - g_l ( H b f_w + e_a ) = 0 \tag{eq100}
 $$
 
 However, since
-
 $$
  H = (e_i c_s)/(m A_n)
 $$
-
 [Eq. (99)](#eq99) is used for $c_s$.
 
-Among the two solutions of [Eq. (100)](#eq100), the larger one is the significant solution. From the above, if  $A_n$ is known, $g_s$ can be solved; however, when solving $g_s$, $c_i$ is used. $c_i$ can be solved by [Eq. (99)](#eq99) if $g_s$ is solved. That is, $A_n$ is necessary in order to solve $g_s$, whereas $c_i$, namely $g_s$, is necessary in order to solve $A_n$. Iterative calculation is therefore required.
+Among the two solutions of ([Eq. (100)](#eq100)), the larger one is the significant solution.
+From the above, if  $A_n$ is known, $g_s$ can be solved; however, when solving $g_s$, $c_i$ is used.
+$c_i$ can be solved by ([Eq. (99)](#eq99)) if $g_s$ is solved. That is, $A_n$ is necessary in order to solve $g_s$, whereas $c_i$, namely $g_s$, is necessary in order to solve $A_n$. Iterative calculation is therefore required.
 
 The algorithm for the iterative calculation is ported from SiB2, which uses the method of quickening the convergence by iterating six times and putting the errors in decreasing order to estimate the next solution.
 
 Lastly, using stomatal conductance, the stomatal resistance is expressed as
-
 $$
  r_{st} = 1/g_{st}
 $$
@@ -931,7 +850,6 @@ $$
  r_{soil} &=& a_1 ( 1 - W_{(1)} ) / ( a_2 + W_{(1)} ) \\
  h_{soil} &=& \exp \left(\frac{\psi_{(1)} g}{R_{air} T_{g(1)}} \right)
 $$
-
 where $W_{(1)} = w_{(1)}/w_{sat(1)}$ is the degree of saturation of the uppermost soil layer, $\psi_{1}$ is the moisture potential of the uppermost soil layer, $g$ is the gravitational acceleration, $R_{air}$ is the gas constant of the air, and $T_{g(1)}$ is the temperature of the uppermost soil layer. $a_1$ and $a_2$ are constants, with $a_1=800$, $a_2=0.2$. as standard values.
 
 # Surface energy balance
@@ -946,8 +864,6 @@ $$
  \tau_x = - \rho C_{M}|V_a| u_a \\
  \tau_y = - \rho C_{M}|V_a| v_a
 $$
-
-
 where $\tau_x$ and $\tau_y$  are the momentum fluxes (surface stress) of the zonal and meridional directions, respectively.
 
 - Sensible heat flux
@@ -959,7 +875,6 @@ $$
  \partial H_s/\partial T_s &=& c_p \rho C_{Hs}|V_a| \\
  \partial H_c/\partial T_c &=& c_p \rho C_{Hc}|V_a|
 $$
-
 where $H_s$ and $H_c$ are the sensible heat flux from the ground surface (forest floor) and canopy (leaf surface), respectively; $\kappa = R_{air} / c_p$ and $R_{air}$are the gas constants of air; and $c_p$ is the specific heat of air.
 
 - Bare soil surface (forest floor) evaporation flux
@@ -974,7 +889,6 @@ $$
  \partial Et_{(2,1)}/\partial T_s &=& (1-A_{Sn})f_{ice}\cdot
            \rho \widetilde{C_{Es}}|V_a|h_{soil}\cdot dq^*/dT |_{T_s}
 $$
-
 where $Et_{(1,1)}$ and $Et_{(2,1)}$ are the water evaporation and ice sublimation fluxes at the bare soil surface, respectively; $q^*(T_s)$ is the saturation specific humidity at the ground surface temperature; $h_{soil}$ is the relative humidity at the soil surface layer; $A_{Sn}$ is the snow-covered ratio; and $f_{ice}$ is the ratio of ice in the uppermost soil layer, expressed as
 
 $$
@@ -1001,7 +915,6 @@ $$
   (1-f_{cwet}) \cdot \rho \widetilde{C_{Ec}}|V_a|\cdot dq^*/dT|_{T_c} \\
  \partial Et_{(2,2)}/\partial T_c &=& 0
 $$
-
 where $Et_{(1,2)}$ and $Et_{(2,2)}$ are transpiration of water and ice, respectively; and $Et_{(2,2)}$ is always 0. $f_{cwet} = w_c / w_{c,cap}$ is the wet fraction of the canopy. When the flux is downward, which is considered to be dew formation on the dry part of the leaf, the bulk coefficient is taken as:
 
 $$
@@ -1037,7 +950,6 @@ $$
  \partial Et_{(2,3)} \partial T_c &=&
   f_{cwet} \cdot \rho C_{Hc}|V_a|\cdot dq^*/dT|_{T_c}
 $$
-
 where $Et_{(1,3)}$ and $Et_{(2,3)}$ are the evaporation of water and the sublimation of ice at the canopy surface, respectively.
 
 - Snow sublimation flux
@@ -1047,7 +959,6 @@ $$
  \partial E_{Sn}/\partial T_s &=& A_{Sn}\cdot \rho C_{Hs}|V_a|
  \cdot dq^*/dT|_{T_s}
 $$
-
 where $E_{Sn}$ is the snow sublimation flux. Since the snow-free portion and snow-covered portion are calculated separately, it should also be noted here that $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).
 
 
@@ -1058,7 +969,6 @@ The heat conduction fluxes in the snow-free and snow-covered portions are calcul
 In addition, it should also be noted here that since the snow-free portion and snow-covered portion are calculated separately, $A_{Sn}$ takes the value of either 0 (snow-free portion) or 1 (snow-covered portion).
 
 - Heat conduction flux in the snow-free portion
-
 $$
   F_{g(1/2)} &=& (1 - A_{Sn}) \cdot k_{g(1/2)} / \Delta z_{g(1/2)} (T_{g(1)} - T_s) \\
   \partial F_{g(1/2)}/\partial T_s &=&
@@ -1067,14 +977,12 @@ $$
 where $F_{g(1/2)}$ is the heat conduction flux, $k_{g(1/2)}$ is the soil heat conductivity, $\Delta z_{g(1/2)}$  is the thickness from the temperature definition point of the uppermost soil layer to the ground surface, and $T_{g(1)}$ is the temperature of the uppermost soil layer.
 
 - Heat conduction flux in the snow-covered portion　
-
 $$
   F_{Sn(1/2)} &=& A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} (T_{Sn(1)} - T_s)
  \\
   \partial F_{Sn(1/2)}/\partial T_s &=&
   - A_{Sn} \cdot k_{Sn(1/2)} / \Delta z_{Sn(1/2)} \tag{eq135}
 $$
-
 where $F_{Sn(1/2)}$ is the heat conduction flux, $k_{Sn(1/2)}$ is the snow heat conductivity, $\Delta z_{Sn(1/2)}$ is the thickness from the temperature definition point of the uppermost snow layer to the ground surface, and $T_{Sn(1)}$ is the temperature of the uppermost snow layer.
 
 ## Solution of energy balance at ground surface and canopy
@@ -1090,7 +998,6 @@ $$
   H_s + R^{net}_s + l Et_{(1,1)} + l_s ( Et_{(2,1)} + E_{Sn} )
   - F_{g(1/2)} - F_{Sn(1/2)} \tag{eq136}
 $$
-
 where  $l$ and $l_s$  are the latent heat of evaporation and sublimation, respectively; and $R^{net}_s$ is the net radiation divergence at the ground surface, given by
 
 $$
@@ -1099,7 +1006,6 @@ $$
               + \epsilon \sigma T_s^4
               - \epsilon \sigma T_c^4 (1 - {\mathcal{T}}_{cL})
 $$
-
 where $\sigma$ is the Stefan-Boltzmann constant.
 
 The energy divergence at the canopy (leaf surface) is
@@ -1109,7 +1015,6 @@ $$
   H_c + R^{net}_c + l ( Et_{(1,2)} + Et_{(1,3)} )
   + l_s ( Et_{(2,2)} + Et_{(2,3)} )
 $$
-
 where $R^{net}_c$ is the net radiation divergence at the canopy, given by
 
 $$
@@ -1190,7 +1095,6 @@ $$
 +l_s\left(\frac{\partial Et_{(2,2)}}{\partial T_c}
 +         \frac{\partial Et_{(2,3)}}{\partial T_c}\right)
 $$
-
 where
 
 
@@ -1214,7 +1118,6 @@ When either there is snow on the ground surface or the land cover type is ice sh
 $$
  \Delta T_s = \Delta T_s^{melt} = T_{melt} - T_s^{past}
 $$
-
 where $T_{melt}$ is the melting point (0°C) of ice.
 
 With $T_c$ known, $\Delta T_s$ is solved by the following equation similarly to [Eq. (140)](#eq140):
@@ -1247,8 +1150,6 @@ $$
    \ \ \ \ \ (i=1,2 ; j=1,2,3) \\
   E_{Sn}^{current} &>& - q_a ( P_s - P_a ) / (g \Delta t)
 $$
-
-
 where $g$ is the gravitational acceleration and $\Delta t$ denotes the time steps of the atmospheric model. For the values of $Et$ etc. to be used for judgment, the updated flux values ($current$) with respect to the values of $T_s$ and $T_c$that have been updated so as to satisfy the energy balance are used. The same applies to all of the other conditions listed below. Updating of the flux values is described later.
 
 2. Soil moisture should not take a negative value.
@@ -1259,7 +1160,6 @@ $$
    Et_{(1,2)}^{current} <
      \sum_{k\in rootzone} \rho_w w_{k}\Delta z_{g(k)} /\Delta t_L
 $$
-
 where $\rho_w$  is the water density and $\Delta t_L$ denotes the time steps of the land surface model.
 
 3. Canopy water should not take a negative value.
@@ -1299,21 +1199,17 @@ $$
 \end{array}
 \right.
 $$
-
 where $A_{Snc}$ is the frozen fraction on the canopy.
 
 ### Updating of flux values
 
 The flux values are updated with respect to the updated values of $T_s$ and $T_c$. When $F$ denotes any given flux, updating of the values is performed as follows:
-
 $$
  F^{current} = F^{past} + \frac{\partial F}{\partial T_s} \Delta T_s
                         + \frac{\partial F}{\partial T_c} \Delta T_c
 $$
 
 Using the updated flux values, the fluxes output into the atmosphere, etc. are calculated as follows:
-
-
 $$
  H &=& H_s + H_c \\
  E &=& \sum_{j=1}^3 \sum_{i=1}^2 Et_{(i,j)} + E_{Sn} \\
@@ -1322,16 +1218,12 @@ $$
  + (1 - \epsilon) R^{\downarrow}_L \\
  T_{sR} &=& ( R^{\uparrow}_L / \sigma )^{1/4}
 $$
-
-
 where $T_{sR}$ is the radiation temperature at the ground surface.
 
 The root uptake flux in each soil layer is then calculated as follows:
-
 $$
  F_{root(k)} = f_{rootup(k)} Et_{(1,2)} \ \ \ \ (k=1,\ldots,K_g)
 $$
-
 where $F_{root(k)}$ is the root uptake flux and  $f_{rootup(k)}$ is the weighting for distribution of the transpiration to the root uptake flux in each layer.
 
 # Canopy Water Balance
@@ -1341,7 +1233,6 @@ The canopy water balance is calculated.
 ## Diagnosis of canopy water phase
 
 With regard to canopy water, the liquid phase (intercepted rainfall, dew formation, and frozen water content that has melted) and solid phase (intercepted snow, icing, and liquid water content that has frozen) are considered separately and the coexistence of the two phases is allowed. The only prognostic variable is the water content ($w_c$) encompassing both the liquid and solid phases, and depending on whether the canopy temperature ($T_c$) is higher or lower than $T_{melt} = 0^{\circ}$ C, it is diagnosed as liquid or solid, respectively. The reason why the liquid and solid phases can coexist is that $T_c$ in snow-covered and snow-free portions is calculated separately. That is, the frozen fraction on the canopy ($A_{Snc}$) is defined (in actuality, it is obtained as a result of spatial averaging by the coupler) as follows:
-
 $$
  A_{Snc} = \left\{
 \begin{array}{ll}
@@ -1352,7 +1243,6 @@ $$
 \end{array}
 \right.
 $$
-
 where $w_{cl} = w_c ( 1 - A_{Snc})$ and $w_{ci} = w_c A_{Snc}$ are the liquid and solid water content of the canopy, respectively.
 
 For $A_{Snc}$, the value updated in the flux calculation section $A_{Snc}^{\tau+1}$　is given by the coupler, but the value of the previous step $A_{Snc}^{\tau}$ is stored in MATCNW. $\tau$ denotes the time steps. This is solved from the initial values of $T_c$ and $Sn$ at the time of initiating the calculation, and therefore does not become a new prognostic variable.
@@ -1360,16 +1250,13 @@ For $A_{Snc}$, the value updated in the flux calculation section $A_{Snc}^{\tau+
 ## Prognosis of canopy water
 
 The prognostic equations for the canopy water in the liquid and solid phases are given respectively as
-
 $$
  \rho_w \frac{w_{cl}^{\tau+1} - w_{cl}^{\tau}}{\Delta t_L}
   = P_{Il} - E_l - D_l + M_c \\
  \rho_w \frac{w_{ci}^{\tau+1} - w_{ci}^{\tau}}{\Delta t_L}
   = P_{Ii} - E_i - D_i - M_c
 $$
-
 where $P_{Il}$ and $P_{Ii}$ are the precipitation interception in the respective cases, $E_l$ and $E_i$ are the evaporation (sublimation), $D_l$, $D_i$ are the dripping, and $M_c$ is the melting. Note that here, the values before the updated $w_{cl}^{\tau}$ and $w_{ci}^{\tau}$ are defined using $A_{Snc}^{\tau}$ before it is updated, as follows:
-
 $$
  w_{cl}^{\tau} = w_c^{\tau} ( 1 - A_{Snc}^{\tau}) \\
  w_{ci}^{\tau} = w_c^{\tau} A_{Snc}^{\tau}
@@ -1383,8 +1270,6 @@ $$
  w_{cl}^* = w_{cl}^{\tau} - E_l \Delta t_L / \rho_w \\
  w_{ci}^* = w_{ci}^{\tau} - E_i \Delta t_L / \rho_w
 $$
-
-
 
 $$
  E_l = Et_{(1,3)} \\
@@ -1403,7 +1288,6 @@ $$
  P_{Ii}^{c}  &=& f_{int} ( P_{Snc} / A_c + P_{Snl} ) \\
  P_{Ii}^{nc} &=& f_{int} P_{Snl}
 $$
-
 where $P_{Il}^{c}$ and $P_{Ii}^{c}$ denote the interception in the convective precipitation area, and $P_{Il}^{nc}$ and $P_{Ii}^{nc}$ denote the interception in the nonconvective precipitation area. $f_{int}$ is the interception efficiency, and is simply given by
 
 $$
@@ -1435,9 +1319,7 @@ $$
  D_i^c     &=&  \max( w_{ci}^{c*} - w_{c,cap}, 0 ) + D_{g}(w_{ci}^{c*}) \\
  D_i^{nc}  &=&  \max( w_{ci}^{nc*}- w_{c,cap}, 0 ) + D_{g}(w_{ci}^{nc*})
 $$
-
 where the canopy water capacity ($w_{c,cap}$) is, from the water capacity per unit leaf area ($w_{c\max}$) and LAI, assumed to be
-
 $$
  W_{c,cap} = W_{c\max} LAI
 $$
@@ -1445,7 +1327,6 @@ $$
 $W_{c\max}$ is set at 0.2 mm as a standard value, and the same value is used with respect to the liquid and solid phases.
 
 The natural dripping due to gravity $D_g$ is, after Rutter et al. (1975), assumed to be
-
 $$
  D_g(w_c) = D_1 \exp(D_2 w_c)
 $$
@@ -1453,7 +1334,6 @@ $$
 $D_1=1.14 \times 10 ^{-11}$ and $D_2=3.7 \times 10^{3}$ are standard values, and the same values are used with respect to the liquid and solid phases.
 
 By subtracting the dripping, the values are updated as follows:
-
 $$
  w_{cl}^{c**} &=& w_{cl}^{c*}  - D_{Il}^c    \Delta t_L / \rho_w \\
  w_{cl}^{nc**}&=& w_{cl}^{nc*} - D_{Il}^{nc} \Delta t_L / \rho_w \\
@@ -1473,16 +1353,12 @@ $$
 $$
 
 However, if updating of the frozen fraction ($A_{Snc}$) is considered,
-
-
 $$
  w_{cl}^{\tau+1} &=& w_{c}^{\tau+1} (1-A_{Snc}^{\tau+1}) \\
  w_{ci}^{\tau+1} &=& w_{c}^{\tau+1} A_{Snc}^{\tau+1}
 $$
 
-
 The melting $M_c$ is therefore diagnosed as
-
 $$
  M_c = - \rho_w ( w_{ci}^{\tau+1} - w_{ci}^{**} ) / \Delta t_L
 $$
@@ -1494,7 +1370,6 @@ Here, the canopy temperature should be changed due to the latent heat of melting
 ## Fluxes given to the soil, snow, and runoff process
 
 The water flux $F_w$ given to the snow or the runoff process after interception by the canopy is respectively expressed with respect to the convective precipitation area and nonconvective precipitation area, and the liquid and solid phases, as follows:
-
 $$
  F_{wl}^{c} &=& (1-f_{int})( Pr_c / A_c + Pr_l ) + D_{l}^{c} \\
  F_{wl}^{nc} &=&(1-f_{int}) Pr_l + D_{l}^{nc} \\
@@ -1509,16 +1384,12 @@ $$
  Pr_l^* &=& F_{wl}^{nc} \\
  P_{Sn}^* &=& A_c F_{wl}^{c} + (1-A_c) F_{wl}^{nc}
 $$
-
 where $Pr_c^*$, $Pr_l^*$, and $P_{Sn}^*$ are the convective precipitation, the stratiform precipitation, and the snowfall after interception by the canopy, respectively.
 
 The energy flux correction portion for the soil or the snow is
-
 $$
  \Delta F_{c,conv} = - l_m M_c
 $$
-
-
 where $l_m$is the latent heat of melting.
 
 
@@ -2620,23 +2491,17 @@ The soil temperature, the soil moisture, and the frozen soil are calculated next
 ### Soil heat conduction equations
 
 The prognostic equation for the soil temperature by soil heat conduction is
-
 $$
 C_{g(k)} \frac{T_{g(k)}^* - T_{g(k)}^{\tau}}{\Delta t_L} = F_{g(k+1/2)} - F_{g(k-1/2)}
 \qquad (k=1,\ldots,K_{g}) \tag{eq289}
 $$
-
 with $C_{g(k)}$ , the soil heat capacity, defined by
-
 $$
  C_{g(k)} = ( c_{g(k)} + \rho_w c_{pw} w_{(k)} ) \Delta z_{g(k)}
 $$
-
 where $c_{g(k)}$ is the specific heat of the soil, and is given as a parameter for each soil type; $c_{pw}$ is the specific heat of the water; $w_{(k)}$ is the soil moisture (volumetric moisture content); and $\Delta z_{g(k)}$  is the thickness of the $k$ th soil layer. When including the heat capacity of the soil moisture in the soil heat capacity in this way, unless the heat transfer accompanying the soil moisture movement is considered, the energy is not conserved. The heat transfer accompanying the soil moisture movement is not considered in the MATGND soil submodel at present, and its introduction is under study. However, it should be noted that unless the heat capacity of such elements as vapor in the atmosphere, rainfall, etc. is considered, the conservation of energy is disrupted in certain respects.
 
 The heat conduction flux $F_{g}$ is given by
-
-
 $$
  F_{g(k+1/2)} =
 \left\{
@@ -2654,13 +2519,10 @@ k_{g(k+1/2)} \frac{T_{g(k+1)} - T_{g(k)}}{\Delta z_{g(k+1/2)}}
 \end{array}
 \right. \tag{eq291}
 $$
-
 with $k_{g(k+1/2)}$, the soil heat conductivity, expressed as
-
 $$
  k_{g(k+1/2)} = k_{g0(k+1/2)} [ 1 + f_{kg} \tanh( w_{(k)}/ w_{kg} ) ]
 $$
-
 where $k_{g0(k+1/2)}$ is the heat conductivity when the soil moisture is 0, and $f_{kg}=6$ and $w_{kg}=0.25$  are constants.
 
 $\Delta z_{g(k+1/2)}$ is the thickness between the soil temperature definition points of the $k+1$th layer and the $k+1$th layer (when $k=0$, the thickness between the uppermost layer temperature definition point and the soil upper boundary; when $k=K_g$, the thickness between the lowest layer temperature definition point and the soil lower boundary).
@@ -2670,8 +2532,6 @@ In [Eq. (291)](#eq291), the value given to the soil upper boundary condition ($F
 ### Solution of heat conduction equations
 
 These equations are solved using the implicit method with regard to the soil temperature from the uppermost layer to the lowest layer. That is, for $k=1,\ldots,K_g-1$, the heat conduction flux is expressed as
-
-
 $$
   F_{g(k+1/2)}^{*} = F_{g(k+1/2)}^{\tau}
 +\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}}
@@ -2679,29 +2539,19 @@ $$
 +\frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}}
  \Delta T_{g(k+1)}
 $$
-
-
 $$
   F_{g(k+1/2)}^{\tau} =
 \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}(T_{g(k+1)}^{\tau} - T_{g(k)}^{\tau})
 $$
-
-
 $$
  \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k)}} =
 - \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
 $$
-
-
 $$
  \frac{\partial {F}_{g(k+1/2)}}{\partial T_{g(k+1)}} =
 \frac{k_{g(k+1/2)}}{\Delta z_{g(k+1/2)}}
 $$
-
-
 and [Eq. (289)](#eq289) is treated as
-
-
 $$
 C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
 &=& F_{g(k+1/2)}^* - {F}_{g(k-1/2)}^*  \nonumber\\
@@ -2716,9 +2566,7 @@ C_{g(k)} \frac{\Delta T_{g(k)}}{\Delta t_L}
 -\frac{\partial F_{g(k-1/2)}}{\partial T_{g(k-1)}}
  \Delta T_{g(k)}
 $$
-
 and solved by the LU factorization method as $K_{g}$  simultaneous equations with respect to $\Delta T_{g(k)}\ (k=1,\ldots,K_{g})$. At this juncture, it should be noted that the equations are solved with the fluxes at the soil upper boundary and lower boundary fixed as the boundary conditions:
-
 $$
  T_{g(k)}^* = T_{g(k)}^{\tau} + \Delta T_{g(k)}
 $$
@@ -2730,7 +2578,6 @@ The soil temperature is partially updated by the above equation. By this, as wel
 ### Soil moisture movement equations
 
 The equation for soil moisture movement (Richards equation) is given by
-
 $$
 \rho_w \frac{w_{(k)}^{\tau+1} - w_{(k)}^{\tau}}{\Delta t_L} =
 \frac{F_{w(k+1/2)} - F_{w(k-1/2)}}{\Delta z_{g(k)}} + S_{w(k)}
@@ -2738,8 +2585,6 @@ $$
 $$
 
 The soil moisture flux $F_{w}$ is given by
-
-
 $$
  F_{w(k+1/2)} =
 \left\{
@@ -2757,41 +2602,28 @@ K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \rig
 \end{array}
 \right. \tag{eq300}
 $$
-
 in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
-
 $$
  K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
 $$
-
 where $K_{s(k+1/2)}$ is the saturation hydraulic conductivity and $b_{(k)}$ is the index of the moisture potential curve, which are given as external parameters for each soil type. $W_{(k)}$ is the degree of saturation considered excluding the frozen soil moisture, given by
-
 $$
  W_{(k)} = \frac{w_{(k)}-w_{i(k)}}{w_{sat(k)}-w_{i(k)}}
 $$
-
-
-
 where $w_{sat(k)}$  is the porosity of the soil, which is also given as a parameter for each soil type. $f_i$ is a parameter that denotes that soil moisture movement is suppressed by the existence of frozen soil. Although further study of this point is required, at present it is given by
-
 $$
  f_i = \left(1- W_{i(k)}\right)
        \left(1- W_{i(k+1)}\right)
 $$
-
 where $W_{i(k)} = w_{i(k)}/(w_{sat(k)}-w_{i(k)})$.
 
 The soil moisture potential $\psi$ is given as follows from Clapp and Hornberger:
-
-
 $$
  \psi_{(k)} = \psi_{s(k)} W_{(k)}^{-b(k)}
 $$
-
 where $\psi_{s(k)}$ is given as an external parameter for each soil type.
 
 In [Eq. (299)](#eq299), $S_{w(k)}$ is a source term which, considering the root uptake and the runoff, is given by
-
 $$
  S_{w(k)} = - F_{root(k)} - Ro_{(k)}
 $$
