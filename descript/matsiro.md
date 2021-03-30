@@ -3419,7 +3419,7 @@ where $Fw_S'$ is the updated snow flux, and $S_{off}$ is the overflow snow flux,
 
 | Variable | Variable in source code | Longname                          | Unit              |
 |:-------- |:----------------------- |:--------------------------------- |:----------------- |
-| $h_I$    | HIX                     | Thickness of lake ice             | $\mathrm{[cm]}$   |
+| $h_I'$    | HIX                     | Thickness of lake ice             | $\mathrm{[cm]}$   |
 | $W_{AO}$ | WAO                     | Snow growth rate in ice-free area | $\mathrm{[cm\ w.e./s]}$ |
 
 In ENTRY PCMPCTL (in SUBROUTINE CMPSTL of lakeic.F), the lake ice fraction is updated, using the lake ice thickness ($h_I'$) and the growth (retreat) rate in ice-free area ($W_{AO}$):
@@ -3556,7 +3556,7 @@ where	$W_{AI}$ is a growth rate of the lake ice.
 The depth of lake snow ($h_S^{*}$) is modified with the accumulation.
 
 $$
-	h_S^{**} = \frac{V_S^{**}+ \rho_O W_{AS}^* \Delta t}{\rho_S {A_I^*}}
+  h_S^{**} = \frac{V_S^{**}+ \rho_O W_{AS}^* \Delta t}{\rho_S {A_I^*}}
 $$
 
 where $h_S^{**}$ is the updated depth of lake snow. If $h_S^{**}$ is less than 0, it is set to zero. When the residual heat flux is zero or positive ($W_{res}\ge 0$), the growth rate of the lake ice ($W_{AI}$) is temporally set to 0.
