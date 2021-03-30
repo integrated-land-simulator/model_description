@@ -48,8 +48,8 @@ Modified
 | $A\_{Sn}$                        | Snow fraction                                    | -                   | GLRSN        |
 | $W\_{Sn}$                        | Accumulated snow                                 | $\mathrm{kg/m^2}$   | GLSDA        |
 | $M\_{Sn}$                        | Accumulated snowmelt depth                       | $\mathrm{kg/m^2}$   | GLSDM        |
-| $P\_{r\_c}$                      | (Input) Water input after canopy interception derived from convective precipitation \par\noindent hoge | $\mathrm{kg/m^2/s}$ | WINPC        |
-| $P\_{r\_l}$                      | [TODO]                                                   | $\mathrm{kg/m^2/s}$ | WINPL        |
+| $P\_{r\_c}$                      | Water input after canopy interception derived from convective precipitation (input) and input to ground (output) | $\mathrm{kg/m^2/s}$ | WINPC        |
+| $P\_{r\_l}$                      | Water input after canopy interception derived from layered precipitation (input) and input to ground (output)    | $\mathrm{kg/m^2/s}$ | WINPL        |
 | $\rho\_{d\_w(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D\_w$ | $\mathrm{ppmv}$     | CDST         |
 | $\rho\_{d\_m(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D\_m$ | $\mathrm{ppmv}$     | CDSTM        |
 
