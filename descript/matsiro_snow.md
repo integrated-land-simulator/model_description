@@ -1,3 +1,4 @@
+
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -127,7 +128,7 @@ ${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using N
 Then, the snow cover fraction $A\_{Sn}({W\_{Sn}}\_m)$ is calculated by
 $$
 A\_{Sn}({W\_{Sn}}\_m) = 1 - \int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dD 
-= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{#8-5}
+= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{8-5}
 $$
 
 ### Case 2: When OPT\_SSNOWD is inactive
