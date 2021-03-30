@@ -93,33 +93,33 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth ${W\_{Sn}}\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1,
+\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1, \tag{8-1}
 $$
 where $W\_{Sn}$ is the snow water equivalent depth and $f(W\_{Sn})$ is the probability distribution function of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
 f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(W\_{Sn})-\lambda}{\zeta} \right)}^2 
-\right] },
+\right] }, \tag{8-2}
 $$
 where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
 Here $W\_{Sn}$ is the accumulated snow and $CV$ is the coefficient of variation. With the default settings, $CV$ is diagnosed from the coldness index $T\_{hist}$, standard deviation of the subgrid topography $z\_{sd}$ and vegetation type that is a proxy for surface winds. 
 For $T\_{hist}$, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years, is applied. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$. 
-When $T\_{hist} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le T\_{hist} \lt 10$ and $T\_{hist} \lt 0$, it is determined from $z\_{sd}$ and vegetation type.
+When $T\_{hist} \ge 10$, $CV$ takes constant value of 0.0.6. In other two cases of $0 \le T\_{hist} < 10$ and $T\_{hist} < 0$, it is determined from $z\_{sd}$ and vegetation type.
 
 The snow amount $Sn$ is given by 
 $$
 Sn({W\_{Sn}}\_m) 
  = \int\_0^{{W\_{Sn}}\_m} 0[f(W\_{Sn})]dW\_{Sn} 
- \+ \int\_{{W\_{Sn}}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn},
+ \+ \int\_{{W\_{Sn}}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn}, \tag{8-3}
 $$
 and this equation is rewritten to
 $$
 Sn({W\_{Sn}}\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
  \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}-\xi}{\sqrt{2}} \right)
- \- \frac{1}{2} {W\_{Sn}}\_m \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{\sqrt{2}} \right),
+ \- \frac{1}{2} {W\_{Sn}}\_m \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{\sqrt{2}} \right), \tag{8-4}
 $$
 where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(W\_{Sn})-\lambda}{\zeta}$, and $z\_{{W\_{Sn}}\_m}$ is the value of $z$ when $W\_{Sn} = {W\_{Sn}}\_m$ and $\mathrm{erfc}$ is the complementary error function.
 ${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
@@ -127,14 +127,14 @@ ${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using N
 Then, the snow cover fraction $A\_{Sn}({W\_{Sn}}\_m)$ is calculated by
 $$
 A\_{Sn}({W\_{Sn}}\_m) = 1 - \int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dD 
-= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{#snow-cover-fraction}
+= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{#8-5}
 $$
 
 ### Case 2: When OPT\_SSNOWD is inactive
 
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
 $$
-Sn({W\_{Sn}}\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{8-8}
+Sn({W\_{Sn}}\_m) = \min(\sqrt{Sn/Sn\_c}), \tag{#8-6}
 $$
 where $Sn\_c$ is 100 $\mathrm{kg/m^2}$ as a standard.
 
@@ -187,7 +187,7 @@ $$
  (\widetilde{Sn} \geq 60)
 \end{array}
 \right.
-\end{aligned}, \tag{8-9}
+\end{aligned}, \tag{#8-7}
 $$
 where $\widetilde{Sn} =  Sn / A\_{Sn}.$
 
@@ -203,7 +203,7 @@ $$
  2 \;\;\; (20 \leq \widetilde{Sn} < 60)\\
  3 \;\;\; (\widetilde{Sn} \geq 60)
 \end{array}
-\right. \tag{8-11}
+\right. \tag{#8-8}
 $$
 
 ## Calculation of snow water equivalent
@@ -211,7 +211,7 @@ $$
 The prognostic equation of the snow water equivalent is given by
 
 $$
-\frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{8-12}
+\frac{Sn^{\tau+1}-Sn^{\tau}}{\Delta t} = P\_{Sn}^{\*} - E\_{Sn} - M\_{Sn} + Fr\_{Sn} \tag{#8-8}
 $$
 where $P\_{Sn}^{\*}$ is the snowfall flux after interception by the canopy, $E\_{Sn}$ is the sublimation flux, $M\_{Sn}$ is the snowmelt, and $Fr\_{Sn}$ is the refreeze of snowmelt or the freeze of rainfall.
 $\tau$ is time step and $\Delta t$ is its length.
