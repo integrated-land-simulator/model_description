@@ -3677,25 +3677,23 @@ This sub-section [lakepo.F] introduces the vertical heat and salinity diffusion 
 
 **Input**
 
-| Meaning                                             | Character | In code | Dimension | Unit |
-| --------------------------------------------------- | --------- | ------- | --------- | ---- |
-| The default value of vertical diffusion coefficient | $K_{V0}$  | AHVL0   | NZ        | -    |
+| Meaning                                             | Character | In code | Unit |
+| --------------------------------------------------- | --------- | ------- | ---- |
+| The default value of vertical diffusion coefficient | $K_{V0}$  | AHVL0   | -    |
 
 **Output**
 
-| Meaning                        | Character | In code | Dimension      | Unit |
-| ------------------------------ | --------- | ------- | -------------- | ---- |
-| Vertical diffusion coefficient | $K_{V}$   | AHVL    | IJLDIM, NLZDIM | -    |
+| Meaning                        | Character | In code | Unit |
+| ------------------------------ | --------- | ------- | ---- |
+| Vertical diffusion coefficient | $K_{V}$   | AHVL    | -    |
 
-ENTRY: [VDIFFL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
-
-In this part, the vertical diffusion coefficients are first determined for each lake layer.
+In this part, the vertical diffusion coefficients are first determined for each lake layer, and the source code is included in ENTRY [VDIFFL] (in SUBROUTINE: [LAKEPO] of lakepo.F).
 
 In the current version of MATSIRO 6, the diffusive flux of tracer follows Fick’s law. In Fick’s first law, the vertical diffusive tracer flux $J$ of unit time is:
 $$
 J=K_{V}\frac{\partial T}{\partial z}
 $$
-where $T$ represents temperature (temperature is used as an example here, this equation also applies to salinity), and $K_{V}$ represents the diffusion coefficient, and $z$ represents the vertical distance. The vertical diffusion coefficients for all lake layers are set as the default value, which is $K_{V0}$=1. Therefore, the vertical diffusion coefficient $K_{V0}$ of each layer is simply set as:
+where $T$ represents temperature (temperature is used as an example here, this equation applies to salinity as well), $K_{V}$ represents the diffusion coefficient, and $z$ represents the vertical distance. The vertical diffusion coefficients for all lake layers are set as the default value, which is $K_{V0}$=1. Therefore, the vertical diffusion coefficient $K_{V0}$ of each layer is simply set as:
 $$
 K_{V}(k)=K_{V0}
 $$
@@ -3705,28 +3703,26 @@ It is known that the surface wind and vertical temperature stratification will a
 
 **Input**
 
-| Meaning                        | Character | In code | Dimension              | Unit    |
-| ------------------------------ | --------- | ------- | ---------------------- | ------- |
-| Vertical diffusion coefficient | $K_{V}$   | AHVL    | IJLDIM, NLZDIM         | -       |
-| Water temperature              | $T$       | TX(1)   | IJLDIM, NLZDIM, NLTDIM | $^{o}C$ |
-| Water depth                    | $h$       | HX      | IJLDIM                 | m       |
+| Meaning                        | Character | In code | Unit    |
+| ------------------------------ | --------- | ------- | ------- |
+| Vertical diffusion coefficient | $K_{V}$   | AHVL    | -       |
+| Water temperature              | $T$       | TX(1)   | $^{o}C$ |
+| Water depth                    | $h$       | HX      | m       |
 
 **Output**
 
-| Meaning                                         | Character | In code | Dimension              | Unit      |
-| ----------------------------------------------- | --------- | ------- | ---------------------- | --------- |
-| The vertical component of diffusive tracer flux | $F_{D}$   | ADT     | IJLDIM, NLZDIM, NLTDIM | $^{o}C$/s |
+| Meaning                                         | Character | In code | Unit      |
+| ----------------------------------------------- | --------- | ------- | --------- |
+| The vertical component of diffusive tracer flux | $F_{D}$   | ADT     | $^{o}C$/s |
 
 **Internal variables**
 
-| Meaning                                   | Character | In code | Dimension      | Unit |
-| ----------------------------------------- | --------- | ------- | -------------- | ---- |
-| The water depth excluding the first layer | $h'$      | HZBOT   | IJLDIM         | m    |
-| Depth of each lake layer                  | $D$       | DZ      | IJLDIM, NLZDIM | cm   |
+| Meaning                                   | Character | In code | Unit |
+| ----------------------------------------- | --------- | ------- | ---- |
+| The water depth excluding the first layer | $h'$      | HZBOT   | m    |
+| Depth of each lake layer                  | $D$       | DZ      | cm   |
 
-ENTRY: [FLXTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
-
-This part introduces the calculation of the vertical diffusive tracer flux. Temperature is shown here as an example, and the tracer equation of salinity is identical.
+This part introduces the calculation of the vertical diffusive tracer flux, and the source code is included in ENTRY [FLXTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F). Temperature is shown here as an example, and the tracer equation of salinity is identical.
 
 The thickness of each lake layer is first calculated. The water column is divided into 5 layers (k=2, 3, 4, 5, 6) in the current version, and the k=1 and k=7 represent the top surface and the bottom surface of the water column, respectively. The layer of the water column is shown in Fig. 11-1.
 
@@ -3736,7 +3732,7 @@ Firstly, the thickness of the first layer (k=2) is fixed and represented as $D_{
 $$
 D(2)=D_{1}
 $$
-The thicknesses of the other layers (k=3, 4, 5, 6) are calculated based on the ratio of the remaining thickness of the water column. The ratio ($S(k)$) of layer 3 to 6 are 0.1, 0.1. 0.2, and 0.6, respectively. Therefore, using $h$ to represent the total depth of the water column, and the thickness of the remaining water column ($h'$) excluding the top layer is presented by:
+The thicknesses of the other layers (k=3, 4, 5, 6) are calculated based on the ratio of the remaining thickness of the water column. Using $h$ to represent the total depth of the water column, and the thickness of the remaining water column ($h'$) excluding the top layer is presented by:
 $$
 h'=h-D_{1}
 $$
@@ -3744,7 +3740,7 @@ and thickness ($D(k)$) of the remaining layer (k=3, 4, 5, 6) can be represented 
 $$
 D(k)=S(k)h'
 $$
-Therefore, the thermal change of the k-th layer by vertical diffusion can be represented as the flux difference between upper layer $J_{k-1, k}$ and lower layer $J_{k, k+1}$:
+The ratio ($S(k)$) of layer 3 to 6 are 0.1, 0.1. 0.2, and 0.6, respectively. Therefore, the thermal change of the k-th layer by vertical diffusion can be represented as the flux difference between upper layer $J_{k-1, k}$ and lower layer $J_{k, k+1}$:
 $$
 F_{D}(k)=J_{k-1,k}-J_{k,k+1}=K_{V}(k)\frac{T(k-1)-T(k)}{\frac{D(k-1)+D(k)}{2}}-K_{V}(k+1)\frac{T(k)-T(k+1)}{\frac{D(k)+D(k+1)}{2}}
 $$
@@ -3756,26 +3752,24 @@ The above equations apply to salinity as well.
 
 **Input**
 
-| Meaning                                          | Character  | In code | Dimension              | Unit      |
-| ------------------------------------------------ | ---------- | ------- | ---------------------- | --------- |
-| The vertical component of  diffusive tracer flux | $F_{D}$    | ADT     | IJLDIM, NLZDIM, NLTDIM | $^{o}C$/s |
-| Minimum depth of the lake                        | $h_{min}$  | HXMIN   | IJLDIM, NLZDIM         | m         |
-| Heat flux                                        | $F_{T}$    | FT (1)  | IJLDIM                 | $^{o}C$/s |
-| Freshwater flux                                  | $F_{W}$    | FT(2)   | IJLDIM                 | cm/s      |
-| Absorbed shortwave solar radiation               | $S_{r}$    | SWABS   | IJLDIM                 |           |
-| Salt flux                                        | $F_{S}$    | FS      | IJLDIM                 |           |
-| Timestep                                         | $\Delta t$ | TS      |                        | s         |
-| Surface-type fraction (lake)                     | $R_{lake}$ | LKFRAC  | IJLDIM                 | -         |
+| Meaning                                          | Character  | In code | Unit      |
+| ------------------------------------------------ | ---------- | ------- | --------- |
+| The vertical component of  diffusive tracer flux | $F_{D}$    | ADT     | $^{o}C$/s |
+| Minimum depth of the lake                        | $h_{min}$  | HXMIN   | m         |
+| Heat flux                                        | $F_{T}$    | FT (1)  | $^{o}C$/s |
+| Freshwater flux                                  | $F_{W}$    | FT(2)   | cm/s      |
+| Absorbed shortwave solar radiation               | $S_{r}$    | SWABS   |           |
+| Salt flux                                        | $F_{S}$    | FS      |           |
+| Timestep                                         | $\Delta t$ | TS      | s         |
+| Surface-type fraction (lake)                     | $R_{lake}$ | LKFRAC  | -         |
 
 **Output**
 
-| Meaning               | Character | In code | Dimension | Unit |
-| --------------------- | --------- | ------- | --------- | ---- |
-| Lake water deficiency | $V_{D}$   | XHD     | IJLDIM    | cm   |
+| Meaning               | Character | In code | Unit |
+| --------------------- | --------- | ------- | ---- |
+| Lake water deficiency | $V_{D}$   | XHD     | cm   |
 
-ENTRY: [SLVTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
-
-This part introduces the update of water temperature and salinity of each layer due to the diffusion, freshwater flux, and absorption of solar radiation.
+This part introduces the update of water temperature and salinity of each layer due to the diffusion, freshwater flux, and absorption of solar radiation. The source code is included in ENTRY [SLVTRCL] (in SUBROUTINE: [LAKEPO] of lakepo.F).
 
 Heat diffusion is first considered. According to Fick’s second law, the temperature (salinity as well) change of k-th layer follows:
 $$
@@ -3805,20 +3799,20 @@ $$
 Then, the new coefficient of the Tridiagonal Matrix Algorithm can be constructed:
 $$
 A_{c}'(k)=\left\{\begin{matrix}
-\frac{A_{C}}{A_{B}}, k=2\\\frac{A_{C}}{A_{B}-A_{A}(k)A_{C}'(k-1)}, k=3, 4, 5, 6
+\frac{A_{C}}{A_{B}},&k=&2\\\frac{A_{C}}{A_{B}-A_{A}(k)A_{C}'(k-1)}, &k=&3, 4, 5, 6
 \end{matrix}\right.
 $$
 
 $$
 A_{D}'(k)=\left\{\begin{matrix}
-\frac{F_{D}(k)}{A_{B}(k)}, k=2\\\frac{F_{D}(k)-A_{A}(k)A_{D}'(k-1)}{A_{B}-A_{A}(k)A_{C}'(k-1)}, k=3, 4, 5, 6
+\frac{F_{D}(k)}{A_{B}(k)}, &k=&2\\\frac{F_{D}(k)-A_{A}(k)A_{D}'(k-1)}{A_{B}-A_{A}(k)A_{C}'(k-1)}, &k=&3, 4, 5, 6
 \end{matrix}\right.
 $$
 
 Then, the vertical diffusion term can be obtained:
 $$
 F_{D}(k)=\left\{\begin{matrix}
-A_{D}'(k), k=6\\A_{D}'(k)-A_{C}'(k)F_{D}(k+1), k=2, 3, 4, 5
+A_{D}'(k), &k=&6\\A_{D}'(k)-A_{C}'(k)F_{D}(k+1), &k=&2, 3, 4, 5
 \end{matrix}\right.
 $$
 
@@ -3894,17 +3888,15 @@ $$
 Therefore, $C_{sr}$ can be represented as:
 $$
 C_{sr}(k)=\left\{\begin{matrix}
-1-T_{rs}(k), k=2\\T_{rs}(k-1)-T_{rs}(k), k=3, 4, 5
-\\ 1-\sum_{l=2}^{5}C_{sr}(k), k=6
+1-T_{rs}(k), &k=&2\\T_{rs}(k-1)-T_{rs}(k), &k=&3, 4, 5
+\\ 1-\sum_{l=2}^{5}C_{sr}(k), &k=&6
 \end{matrix}\right.
 $$
 
 
 ### The vertical convection
 
-ENTRY: [OVTURNL] (in SUBROUTINE: [LAKEPO] of lakepo.F)
-
-This part introduced the vertical convection of the water between different layers.
+This part introduced the vertical convection of the water between different layers, and the source code is included in ENTRY [OVTURNL] (in SUBROUTINE: [LAKEPO] of lakepo.F).
 
 A classical, still widely used method-convective adjustment, which unstable water column is artificially homogenized with conserving heat and salt. MATSIRO 6 employs the convective adjustment for the standard choice, but its algorithm is not the pairwise adjustment. It is summarized as follows:
 
@@ -3914,12 +3906,12 @@ A classical, still widely used method-convective adjustment, which unstable wate
 
 (3)  Mix the water column between the $K_{s}$-th layer and $K_{e}$-th layer. Increase $K_{e}$ by 1, and if the (new) $K_{e}$ is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with the new $K_{e}$.
 
-(4)  Set $K_{s}$=$K_{e}$, and increase $K_{e}$by 1.  Increase $K_{e}$by 1, and if the (new) $K_{e}$is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with new $K_{s}$and $K_{e}$.
+(4)  Set $K_{s}$=$K_{e}$, and increase $K_{e}$ by 1.  Increase $K_{e}$by 1, and if the (new) $K_{e}$ is greater than 6 (the bottom layer), the convection procedure ends. If not, go back to step 2 with new $K_{s}$ and $K_{e}$.
 
 The water density is calculated by:
 $$
 \rho =999.842594+6.793952\times 10^{-2}\times T-9.095290\times 10^{-3}\times T^{2}+1.001685\times
-      10^{-4}\times T^{3} -1.120083\times 10^{-6}\times T^{4}+6.536332\times 10^{-9}\times T^{5}
+      10^{-4}\times T^{3}\\ -1.120083\times 10^{-6}\times T^{4}+6.536332\times 10^{-9}\times T^{5}
 $$
 
 
