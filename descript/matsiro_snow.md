@@ -93,14 +93,14 @@ For the accumulation season, snowfall occures uniformly and the snow cover fract
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth ${W\_{Sn}}\_m$, the sum of snow-free and snow-covered fraction equals unity:
 
 $$
-\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1, \tag{8-1}
+\int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dW\_{Sn} + \int\_{{W\_{Sn}}\_m}^\infty f(W\_{Sn})dW\_{Sn} = 1,
 $$
 where $W\_{Sn}$ is the snow water equivalent depth and $f(W\_{Sn})$ is the probability distribution function of snow water equivalent depth within the grid cell. The snow depth distribution within each grid cell is assumed to follow a lognormal distribution:
 
 $$
 f(W\_{Sn}) = \frac{1}{W\_{Sn}\zeta\sqrt{2\pi}} \exp{ \left[ 
  -\frac{1}{2} {\left( \frac{\ln(W\_{Sn})-\lambda}{\zeta} \right)}^2 
-\right] }, \tag{8-2}
+\right] },
 $$
 where $\lambda = \ln(W\_{Sn}) - \frac{1}{2}\zeta^2$ and $\zeta^2 = \ln(1+CV^2)$.
 
@@ -112,14 +112,14 @@ The snow amount $Sn$ is given by
 $$
 Sn({W\_{Sn}}\_m) 
  = \int\_0^{{W\_{Sn}}\_m} 0[f(W\_{Sn})]dW\_{Sn} 
- \+ \int\_{{W\_{Sn}}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn}, \tag{8-5}
+ \+ \int\_{{W\_{Sn}}\_m}^\infty (W\_{Sn}-{W\_{Sn}}\_m)[f(W\_{Sn})]dW\_{Sn},
 $$
 and this equation is rewritten to
 $$
 Sn({W\_{Sn}}\_m) 
  = \frac{1}{2} \exp{\left( \lambda + \frac{\zeta^2}{2} \right)}
  \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}-\xi}{\sqrt{2}} \right)
- \- \frac{1}{2} {W\_{Sn}}\_m \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{\sqrt{2}} \right), \tag{8-6}
+ \- \frac{1}{2} {W\_{Sn}}\_m \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{\sqrt{2}} \right),
 $$
 where $\xi = (1-\sqrt{2})z$, $z = \frac{\ln(W\_{Sn})-\lambda}{\zeta}$, and $z\_{{W\_{Sn}}\_m}$ is the value of $z$ when $W\_{Sn} = {W\_{Sn}}\_m$ and $\mathrm{erfc}$ is the complementary error function.
 ${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using Newton-Raphson methods (in SUBROUTINE SSNOWD\_ITR in ssnowd.F).
@@ -127,7 +127,7 @@ ${W\_{Sn}}\_m$ is calculated from this equation and the snow amount $Sn$ using N
 Then, the snow cover fraction $A\_{Sn}({W\_{Sn}}\_m)$ is calculated by
 $$
 A\_{Sn}({W\_{Sn}}\_m) = 1 - \int\_0^{{W\_{Sn}}\_m} f(W\_{Sn})dD 
-= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{8-7}
+= \frac{1}{2} \mathrm{erfc} \left( \frac{z\_{{W\_{Sn}}\_m}}{2} \right). \tag{#snow-cover-fraction}
 $$
 
 ### Case 2: When OPT\_SSNOWD is inactive
@@ -236,7 +236,7 @@ When the snow temperature is calculated and the temperature of the uppermost sno
 In this case, the energy convergence $\Delta \widetilde{F}\_{conv}$ in the uppermost snow layer is calculated. This is not the grid-mean value but the value of the snow-covered portion. The snowmelt in the uppermost snow layer is
 
 $$
-\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t ). \tag{8-15}
+\widetilde{M}\_{Sn(1)} = \min(\Delta \widetilde{F}\_{conv} / l\_m, \Delta \widetilde{Sn}\_{(1)}^{\*}/\Delta t ). \tag{#snowmelt}
 $$
 
 With regard to the second snow layer and below, if the estimated snow temperature is higher than $T\_{melt}$, it is adjusted to $T\_{melt}$ and the desidual energy from the adjustment is applied to the snowmelt. That is, it is assumed to be
@@ -249,7 +249,7 @@ $\Delta \widetilde{F}\_{conv}$ is newly defined by
 $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-17}
 $$
-where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in [Eq. (8-15)](#8-15).
+where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in Eq. [snowmelt](#snowmelt).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 $$
@@ -337,7 +337,7 @@ $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by [Eq. (8-7)](#8-7) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by Eq. [snow-cover-fraction](#snow-cover-fraction) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
 $$
@@ -366,7 +366,7 @@ It should be noted that the variables with the index "old" and "new" are those b
 The prognostic equation of the snow temperature due to snow heat conduction is as follows:
 $$
 c\_{pi} \Delta\widetilde{Sn}\_{(k)} \frac{T\_{Sn(k)}^{\*} - T\_{Sn(k)}^{\tau}}{\Delta t} = \widetilde{F}\_{Sn(k+1/2)} - \widetilde{F}\_{Sn(k-1/2)}
-\qquad (k=1,\ldots,K\_{Sn}) \tag{8-32}
+\qquad (k=1,\ldots,K\_{Sn}) \tag{#snow-temperature}
 $$
 with the heat conduction flux $\widetilde{F}\_{Sn}$ given by
 $$
@@ -380,7 +380,7 @@ $$
   & k\_{Sn(k+1/2)} \frac{T\_{Sn(B)}-T\_{Sn(k)}}{\Delta z\_{Sn(k+1/2)}}
   \; &&(k = K\_{Sn})
  \end{aligned}
-\right., \tag{8-33}
+\right., \tag{#heat-conduction-flux}
 $$
 where $k\_{Sn(k+1/2)}$ is the snow heat conductivity, assigned the fixed value of 0.3 W/m/K as a standard. The subscript $k+1/2$ of the flux represents the flux from the $(k+1)$th snow layer to the upper one.
 $\Delta z\_{Sn(k+1/2)}$ is the thickness of each snow layer, defined by
@@ -399,7 +399,7 @@ $$
 $$
 where $\rho\_{Sn}$ is the snow density, assigned the fixed value of $300 \mathrm{kg/m^3}$ as a standard. The snow density and heat conductivity are considered to change over time due to compaction and changes in properties (aging), but the effect of such changes is not considered here.
 
-In [Eq. (8-33)](#8-33), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using three energy variables: the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$.
+In Eq. [heat-conduction-flux](#heat-conduction-flux), the snow upper boundary flux $\widetilde{F}\_{Sn(1/2)}$ is given using three energy variables: the heat conduction flux from the snow to the ground surface solved in the ground surface energy balance $F\_{Sn(1/2)}$, the ground surface energy convergence produced when the ground surface temperature is solved by the snowmelt condition $\Delta F\_{conv}$, and the energy correction produced when a change has occurred in the phase of the canopy water $\Delta F\_{c,conv}$.
 $\Delta F\_{conv}$ is assumed to be given only to the snow-covered portion, while $\Delta F\_{c,conv}$ is given uniformly to the grid cells. Since the sign of the flux is taken as upward positive, the convergence has a negative sign.
 
 In the equation for the snow lower boundary flux $\widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}}$, $T\_{Sn\_{(B)}}$ is the temperature of the snow lower boundary (the boundary surface of the snow and the soil). However, since the flux from the uppermost soil layer to the snow lower boundary is
@@ -412,7 +412,7 @@ $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} = \widetilde{F}\_{g(1/2)}. \tag{8-36}
 $$
 
-When this is substituted into [Eq. (8-33)](#8-33), the following is obtained:
+When this is substituted into Eq. [heat-conduction-flux](#heat-conduction-flux), the following is obtained:
 $$
 \widetilde{F}\_{Sn\_{(K\_{Sn}+1/2)}} 
  = \left[ \frac{\Delta z\_{g(1/2)}}{k\_{g(1/2)}}
@@ -462,7 +462,7 @@ $$
 \end{aligned} \tag{8-38}
 $$
 
-and [Eq. (8-32)](#8-32) is treated as
+and Eq. [snow-temperature](#snow-temperature) is treated as
 $$
 \begin{aligned}
  c\_{pi}\widetilde{Sn}\_{(k)} \frac{\Delta T\_{Sn\_{(k)}}}{t}
