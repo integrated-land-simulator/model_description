@@ -577,7 +577,7 @@ $$
 \gamma\_{BC,nir}   &= 2.93200 \times 10^4, &
 \gamma\_{BC,ifr}   &= 2.47174 \times 10^3, \\
 \omega\_{vis} &= 0.46, &\omega\_{nir} &= 0.36, &\omega\_{ifr} &= 0.18
-\end{aligned}
+\end{aligned} \tag{8-47}
 $$
 
 The amount of DBC on the uppermost snow layer is updated as
@@ -585,7 +585,7 @@ $$
 \begin{aligned}
 M\_{d\_m(1)}^{\tau+1} &= M\_{d\_m(1)}^{\tau} + D\_m, \\
 M\_{d\_w(1)}^{\tau+1} &= M\_{d\_w(1)}^{\tau} + D\_w, 
-\end{aligned} \tag{8-47}
+\end{aligned} \tag{8-48}
 $$
 where $M\_{d\_m(k)}$ and $M\_{d\_w(k)}$ are the amount of DBC on the $k$th snow layer.
 
@@ -597,7 +597,7 @@ Also, in this section, $\rho\_{d(k)}$ represents $\rho\_{d\_m(k)}$ and $\rho\_{d
 
 The snow mass of $k$th layer after updating of snow mass and before snow layer recutting $\Delta Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
-\Delta Sn^{\tau+1/2}\_{(k)} = \Delta Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-48}
+\Delta Sn^{\tau+1/2}\_{(k)} = \Delta Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-49}
 $$
 where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
 
@@ -612,19 +612,19 @@ M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
  & \rho\_{d(2)} \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} \right) \\
  & \hspace{36mm}
  \left( \Delta Sn^{\tau+1}\_{(1)} - \Delta Sn^{\tau+1/2}\_{(1)} \leq \Delta Sn^{\tau+1/2}\_{(2)} \right)
-\end{aligned} \right., \tag{8-49}
+\end{aligned} \right., \tag{8-50}
 $$
 where $\rho\_{d(k)}$ is the density of DBC in the $k$th layer.
 
 When $\Delta Sn^{\tau+1}\_{(1)} \leq \Delta Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer decreases, and thus
 $$
 M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau}
- = -\rho\_{d(1)} \left( \Delta Sn^{\tau+1/2}\_{(1)} - \Delta Sn^{\tau+1}\_{(1)} \right). \tag{8-50}
+ = -\rho\_{d(1)} \left( \Delta Sn^{\tau+1/2}\_{(1)} - \Delta Sn^{\tau+1}\_{(1)} \right). \tag{8-51}
 $$
 
 It leads to 
 $$
-M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = M\_{d(1)}^{+} - M\_{d(1)}^{-}, \tag{8-51}
+M\_{d(1)}^{\tau+1} - M\_{d(1)}^{\tau} = M\_{d(1)}^{+} - M\_{d(1)}^{-}, \tag{8-52}
 $$
 where
 $$
@@ -633,26 +633,26 @@ M\_{d(1)}^{+}
  = &\rho\_{d(2)} \min\left( \max\left( Sn^+\_{(1)}, 0 \right), Sn\_{(2)}^{\tau+1/2} \right) \\
  & \+ \rho\_{d(3)} \max\left( \max\left( Sn^+\_{(1)}, 0 \right) - Sn\_{(2)}^{\tau+1/2}, 0 \right), 
 \end{aligned}
-\tag{8-52}
+\tag{8-53}
 $$
 $$
 M\_{d(1)}^{-}
- = \rho\_{d(1)} \max\left( -Sn^+\_{(1)}, 0 \right),  \tag{8-53}
+ = \rho\_{d(1)} \max\left( -Sn^+\_{(1)}, 0 \right),  \tag{8-54}
 $$
 $$
 Sn^+\_{(1)} 
- = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-54}
+ = Sn\_{(1)}^{\tau+1} - Sn\_{(1)}^{\tau+1/2}. \tag{8-55}
 $$
 
 The change in the amount of DBC in the 3rd layer is determined similarly, and thus in the 2nd layer it is calculated as follows:
 $$
 M\_{d(2)}^{\tau+1} - M\_{d(2)}^{\tau} 
- = M\_{d(1)}^{-} - M\_{d(1)}^{+} + M\_{d(3)}^{-} - M\_{d(3)}^{+}. \tag{8-55}
+ = M\_{d(1)}^{-} - M\_{d(1)}^{+} + M\_{d(3)}^{-} - M\_{d(3)}^{+}. \tag{8-56}
 $$
 
 Finally, the density of DBC on the $k$th snow layer $\rho\_{d(k)}$ is updated by
 $$
-\rho\_{d(k)} = M\_{d(k)} / \Delta Sn\_{(k)} \times 10^6.
+\rho\_{d(k)} = M\_{d(k)} / \Delta Sn\_{(k)} \times 10^6. \tag{8-57}
 $$
 
 
@@ -668,7 +668,7 @@ The albedo of the snow is large in fresh snow, but becomes smaller with the pass
 The nondimensional age of snow at the time step of ${\tau}$, $A\_g^{\tau}$, is formulated in
 
 $$
-A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}}, \tag{8-56}
+A\_g^{\tau} = \frac{f\_{alb}}{1-f\_{alb}}, \tag{8-58}
 $$
 
 where
@@ -676,7 +676,7 @@ where
 $$
 f\_{alb} = \min\left(
  \frac{\alpha\_{vis}^{\tau}-\alpha\_{vis,new}}{\alpha\_{vis,old}-\alpha\_{vis,new}}, 0.999
-\right). \tag{8-57}
+\right). \tag{8-59}
 $$
 
 $\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha\_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha\_{b,old}$ is that of old snow. In default, $\alpha\_{vis,new}$, $\alpha\_{nir,new}$, $\alpha\_{ifr,new}$, $\alpha\_{vis,old}$, $\alpha\_{nir,old}$ and $\alpha\_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4 if the options OPT\_SNWALB is active), 0.2 and 0.1, respectively.
@@ -684,14 +684,14 @@ $\alpha\_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\
 
 The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
 $$
-A\_g^{\tau+1} = A\_g^{\tau} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age}, \tag{8-58}
+A\_g^{\tau+1} = A\_g^{\tau} + (f\_{age} + f\_{age}^{10} + r\_{dirt})\Delta t\_L / \tau\_{age}, \tag{8-60}
 $$
 where
 $$
-f\_{age} = \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)}} \right) \right]}, \tag{8-59}
-$$
-$$
-f\_{ageT} = 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}.
+\begin{aligned}
+f\_{age} &= \exp{\left[ f\_{ageT} \left( \frac{1}{T\_{melt}} - \frac{1}{T\_{Sn(1)}} \right) \right]}, \\
+f\_{ageT} &= 5000, \;\; \tau\_{age} = 1 \times 10^6 \;\mathrm{s}, \;\; T\_{melt} = 273.15 \;\mathrm{K}.
+\end{aligned} \tag{8-61}
 $$
 $T\_{Sn(1)}$ is the temperature of the first layer of snow.
 
