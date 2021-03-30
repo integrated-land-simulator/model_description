@@ -250,7 +250,7 @@ $\Delta \widetilde{F}\_{conv}$ is newly defined by
 $$
 \Delta \widetilde{F}\_{conv} = ( T\_{Sn\_{(k)}}^{\*} - T\_{melt} ) c\_{pi}\Delta\widetilde{Sn}\_{(k)}^{\*}/\Delta t, \tag{8-14}
 $$
-where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in Eq. [snowmelt](#snowmelt).
+where $c\_{pi}$ is the specific heat of snow (ice), and the snowmelt is solved as in Eq. [8-12](#8-12).
 
 By subtracting the snowmelt, the mass of each layer is updated:
 $$
@@ -338,7 +338,7 @@ $$
 
 However, when the temperature of the uppermost soil layer is 0 $^\circ\mathrm{C}$ or more, the snowfall is assumed to melt on the ground. In this case, the energy of the latent heat of melting is taken from the soil.
 
-When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by Eq. [snow-cover-fraction](#snow-cover-fraction) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
+When snow is produced by snowfall in a grid where no snow was formerly present, the snow-covered ratio ($A\_{Sn}$) is newly diagnosed by Eq. [8-5](#8-5) and the snow temperature ($T\_{Sn(1)}$) is assumed to be equal to the temperature of the uppermost soil layer.
 
 The snowfall is added to the mass of the uppermost layer:
 $$
@@ -700,25 +700,25 @@ $$
 r\_{dirt} = \left\\{ \begin{aligned}
  r\_{dirt,c} \;\;& \mathrm{(over \; continental \; ice)} \\
  r\_{dirt,0} \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right., \tag{8-60}
+\end{aligned} \right., \tag{8-62}
 $$
 where $r\_{dirt,c} = 0.01$ and $r\_{dirt,0} = 0.3$. When this option is active, the density of DBC is considered as
 $$
 r\_{dirt} = \left\\{ \begin{aligned}
  \min(r\_{dirt,c} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(over \; continental \; ice)} \\
  \min(r\_{dirt,0} + r\_{dirt,s}\rho\_{d(1)}, 1000) \;\;& \mathrm{(elsewhere)}
-\end{aligned} \right., \tag{8-61}
+\end{aligned} \right., \tag{8-63}
 $$
 where $r\_{dirt,s}$ is the DBC factor for slope with a constant value of 0.1 and $\rho\_{d(1)}$ is the density of weighted DBC on the 1st snow layer.
 
 Using this, the albedo of the snow at the time step of $\tau+1$, $\alpha\_b^{\tau+1}$, is solved by
 $$
-\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}), \tag{8-62}
+\alpha\_b^{\tau+1} = \alpha\_{b,new}^{\tau+1} + \frac{A\_g^{\tau+1}}{1+A\_g^{\tau+1}} (\alpha\_{b,old}-\alpha\_{b,new}), \tag{8-64}
 $$
 
 When snowfall has occurred, the albedo is updated to the value of the fresh snow in accordance with the snowfall:
 $$
-\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}). \tag{8-63}
+\alpha\_b^{\tau+1} = \alpha\_b^{\tau+1} + \min\left( \frac{P\_{Sn}^{\*} \Delta t\_L}{\Delta Sn\_c}, 1 \right) (\alpha\_{b,new} - \alpha\_b^{\tau+1}). \tag{8-65}
 $$
 $\Delta Sn\_c$ is the snow water equivalent necessary for the albedo to fully return to the value of the fresh snow.
 
@@ -729,6 +729,6 @@ The albedo of the ice sheet, $\alpha\_{b,surf}$, is calculated in ENTRY ICEALB i
 
 This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
 $$
-\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)}, \tag{8-64}
+\alpha\_{b,surf} = \alpha\_{b,wet} - (\alpha\_{b,wet}-\alpha\_{b,ice}) \exp{\left( -\frac{w\_{surf}}{w^{\*}} \right)}, \tag{8-66}
 $$
 where $\alpha\_{b,ice}$ is the land ice albedo without surface water, $\alpha\_{b,wet}$ is the one with surface water, $w\_{surf}$ is the thisness of surfice water and $w^{\*}$ is the characteristic scale for surficial water. $b$ represents the three bands of wavelength, visible (vis), nearinfrared (nir) and infrared (ifr), similar to ice albedo. In default, $\alpha\_{vis,ice}$, $\alpha\_{nir,ice}$ and $\alpha\_{ifr,ice}$ are set to 0.5, 0.3 and 0.05, respectively, and $\alpha\_{b,wet}$ is set to 0.15 for all bands.
