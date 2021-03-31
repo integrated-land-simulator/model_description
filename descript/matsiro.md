@@ -3639,10 +3639,10 @@ $$
 where $h_I^{\*\*}$ is the updated depth of lake snow. The depth of lake snow and the lake ice concentration are also updated.
 
 $$
-\begin{aligned}
+\begin{array}{rl}
   h_S^{\*\*\*} &= \frac{A_I^{\*\*}h_S^{\*\*}}{A_I^{max}-(V_I^{max}-V_I^{min})/h_I^{\*\*}}\\
   A_I^{n+1} &= A_I^{max} - \frac{V_I^{max}-V_I^{min}}{h_I^{\*\*}}
-\end{aligned}
+\end{array}
 $$
 
 where $h_S^{\*\*\*}$ is the updated depth of lake snow and the lake ice concentration, and $A_I^{n+1}$ is the lake ice concentration in the new time step, respectively.
@@ -3650,19 +3650,19 @@ where $h_S^{\*\*\*}$ is the updated depth of lake snow and the lake ice concentr
 Freshwater and sublimation fluxes affect on salinity ($F_{W(NLTDIM=2)}$) are
 
 $$
-\begin{aligned}
-	F_{W(NLTDIM=2)} &=Fw_{Ev} - Fw_{Pr}' - R_{off} + W_{S(2)} + W_{I(2)}\\
+\begin{array}{rl}
+	F_{W(NLTDIM=2)} &=Fw_{Ev} - Fw_{Pr}' - R_{off} + W_{S(2)} + W_{I(2)} \\
 	F_S &= S_I(W_{I(2)}-Fw_{Sb}'')
-\end{aligned}
+\end{array}
 $$
 
 where $W_{I(2)}$ and $W_{S(2)}$ are the growth rate of the lake ice snow below.
 
 $$
-\begin{aligned}
-	W_{I(2)} = \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*}}{\rho_I \Delta t}\\
-	W_{S(2)} =  \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
-\end{aligned}
+\begin{array}{rl}
+	W_{I(2)} &= \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*}}{\rho_I \Delta t}\\
+	W_{S(2)} &=  \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
+\end{array}
 $$
 
 #### Sinking snow
@@ -3688,10 +3688,10 @@ $$
 where $W_{I(1)}$ and $W_{S(1)}$ are the growth rate of the lake ice snow below.
 
 $$
-\begin{aligned}
-	W_{I(1)} = \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*\*}}{\rho_I \Delta t} \\
-  W_{S(1)} = \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
-\end{aligned}
+\begin{array}{rl}
+	W_{I(1)} &= \frac{\rho_S A_I^{n+1} h_I^{\*\*} - V_I^{\*\*}}{\rho_I \Delta t} \\
+  W_{S(1)} &= \frac{\rho_S A_I^{n+1} h_S^{\*\*\*} - V_S^{\*\*}}{\rho_S \Delta t}
+\end{array}
 $$
 
 ## Physical formulation and process
