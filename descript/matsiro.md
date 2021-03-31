@@ -1,7 +1,7 @@
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=true} -->
 
 <!-- code_chunk_output -->
-
+0. [Acknowledgment](#acknowledgment.md)
 1. [Introduction](#introduction)
     1. [Structure](#structure)
     2. [Prognostic variables](#prognostic-variables)
@@ -125,7 +125,7 @@ At the very early stage (2000's), when the first description was written by Emor
 
 Since then, MATSIRO has been used in CCSR/NIES/FRCGC AGCM5.7, which is adopted by an atmosphere-ocean coupled model MIROC3 (K-1 model developers, 2004), and MIROC5 (Watanabe et al., 2010) with only minor model updates and bug fixes. Instead, during these times, MATSIRO had been intensively used with so-called offline setting (i.e., without coupling with the atmospheric model, but forced with given surface atmospheric forcings) with original updates and improvements of some processes. Such efforts generate some branches of the model, called MAT-GW (water table depth dynamics; Koirala et al. 2014), HiGW-MAT (coupled with anthropogenic activity and groundwater; Pokhrel et al. 2015), IsoMATSIRO (stable water isotopes included; Yoshimura et al., 2006). MATSIRO also has been validated and compared with other land surface parameterizations under some international protocols like PILPS, GSWP, and ISIMIP. By these attempts, it was revealed that, apart from its original design, MATSIRO was able to be used for higher resolution (up to about 1 kilometer) and shorter time scales (subdaily), so that MATSIRO is now used for short-term flood prediction over Japan with a new hydro-dynamical model, CaMa-Flood (Yamazaki et al., 2011), for example (Ma et al., 2021).
 
-Here, with development of MIROC6 (Tatebe et al., 2019), MATSIRO adopted significant model updates, so we decided to update its description for the first time since 2001. We named this version of MATSIRO as MATSIRO6. Major and minor updates in this document are as follows: 
+Here, with development of MIROC6 (Tatebe et al., 2019), MATSIRO adopted significant model updates, so we decided to update its description for the first time since 2001. We named this version of MATSIRO as MATSIRO6. Major and minor updates in this document are as follows:
 
 - Snow cover fraction diagnosis (Chapter 8)
 - Runoff representation (Chapter 9)
@@ -2224,7 +2224,7 @@ K_s(z) = K_0 \exp (-f z)
 \tag{eq261}
 $$
 
-where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface which differs among different soil types, and $f$ is the attenuation coefficient. 
+where $K_s(z)$ is the soil saturation hydraulic conductivity at depth $z$, $K_0$ is the saturation hydraulic conductivity at the ground surface which differs among different soil types, and $f$ is the attenuation coefficient.
 
 When the depth of the water table at a certain point $i$  is designated as $z_i$, the downward groundwater flux on the slope at that point $q_i$ is
 $$
@@ -2389,15 +2389,15 @@ $$
 \tag{eq279}
 $$
 
-where $\psi_{k_{WT}}$ is the matric potential in the $k_{WT}$th soil layer. 
+where $\psi_{k_{WT}}$ is the matric potential in the $k_{WT}$th soil layer.
 
-The above equation is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, which denotes that soil moisture distribution reaches equilibrium state (i.e., the state in which gravity and the capillary force are in equilibrium). 
+The above equation is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, which denotes that soil moisture distribution reaches equilibrium state (i.e., the state in which gravity and the capillary force are in equilibrium).
 
 Under unsaturated condition that $-\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the lower boundary of soil layer.
 
 When $\overline{z} > z_{g(k_{WT}+\frac{1}2)}$, i.e., average water table depth is deeper than the lower boundary of $k_{WT}$th layer, in case $k_{WT}$ is the lowest soil layer, the water table is assumed to not exist; when $k_{WT}$ is not the lowest soil layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and water table will generate at $z_{g(k_{WT}+\frac{1}2)}$.
 
-When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface. 
+When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface.
 
 ### Calculation of groundwater runoff
 
@@ -2419,7 +2419,7 @@ Ro_b = \frac{K_{s0} \tan\beta_s}{f L_s}
   \tag{eq281}
 $$
 
-where $z_f$ is the depth of frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, they are not changed here for the sake of simplification. 
+where $z_f$ is the depth of frozen soil surface. Although other relations in TOPMODEL should also be changed in such a case, they are not changed here for the sake of simplification.
 
 When there is an unfrozen layer under the frozen soil surface and a water table exists, the groundwater runoff from there is added by a similar calculation.
 
@@ -2446,7 +2446,7 @@ The fraction of the surface saturated area $A_{sat}$ is given by [Eq. (276)](#eq
 With regard to rainfall that falls on the surface unsaturated area, only the portion that exceeds the soil infiltration capacity runs off (infiltration excess runoff). The soil infiltration capacity is given by the saturation hydraulic conductivity of the uppermost soil layer for simplification. The convective precipitation is considered to fall locally, and the fraction of the precipitation area ($A_c$) is assumed to be uniform (0.1 as a standard value). The stratiform precipitation is also assumed to be uniform.
 
 $$
-Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat}) 
+Ro_i^c = \max( \frac{Pr_c^{**}}{A_c} + Pr_l^{**} - K_{s(1)}, 0 ) (1 - A_{sat})
  \tag{eq284}
 $$
 
@@ -3791,7 +3791,7 @@ A snow-fed wetland scheme, in which snowmelt can be stored with consideration of
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
-![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/7fde1cde17a72c5782fb2e94605290e8da290063/descript/Wetland_12-1.eps) 
+![Flowchart of the wetland scheme in the MATSIRO 6](https://github.com/integrated-land-simulator/model_description/blob/7fde1cde17a72c5782fb2e94605290e8da290063/descript/Wetland_12-1.eps)
 
 ## Inflow and outflow of the wetland
 
@@ -3819,7 +3819,7 @@ $$
 Ro=(Ro_{s}+Ro_{i}+Ro_{o})\times \alpha + Ro_{b}
 $$
 
-where $\alpha$ is the inflow parameter (see 12.1); $Ro_{s}$ is the saturation excess runoff (Dunne runoff), $Ro_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro_{b}$ is the groundwater runoff (section 7.3). 
+where $\alpha$ is the inflow parameter (see 12.1); $Ro_{s}$ is the saturation excess runoff (Dunne runoff), $Ro_{i}$ is the infiltration excess runoff (Horton runoff), and $Ro_{o}$ is the overflow of the uppermost soil layer, and all these three kinds of runoff make up the total surface runoff, and $Ro_{b}$ is the groundwater runoff (section 7.3).
 
 ## Water input of soil surface
 
