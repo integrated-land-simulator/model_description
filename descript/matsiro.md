@@ -2510,9 +2510,9 @@ where $\psi_{k_{WT}}$ is the matric potential in the $k_{WT}$th soil layer.
 
 The above equation is equivalent to considering the moisture potential on the upper boundary of the unsaturated layer as $\psi_{k_{WT}}$, which denotes that soil moisture distribution reaches equilibrium state (i.e., the state in which gravity and the capillary force are in equilibrium). 
 
-Under saturation condition that $\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the depth shallower than the upper boundary of soil layer.
+Under unsaturated condition that $-\psi_{k_{WT}}$ exceeds soil layer thickness, water table will generate at the lower boundary of soil layer.
 
-When $\overline{z} > z_{g(k_{WT}+\frac{1}2)}$, i.e., average  water table depth is deeper than the lower boundary of $k_{WT}$th layer, in case $k_{WT}$ is the lowest soil layer, the water table is assumed to not exist; when $k_{WT}$ is not the lowest soil layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and water table will generate at $z_{g(k_{WT}+\frac{1}2)}$.
+When $\overline{z} > z_{g(k_{WT}+\frac{1}2)}$, i.e., average water table depth is deeper than the lower boundary of $k_{WT}$th layer, in case $k_{WT}$ is the lowest soil layer, the water table is assumed to not exist; when $k_{WT}$ is not the lowest soil layer, the layer below (the uppermost layer among the saturated layers) is assumed to be $k_{WT}$ and water table will generate at $z_{g(k_{WT}+\frac{1}2)}$.
 
 When there is a frozen soil surface in the middle of the soil, estimation of the water table depth is performed from above the frozen soil surface. 
 
@@ -4020,7 +4020,7 @@ MATSIRO employs a tile treatment of the land surface to represent the subgrid la
 
 Basically, one land surface grid is divided into three tiles in the control run — lake, potential vegetation and cropland:
 
-1. There are snow-covered and snow-free fractions in each tile;
+1. There are both snow-covered and snow-free fractions in each tile;
 2. The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid;
 3. Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow;
 4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
@@ -4038,7 +4038,7 @@ $$
 \sum_{i=1}^nf_i^"=1
 $$
 
-where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights, $f_2^"$ and $f_2^"$ denote the sub-fractional weights of potential vegetation and cropland on land, respectively. The sum of $f_{lake}$, $f_1$ and $f_2$ always equals 1.
+where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of lake, potential vegetation and cropland, $f_{lake}$, $f_1$ and $f_2$ denote their corresponding fractional weights (the sum of $f_{lake}$, $f_1$ and $f_2$ always equals 1), $f_1^"$ and $f_2^"$ denote the sub-fractional weights of potential vegetation and cropland on land (note that $f_1^"$ and $f_2^"$ have been utilized as boundary condition data in MATSIRO6), respectively.
 
 By default, tile scheme is applied in land surface type, but it can be used for multiple purposes.
 
