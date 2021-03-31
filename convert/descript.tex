@@ -18,6 +18,12 @@
 \usepackage{ltablex,booktabs}
 \usepackage[dvipdfm,hidelinks]{hyperref}
 
+\AtBeginDocument{
+  \abovedisplayskip     =1.2\abovedisplayskip
+  \abovedisplayshortskip=1.2\abovedisplayshortskip
+  \belowdisplayskip     =1.2\belowdisplayskip
+  \belowdisplayshortskip=1.2\belowdisplayshortskip}
+
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
