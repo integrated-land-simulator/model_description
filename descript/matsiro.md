@@ -3880,22 +3880,18 @@ MATSIRO employs a tile treatment of the land surface to represent the subgrid la
 - Parameters
 
 
-<<<<<<< HEAD
-Potential vegetation is defined according to the vegetation types of the SiB2 [@Sellers1996-ye] scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
-=======
 | PARAMETER      | Description                                                  | Code    | Units |
 | -------------- | ------------------------------------------------------------ | ------- | ----- |
 | $f_{lake}$     | Fractional weight of lake in grid                            | LKFRAC  | -     |
 | $f_i(i=1,2)$   | Fractional weight of potential vegetation and cropland in grid | SFFRAC  | -     |
 | $f_i^"(i=1,2)$ | Sub-fractional weight of potential vegetation and cropland on land | SFFRAC1 | -     |
->>>>>>> origin/master
 
 Basically, one land surface grid is divided into three tiles in the control run — lake, potential vegetation and cropland:
 
 1. There are both snow-covered and snow-free fractions in each tile;
 2. The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid;
 3. Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow;
-4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
+4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 [@Sellers1996-ye] scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
 
 All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
 $$
