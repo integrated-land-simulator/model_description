@@ -34,16 +34,49 @@
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 %
-\title{\Huge Description for MATSIRO6}
-\author{}
-\date{\today}
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                  {1.5ex \@plus .2ex}%
+                                    %{-1em}%
+                                    {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+                                       {3.25ex \@plus1ex \@minus .2ex}%
+                                  {1.5ex \@plus .2ex}%
+                                  %{-1em}%
+                                      {\normalfont\normalsize\bfseries}}
+\newcommand{\subsubsubsection}{\@startsection{paragraph}{4}{\z@}%
+  {1.0\Cvs \@plus.5\Cdp \@minus.2\Cdp}%
+  {1.5ex \@plus .2ex}%
+  %{.1\Cvs \@plus.3\Cdp}%
+{\reset@font\sffamily\normalsize}
+}
+\makeatother
+\setcounter{secnumdepth}{4}
+%
 \pagenumbering{arabic}
-%
-%
 %
 \begin{document}
 %
-	\maketitle
+\begin{titlepage} % title page
+	\topskip0pt
+	\vspace*{\fill}
+		\begin{center}
+			{\Huge \textbf{Description of MATSIRO6}}\\
+			\vspace{100mm}
+			{\Large \textbf{MATSIRO6 document writing team$^*$}}\\
+			\vspace{30mm}
+			{\Large \textbf{March 31, 2021}}
+		\end{center}
+	\vspace*{\fill}
+	$^*${\bf\textbf{MATSIRO6 document writing team}} (in alphabetical order)
+	\input{descript/authors}
+\end{titlepage}
+%
+\clearpage
+\include{descript/acknowledgment}
+\clearpage
+\include{descript/history}
 	\tableofcontents
 	\clearpage
 	%
