@@ -1,3 +1,8 @@
+---
+bibliography:
+        - reference.bib
+---
+
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=true} -->
 
 <!-- code_chunk_output -->
@@ -114,13 +119,13 @@
 
 # Introduction
 
-Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land surface parameterization originally formulated in the early 2000's (Takata et al., 2003) to produce terrestrial boundary condition of the atmospheric general circulation model developed by the Center for Climate System Research at the University of Tokyo and the National Institute for Environmental Studies (CCSR/NIES AGCM), as well as to other global climate models. It was originally designed to be primarily used for integration of climate simulations such as those involving long time scales from one month to several hundred years coupled with the atmospheric model at grid resolutions of tens of kilometers or more. The main objective in its development was to represent all of the important water and energy exchange processes between land and atmosphere as fully and accurately as possible (i.e., advanced treatment) in such time and spatial scales, while modeling them as simply as possible (i.e., minimal treatment) so as to allow the results to be easily interpreted.
+Minimal Advanced Treatments of Surface Interaction and RunOff (MATSIRO) is a land surface parameterization originally formulated in the early 2000's [@Takata2003-xc] to produce terrestrial boundary condition of the atmospheric general circulation model developed by the Center for Climate System Research at the University of Tokyo and the National Institute for Environmental Studies (CCSR/NIES AGCM), as well as to other global climate models. It was originally designed to be primarily used for integration of climate simulations such as those involving long time scales from one month to several hundred years coupled with the atmospheric model at grid resolutions of tens of kilometers or more. The main objective in its development was to represent all of the important water and energy exchange processes between land and atmosphere as fully and accurately as possible (i.e., advanced treatment) in such time and spatial scales, while modeling them as simply as possible (i.e., minimal treatment) so as to allow the results to be easily interpreted.
 
-At the very early stage (2000's), when the first description was written by Emori (Emori, 2001), MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by Watanabe (1994), while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which served as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions at that time, was ported from SiB2 code.
+At the very early stage (2000's), when the first description was written by Emori [@Emori2001-qr], MATSIRO was developed based on the land surface submodel of CCSR/NIES AGCM5.4g coupled with the parameterization for a vegetated surface (canopy) by [@Watanabe1994-sx], while at the same time improving certain processes such as those related to snow and runoff. Subsequently, with modifications in the structure of AGCM, changes were made dealing with flux couplers and parallel processing so as to make it compatible with AGCM5.6. With regard to the physiological processes of vegetation, a Jarvis-type function was initially used for stomatal resistance. Later, however, the Farquhar-type photosynthesis scheme, which served as a de facto standard in the world due to the progress of studies on climate-ecosystem interactions at that time, was ported from SiB2 code.
 
-Since then, MATSIRO has been used in CCSR/NIES/FRCGC AGCM5.7, which is adopted by an atmosphere-ocean coupled model MIROC3 (K-1 model developers, 2004), and MIROC5 (Watanabe et al., 2010) with only minor model updates and bug fixes. Instead, during these times, MATSIRO had been intensively used with so-called offline setting (i.e., without coupling with the atmospheric model, but forced with given surface atmospheric forcings) with original updates and improvements of some processes. Such efforts generate some branches of the model, called MAT-GW (water table depth dynamics; Koirala et al. 2014), HiGW-MAT (coupled with anthropogenic activity and groundwater; Pokhrel et al. 2015), IsoMATSIRO (stable water isotopes included; Yoshimura et al., 2006). MATSIRO also has been validated and compared with other land surface parameterizations under some international protocols like PILPS, GSWP, and ISIMIP. By these attempts, it was revealed that, apart from its original design, MATSIRO was able to be used for higher resolution (up to about 1 kilometer) and shorter time scales (subdaily), so that MATSIRO is now used for short-term flood prediction over Japan with a new hydro-dynamical model, CaMa-Flood (Yamazaki et al., 2011), for example (Ma et al., 2021).
+Since then, MATSIRO has been used in CCSR/NIES/FRCGC AGCM5.7, which is adopted by an atmosphere-ocean coupled model MIROC3 [@K-1_Model_Developers2004-lg], and MIROC5 [@Watanabe2010-iv] with only minor model updates and bug fixes. Instead, during these times, MATSIRO had been intensively used with so-called offline setting (i.e., without coupling with the atmospheric model, but forced with given surface atmospheric forcings) with original updates and improvements of some processes. Such efforts generate some branches of the model, called MAT-GW [water table depth dynamics; @Koirala2014-lq], HiGW-MAT [coupled with anthropogenic activity and groundwater; @Pokhrel2015-yk], IsoMATSIRO [stable water isotopes included; @Yoshimura2006-ub]. MATSIRO also has been validated and compared with other land surface parameterizations under some international protocols like PILPS, GSWP, and ISIMIP. By these attempts, it was revealed that, apart from its original design, MATSIRO was able to be used for higher resolution (up to about 1 kilometer) and shorter time scales (subdaily), so that MATSIRO is now used for short-term flood prediction over Japan with a new hydro-dynamical model, CaMa-Flood [@Yamazaki2011-gu], for example [@Ma2021-ey].
 
-Here, with development of MIROC6 (Tatebe et al., 2019), MATSIRO adopted significant model updates, so we decided to update its description for the first time since 2001. We named this version of MATSIRO as MATSIRO6. Major and minor updates in this document are as follows:
+Here, with development of MIROC6 [@Tatebe2019-ow], MATSIRO adopted significant model updates, so we decided to update its description for the first time since 2001. We named this version of MATSIRO as MATSIRO6. Major and minor updates in this document are as follows:
 
 - Snow cover fraction diagnosis (Chapter 8)
 - Runoff representation (Chapter 9)
@@ -415,7 +420,7 @@ $$
 
 ## Calculation of canopy albedo and transmissivity
 
-The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by Watanabe and Ohtani (1995).
+The calculation of canopy albedo and transmissivity is based on the calculation of radiation within a canopy layer proposed by @Watanabe1995-je.
 
 Considering the canopy as vertically uniform and making use of several assumptions for simplification, the transfer equations of insolation within the canopy and the boundary condition are expressed as
 $$
@@ -561,7 +566,7 @@ Next, the turbulence parameter (bulk coefficient) is calculated.
 
 ## Calculation of roughness with respect to momentum and heat
 
-The calculation of roughness is based on Watanabe (1994). In that study, using the results of a multilayer canopy model by Kondo and Watanabe (1992) as a function form for the roughness of a bulk model best fitting those results, Watanabe (1994) proposed the following:
+The calculation of roughness is based on @Watanabe1994-sx. In that study, using the results of a multilayer canopy model by @Kondo1992-ut as a function form for the roughness of a bulk model best fitting those results, @Watanabe1994-sx proposed the following:
 
 $$
  \left(\ln \frac{h-d}{z_0}\right)^{-1} &=&
@@ -598,7 +603,7 @@ $c_d$ and $c_h$ are parameters determined by the leaf shape, and are given as ex
 
 ## Calculation of bulk coefficient with respect to momentum and heat
 
-After Watanabe (1994), the bulk coefficient is also calculated using Monin-Obukhov similarity as
+After @Watanabe1994-sx, the bulk coefficient is also calculated using Monin-Obukhov similarity as
 
 $$
  C_M &=& k^2 \left[ \ln \frac{z_a-d}{z_0} + \Psi_m(\zeta) \right]^{-2} \\
@@ -646,13 +651,13 @@ In addition, when there is no stomatal resistance, etc. (such as evaporation fro
 
 # Stomatal resistance
 
-For the calculation of stomatal resistance, a photosynthesis-stomatal model based on Farquhar et al. (1980), Ball (1988), and Collatz et al. (1990, 1991, 1992) is used. The code of SiB2 (Sellers et al., 1996) is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.
+For the calculation of stomatal resistance, a photosynthesis-stomatal model based on @Farquhar1980-dm, @Ball1988-jh, and Collatz et al. [-@Collatz1990-pw;-@Collatz1991-lz;-@Collatz1992-hc] is used. The code of SiB2 [@Sellers1996-xi] is used virtually unchanged, with the exception of the method for solving the resistance of the overall canopy. A Jarvis-type empirical equation could be used instead; however, the explanation of this point is omitted here.
 
 ## Calculation of soil moisture stress factor
 
 Soil moisture stress with respect to transpiration is solved. By solving the soil moisture stress factor in each soil layer, and weighting with the root distribution in each layer, the stress factor of the overall soil is calculated.
 
-Referring to SiB2 (Sellers et al., 1996), the soil moisture stress in each layer is evaluated by the following equation:
+Referring to SiB2 [@Sellers1996-xi], the soil moisture stress in each layer is evaluated by the following equation:
 
 $$
  f_{w(k)} = [ 1 + \exp( 0.02 (\psi_{cr} - \psi_{k}) ) ]^{-1}
@@ -677,7 +682,7 @@ Note that $\sum_{k=1}^{K_g} f_{rootup(k)} = 1$ here.
 
 ## Calculation of amount of photosynthesis
 
-The amount of photosynthesis is calculated after SiB2 (Sellers et al., 1996).
+The amount of photosynthesis is calculated after SiB2 [@Sellers1996-xi].
 
 The amount of photosynthesis is considered to be regulated by the following three upper limits:
 
@@ -685,7 +690,7 @@ The amount of photosynthesis is considered to be regulated by the following thre
 $$
  A \leq \min( w_c, w_e, w_s) \tag{eq76}
 $$
-where $w_c$ is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation (Collatz et al., 1991, 1992).
+where $w_c$ is the upper limit set by the efficiency of photosynthesis enzymes (Rubisco), and $w_e$ is the upper limit set by photosynthetically active radiation. $w_s$ is the upper　limit of the efficiency of use of photosynthate (sink) in the case of C<sub>3</sub> vegetation, or the upper limit set by $\mathrm{CO_2}$  concentration in the case of C<sub>4</sub> vegetation [@Collatz1991-lz;@Collatz1992-hc].
 
 The respective magnitudes are estimated as follows:
 
@@ -795,7 +800,7 @@ This parameter is expressed as $A_n$ hereafter.
 
 ## Calculation of stomatal resistance (2)
 
-The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of Ball (1988) as follows:
+The net photosynthesis ($A_n$) and stomatal conductance ($g_s$) are related by the semiempirical equation of @Ball1988-jh as follows:
 $$
  g_s = m \frac {A_n}{c_s} h_s + b f_w \tag{eq93}
 $$
@@ -1338,7 +1343,7 @@ $$
 
 $W_{c\max}$ is set at 0.2 mm as a standard value, and the same value is used with respect to the liquid and solid phases.
 
-The natural dripping due to gravity $D_g$ is, after Rutter et al. (1975), assumed to be
+The natural dripping due to gravity $D_g$ is, after @Rutter1975-bg, assumed to be
 $$
  D_g(w_c) = D_1 \exp(D_2 w_c)
 $$
@@ -1459,7 +1464,7 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 
 ### Case 1: When OPT_SSNOWD is active
 
-The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
+The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by @Liston2004-kr, with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc [@Nitta2014-ct;@Tatebe2019-ow].
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately.
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be equal in the grid cell.
@@ -1487,7 +1492,7 @@ $$
 \zeta^2 = \ln(1+CV^2). \tag{8-4}
 $$
 
-Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of Krinner et al. (2005), in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$.
+Here $\mu$ is the accumulated snowfall and $CV$ is the coefficient of variation. $CV$ is diagnosed from the standard deviation of the subgrid topography, coldness index and vegetation type that is a proxy for surface winds. For coldness index, the annually averaged temperature over the latest 30 years using the time relaxation method of @Krinner2005-xa, in which the timescale parameter is set to 16 years. The temperature threshold for a category diagnosis is set to 0 and 10 $^\circ\mathrm{C}$.
 
 The snow amount $Sn$ is given by
 
@@ -2078,7 +2083,7 @@ $$
 $\alpha_b^{\tau}$ is the albedo of the snow for band $b$ at the time step of $\tau$. Three bands of wavelength, visible (vis), near infrared (nir) and infrared (ifr) are considered in MATSIRO, and here the factors for visible band are used. $\alpha_{b,new}$ is the albedo of newly fallen snow for band $b$ and $\alpha_{b,old}$ is that of old snow. In default, $\alpha_{vis,new}$, $\alpha_{nir,new}$, $\alpha_{ifr,new}$, $\alpha_{vis,old}$, $\alpha_{nir,old}$ and $\alpha_{ifr,old}$ are set to 0.9, 0.7, 0.01, 0.65 (or 0.4), 0.2 and 0.1, respectively.
 
 
-The age of snow at the next time step ${\tau+1}$ is, after Yang et al. (1997), assumed to be given by the following equation:
+The age of snow at the next time step ${\tau+1}$ is, after @Yang1997-va, assumed to be given by the following equation:
 
 $$
 A_g^{\tau+1} = A_g^{\tau} + (f_{age} + f_{age}^{10} + r_{dirt})\Delta t_L / \tau_{age}, \tag{8-58}
@@ -2135,7 +2140,7 @@ $\Delta Sn_c$ is the snow water equivalent necessary for the albedo to fully ret
 
 The albedo of the ice sheet, $\alpha_{b,surf}$, is calculated in ENTRY ICEALB in matice.F.
 
-This is expressed in a following function of the water content above the ice according to Bougamont et al. (2005):
+This is expressed in a following function of the water content above the ice according to @Bougamont2005-pd:
 
 $$
 \alpha_{b,surf} = \alpha_{b,wet} - (\alpha_{b,wet}-\alpha_{b,ice}) \exp{\left( -\frac{w_{surf}}{w^{\ast}} \right)}, \tag{8-64}
@@ -2145,7 +2150,7 @@ where $\alpha_{b,ice}$ is the land ice albedo without surface water, $\alpha_{b,
 
 # Runoff
 
-The surface runoff and groundwater runoff are solved using a simplified TOPMODEL (Beven and Kirkby, 1979). The calculation of runoff are solved in SUBROUTINE: MATROF in matrof.F, and the related variables and parameters are introduced as follows:
+The surface runoff and groundwater runoff are solved using a simplified TOPMODEL [@Beven1979-ia]. The calculation of runoff are solved in SUBROUTINE: MATROF in matrof.F, and the related variables and parameters are introduced as follows:
 
 - Output variables
 
@@ -2219,7 +2224,7 @@ TOPMODEL contains the following major assumptions:
 2.  The gradient of the water table is considered to be locally the same as that of the slope;
 3.  The downward groundwater flow at a certain point on the slope is equal to the accumulated groundwater recharge in the upper slope above that point.
 
-The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL (Sivapalan et al., 1987; Stieglitz et al., 1997).
+The usage of the symbols below is in accordance with the usual practice in descriptions of TOPMODEL [@Sivapalan1987-dq;@Stieglitz1997-sk].
 
 The first assumption can be expressed as
 
@@ -2377,7 +2382,7 @@ $$
 Rs=Ro-Ro_b=Ro_s + Ro_i + Ro_o
  \tag{eq289}
 $$
-However, when taking snow-fed wetland into account (Nitta et al., 2017), part of the surface runoff $R_s$ will be stored in the surface storage and part of runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Then surface runoff $R_s$ will become:
+However, when taking snow-fed wetland into account [@Nitta2017-hz], part of the surface runoff $R_s$ will be stored in the surface storage and part of runoff to rivers will be delayed, which leads to an increase in land surface wetness and hence evaporation in water-limited regimes. Then surface runoff $R_s$ will become:
 $$
 Rs=(Ro_s + Ro_i + Ro_o)\alpha
  \tag{eq290}
@@ -2405,7 +2410,7 @@ When there is a frozen soil surface in the middle of the soil, estimation of the
 
 ### Calculation of groundwater runoff
 
-Because of the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In MATSIRO6,  Hirabayashi (2004) changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
+Because of the quasi-equilibrium assumption, the groundwater runoff is equal to the groundwater recharge rate in [Eq. (272)](#eq272). In MATSIRO6, @Hirabayashi2004-mw changed $K_0$ to $K_{s0}$ in groundwater runoff calculation, which denotes a saturation hydraulic conductivity at depth of 2m:
 $$
 K_{s0}=\exp (z^"f)K_0 E_p
 $$
@@ -2611,7 +2616,7 @@ K_{(k+1/2)} \left(\frac{\psi_{(k+1)} - \psi_{(k)}}{\Delta z_{g(k+1/2)}} - 1 \rig
 \end{array}
 \right. \tag{eq300}
 $$
-in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to Clapp and Hornberger (1978), is expressed as
+in which $K_{(k+1/2)}$ is the soil hydraulic conductivity that, referring to @Clapp1978-vf, is expressed as
 $$
  K_{(k+1/2)} = K_{s(k+1/2)} (\max(W_{(k)},W_{(k+1)}))^{2b(k)+3} f_i
 $$
@@ -2763,7 +2768,7 @@ $$
 # Lake
 Lake is treated in MATSIRO (lakesf.F, lakeic.F, and lakepo.F), as well as land.
 
-The method for surface flux calculation (section 11.1 and 11.2) is derived from the sea surface scheme of MIROC-AGCM, while the calculation for the processes below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original programs. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part of this section is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM[@Tatebe2019-ow] and Hasumi (2015).
+The method for surface flux calculation (section 11.1 and 11.2) is derived from the sea surface scheme of MIROC-AGCM, while the calculation for the processes below the lake ice (section 11.3 and 11.4) is derived from the ocean model COCO (COCO-OGCM). lakeic.F and lakepo.F were based on the COCO-OGCM, and the ENTRY statement are used so as to keep the structure of the original programs. For practical use, note, for example, that the unit of temperature is $\mathrm{K}$ until flux calculation (section 11.1 and 11.2), while it is $\mathrm{^{\circ}C}$ after the ice and inter lake (section 11.3 and [11.4]()). It is also noted that because the second half part of this section is based on the old version of COCO, hence it is slightly different from the MIROC6-AOGCM[@Tatebe2019-ow] and @Hasumi2015-fs.
 
 Dimensions of the lake scheme is defined in include/zkg21c.F. `KLMAX` is the number of vertical layers set to 5 in MIROC6/MATSIRO6. `NLTDIM` is the number of tracers, 1:temperature 2:salt. Since the vertical layers are actually from the first number of vertical layer (`KLSTR=2`) to the last number of vertical layer (`KLEND=KLMAX+1`). `NLZDIM = KLMAX+KLSTR` is also defined for the management.
 
@@ -2823,7 +2828,7 @@ $$
 
 where the $\alpha_{SnLk(d,b)}$ is the snow albedo covering the lake, and $R_{SnLk}$ is the snow coverage, respectively.
 
-Second, the lake surface roughness for momentum, heat and vapor are calculated in SUBROUTINE LAKEZ0F, based on Miller et al. (1992), same with COCO-OGCM (Hasumi 2015), supposing the ice-free conditions, then modified to take into account the effects of ice and snow cover.
+Second, the lake surface roughness for momentum, heat and vapor are calculated in SUBROUTINE LAKEZ0F, based on @Miller1992-gi, same with COCO-OGCM [@Hasumi2015-fs], supposing the ice-free conditions, then modified to take into account the effects of ice and snow cover.
 
 When lake ice is present, each roughness is modified to take into account the lake ice concentration ($R_{IcLk}$)
 
@@ -2858,7 +2863,6 @@ $$
 where $D_{SnLk}$ is the coefficient of snow.
 
 Therefore, the net heat diffusion coefficient is finally
-
 $$
 	\frac{\partial G}{\partial T} = \Big(\frac{\partial G}{\partial T} \Big)_{IcLk} (1-R_{SnLk}) + \Big(\frac{\partial G}{\partial T}\Big)_{SnLk} R_{SnLk}
 $$
@@ -3813,7 +3817,7 @@ Finally, $R_{out}$ is added to runoff from land and given to the river.
 
 ## Outline of wetland scheme
 
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL (when # ifdef OPT_SW_STORAGE in SUBROUTINE: [MATROF] in matrof.F is active) in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.  
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL (when # ifdef OPT_SW_STORAGE in SUBROUTINE: [MATROF] in matrof.F is active) in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
@@ -3835,7 +3839,7 @@ $$
 \beta =max(\beta_{0}(1-min(\sigma_{z}(x),\sigma_{z max})/\sigma_{z max}), \Delta t)
 $$
 
-where $\beta_{0}$ is the maximum of the time constant, $\sigma _{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  The parameter $\sigma_{z}$ is a physical parameter calculated by the topography dataset, with a higher spatial resolution than the simulation, and $\beta_{0}$, $\sigma_{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively (Nitta et al., 2015).
+where $\beta_{0}$ is the maximum of the time constant, $\sigma_{z}$ is the standard deviation of elevation above sea level within each grid at point $x$, and $\Delta t$ is the time step of the model.  The parameter $\sigma_{z}$ is a physical parameter calculated by the topography dataset, with a higher spatial resolution than the simulation, and $\beta_{0}$, $\sigma_{zmax}$, and $\alpha$ are tunable parameters. These parameter values were determined based on sensitivity simulations using an offline land model with perturbed parameters; 1 month, 200m, and 0.1 were chosen as the most appropriate values for $\beta_{0}$, $\sigma _{zmax}$, and $\alpha$, respectively [@Nitta2015-ob].
 
 ## Storage of the surface runoff
 
@@ -3885,7 +3889,7 @@ Basically, one land surface grid is divided into three tiles in the control run 
 1. There are both snow-covered and snow-free fractions in each tile;
 2. The surface heat and water fluxes over lakes have been calculated as one of the tiles in a grid;
 3. Both potential vegetation and cropland tiles consist of six soil layers, up to three snow layers, and a single canopy layer, driving predictions of the temperature and amount of water in the canopy, soil, and snow;
-4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 (SiB2; Sellers et al. 1996) scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
+4. Potential vegetation is defined according to the vegetation types of the Simple Biosphere Model 2 [@Sellers1996-ye] scheme and has 10 categories including land ice. There is no wetland category for land cover in the original SiB2 vegetation types or soil types.
 
 All the prognostic and diagnostic variables are calculated in each tile, and the fluxes at the land surface $F$ are averaged:
 $$
@@ -3905,59 +3909,4 @@ where n is 2, $F_{lake}$, $F_1$ and $F_2$ denote fluxes at the land surface of l
 By default, tile scheme is applied in land surface type, but it can be used for multiple purposes.
 
 # References
-  -
-    Ball, J. T., 1988: An analysis of stomatal conductance. Ph.D. thesis, Stanford University, 89 pp.
 
-  -
-    Beven, K. J., and M. J. Kirkby, 1979: A physically based variable contributing area model of basin hydrology, <span>Hydrol. Sci. Bull.</span>, <span>**24**</span>, 43–69.
-
-  -
-    Clapp, R. B., and G. M. Hornberger, 1978: Empirical equations for some soil hydraulic properties. <span>Water Resour. Res.</span>, <span>**14**</span>, 601–604.
-
-  -
-    Collatz, G. J., J. A. Berry, G. D. Farquhar, and J. Pierce, 1990: The relationship between the Rubisco reaction mechanism and models of leaf photosynthesis. <span>Plant Cell Environ.</span>, <span>**13**</span>, 219–225.
-
-  -
-    Collatz, G. J., J. T. Ball, C. Grivet, and J. A. Berry, 1991: Physiological and environmental regulation of stomatal conductance, photosynthesis and transpiration: A model that includes a laminar boundary layer. <span>Agric. For. Meteor.</span>, <span>**54**</span>, 107–136.
-
-  -
-    Collatz, G. J., M. Ribas-Carbo, and J. A. Berry, 1992: Coupled Photosynthesis-Stomatal Conductance Model for leaves of TERM00000 plants. <span>Aust. J. Plant. Physiol.</span>, <span>**19**</span>, 519–538.
-
-  -
-    Farquhar, G. D., S. von Caemmerer, and J. A. Berry, 1980: A biochemical model of photosynthetic TERM00001 fixation in leaves of TERM00002 species. <span>Planta</span>, <span>**149**</span>, 78–90.
-
-  -
-    Kondo, J., and T. Watanabe, 1992: Studies on the bulk transfer coefficients over a vegetated surface with a multilayer energy budget model. <span>J. Atmos. Sci</span>, <span>**49**</span>, 2183–2199.
-
-  -
-    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2015: A Sensitivity Study of a Simple Wetland Scheme for Improvements in the Representation of Surface Hydrology and Decrease of Surface Air Temperature Bias. <span>Journal of Japan Society of Civil Engineers, Ser.B1 (Hydraulic Engineering)</span>, <span>**71(4)**</span>, 955-960.
-
-  -
-    Nitta, T., Yoshimura, K., and Abe-Ouchi, A., 2017: Impact of Arctic Wetlands on the Climate System: Model Sensitivity Simulations with the MIROC5 AGCM and a Snow-Fed Wetland Scheme. <span> Journal of Hydrometeorology</span>, <span>**18(11)**</span>, 2923-2936.
-
-  -
-    Rutter, B., A. J. Morton, and P. C. Robins, 1975: A predictive model of rainfall interception in forests. II. Generalization of the model and comparison with observations in some coniferous and hardwood stands. <span>J. Appl. Ecol.</span>, <span>**12**</span>, 367–380.
-
-  -
-    Sellers, P. J., D. A. Randall, G. J. Collatz, J. A. Berry, C. B. Field, D. A. Dazlich, C. Zhang, G. D. Collelo, and L. Bounoua, 1996: A revised land surface parameterization (SiB2) for atmospheric GCMs. Part I: Model formulation. <span>J. Climate</span>, <span>**9**</span>, 676–705.
-
-  -
-    Sellers, P. J., Meeson, B. W., Closs, J., Collatz, J., Corprew, F., Dazlich, D., Hall, F. G., Kerr, Y., Koster, R., Los, S., Mitchell, K., McManus, J., Myers, D., Sun, K.-J, and Try, P.: The ISLSCP Initiative I global datasets: surface boundary conditions and atmospheric forcings for land-atmosphere studies, B. Am. Meteorol. Soc., <span>**77**</span>, 1987–2006, 1996.
-
-  -
-    Sivapalan, M., K. Beven, and E. F. Wood, 1987: On hydrologic similarity. 2, A scaled model of storm runoff production. <span>Water Resour. Res</span>, <span>**23**</span>, 2266–2278.
-
-  -
-    Stieglitz, M., D. Rind, J. Famiglietti, and C. Rosenzweig, 1997: An efficient approach to modeling the topographic control of surface hydrology for regional and global climate modeling. <span>J. Climate</span>, <span>**10**</span>, 118–137.
-
-  -
-    Watanabe, T., 1994: Bulk parameterization for a vegetated surface and its application to a simulation of nocturnal drainage flow. <span>Boundary-Layer Met.</span>, <span>**70**</span>, 13–35.
-
-  -
-    Wiscombe, W. J., and S. G. Warren, 1980: A model for the spectral albedo of snow. I. Pure snow. <span>J. Atmos. Sci.</span>, <span>**37**</span>, 2712–2733.
-
-  -
-    Hirabayashi, Y., Global analysis on long term variations of extreme river discharge, The University of Tokyo, Doctoral degree thesis, 2004
-
-  -
-    渡辺力・大谷義一, 1995: キャノピー層内の日射量分布の近似計算法. <span>農業気象</span>, <span>**51**</span>, 57–60.

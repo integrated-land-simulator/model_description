@@ -18,6 +18,7 @@
 \usepackage{ltablex,booktabs}
 \usepackage {lscape}
 \usepackage[dvipdfm,hidelinks]{hyperref}
+\usepackage[round]{natbib}
 
 \AtBeginDocument{
   \abovedisplayskip     =1.2\abovedisplayskip
@@ -84,4 +85,7 @@
 	\include{descript/matsiro}
 	%
 	%
+\addcontentsline{toc}{section}{References}
+\bibliography{descript/reference}
+\bibliographystyle{abbrvnat}
 \end{document}

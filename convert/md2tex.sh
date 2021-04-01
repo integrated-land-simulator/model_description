@@ -27,7 +27,8 @@ do
 	sed -e s/'\[\(.*\)\](\(#.*\))'/'\[\]\(\2\)'/g >tmp.md
 
 
-	pandoc -t latex --columns=200 tmp.md | \
+	pandoc -t latex --columns=200 --natbib --bibliography descript/reference.bib tmp.md | \
+        sed -e '/# References/d' | \
 	sed -e s/'\\\['/'\\begin\{eqnarray\}'/g | \
 	sed -e s/'\\\]'/'\\end\{eqnarray\}'/g | \
   sed -e s/'\\tag'/'\\label'/g | \
