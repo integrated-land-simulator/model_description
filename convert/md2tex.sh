@@ -12,27 +12,33 @@ dir=./descript
 
 # Get markdown file names to be compiled
 filelist=($(ls ${dir}/*.md | rev | cut -c 4-| rev))
-echo ${filelist}
+echo ${filelist[@]}
 
 # Conversion from markdown to LaTeX
 for name in ${filelist[@]}
 do
 	sed -e s/'\\('/'$'/g ${name}.md | \
 	sed -e s/'\\)'/'$'/g | \
-        sed -e '/code_chunk_output/,/code_chunk_output/d' | \
+  sed -e '/code_chunk_output/,/code_chunk_output/d' | \
+	sed -e s/'<div style="text-align: right;"><!\\begin{flushright}>'/'\\begin{flushright}'/g | \
+	sed -e s/'<\/div> <!\\end{flushright}>'/'\\end{flushright}'/g | \
+	sed -e s/'<!--beginlandscape-->'/'\n beginlandscape \n'/g | \
+	sed -e s/'<!--endlandscape-->'/'\n endlandscape \n'/g | \
 	sed -e s/'\[\(.*\)\](\(#.*\))'/'\[\]\(\2\)'/g >tmp.md
 
-	pandoc -t latex tmp.md| \
+
+	pandoc -t latex --columns=200 --natbib --bibliography descript/reference.bib tmp.md | \
+        sed -e '/# References/d' | \
 	sed -e s/'\\\['/'\\begin\{eqnarray\}'/g | \
 	sed -e s/'\\\]'/'\\end\{eqnarray\}'/g | \
-  sed -e s/'\\toprule'/'\\toprule\\relax'/g | \
-	sed -e s/'\\midrule'/'\\midrule\\relax'/g | \
-	sed -e s/'\\begin{longtable}'/'\\setlength\\LTleft\{0pt\}\\setlength\\LTright\{0pt\}\\begin{longtable}'/g | \
-	sed -e s/'\\tag'/'\\label'/g | \
+  sed -e s/'\\tag'/'\\label'/g | \
+	sed -e s/'beginlandscape'/'\\begin{landscape}'/g | \
+	sed -e s/'endlandscape'/'\\end{landscape}'/g | \
 	sed -e s/'\\protect\\hyperlink'/'\\ref'/g | \
-        sed -e 's/https.*descript/descript/' | \
+  sed -e 's/https.*descript/descript/' | \
 	sed -e 's/\(\\ref{.*}\)\({}\)/\1/g' \
 	> ${name}.tex
+
 done
 
 rm tmp.md
