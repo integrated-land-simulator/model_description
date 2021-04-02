@@ -88,7 +88,7 @@ MATSIRO has two ways of calculation of the snow cover fraction, and the user can
 The snow cover fraction is diagnosed in the SUBROUTINE SSNOWD\_DRV, a driver of a Subgrid SNOW Distribution (SSNOWD) submodel developed by Liston (2004), with a physically based parameterization of sub-grid snow distribution considering various factors such as differences in topography, the time of snowfall or snow melting, etc (Nitta et al., 2014, Tatebe et al., 2019).
 
 The snow cover fraction is formulated for accumulation and ablation seasons separately. 
-The flag of transition from ablation season to accumulation season is raised once in a year, and the transition is judged based on the snow amount, accumulated snow, net snow gain and snowfall. This flag is included in the restart variables similarly to the state variables.
+At the grids where snow does not disappear completely, the flag of transition from ablation season to accumulation season is raised. It occurs at the time step next of 1 August in the northern hemisphere and 1 February in the southern hemisphere. The transition is judged based on the snow amount, accumulated snow, net snow gain and snowfall. This flag is included in the restart variables similarly to the state variables.
 
 For the accumulation season, snowfall occures uniformly and the snow cover fraction is assumed to be unity in the grid cell.
 For the ablation season, the snow cover fraction decreases based on the sub-grid distribution of the snow water equivalent. Under the assumption of uniform melt depth ${W\_{Sn}}\_m$, the sum of snow-free and snow-covered fraction equals unity:
@@ -595,11 +595,11 @@ where $M\_{d\_m(k)}$ and $M\_{d\_w(k)}$ are the amount of DBC on the $k$th snow 
 The amount of DBC in each layer is calculated in SUBROUTINE DSTCUT based on the results of snow layer recutting (SUBROUTINE SNWCUT). Note that this subroutine is applied for both $Md\_m$ and $Md\_w$, so they are represented by $Md$. 
 Also, in this section, $\rho\_{d(k)}$ represents $\rho\_{d\_m(k)}$ and $\rho\_{d\_w(k)}$, the density of dust and black carbon calculated using ${M\_d}\_m$ and ${M\_d}\_w$, respectively.
 
-The snow mass of $k$th layer after updating of snow mass and before snow layer recutting $\Delta Sn^{\tau+1/2}\_{(k)}$ is calculated in
+The snow mass of $k$th layer after updating of snow mass but before snow layer recutting $\Delta Sn^{\tau+1/2}\_{(k)}$ is calculated in
 $$
 \Delta Sn^{\tau+1/2}\_{(k)} = \Delta Sn^{\tau}\_{(k)} A\_{Sn}^{\tau} / A\_{Sn}^{\tau+1} \;\; (k = 1, 2, 3), \tag{8-49}
 $$
-where $\tau$ and $\tau+1$ represent before and after recutting of snow layer, respectively.
+where $\tau$ and $\tau+1$ represent before updating of snow mass and after recutting of snow layer, respectively.
 
 When $\Delta Sn^{\tau+1}\_{(1)} > \Delta Sn^{\tau+1/2}\_{(1)}$, the amount of DBC in the 1st layer increases due to increase in the snow mass in this layer. This is calculated as
 $$
