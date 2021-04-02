@@ -1419,8 +1419,7 @@ Most of the processes are included in SUBROUTINE MATSNW in matsnw.F, but the ice
 
 The following tables present attributions of key variables in SUBROUTINE MATSNW.
 
-Modified
-
+<!--beginlandscape-->
 | Variable                         | Long name                                        | Unit                | Name in code |
 |:---------------------------------|:-------------------------------------------------|:--------------------|:-------------|
 | $Sn$                             | Amount of accumulated snow                       | $\mathrm{kg/m^2}$   | GLSNW        |
@@ -1433,14 +1432,15 @@ Modified
 | $P_{r_l}$                      | Water input after canopy interception derived from layered precipitation (input) and input to ground (output)    | $\mathrm{kg/m^2/s}$ | WINPL        |
 | $\rho_{d_w(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D_w$ | $\mathrm{ppmv}$     | CDST         |
 | $\rho_{d_m(k)} \;\; (k=1,2,3)$ | Density of dust and black carbon in the $k$th snow layer calculated using $D_m$ | $\mathrm{ppmv}$     | CDSTM        |
+Table: Modified
+<!--endlandscape-->
 
-Output
 
 | Variable                    | Description                                      | Unit                | Name in code |
 |:----------------------------|:-------------------------------------------------|:--------------------|:-------------|
 | $Ro_{gl}$                  | Glacier formation                                | $\mathrm{kg/m^2/s}$ | GGLACR       |
+Table: Output
 
-Input
 
 | Variable                    | Description                                          | Unit                | Name in code |
 |:----------------------------|:-----------------------------------------------------|:--------------------|:-------------|
@@ -1457,6 +1457,7 @@ Input
 | $T_{hist}$                 | Annual mean temperature over the latest 30 years     | $\mathrm{K}$        | T2HIST       |
 | -                           | Index of the surface condition                       | -                   | ILSFC        |
 | -                           | Soil type                                            | -                   | ILSOIL       |
+Table: Input
 
 
 ## Diagnosis of snow cover fraction
