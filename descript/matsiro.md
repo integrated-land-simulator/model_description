@@ -10,8 +10,8 @@ bibliography:
 1. [Introduction](#introduction)
     1. [Structure](#structure)
     2. [Prognostic variables](#prognostic-variables)
-    3. [Input data](#input-data)
-    4. [Output data](#output-data)
+    3. [Output data](#output-data)
+    4. [Input data](#input-data)
     5. [External parameters](#external-parameters)
 2. [Vegetation type parameters](#vegetation-type-parameters)
 3. [Radiation parameters](#radiation-parameters)
@@ -222,6 +222,41 @@ The lake part has the following prognostic variables:
 | $h$        | Lake level                                              | $\mathrm{[cm]}$        |
 Table: Prognostic variables for the lake scheme
 
+## Output data
+
+The following variables are output from the flux calculation section:
+
+| Variable                              | Description                           | Units                 |
+|:--------------------------------------|:--------------------------------------|:----------------------|
+| $\tau_x$                              | Surface eastward wind stress          | $\mathrm{[N/m^2]}$    |
+| $\tau_y$                              | Surface northward wind stress         | $\mathrm{[N/m^2]}$    |
+| $H$                                   | Sensible heat flux                    | $\mathrm{[W/m^2]}$    |
+| $E$                                   | Latent heat flux                      | $\mathrm{[kg/m^2/s]}$ |
+| $R^{\uparrow}_S$                      | Upward shortwave radiation flux       | $\mathrm{[W/m^2]}$    |
+| $R^{\uparrow}_L$                      | Upward longwave radiation flux        | $\mathrm{[W/m^2]}$    |
+| $\alpha_{s(b)}$    $(b=1,2,3)$        | Surface albedo                        | $\mathrm{[-]}$        |
+| $T_{sR}$                              | Surface radiation temperature         | [K]                   |
+| $F_{g(1/2)}$                          | Surface heat transfer flux            | $\mathrm{[W/m^2]}$    |
+| $F_{Sn(1/2)}$                         | Heat transfer flux for snow surface   | $\mathrm{[W/m^2]}$    |
+| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration                    | $\mathrm{[kg/m^2/s]}$ |
+| $\Delta F_{conv}$                     | surface energy convergence            | $\mathrm{[W/m^2]}$    |
+| $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                     | $\mathrm{[kg/m^2/s]}$ |
+| $LAI$                                 | leaf area index                       | $\mathrm{[m^2/m^2]}$  |
+| $A_{Snc}$                             | Canopy freezing area ratio            | $\mathrm{[-]}$        |
+Table: Output data from the flux calculation section
+
+where  $i=1,2$  denotes liquid and solid evapotranspiration, respectively; and $j=1,2,3$ denotes evaporation from the bare soil surface (forest floor), transpiration, and canopy water evaporation, respectively. Other indexes are the same as described earlier.
+
+The following variable is output from the land surface integration section:
+
+| Variable | Description | Units                 |
+|:---------|:------------|:----------------------|
+| $Ro$     | runoff      | $\mathrm{[kg/m^2/s]}$ |
+Table: Output data
+
+Runoff is used as an input variable for the river channel network model.
+
+
 ## Input data
 
 The following variables are input in the flux calculation section:
@@ -259,39 +294,6 @@ The following variables are input in the land surface integration section:
 Table: Input data for land integration section
 
 
-## Output data
-
-The following variables are output from the flux calculation section:
-
-| Variable                              | Description                           | Units                 |
-|:--------------------------------------|:--------------------------------------|:----------------------|
-| $\tau_x$                              | Surface eastward wind stress          | $\mathrm{[N/m^2]}$    |
-| $\tau_y$                              | Surface northward wind stress         | $\mathrm{[N/m^2]}$    |
-| $H$                                   | Sensible heat flux                    | $\mathrm{[W/m^2]}$    |
-| $E$                                   | Latent heat flux                      | $\mathrm{[kg/m^2/s]}$ |
-| $R^{\uparrow}_S$                      | Upward shortwave radiation flux       | $\mathrm{[W/m^2]}$    |
-| $R^{\uparrow}_L$                      | Upward longwave radiation flux        | $\mathrm{[W/m^2]}$    |
-| $\alpha_{s(b)}$    $(b=1,2,3)$        | Surface albedo                        | $\mathrm{[-]}$        |
-| $T_{sR}$                              | Surface radiation temperature         | [K]                   |
-| $F_{g(1/2)}$                          | Surface heat transfer flux            | $\mathrm{[W/m^2]}$    |
-| $F_{Sn(1/2)}$                         | Heat transfer flux for snow surface   | $\mathrm{[W/m^2]}$    |
-| $Et_{(i,j)}$       $(i=1,2;j=1,2,3)$  | Evapotranspiration                    | $\mathrm{[kg/m^2/s]}$ |
-| $\Delta F_{conv}$                     | surface energy convergence            | $\mathrm{[W/m^2]}$    |
-| $F_{root(k)}$      $(k=1,\ldots,K_g)$ | Root sucking flux                     | $\mathrm{[kg/m^2/s]}$ |
-| $LAI$                                 | leaf area index                       | $\mathrm{[m^2/m^2]}$  |
-| $A_{Snc}$                             | Canopy freezing area ratio            | $\mathrm{[-]}$        |
-Table: Output data from the flux calculation section
-
-where  $i=1,2$  denotes liquid and solid evapotranspiration, respectively; and $j=1,2,3$ denotes evaporation from the bare soil surface (forest floor), transpiration, and canopy water evaporation, respectively. Other indexes are the same as described earlier.
-
-The following variable is output from the land surface integration section:
-
-| Variable | Description | Units                 |
-|:---------|:------------|:----------------------|
-| $Ro$     | runoff      | $\mathrm{[kg/m^2/s]}$ |
-Table: Output data
-
-Runoff is used as an input variable for the river channel network model.
 
 
 ## External parameters
@@ -3786,7 +3788,7 @@ Finally, $R_{out}$ is added to runoff from land and given to the river.
 
 ## Outline of wetland scheme
 
-A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL (when # ifdef OPT_SW_STORAGE in SUBROUTINE: [MATROF] in matrof.F is active) in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt (Nitta et al., 2015, 2017) (Fig. 12-1). The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
+A snow-fed wetland scheme, in which snowmelt can be stored with consideration of sub-grid terrain complexity, is incorporated as a sub-module of TOPMODEL (when # ifdef OPT_SW_STORAGE in SUBROUTINE: [MATROF] in matrof.F is active) in MATSIRO 6 to represent the wetland-related process in the middle and high latitudes grid with snowmelt [@Nitta2015-ob;@Nitta2017-hz, Fig. 12-1]. The wetland scheme has two major effects: 1) the storage of part of the surface water and delay of runoff to rivers, 2) an increase in land surface wetness thus enhancing the evaporation in water-limited regimes.
 
 With the wetland scheme, when snowmelt occurs, instead of all the generated surface runoff flows directly to the rivers, only a part of the surface runoff flows into the rivers and the remaining part of the surface runoff is stored by the added tank (also known as the snow-fed wetland). Then, the stored water in the wetland is then re-added to the water input of soil combining with other kinds of water inputs (Fig. 12-1). In the current version, only snow-fed wetlands are considered, and more types of wetland schemes will be added in the future version.
 
