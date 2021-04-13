@@ -3,6 +3,7 @@
 \
 \
 \
+<br/>
 
 How to cite
 
@@ -11,6 +12,7 @@ How to cite
 \
 \
 \
+<br/>
 
 Publisher Information
 
@@ -32,5 +34,6 @@ Contact: Kei Yoshimura (kei@iis.u-tokyo.ac.jp)
 \
 \
 \
+<br/>
 
 $\copyright$ 2021 MATSIRO6 Document Writing Team
