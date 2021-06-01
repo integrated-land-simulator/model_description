@@ -7,7 +7,7 @@
 
 How to cite
 
-> MATSIRO6 Document Writing Team (2021), Description of MATSIRO6, CCSR Report No. 66, Division of Climate System Research, Atmosphere and Ocean Research Institute, The University of Tokyo. doi:xxxxxx
+> MATSIRO6 Document Writing Team (2021), Description of MATSIRO6, CCSR Report No. 66, Division of Climate System Research, Atmosphere and Ocean Research Institute, The University of Tokyo, https://doi.org/10.15083/0002000181
 
 \
 \
