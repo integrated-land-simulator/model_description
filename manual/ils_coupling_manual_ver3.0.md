@@ -227,20 +227,28 @@ The elements, descriptions, and possible values for each session are summarized 
 ### coupler_config session
 The session coupler_config consists of eight elements as listed in the table.
 Log_level sets the detailedness (amount) of the log output froc ICI. 
-Possible values include \"SILENT,\" \"WISPER,\" and \"LOUD.\".
+Possible values include \"SILENT,\" \"WISPER,\" and \"LOUD\".
 Debug_mode is a flag indicating whether to output log from Jcup.
 Grid_checker is a flag to check the validity of grid points and
-interpolation table settings, and is set to .false. by default.
+interpolation table settings.
+Stop_step is a number to set a breakpoint in the Coupling API. 
+Fill_value sets the default fill value of each exchange data.
+Restart_flag is a flag whether this run is a restart or not.
+Restart_dir indicates the directory where the restart files are located.
+Data_monitor is a flag to monitor the values of received data.
 
 *Elements of coupler_config session of configuration file*
 
-| element name  | description　               |possible values|
-| --------------| --------------------------- | --------------------------
-| log_level     | log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"|
-| debug_mode    | Flag to output log to stderr| .true. or .false.|
-| grid_checker  | Flag to check the validity of grid setting  |
-| debug_mode    | Flag to output log to stderr| .true. or .false.|
-
+| element name  | description　               |possible values| default value |
+| --------------| --------------------------- | -------------------------- |--------------------
+| log_level     | Log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"| SILENT  |
+| debug_mode    | Flag to output log to stderr| .true. or .false.| .false. |
+| grid_checker  | Flag to check the validity of grid setting  | .false. |
+| stop_step     | Breakpoint to stop the program in the Coupling API| 0 or  1 to 11| 0 |
+| fill_value    | Default fill value          | arbitrary real number | -9999.d0 |
+| restart_flag  | Flag whether this run is a restart or not | .true. of .false. | .false. |
+| restart_dir   | Directory where the restart files are located | ""|
+| data_monitor  | Flag to monitor the values of received data | .true. of .false. | .false. |
 
 
 The session nam_ici describes the sending/receiving components and
