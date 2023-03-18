@@ -200,9 +200,11 @@ $Cs(i)-Cs(i+4)$, as shown the equation below:
 $$R(p) = \sum_{n=0}^{4} Cs(i+n)*S(i+n)$$
 
 The mapping table for $R(p)$ can be expressed as . For the vector
-quantity, a coefficient expressing rotation is further added. These
-values are given as arguments of the ICI API subroutine
-ici_set_interpolation_table to be described later.
+quantity, a coefficient expressing rotation is further added. 
+
+Users must prepare a correspondence table file between the grid point numbers on the sending and receiving component.
+In addition, if nesessary, users also must prepare a table of interpolation coefficients.
+These files can be generated in an appropriate form using SPRING.
 
 ![alt interpolation_image](fig_cpl/interpolation_image.png )*Grid point index and coefficients on interpolation calculation*
 
@@ -243,25 +245,51 @@ Data_monitor is a flag to monitor the values of received data.
 | --------------| --------------------------- | -------------------------- |--------------------
 | log_level     | Log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"| SILENT  |
 | debug_mode    | Flag to output log to stderr| .true. or .false.| .false. |
-| grid_checker  | Flag to check the validity of grid setting  | .false. |
+| grid_checker  | Flag to check the validity of grid setting  | .true. of .false. | .false. |
 | stop_step     | Breakpoint to stop the program in the Coupling API| 0 or  1 to 11| 0 |
 | fill_value    | Default fill value          | arbitrary real number | -9999.d0 |
 | restart_flag  | Flag whether this run is a restart or not | .true. of .false. | .false. |
-| restart_dir   | Directory where the restart files are located | ""|
+| restart_dir   | Directory where the restart files are located | directory name| ""|
 | data_monitor  | Flag to monitor the values of received data | .true. of .false. | .false. |
 
 
-The session nam_ici describes the sending/receiving components and
-grids, the grid, and the data group exchanged between these components.
-A plurality of data can be set for a pair of components and a grid, and
+### nam_ici session
+The session nam_ici describes the sending/receiving components, grids, 
+mapping table, and the data group exchanged between these components.
+A plurality of data can be set for a pair of components and grids, and
 all data are interpreted as corresponding to the component and the grid
 described immediately before. Settings that can be omitted are shown in
 italics in the table.
 
+<br>
+
+Comp_put and comp_get are the component names for the sending and receiving side respectively.
+Grid_put and grid_get are also the same.
+Intpl_map_size represents the number of grid points included in the mapping table.
+Map_file_name is a file name of mapping table.
+Coef_file_name is a file name of interpolation coefficients.
+
+*Elements of nam_ici section (component and grid setting)*
+
+| element name   |description                            |possible value|
+| -------------- |-------------------------------------- |------------------------------|
+| comp_put       | sending component name                |string of the component name|
+| comp_get       | receiving component name              |string of the component name|
+|  grid_put      | grid name of the sending component    | string of the grid name|
+|  grid_get      | grid name of the receiving component  | string of the grid name|
+| intpl_map_size | number of grid points in the mapping table | integer |
+| map_file_name  | file name of mapping table            | string of the file name |
+| coef_file_name  | file name of coefficient table       | string of the file name |
+
+<br>
+
 Var_put and var_get are exchange data names, and var_put_vec and
 var_get_vec are exchange vector data names. Either a scalar data name or
-a vector data name must be specified. Mapping_tag is a tag for
-specifying a mapping table. Time_intpl_tag is a data identification tag
+a vector data name must be specified. 
+Grid_intpl_tag is a tag for specifying the data in the grid interpolation subroutine (intpolate_data).
+Grid_intpl_tag can be assigned the same number. 
+Data with the same number will be packed into one when exchanging the data.
+Time_intpl_tag is a data identification tag
 for time interpolation, and data with the same numbered tag are passed
 to the time interpolation subroutine of the IO component. This tag is
 valid only when retrieving data from ILSIO, the IO component of ILS, and
@@ -283,26 +311,6 @@ multiplied with the data at the spatial interpolation. Is_ok is a flag
 indicating whether a data exchange is actually conducted. If is_ok = 1,
 the data are exchanged, and if the value is 0, the data are not
 exchanged. A sample of the configuration file is shown in the list below.
-<br>
-
-*Elements of coupler_config session of configuration file*
-
-| element name  | description　               |possible values|
-| --------------| --------------------------- | --------------------------
-| log_level     | log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"|
-| debug_mode    | Flag to output log to stderr| .true. or .false.|
-| debug_mode    | Flag to output log to stderr| .true. or .false.|
-
-<br>
-
-*Elements of nam_ici section (component and grid setting)*
-
-| element name   |description                            |possible value|
-| -------------- |-------------------------------------- |------------------------------|
-| comp_put       |sending component name                 |string of the component name|
-| comp_get       |receiving component name               |string of the component name|
-|  grid_put      | grid name of the sending component    | string of the grid name|
-|  grid_get      | grid name of the receiving component  | string of the grid name|
 
 <br>
 
@@ -314,8 +322,8 @@ exchanged. A sample of the configuration file is shown in the list below.
 |  var_get            |receive data name                  |string of the name|
 |  var_put_vec        |send vector data name              |string of the name|
 |  var_get_vec        |receive vector data name           |string of the data name|
-|  *mapping_tag*      |mapping table tag                  |integer for specifying the mapping table|
-|  *time_intpl_tag*   |time interpolation tag             |integer for identifying the data||
+|  *grid_intpl_tag*   |mapping table tag                  |integer for identifying the data in the grid interpolation subroutine|
+|  *time_intpl_tag*   |time interpolation tag             |integer for identifying the data in the time interpolation subroutine |
 |  intvl              |data exchange interval             |integer in second|
 |  lag                |coupling pattern                   |-1 or 0 or 1|
 |  *layer*            |number of vertical layer           |integer for vertical layer (default 1)|
@@ -331,18 +339,30 @@ exchanged. A sample of the configuration file is shown in the list below.
 
 ``` 
 &coupler_config
-  log_level = "LOUD"
-  debug_mode  = .true.
-&end 
+  log_level    = "SILENT"
+  debug_mode   = .false.
+  stop_step    = 0
+  fill_value   = -999.d0
+  restart_flag = .false.
+  restart_dir  = "../out.1"
+  data_monitor = .false.
+/
 
-
-&nam_ICI  comp_put = "MATIO",   comp_get = "MATSIRO",
-          grid_put ='io_grid', grid_get ='matsiro_grid', /
-&nam_ici  var_put = 'lon'       ,  var_get ='lon'       , time_intpl_tag = 5, grid_intpl_tag = 1, intvl=3600 ,  lag=0,  flag='SNP' /
-&nam_ici  var_put = 'lat'       ,  var_get ='lat'       , time_intpl_tag = 5, grid_intpl_tag = 1, intvl=3600 ,  lag=0,  flag='SNP' /
-&nam_ICI  var_put = 'SWdown'    ,  var_get ='SWdown'    , time_intpl_tag = 1, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
-&nam_ICI  var_put = 'LWdown'    ,  var_get ='LWdown'    , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
-&nam_ICI  var_put = 'Rainf'     ,  var_get ='Rainf'     , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  comp_put = "ILSIO",   comp_get = "MATSIRO",
+          grid_put ='io_grid2', grid_get ='matsiro_grid',
+          intpl_map_size = 311304,
+          map_file_name = "../../ILS_data/test/map/metnc2mat/grid.bin",
+          coef_file_name = "../../ILS_data/test/map/metnc2mat/coef.bin",
+/
+&nam_ici  var_put = 'SWdown'    ,  var_get ='SWdown'    , time_intpl_tag = 1, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'LWdown'    ,  var_get ='LWdown'    , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'CCover'    ,  var_get ='CCover'    , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'Rainf'     ,  var_get ='Rainf'     , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'Snowf'     ,  var_get ='Snowf'     , time_intpl_tag = 2, grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'Wind'      ,  var_get ='Wind'      , grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'Tair'      ,  var_get ='Tair'      , grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'Qair'      ,  var_get ='Qair'      , grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
+&nam_ici  var_put = 'PSurf'     ,  var_get ='Psurf'     , grid_intpl_tag = 1, intvl=3600 ,  lag=-1, flag='SNP' /
 ```
 
 # How to use the API subroutines
