@@ -219,18 +219,29 @@ ici_set_interpolation_table to be described later.
 
 ICI uses configuration files and API subroutines to define its behavior.
 The default file name of the configuration file is \"couplig.conf\".
-What users need to set in the configuration file are the coupler_config
-session, which specifies the operation of the coupler, and the nam_ici
-session, which defines the exchange data. The elements, descriptions,
-and possible values for each session are summarized in the next three tables.
+What users need to set in the configuration file at first is the coupler_config
+session, which specifies the operation of the coupler, and the second is the nam_ici
+session, which defines the exchange components and exchange data. 
+The elements, descriptions, and possible values for each session are summarized in the next three tables.
 
-The session coupler_config consists of three elements, log_level,
-debug_mode and grid_checker. Of these, log_level sets the detailedness
-(amount) of the log output. Possible values include \"SILENT,\"
-\"WISPER,\" and \"LOUD.\" The latter value outputs a more detailed log.
-Debug_mode is a flag indicating whether to output a log to stderr.
+### coupler_config session
+The session coupler_config consists of eight elements as listed in the table.
+Log_level sets the detailedness (amount) of the log output froc ICI. 
+Possible values include \"SILENT,\" \"WISPER,\" and \"LOUD.\".
+Debug_mode is a flag indicating whether to output log from Jcup.
 Grid_checker is a flag to check the validity of grid points and
 interpolation table settings, and is set to .false. by default.
+
+*Elements of coupler_config session of configuration file*
+
+| element name  | description　               |possible values|
+| --------------| --------------------------- | --------------------------
+| log_level     | log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"|
+| debug_mode    | Flag to output log to stderr| .true. or .false.|
+| grid_checker  | Flag to check the validity of grid setting  |
+| debug_mode    | Flag to output log to stderr| .true. or .false.|
+
+
 
 The session nam_ici describes the sending/receiving components and
 grids, the grid, and the data group exchanged between these components.
@@ -270,9 +281,10 @@ exchanged. A sample of the configuration file is shown in the list below.
 
 | element name  | description　               |possible values|
 | --------------| --------------------------- | --------------------------
-| log_level     | log output level            |one of \"SILENT,\" \"WISPER,\" \"LOUD\"|
+| log_level     | log output level            | \"SILENT,\" or \"WISPER,\" or \"LOUD\"|
 | debug_mode    | Flag to output log to stderr| .true. or .false.|
- 
+| debug_mode    | Flag to output log to stderr| .true. or .false.|
+
 <br>
 
 *Elements of nam_ici section (component and grid setting)*
