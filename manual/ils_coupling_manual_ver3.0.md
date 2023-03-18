@@ -1,9 +1,9 @@
 ---
 title: |
-  ILS Coupling Interface User's Guide Version 2.0
+  ILS Coupling Interface User's Guide Version 3.0
 author:
 - Yoshimura Lab. Univ. of Tokyo
-date: 2021/03/30
+date: 2023/03/20
 --- 
 
 
@@ -25,7 +25,6 @@ date: 2021/03/30
     - [Initialize ICI](#initialize-ici)
     - [Get MPI information](#get-mpi-information)
     - [Set grid index](#set-grid-index)
-    - [Set interpolation table](#set-interpolation-table)
   - [Processing before time integration](#processing-before-time-integration)
     - [Overview of preprecessing](#overview-of-preprecessing)
     - [Exchange of various information](#exchange-of-various-information)
@@ -46,7 +45,6 @@ date: 2021/03/30
 - [Implementation of coupling code](#implementation-of-coupling-code)
   - [Overview of implementation](#overview-of-implementation)
   - [From initialization to setting the grid index](#from-initialization-to-setting-the-grid-index)
-  - [Interpolation table setting](#interpolation-table-setting)
   - [Getting initial data](#getting-initial-data)
   - [Coupling code in the time step loop](#coupling-code-in-the-time-step-loop)
   - [Code for finalize](#code-for-finalize)
