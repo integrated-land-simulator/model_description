@@ -382,6 +382,7 @@ For getting the MPI information set by ICI, ici_get_comm_local and ici_get_irank
 The grid point numbers for each region of the component is set by ici_def_grid, and
 end the configuration with ici_end_grid_def. 
 
+
 ![alt initialization_process](fig_cpl/initialization_process.png)*Typical use of the ICI API in initial configuration*
 
 ### Initialize ICI
