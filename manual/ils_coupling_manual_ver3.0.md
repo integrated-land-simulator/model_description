@@ -1298,21 +1298,9 @@ user should be able to find bugs by carefully tracing the logs.
 ## Case where the program does not finish
 
 The program may not be finished due to a deadlock or communication
-wait in MPI communication. In this case, kill the job and check log files.
+wait in MPI communication. 
+In this case, kill the job and check log files to identify the line where the program stops.
 
-It is in the interpolation table setting section that communication
-problems are most likely to occur. The figure below shows an example of an inappropriate
-routine call. The upper figure shows an example of inappropriate
-correspondence of the arguments, the middle figure shows an example
-where both components give the interpolation table, and the lower figure
-shows an example where both components do not give the interpolation
-table.
-
-There are other errors besides interpolation table settings that may
-cause deadlocks, but in any case, refer to the output of the log file to
-identify the line where the program stops.
-
-![alt inappropriate_call](fig_cpl/inappropriate_call.png)*Example of inappropriate routine calls*
 
 ## Case where a runtime error occurred
 
@@ -1645,3 +1633,4 @@ is the name of the target component.
 |  ---------|--------------|------------------------------
 |  1.0      | Febrary 2020 |Initial release.
 |  2.0      | March 2021   |Added Chapter5 and Chapter6.
+|  3.0      | March 2023   |Updated due to changes in configurations and ICI APIs 
