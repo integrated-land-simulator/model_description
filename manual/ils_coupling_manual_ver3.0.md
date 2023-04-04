@@ -305,8 +305,9 @@ subroutine ici_get_initial_data described later. Layer is an integer
 indicating the number of vertical layers of data. Flag is a flag
 indicating whether to calculate the time average internally, and
 specifies \"SNP\" or \"AVR.\"Factor is a real constant that is
-multiplied with the data at the spatial interpolation. Is_ok is a flag
-indicating whether a data exchange is actually conducted. If is_ok = 1,
+multiplied with the data at the spatial interpolation. 
+"data_range" is exchange data range. If data_range is set, coupler checks whether the minimum and maximum values of the exchange data within the data_range.
+Is_ok is a flag indicating whether a data exchange is actually conducted. If is_ok = 1,
 the data are exchanged, and if the value is 0, the data are not
 exchanged. A sample of the configuration file is shown in the list below.
 
@@ -327,6 +328,7 @@ exchanged. A sample of the configuration file is shown in the list below.
 |  *layer*            |number of vertical layer           |integer for vertical layer (default 1)|
 |  flag               |time averaging flag                |\"SNP\" or \"AVR\"|
 |  *factor*           |value multiplied to the data       |real(kind=8) (default 1)|
+|  *data_range*       |exchange data range                |real(kind=8) demension(2) (default no check) |
 |  *is_OK*            |flag to exchange the data or not   |1 or 0 (default 1)|
 
 
