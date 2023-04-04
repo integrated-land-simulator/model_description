@@ -306,7 +306,7 @@ indicating the number of vertical layers of data. Flag is a flag
 indicating whether to calculate the time average internally, and
 specifies \"SNP\" or \"AVR.\"Factor is a real constant that is
 multiplied with the data at the spatial interpolation. 
-"data_range" is exchange data range. If data_range is set, coupler checks whether the minimum and maximum values of the exchange data within the data_range.
+"data_range" is exchange data range. If data_range is set and data_monitor is set to .true., coupler checks whether the minimum and maximum values of the exchange data are within the data_range.
 Is_ok is a flag indicating whether a data exchange is actually conducted. If is_ok = 1,
 the data are exchanged, and if the value is 0, the data are not
 exchanged. A sample of the configuration file is shown in the list below.
