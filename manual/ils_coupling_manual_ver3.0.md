@@ -278,6 +278,7 @@ Coef_file_name is a file name of interpolation coefficients.
 | intpl_map_size | number of grid points in the mapping table | integer |
 | map_file_name  | file name of mapping table            | string of the file name |
 | coef_file_name  | file name of coefficient table       | string of the file name |
+| endian_conv  | endian convert flag for mapping table   | .true. or .false. default: .false. |
 
 <br>
 
