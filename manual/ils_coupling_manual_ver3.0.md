@@ -266,6 +266,9 @@ Grid_put and grid_get are also the same.
 Intpl_map_size represents the number of grid points included in the mapping table.
 Map_file_name is a file name of mapping table.
 Coef_file_name is a file name of interpolation coefficients.
+These files are assumed to be recorded in "big endian".
+But in the case of Python APP coupling compiled by GNU compiler, Python APP cannot handle big endian file. 
+Therefore, in this case, user must set "endian_conv = .true." to convert the endian internally.
 
 *Elements of nam_ici section (component and grid setting)*
 
@@ -278,7 +281,7 @@ Coef_file_name is a file name of interpolation coefficients.
 | intpl_map_size | number of grid points in the mapping table | integer |
 | map_file_name  | file name of mapping table            | string of the file name |
 | coef_file_name  | file name of coefficient table       | string of the file name |
-| endian_conv  | endian convert flag for mapping table   | .true. or .false. default: .false. |
+| endian_conv  | endian conversion flag for mapping table   | .true. or .false., default: .false. |
 
 <br>
 
