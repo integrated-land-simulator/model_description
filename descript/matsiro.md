@@ -1518,7 +1518,7 @@ $$
 
 The snow cover fraction is diagnosed in SUBROUTINE SNWRAT. The snow cover fraction is formulated as a function of the snow amount $Sn$:
 $$
-Sn({W_{Sn}}_m) = \min(\sqrt{Sn/Sn_c}), \tag{8-6}
+Sn({W_{Sn}}_m) = \min(\sqrt{Sn/Sn_c},1), \tag{8-6}
 $$
 where $Sn_c$ is 100 $\mathrm{kg/m^2}$ as a standard.
 
