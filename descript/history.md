@@ -6,3 +6,4 @@
 
 2024/2/8 Modified the description of default soil thicknesses
 
+2024/2/15 Bug fix for the snow cover fraction equation without SSNOWD
